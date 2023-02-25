@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @Author Maxim Gorin
+ */
 public interface CompilerApi {
     public int getLineNumber();
 

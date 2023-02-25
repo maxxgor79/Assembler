@@ -12,6 +12,7 @@ import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Encoding;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
+import ru.zxspectrum.assembler.util.SymbolUtils;
 import ru.zxspectrum.assembler.util.TypeUtil;
 
 import java.io.File;
@@ -59,6 +60,10 @@ public class Assembler implements NamespaceApi, SettingsApi {
 
     private final Set<File> compiledFileSet = new HashSet<>();
 
+    private static String majorVersion = "1";
+
+    private static String minorVersion = "0";
+
     public Assembler() {
         loadSettings();
     }
@@ -75,9 +80,10 @@ public class Assembler implements NamespaceApi, SettingsApi {
                 byteOrder = ByteOrder.LittleEndian;
             }
             minAddress = Variables.getBigInteger(Variables.MIN_ADDRESS, BigInteger.ZERO);
-            maxAddress = Variables.getBigInteger(Variables.MAX_ADDRESS, BigInteger.valueOf(65535));
+            maxAddress = Variables.getBigInteger(Variables.MAX_ADDRESS, BigInteger.valueOf(0xFFFF));
+            majorVersion = Variables.getString(Variables.MAJOR_VERSION, "1");
+            minorVersion = Variables.getString(Variables.MINOR_VERSION, "0");
         } catch (Exception e) {
-            Output.println(e.getMessage());
             logger.log(Level.INFO, e.getMessage());
         }
     }
@@ -128,6 +134,23 @@ public class Assembler implements NamespaceApi, SettingsApi {
         return compilerApi;
     }
 
+    private static String createHeader() {
+        StringBuilder sb = new StringBuilder();
+        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), majorVersion
+                , minorVersion);
+        String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
+        String lineExternal = SymbolUtils.fillChar('*', 80);
+        sb.append(lineExternal).append("\n");
+        String lineInternal = (new StringBuilder().append('*').append(SymbolUtils.fillChar(' ', 78))
+                .append('*')).toString();
+        sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
+                , programWelcome)).append("\n");
+        sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
+                , writtenBy)).append("\n");
+        sb.append(lineExternal).append("\n");
+        return sb.toString();
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
             Output.println("Usage: assembler <file1.asm> <file2.asm> ... <fileN.asm>");
@@ -138,10 +161,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
         for (String arg : args) {
             fileList.add(new File(arg));
         }
-        Output.println("************************************************************************");
-        Output.println("*                  Assembler compiler for Z80 v1.0.0                   *");
-        Output.println("*                   Written by Maxim Gorin on 2023                     *");
-        Output.println("************************************************************************");
+        Output.print(createHeader());
         assembler.run(fileList.toArray(new File[fileList.size()]));
     }
     //----------------------------------------------------------

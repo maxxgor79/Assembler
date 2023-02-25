@@ -1,31 +1,41 @@
 package ru.zxspectrum.assembler.compiler;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.zxspectrum.assembler.Assembler;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
 import ru.zxspectrum.assembler.compiler.command.noparameterized.NoParameterizedSingleCommandGroupCompiler;
-import ru.zxspectrum.assembler.compiler.command.system.DefCommandCompiler;
-import ru.zxspectrum.assembler.error.text.Output;
-import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
+import ru.zxspectrum.assembler.compiler.command.system.DefCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.IncludeCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.OrgCommandCompiler;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
+import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
+import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.syntax.SyntaxAnalyzer;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * @Author Maxim Gorin
+ */
 public class Compiler implements CompilerApi {
+    private static final Logger logger = LogManager.getLogger(Compiler.class.getName());
     private NamespaceApi namespaceApi;
 
     private SettingsApi settingsApi;
@@ -235,7 +245,7 @@ public class Compiler implements CompilerApi {
             try {
                 closeable.close();
             } catch (Exception e) {
-
+                logger.log(Level.DEBUG, e.getMessage());
             }
         }
     }

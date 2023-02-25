@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.error.text;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -84,7 +85,11 @@ public class MessageList {
 
     public static final String UNEXPECTED_LABEL = "unexpectedLabel";
 
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
+    public static final String PROGRAM_WELCOME = "programWelcome";
+
+    public static final String WRITTEN_BY = "writtenBy";
+
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages", new Locale("ru"));
 
     private MessageList() {
 

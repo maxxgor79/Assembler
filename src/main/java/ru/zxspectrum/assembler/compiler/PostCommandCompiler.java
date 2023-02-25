@@ -5,8 +5,10 @@ import ru.zxspectrum.assembler.syntax.LexemSequence;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
-import java.util.Arrays;
 
+/**
+ * @Author Maxim Gorin
+ */
 public class PostCommandCompiler {
     private CommandCompiler commandCompiler;
 
@@ -33,7 +35,7 @@ public class PostCommandCompiler {
         if (randomAccessFile == null) {
             throw new NullPointerException("randomAccessFile");
         }
-        byte []generatedData = commandCompiler.compile(command, false);
+        byte[] generatedData = commandCompiler.compile(command, false);
         randomAccessFile.seek(commandOffset.longValue());
         randomAccessFile.write(generatedData);
         return generatedData.length;

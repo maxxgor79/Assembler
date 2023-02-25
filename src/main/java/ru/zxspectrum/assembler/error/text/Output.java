@@ -20,6 +20,10 @@ public final class Output {
         System.out.println(s);
     }
 
+    public static void print(String s) {
+        System.out.println(s);
+    }
+
     public static void formatPrintln(String mask, Object... args) {
         println(String.format(mask, args));
     }

@@ -2,23 +2,24 @@ package ru.zxspectrum.assembler.compiler;
 
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
-import ru.zxspectrum.assembler.settings.SettingsApi;
-import ru.zxspectrum.assembler.compiler.command.noparameterized.NoParametersCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.noparameterized.NoParameterizedSingleCommandGroupCompiler;
+import ru.zxspectrum.assembler.compiler.command.noparameterized.NoParametersCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.parameterized.ParameterizedCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.parameterized.ParameterizedCommandGroupCompiler;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
+import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * @Author Maxim Gorin
+ */
 public class AssemblerCommandLoader extends CommandLoader<CommandTable> {
     private NamespaceApi namespaceApi;
 

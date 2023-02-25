@@ -3,7 +3,6 @@ package ru.zxspectrum.assembler.compiler;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -12,6 +11,9 @@ import java.util.Scanner;
 
 import static ru.zxspectrum.assembler.error.text.MessageList.INVALID_TABLE_FORMAT;
 
+/**
+ * @Author Maxim Gorin
+ */
 public abstract class CommandLoader<E> {
     protected E load(E value, InputStream is, Charset encoding) throws IOException {
         Scanner scanner = new Scanner(is, encoding);

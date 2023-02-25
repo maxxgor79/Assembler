@@ -24,6 +24,10 @@ public final class Variables {
 
     public static final String PLATFORM_ENCODING = "platform_encoding";
 
+    public static final String MAJOR_VERSION = "major_version";
+
+    public static final String MINOR_VERSION = "minor_version";
+
     public static int getInt(String name, int defaultValue) {
         if (name == null) {
             return defaultValue;
