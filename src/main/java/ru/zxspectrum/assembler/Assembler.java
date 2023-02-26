@@ -134,20 +134,20 @@ public class Assembler implements NamespaceApi, SettingsApi {
         return compilerApi;
     }
 
-    private static String createHeader() {
+    private static String createWelcome() {
         StringBuilder sb = new StringBuilder();
         String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), majorVersion
                 , minorVersion);
         String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
         String lineExternal = SymbolUtils.fillChar('*', 80);
-        sb.append(lineExternal).append("\n");
+        sb.append(lineExternal).append(System.lineSeparator());
         String lineInternal = (new StringBuilder().append('*').append(SymbolUtils.fillChar(' ', 78))
                 .append('*')).toString();
         sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
-                , programWelcome)).append("\n");
+                , programWelcome)).append(System.lineSeparator());
         sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
-                , writtenBy)).append("\n");
-        sb.append(lineExternal).append("\n");
+                , writtenBy)).append(System.lineSeparator());
+        sb.append(lineExternal).append(System.lineSeparator());
         return sb.toString();
     }
 
@@ -161,7 +161,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
         for (String arg : args) {
             fileList.add(new File(arg));
         }
-        Output.print(createHeader());
+        Output.print(createWelcome());
         assembler.run(fileList.toArray(new File[fileList.size()]));
     }
     //----------------------------------------------------------

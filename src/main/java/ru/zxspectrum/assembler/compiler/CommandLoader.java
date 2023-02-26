@@ -19,19 +19,44 @@ public abstract class CommandLoader<E> {
         Scanner scanner = new Scanner(is, encoding);
         scanner.useDelimiter("[\t\r\n]");
         int lineNumber = 1;
-        String code = null;
-        String command = null;
+        String codePattern = null;
+        String commandPattern = null;
         try {
             while (scanner.hasNextLine()) {
-                code = scanner.next().trim();
-                command = scanner.next().trim();
-                parse(value, lineNumber, code, command);
+                codePattern = scanner.next().trim();
+                commandPattern = scanner.next().trim();
+                if (!patternVariablesAreEqual(codePattern, commandPattern)) {
+                    throw new CompilerException(null, lineNumber, MessageList.getMessage(MessageList
+                            .VARIABLE_PATTERNS_ARE_NOT_EQUAL), codePattern + "\t" + commandPattern);
+                }
+                parse(value, lineNumber, codePattern, commandPattern);
                 lineNumber++;
             }
         } catch(NoSuchElementException e) {
-            throw new CompilerException(null, lineNumber, MessageList.getMessage(INVALID_TABLE_FORMAT), code + "\t" + command);
+            throw new CompilerException(null, lineNumber, MessageList.getMessage(INVALID_TABLE_FORMAT)
+                    , codePattern + "\t" + commandPattern);
         }
         return value;
+    }
+
+    private static boolean patternVariablesAreEqual(String codePattern, String commandPattern) {
+        PatternVariableScanner scanner1 = new PatternVariableScanner(codePattern);
+        PatternVariableScanner scanner2 = new PatternVariableScanner(commandPattern);
+        while(true) {
+            boolean hasNextVariable1 = scanner1.hasNextVariable();
+            boolean hasNextVariable2 = scanner2.hasNextVariable();
+            if (hasNextVariable1 && hasNextVariable2) {
+                if (!scanner1.nextVariable().equals(scanner2.nextVariable()))  {
+                    return false;
+                }
+            } else {
+                if (!hasNextVariable1 && !hasNextVariable2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
     }
 
     protected abstract void parse(E value, int lineNumber, String code, String command);
