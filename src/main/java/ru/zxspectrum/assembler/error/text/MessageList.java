@@ -89,7 +89,9 @@ public class MessageList {
 
     public static final String WRITTEN_BY = "writtenBy";
 
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages", new Locale("ru"));
+    public static final String VARIABLE_PATTERNS_ARE_NOT_EQUAL = "variablePatternsAreNotEqual";
+
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
 

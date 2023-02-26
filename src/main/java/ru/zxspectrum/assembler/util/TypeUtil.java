@@ -306,4 +306,20 @@ public final class TypeUtil {
     public static boolean isInRange(String pattern, BigInteger value) {
         return isInRange(toType(pattern), value);
     }
+
+    public static boolean isAddressPatternSymbol(int ch) {
+        return getAddressPatternSymbol() == ch;
+    }
+
+    public static boolean isAddressOffsetPatternSymbol(int ch) {
+        return getAddressOffsetPatternSymbol() == ch;
+    }
+
+    public static boolean isNumberPattenSymbol(int ch) {
+        return getIntegerPatternSymbol() == ch;
+    }
+
+    public static boolean isOffsetPatternSymbol(int ch) {
+        return getOffsetPatternSymbol() == ch;
+    }
 }
