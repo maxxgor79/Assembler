@@ -25,7 +25,7 @@ public abstract class CommandLoader<E> {
             while (scanner.hasNextLine()) {
                 codePattern = scanner.next().trim();
                 commandPattern = scanner.next().trim();
-                if (!patternVariablesAreEqual(codePattern, commandPattern)) {
+                if (!isPatternParametersAreEqual(codePattern, commandPattern)) {
                     throw new CompilerException(null, lineNumber, MessageList.getMessage(MessageList
                             .VARIABLE_PATTERNS_ARE_NOT_EQUAL), codePattern + "\t" + commandPattern);
                 }
@@ -39,9 +39,9 @@ public abstract class CommandLoader<E> {
         return value;
     }
 
-    private static boolean patternVariablesAreEqual(String codePattern, String commandPattern) {
-        PatternVariableScanner scanner1 = new PatternVariableScanner(codePattern);
-        PatternVariableScanner scanner2 = new PatternVariableScanner(commandPattern);
+    private static boolean isPatternParametersAreEqual(String codePattern, String commandPattern) {
+        PatternParameterScanner scanner1 = new PatternParameterScanner(codePattern);
+        PatternParameterScanner scanner2 = new PatternParameterScanner(commandPattern);
         while(true) {
             boolean hasNextVariable1 = scanner1.hasNextVariable();
             boolean hasNextVariable2 = scanner2.hasNextVariable();
