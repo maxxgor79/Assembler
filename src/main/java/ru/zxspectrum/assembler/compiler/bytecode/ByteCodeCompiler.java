@@ -23,7 +23,7 @@ public class ByteCodeCompiler {
 
     private int calculateSize() {
         try {
-            byte[] data = parser.parse(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
+            byte[] data = parser.parse(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
             return data.length;
         } catch (IOException e) {
             return 0;

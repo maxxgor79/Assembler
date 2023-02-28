@@ -115,8 +115,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             argumentCommandList.add(address);
         } else {
             if (TypeUtil.isAddressOffsetPattern(patternLexem.getValue())) {
-                final BigInteger correctedOffset = offset.subtract(namespaceApi.getCurrentCodeOffset().add(BigInteger
-                        .valueOf(byteCodeCompiler.getSize())));
+                final BigInteger correctedOffset = offset.subtract(namespaceApi.getCurrentCodeOffset());
                 if (!TypeUtil.isInRange(expectedType, correctedOffset)) {
                     throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), correctedOffset.toString());

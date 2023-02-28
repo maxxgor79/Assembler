@@ -44,4 +44,8 @@ public class CommandTable {
             }
         }
     }
+
+    public boolean isEmpty() {
+        return commandMap.isEmpty();
+    }
 }

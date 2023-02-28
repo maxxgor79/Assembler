@@ -161,7 +161,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
         for (String arg : args) {
             fileList.add(new File(arg));
         }
-        Output.print(createWelcome());
+        Output.println(createWelcome());
         assembler.run(fileList.toArray(new File[fileList.size()]));
     }
     //----------------------------------------------------------

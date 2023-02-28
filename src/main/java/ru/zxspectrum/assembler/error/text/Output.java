@@ -21,7 +21,7 @@ public final class Output {
     }
 
     public static void print(String s) {
-        System.out.println(s);
+        System.out.print(s);
     }
 
     public static void formatPrintln(String mask, Object... args) {

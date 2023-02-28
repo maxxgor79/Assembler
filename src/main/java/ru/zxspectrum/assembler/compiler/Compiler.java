@@ -168,6 +168,9 @@ public class Compiler implements CompilerApi {
     public void compile() throws IOException {
         try {
             loadCommandTables();
+            if (commandCompilerTable.isEmpty()) {
+                throw new CompilerException(MessageList.getMessage(MessageList.COMMAND_DATA_IS_NOT_LOADED));
+            }
             Output.println(MessageList.getMessage(MessageList.COMPILING) + " " + getFile().getAbsolutePath());
             for (LexemSequence lexemSequence : syntaxAnalyzer) {
                 Lexem lexem = lexemSequence.first();

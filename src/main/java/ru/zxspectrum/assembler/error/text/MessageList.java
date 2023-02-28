@@ -91,6 +91,8 @@ public class MessageList {
 
     public static final String VARIABLE_PATTERNS_ARE_NOT_EQUAL = "variablePatternsAreNotEqual";
 
+    public static final String COMMAND_DATA_IS_NOT_LOADED = "commandDataIsNotLoaded";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
