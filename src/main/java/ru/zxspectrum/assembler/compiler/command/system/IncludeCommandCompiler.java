@@ -50,7 +50,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
         if (!iterator.hasNext() ||
-                !NAME.equals((nextLexem = iterator.next()).getValue())) {
+                (NAME.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
             return null;
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
