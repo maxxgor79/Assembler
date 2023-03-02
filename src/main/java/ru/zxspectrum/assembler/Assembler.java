@@ -1,5 +1,11 @@
 package ru.zxspectrum.assembler;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +18,7 @@ import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Encoding;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
+import ru.zxspectrum.assembler.util.FileUtil;
 import ru.zxspectrum.assembler.util.SymbolUtils;
 import ru.zxspectrum.assembler.util.TypeUtil;
 
@@ -32,25 +39,30 @@ import java.util.Set;
 
 /**
  * @Author Maxim Gorin
- *
  */
 
 public class Assembler implements NamespaceApi, SettingsApi {
     private static final Logger logger = LogManager.getLogger(Assembler.class.getName());
 
-    private BigInteger address = BigInteger.ZERO;
+    private static String majorVersion = "1";
 
-    private BigInteger currentCodeOffset = BigInteger.ZERO;
+    private static String minorVersion = "0";
 
-    private Encoding sourceEncoding = Encoding.UTF_8;
+    private static BigInteger address = BigInteger.ZERO;
 
-    private Encoding platformEncoding = Encoding.ASCII;
+    private static BigInteger currentCodeOffset = BigInteger.ZERO;
 
-    private ByteOrder byteOrder = ByteOrder.LittleEndian;
+    private static Encoding sourceEncoding = Encoding.UTF_8;
 
-    private BigInteger minAddress = BigInteger.ZERO;
+    private static Encoding platformEncoding = Encoding.ASCII;
 
-    private BigInteger maxAddress = BigInteger.valueOf(Integer.MAX_VALUE);
+    private static ByteOrder byteOrder = ByteOrder.LittleEndian;
+
+    private static BigInteger minAddress = BigInteger.ZERO;
+
+    private static BigInteger maxAddress = new BigInteger("FFFF", 16);
+
+    private static File outputDirectory = new File("output");
 
     private final Map<String, LabelInfo> labelMap = new HashMap<>();
 
@@ -60,9 +72,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
 
     private final Set<File> compiledFileSet = new HashSet<>();
 
-    private static String majorVersion = "1";
-
-    private static String minorVersion = "0";
+    private static final String EXT = "bin";
 
     public Assembler() {
         loadSettings();
@@ -71,61 +81,58 @@ public class Assembler implements NamespaceApi, SettingsApi {
     private void loadSettings() {
         try {
             Variables.load(Assembler.class.getResourceAsStream("/settings.properties"));
-            platformEncoding = Encoding.valueByName(Variables.getString(Variables.PLATFORM_ENCODING, Encoding.ASCII.getName()));
-            sourceEncoding = Encoding.valueByName(Variables.getString(Variables.SOURCE_ENCODING, Encoding.UTF_8.getName()));
+            platformEncoding = Encoding.valueByName(Variables.getString(Variables.PLATFORM_ENCODING, Encoding
+                    .ASCII.getName()));
+            sourceEncoding = Encoding.valueByName(Variables.getString(Variables.SOURCE_ENCODING, Encoding
+                    .UTF_8.getName()));
             String value = Variables.getString(Variables.BYTE_ORDER, "little-endian");
-            if ("big-endian".equals(value)) {
-                byteOrder = ByteOrder.BigEndian;
-            } else {
-                byteOrder = ByteOrder.LittleEndian;
-            }
-            minAddress = Variables.getBigInteger(Variables.MIN_ADDRESS, BigInteger.ZERO);
-            maxAddress = Variables.getBigInteger(Variables.MAX_ADDRESS, BigInteger.valueOf(0xFFFF));
-            majorVersion = Variables.getString(Variables.MAJOR_VERSION, "1");
-            minorVersion = Variables.getString(Variables.MINOR_VERSION, "0");
+            byteOrder = "big-endian".equals(value) ? ByteOrder.BigEndian : ByteOrder.LittleEndian;
+            minAddress = Variables.getBigInteger(Variables.MIN_ADDRESS, minAddress);
+            maxAddress = Variables.getBigInteger(Variables.MAX_ADDRESS, maxAddress);
+            outputDirectory = new File(Variables.getString(Variables.OUTPUT_DIRECTORY, "output"));
+            majorVersion = Variables.getString(Variables.MAJOR_VERSION, majorVersion);
+            minorVersion = Variables.getString(Variables.MINOR_VERSION, minorVersion);
         } catch (Exception e) {
             logger.log(Level.INFO, e.getMessage());
         }
     }
 
-    private static File removeExtension(File file) {
-        String fileName = file.getName();
-        int i = fileName.indexOf('.');
-        if (i != -1) {
-            fileName = fileName.substring(0, i);
-        }
-        return new File(file.getParentFile(), fileName);
-    }
-
     public void run(File... files) throws IOException {
         FileOutputStream fos = null;
         try {
-
             for (File file : files) {
-                File outpuitFile = removeExtension(file);
-                fos = new FileOutputStream(outpuitFile);
-                CompilerApi compilerApi = runSingle(file, fos);
-                fos.close();
-                fos = null;
-                postCompile(outpuitFile);
-                Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
-                Output.formatPrintln("%s %s %d %s, %d %s",MessageList.getMessage(MessageList.COMPILED1),
-                        MessageList.getMessage(MessageList.SUCCESSFULLY) , compilerApi.getCompiledLineCount(), MessageList
-                                .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
-                                .getMessage(MessageList.SOURCES));
+                try {
+                    File outpuitFile = createOutputFile(file);
+                    fos = new FileOutputStream(outpuitFile);
+                    CompilerApi compilerApi = runSingle(file, fos);
+                    postCompile(outpuitFile);
+                    Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
+                    Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1),
+                            MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(), MessageList
+                                    .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
+                                    .getMessage(MessageList.SOURCES));
+                } finally {
+                    if (fos == null) {
+                        try {
+                            fos.close();
+                            fos = null;
+                        } catch (Exception e) {
+                            logger.log(Level.DEBUG, e.getMessage());
+                        }
+                    }
+                }
             }
         } catch (Exception e) {
             Output.println(e.getMessage());
             logger.log(Level.DEBUG, e.getMessage());
-        } finally {
-            if (fos == null) {
-                try {
-                    fos.close();
-                } catch (Exception e) {
-                    logger.log(Level.DEBUG, e.getMessage());
-                }
-            }
         }
+    }
+
+    private File createOutputFile(File file) throws IOException {
+        if (!outputDirectory.exists()) {
+            outputDirectory.mkdirs();
+        }
+        return FileUtil.createNewFileSameName(outputDirectory, file, EXT);
     }
 
     protected CompilerApi runSingle(File file, OutputStream os) throws IOException {
@@ -152,17 +159,70 @@ public class Assembler implements NamespaceApi, SettingsApi {
     }
 
     public static void main(String[] args) throws Exception {
+        Options options = getOptions();
         if (args.length == 0) {
-            Output.println("Usage: assembler <file1.asm> <file2.asm> ... <fileN.asm>");
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("assembler <file1>...<fileN>", options);
             return;
         }
-        Assembler assembler = new Assembler();
         List<File> fileList = new LinkedList<>();
-        for (String arg : args) {
+        for (String arg : cliParsing(args, options)) {
             fileList.add(new File(arg));
         }
         Output.println(createWelcome());
+        Assembler assembler = new Assembler();
         assembler.run(fileList.toArray(new File[fileList.size()]));
+    }
+
+    private static Options getOptions() {
+        Options options = new Options();
+        options.addOption("a", "address", true, "org address." +
+                " None negative value.");
+        options.addOption("min", "min-address", true, "minimal address." +
+                " None negative value.");
+        options.addOption("max", "max-address", true, "maximal address." +
+                " None negative value.");
+        options.addOption("o", "output", true, "output directory for" +
+                " compiled files.");
+        options.addOption("b", "byte-order", true, "byte order" +
+                ": little-endian or big-endian.");
+        options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
+        options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
+        return options;
+    }
+
+    private static List<String> cliParsing(String[] args, Options options) {
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            CommandLine cli = parser.parse(options, args);
+            if (cli.hasOption("a")) {
+                address = new BigInteger(cli.getOptionValue("a"));
+            }
+            if (cli.hasOption("min")) {
+                minAddress = new BigInteger(cli.getOptionValue("min"));
+            }
+            if (cli.hasOption("max")) {
+                minAddress = new BigInteger(cli.getOptionValue("max"));
+            }
+            if (cli.hasOption("o")) {
+                outputDirectory = new File(cli.getOptionValue("o"));
+            }
+            if (cli.hasOption("b")) {
+                byteOrder = "big-endian".equals(cli.getOptionValue("b")) ? ByteOrder.BigEndian :
+                        ByteOrder.LittleEndian;
+            }
+            if (cli.hasOption("s")) {
+                sourceEncoding = Encoding.valueByName(cli.getOptionValue("s"));
+            }
+            if (cli.hasOption("p")) {
+                platformEncoding = Encoding.valueByName(cli.getOptionValue("p"));
+            }
+            return cli.getArgList();
+        } catch (ParseException e) {
+            logger.debug(e);
+        }
+        return Collections.emptyList();
     }
     //----------------------------------------------------------
 
@@ -216,31 +276,6 @@ public class Assembler implements NamespaceApi, SettingsApi {
     }
 
     @Override
-    public ByteOrder getByteOrder() {
-        return byteOrder;
-    }
-
-    @Override
-    public Encoding getSourceEncoding() {
-        return sourceEncoding;
-    }
-
-    @Override
-    public Encoding getPlatformEncoding() {
-        return platformEncoding;
-    }
-
-    @Override
-    public BigInteger getMinAddress() {
-        return minAddress;
-    }
-
-    @Override
-    public BigInteger getMaxAddress() {
-        return maxAddress;
-    }
-
-    @Override
     public void setAddress(BigInteger address) {
         if (address == null) {
             throw new NullPointerException("address");
@@ -286,7 +321,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
     @Override
     public boolean containsVariable(String name) {
         if (name == null || name.trim().isEmpty())
-        return false;
+            return false;
         return variableMap.containsKey(name);
     }
 
@@ -335,6 +370,36 @@ public class Assembler implements NamespaceApi, SettingsApi {
                 }
             }
         }
+    }
+
+    @Override
+    public ByteOrder getByteOrder() {
+        return byteOrder;
+    }
+
+    @Override
+    public Encoding getSourceEncoding() {
+        return sourceEncoding;
+    }
+
+    @Override
+    public Encoding getPlatformEncoding() {
+        return platformEncoding;
+    }
+
+    @Override
+    public BigInteger getMinAddress() {
+        return minAddress;
+    }
+
+    @Override
+    public BigInteger getMaxAddress() {
+        return maxAddress;
+    }
+
+    @Override
+    public File getOutputDirectory() {
+        return outputDirectory;
     }
 
     static class LabelInfo {
