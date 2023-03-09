@@ -7,18 +7,26 @@
   <build>
     <plugins>
 	<plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-jar-plugin</artifactId>
-	    <configuration>
-		<archive>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+	  <archive>
 		    <manifest>
-			<mainClass>
-                ru.zxspectrum.assembler.Assembler
-            </mainClass>
+			<mainClass>ru.zxspectrum.assembler.Assembler</mainClass>
 		    </manifest>
-		</archive>
-	    </configuration>
-	</plugin>
+	  </archive>
+        </configuration>
+      </plugin>
     </plugins>
     <resources>
       <resource>
@@ -31,7 +39,7 @@
     </resources>
   </build>
   <properties>
-	<java.version>17</java.version>
+	<java.version>14</java.version>
 	<maven.compiler.source>14</maven.compiler.source>
 	<maven.compiler.target>14</maven.compiler.target>
   </properties>
