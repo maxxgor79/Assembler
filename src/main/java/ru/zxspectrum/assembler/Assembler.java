@@ -176,12 +176,12 @@ public class Assembler implements NamespaceApi, SettingsApi {
 
     private static Options getOptions() {
         Options options = new Options();
-        options.addOption("a", "address", true, "org address." +
-                " None negative value.");
+        options.addOption("a", "address", true, "'org' address." +
+                " Non negative value.");
         options.addOption("min", "min-address", true, "minimal address." +
-                " None negative value.");
+                " Non negative value.");
         options.addOption("max", "max-address", true, "maximal address." +
-                " None negative value.");
+                " Non negative value.");
         options.addOption("o", "output", true, "output directory for" +
                 " compiled files.");
         options.addOption("b", "byte-order", true, "byte order" +
