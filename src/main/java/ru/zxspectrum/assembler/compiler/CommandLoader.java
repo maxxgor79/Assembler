@@ -17,7 +17,7 @@ import static ru.zxspectrum.assembler.error.text.MessageList.INVALID_TABLE_FORMA
 public abstract class CommandLoader<E> {
     protected E load(E value, InputStream is, Charset encoding) throws IOException {
         Scanner scanner = new Scanner(is, encoding);
-        scanner.useDelimiter("[\t\r\n]");
+        scanner.useDelimiter("[\t\n]");
         int lineNumber = 1;
         String codePattern = null;
         String commandPattern = null;
