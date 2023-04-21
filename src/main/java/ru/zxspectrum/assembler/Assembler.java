@@ -6,9 +6,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
@@ -42,7 +41,7 @@ import java.util.Set;
  */
 
 public class Assembler implements NamespaceApi, SettingsApi {
-    private static final Logger logger = LogManager.getLogger(Assembler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Assembler.class);
 
     private static String majorVersion = "1";
 
@@ -93,7 +92,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
             majorVersion = Variables.getString(Variables.MAJOR_VERSION, majorVersion);
             minorVersion = Variables.getString(Variables.MINOR_VERSION, minorVersion);
         } catch (Exception e) {
-            logger.log(Level.INFO, e.getMessage());
+            logger.info(e.getMessage());
         }
     }
 
@@ -117,14 +116,14 @@ public class Assembler implements NamespaceApi, SettingsApi {
                             fos.close();
                             fos = null;
                         } catch (Exception e) {
-                            logger.log(Level.DEBUG, e.getMessage());
+                            logger.debug(e.getMessage());
                         }
                     }
                 }
             }
         } catch (Exception e) {
             Output.println(e.getMessage());
-            logger.log(Level.DEBUG, e.getMessage());
+            logger.debug(e.getMessage());
         }
     }
 
@@ -162,7 +161,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
         Options options = getOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("assembler <file1>...<fileN>", options);
+            formatter.printHelp("z80asm <file1>...<fileN>", options);
             return;
         }
         List<File> fileList = new LinkedList<>();
@@ -220,7 +219,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
             }
             return cli.getArgList();
         } catch (ParseException e) {
-            logger.debug(e);
+            logger.debug(e.getMessage());
         }
         return Collections.emptyList();
     }
