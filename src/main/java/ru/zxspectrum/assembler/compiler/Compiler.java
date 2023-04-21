@@ -1,8 +1,7 @@
 package ru.zxspectrum.assembler.compiler;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.zxspectrum.assembler.Assembler;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
@@ -35,7 +34,7 @@ import java.util.List;
  * @Author Maxim Gorin
  */
 public class Compiler implements CompilerApi {
-    private static final Logger logger = LogManager.getLogger(Compiler.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Compiler.class);
     private NamespaceApi namespaceApi;
 
     private SettingsApi settingsApi;
@@ -248,7 +247,7 @@ public class Compiler implements CompilerApi {
             try {
                 closeable.close();
             } catch (Exception e) {
-                logger.log(Level.DEBUG, e.getMessage());
+                logger.debug(e.getMessage());
             }
         }
     }
