@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -40,12 +41,11 @@ import java.util.Set;
  * @Author Maxim Gorin
  */
 
+@Slf4j
 public class Assembler implements NamespaceApi, SettingsApi {
-    private static final Logger logger = LoggerFactory.getLogger(Assembler.class);
-
     private static String majorVersion = "1";
 
-    private static String minorVersion = "0";
+    private static String minorVersion = "1";
 
     private static BigInteger address = BigInteger.ZERO;
 
@@ -92,7 +92,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
             majorVersion = Variables.getString(Variables.MAJOR_VERSION, majorVersion);
             minorVersion = Variables.getString(Variables.MINOR_VERSION, minorVersion);
         } catch (Exception e) {
-            logger.info(e.getMessage());
+            log.info(e.getMessage());
         }
     }
 
@@ -116,14 +116,15 @@ public class Assembler implements NamespaceApi, SettingsApi {
                             fos.close();
                             fos = null;
                         } catch (Exception e) {
-                            logger.debug(e.getMessage());
+                            log.debug(e.getMessage());
                         }
                     }
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             Output.println(e.getMessage());
-            logger.debug(e.getMessage());
+            log.debug(e.getMessage());
         }
     }
 
@@ -219,7 +220,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
             }
             return cli.getArgList();
         } catch (ParseException e) {
-            logger.debug(e.getMessage());
+            log.debug(e.getMessage());
         }
         return Collections.emptyList();
     }

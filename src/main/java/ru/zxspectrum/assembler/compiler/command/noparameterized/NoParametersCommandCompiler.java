@@ -1,5 +1,9 @@
 package ru.zxspectrum.assembler.compiler.command.noparameterized;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.zxspectrum.assembler.Assembler;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -7,6 +11,7 @@ import ru.zxspectrum.assembler.syntax.LexemSequence;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class NoParametersCommandCompiler implements CommandCompiler {
     protected byte[] commandCode;
 
@@ -50,8 +55,13 @@ public class NoParametersCommandCompiler implements CommandCompiler {
             throw new IllegalArgumentException("Bad code size!");
         }
         byte[] result = new byte[bytesCount];
-        for (int j = 0, i = 0; j < bytesCount; j++, i += 2) {
-            result[j] = (byte) Integer.parseInt(code.substring(i, i + 2), 16);
+        try {
+            for (int j = 0, i = 0; j < bytesCount; j++, i += 2) {
+                result[j] = (byte) Integer.parseInt(code.substring(i, i + 2), 16);
+            }
+        } catch (NumberFormatException e) {
+            log.error("code=" + code);
+            throw e;
         }
         return result;
     }

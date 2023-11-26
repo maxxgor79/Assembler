@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 
@@ -14,6 +15,7 @@ import static ru.zxspectrum.assembler.error.text.MessageList.INVALID_TABLE_FORMA
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public abstract class CommandLoader<E> {
     protected E load(E value, InputStream is, Charset encoding) throws IOException {
         Scanner scanner = new Scanner(is, encoding);
@@ -35,6 +37,9 @@ public abstract class CommandLoader<E> {
         } catch(NoSuchElementException e) {
             throw new CompilerException(null, lineNumber, MessageList.getMessage(INVALID_TABLE_FORMAT)
                     , codePattern + "\t" + commandPattern);
+        }
+        catch (RuntimeException e) {
+            log.debug("" + lineNumber + ": " + e.getMessage());
         }
         return value;
     }

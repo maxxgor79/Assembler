@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
 import ru.zxspectrum.assembler.compiler.command.noparameterized.NoParameterizedSingleCommandGroupCompiler;
@@ -20,6 +21,7 @@ import java.util.List;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class AssemblerCommandLoader extends CommandLoader<CommandTable> {
     private NamespaceApi namespaceApi;
 
