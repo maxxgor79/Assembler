@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -49,7 +50,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
 
     private static BigInteger address = BigInteger.ZERO;
 
-    private static BigInteger currentCodeOffset = BigInteger.ZERO;
+    private static BigInteger currentCodeOffset;
 
     private static Encoding sourceEncoding = Encoding.UTF_8;
 
@@ -74,7 +75,15 @@ public class Assembler implements NamespaceApi, SettingsApi {
     private static final String EXT = "bin";
 
     public Assembler() {
+        reset();
         loadSettings();
+    }
+
+    private void reset() {
+        currentCodeOffset = BigInteger.ZERO;
+        postCommandCompilerList.clear();
+        variableMap.clear();
+        labelMap.clear();
     }
 
     private void loadSettings() {
@@ -96,35 +105,28 @@ public class Assembler implements NamespaceApi, SettingsApi {
         }
     }
 
-    public void run(File... files) throws IOException {
+    public void run(@NonNull File... files) throws IOException {
         FileOutputStream fos = null;
         try {
             for (File file : files) {
                 try {
-                    File outpuitFile = createOutputFile(file);
-                    fos = new FileOutputStream(outpuitFile);
-                    CompilerApi compilerApi = runSingle(file, fos);
-                    postCompile(outpuitFile);
+                    reset();
+                    File outputFile = createOutputFile(file);
+                    fos = new FileOutputStream(outputFile);
+                    final CompilerApi compilerApi = runSingle(file, fos);
+                    postCompile(outputFile);
                     Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
                     Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1),
                             MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(), MessageList
                                     .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
                                     .getMessage(MessageList.SOURCES));
                 } finally {
-                    if (fos == null) {
-                        try {
-                            fos.close();
-                            fos = null;
-                        } catch (Exception e) {
-                            log.debug(e.getMessage());
-                        }
-                    }
+                    FileUtil.safeClose(fos);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             Output.println(e.getMessage());
-            log.debug(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -295,10 +297,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
     }
 
     @Override
-    public void addToList(PostCommandCompiler postCommandCompiler) {
-        if (postCommandCompiler == null) {
-            throw new NullPointerException("commandCompiler");
-        }
+    public void addToList(@NonNull PostCommandCompiler postCommandCompiler) {
         postCommandCompilerList.add(postCommandCompiler);
     }
 
@@ -347,28 +346,15 @@ public class Assembler implements NamespaceApi, SettingsApi {
     protected void postCompile(File outputFile) {
         RandomAccessFile randomAccessFile = null;
         try {
-            Collections.sort(postCommandCompilerList, new Comparator<PostCommandCompiler>() {
-                @Override
-                public int compare(PostCommandCompiler o1, PostCommandCompiler o2) {
-                    return o1.getCommandOffset().compareTo(o2.getCommandOffset());
-                }
-            });
+            Collections.sort(postCommandCompilerList, (o1, o2) -> o1.getCommandOffset().compareTo(o2.getCommandOffset()));
             randomAccessFile = new RandomAccessFile(outputFile, "rwd");
             for (PostCommandCompiler postCommandCompiler : postCommandCompilerList) {
                 postCommandCompiler.compile(randomAccessFile);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } finally {
-            postCommandCompilerList.clear();
-            labelMap.clear();
-            if (randomAccessFile != null) {
-                try {
-                    randomAccessFile.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            FileUtil.safeClose(randomAccessFile);
         }
     }
 

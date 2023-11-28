@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.syntax;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
 import ru.zxspectrum.assembler.util.AnalyzerIterator;
@@ -24,10 +25,7 @@ public class SyntaxAnalyzer implements Iterable<LexemSequence> {
 
     }
 
-    public SyntaxAnalyzer(RepeatableIterator<Lexem> lexemIterator) {
-        if (lexemIterator == null) {
-            throw new IllegalArgumentException("lexemIterator is null");
-        }
+    public SyntaxAnalyzer(@NonNull RepeatableIterator<Lexem> lexemIterator) {
         this.lexemIterator = lexemIterator;
     }
 

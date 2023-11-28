@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 
 import java.io.IOException;
@@ -9,6 +11,7 @@ import java.math.BigInteger;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class PostCommandCompiler {
     private CommandCompiler commandCompiler;
 
@@ -16,25 +19,14 @@ public class PostCommandCompiler {
 
     private LexemSequence command;
 
-    public PostCommandCompiler(CommandCompiler commandCompiler, BigInteger commandOffset, LexemSequence command) {
-        if (commandCompiler == null) {
-            throw new NullPointerException("commandCompiler");
-        }
+    public PostCommandCompiler(@NonNull CommandCompiler commandCompiler, @NonNull BigInteger commandOffset
+            , @NonNull LexemSequence command) {
         this.commandCompiler = commandCompiler;
-        if (commandOffset == null) {
-            throw new NullPointerException("commandOffset");
-        }
         this.commandOffset = commandOffset;
-        if (command == null) {
-            throw new NullPointerException("command");
-        }
         this.command = command;
     }
 
-    public int compile(RandomAccessFile randomAccessFile) throws IOException {
-        if (randomAccessFile == null) {
-            throw new NullPointerException("randomAccessFile");
-        }
+    public int compile(@NonNull RandomAccessFile randomAccessFile) throws IOException {
         byte[] generatedData = commandCompiler.compile(command, false);
         randomAccessFile.seek(commandOffset.longValue());
         randomAccessFile.write(generatedData);

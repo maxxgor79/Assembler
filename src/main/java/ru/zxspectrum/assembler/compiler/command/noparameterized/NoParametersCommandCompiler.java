@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command.noparameterized;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,16 +24,11 @@ public class NoParametersCommandCompiler implements CommandCompiler {
         this(compilerApi, code, new LexemSequence(command));
     }
 
-    public NoParametersCommandCompiler(CompilerApi compilerApi, String code, LexemSequence lexemSequence) {
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
+    public NoParametersCommandCompiler(@NonNull CompilerApi compilerApi, @NonNull String code
+            , @NonNull LexemSequence lexemSequence) {
         this.compilerApi = compilerApi;
-        if (code == null || code.trim().isEmpty()) {
+        if (code.trim().isEmpty()) {
             throw new IllegalArgumentException("code is null or empty");
-        }
-        if (lexemSequence == null) {
-            throw new IllegalArgumentException("lexemSequence is null or empty");
         }
         commandCode = toBytes(code);
         originalLexemSequence = lexemSequence;
@@ -60,7 +56,7 @@ public class NoParametersCommandCompiler implements CommandCompiler {
                 result[j] = (byte) Integer.parseInt(code.substring(i, i + 2), 16);
             }
         } catch (NumberFormatException e) {
-            log.error("code=" + code);
+            log.error(e.getMessage(), e);
             throw e;
         }
         return result;

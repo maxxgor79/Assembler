@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.settings;
 
+import lombok.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -90,8 +92,7 @@ public final class Variables {
         return System.getProperty(name, def);
     }
 
-    public static void load(InputStream is) throws IOException {
+    public static void load(@NonNull InputStream is) throws IOException {
         System.getProperties().load(is);
     }
-
 }

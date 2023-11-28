@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.dummy;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 
 import java.io.File;
@@ -19,10 +20,7 @@ public class CompilerApiFreezed implements CompilerApi {
 
     private File file;
 
-    public CompilerApiFreezed(CompilerApi compilerApi) {
-        if (compilerApi == null) {
-            throw new NullPointerException("compiledApi");
-        }
+    public CompilerApiFreezed(@NonNull CompilerApi compilerApi) {
         lineNumber = compilerApi.getLineNumber();
         compiledLineNumber = compilerApi.getCompiledLineCount();
         compiledSourceNumber = compilerApi.getCompiledSourceCount();

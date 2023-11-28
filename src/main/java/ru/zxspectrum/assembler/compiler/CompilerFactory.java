@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.lexem.LexemAnalyzer;
 import ru.zxspectrum.assembler.settings.SettingsApi;
@@ -19,20 +20,8 @@ public final class CompilerFactory {
 
     }
 
-    public static CompilerApi create(NamespaceApi namespaceApi, SettingsApi settingsApi
-            , File file, OutputStream os) throws IOException {
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
-        if (settingsApi == null) {
-            throw new NullPointerException("settingsApi");
-        }
-        if (file == null) {
-            throw new NullPointerException("file");
-        }
-        if (os == null) {
-            throw new NullPointerException("os");
-        }
+    public static CompilerApi create(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull File file, @NonNull OutputStream os) throws IOException {
         FileInputStream fis = new FileInputStream(file);
         LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(file, fis, settingsApi.getPlatformEncoding()
                 , settingsApi.getSourceEncoding());

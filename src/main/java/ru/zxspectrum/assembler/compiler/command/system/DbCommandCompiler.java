@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
@@ -23,6 +25,7 @@ import java.math.BigInteger;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class DbCommandCompiler implements CommandCompiler {
     public static final String NAME = "db";
 
@@ -34,26 +37,18 @@ public class DbCommandCompiler implements CommandCompiler {
 
     private NamespaceApi namespaceApi;
 
-    public DbCommandCompiler(String name, CompilerApi compilerApi, NamespaceApi namespaceApi) {
-        if (name == null || name.trim().isEmpty()) {
+    public DbCommandCompiler(@NonNull String name, @NonNull CompilerApi compilerApi
+            , @NonNull NamespaceApi namespaceApi) {
+        if (name.trim().isEmpty()) {
             throw new NullPointerException("name");
         }
         this.name = name;
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
         this.compilerApi = compilerApi;
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
         this.namespaceApi = namespaceApi;
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
-        if (lexemSequence == null) {
-            return null;
-        }
+    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
         Lexem nextLexem;
@@ -103,6 +98,7 @@ public class DbCommandCompiler implements CommandCompiler {
         try {
             os.write(value.getBytes());
         } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -110,6 +106,7 @@ public class DbCommandCompiler implements CommandCompiler {
         try {
             os.write(value);
         } catch (IOException e) {
+            log.error(e.getMessage(), e);
         }
     }
 }

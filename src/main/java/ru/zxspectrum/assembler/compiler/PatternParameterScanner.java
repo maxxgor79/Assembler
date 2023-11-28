@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.NonNull;
+
 import java.util.Iterator;
 import java.util.regex.MatchResult;
 import java.util.Scanner;
@@ -12,10 +14,7 @@ import java.util.Scanner;
 public class PatternParameterScanner {
     private Iterator<MatchResult> iter;
 
-    public PatternParameterScanner(String pattern) {
-        if (pattern == null) {
-            throw new NullPointerException("pattern");
-        }
+    public PatternParameterScanner(@NonNull String pattern) {
         Scanner scanner = new Scanner(pattern);
         this.iter = scanner.findAll("[$][aond]+").iterator();
     }

@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.zxspectrum.assembler.Assembler;
@@ -19,6 +21,7 @@ import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.syntax.SyntaxAnalyzer;
+import ru.zxspectrum.assembler.util.FileUtil;
 
 import java.io.Closeable;
 import java.io.File;
@@ -33,8 +36,8 @@ import java.util.List;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class Compiler implements CompilerApi {
-    private static final Logger logger = LoggerFactory.getLogger(Compiler.class);
     private NamespaceApi namespaceApi;
 
     private SettingsApi settingsApi;
@@ -55,27 +58,13 @@ public class Compiler implements CompilerApi {
 
     protected CommandTable commandCompilerTable;
 
-    public Compiler(NamespaceApi namespaceApi, SettingsApi settingsApi, SyntaxAnalyzer syntaxAnalyzer
-            , FileInputStream is, OutputStream os) {
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
+    public Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull SyntaxAnalyzer syntaxAnalyzer
+            , @NonNull FileInputStream is, @NonNull OutputStream os) {
         this.namespaceApi = namespaceApi;
-        if (settingsApi == null) {
-            throw new NullPointerException("settingsApi");
-        }
         this.settingsApi = settingsApi;
-        if (syntaxAnalyzer == null) {
-            throw new NullPointerException("syntaxAnalyzer");
-        }
         this.syntaxAnalyzer = syntaxAnalyzer;
-        if (os == null) {
-            throw new NullPointerException("os");
-        }
         this.os = os;
-        if (is == null) {
-            throw new NullPointerException("is");
-        }
         this.is = is;
         initDefaultValues();
     }
@@ -118,7 +107,7 @@ public class Compiler implements CompilerApi {
         namespaceApi.putLabel(lexem.getValue());
     }
 
-    private void loadSystemCommands() {
+    private void loadSystemCommands(CommandTable commandCompilerTable) {
         commandCompilerTable.put(new LexemSequence(OrgCommandCompiler.NAME), new NoParameterizedSingleCommandGroupCompiler
                 (new OrgCommandCompiler(namespaceApi, settingsApi, this)));
         commandCompilerTable.put(new LexemSequence(DbCommandCompiler.NAME), new NoParameterizedSingleCommandGroupCompiler
@@ -133,7 +122,7 @@ public class Compiler implements CompilerApi {
                 (new DefCommandCompiler(DefCommandCompiler.ALT_NAME, namespaceApi, this)));
     }
 
-    private void loadCustomCommands() throws IOException {
+    private void loadCustomCommands(CommandTable commandCompilerTable) throws IOException {
         List<String> templatePath = new LinkedList<>();
         int i = 0;
         while (true) {
@@ -158,8 +147,8 @@ public class Compiler implements CompilerApi {
     private void loadCommandTables() throws IOException {
         if (commandCompilerTable == null) {
             commandCompilerTable = new CommandTable();
-            loadSystemCommands();
-            loadCustomCommands();
+            loadSystemCommands(commandCompilerTable);
+            loadCustomCommands(commandCompilerTable);
         }
     }
 
@@ -186,7 +175,7 @@ public class Compiler implements CompilerApi {
             sourceCount++;
             compiledLineCount += syntaxAnalyzer.getLineCount();
         } finally {
-            safeClose(is);
+            FileUtil.safeClose(is);
         }
     }
 
@@ -235,21 +224,8 @@ public class Compiler implements CompilerApi {
         return os;
     }
 
-    public void setFile(File file) {
-        if (file == null) {
-            throw new NullPointerException("file");
-        }
+    public void setFile(@NonNull File file) {
         this.file = file;
-    }
-
-    protected static void safeClose(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (Exception e) {
-                logger.debug(e.getMessage());
-            }
-        }
     }
 
     @Override

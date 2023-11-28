@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.lexem;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.util.Converter;
 
 import java.math.BigInteger;
@@ -23,10 +24,7 @@ public class Lexem {
         this(lineNumber, type, null);
     }
 
-    public Lexem(int lineNumber, LexemType type, String value) {
-        if (type == null) {
-            throw new IllegalArgumentException("type is null");
-        }
+    public Lexem(int lineNumber, @NonNull LexemType type, String value) {
         this.lineNumber = lineNumber;
         this.type = type;
         this.value = value;

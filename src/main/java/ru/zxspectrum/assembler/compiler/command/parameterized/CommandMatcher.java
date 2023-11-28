@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command.parameterized;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
 import ru.zxspectrum.assembler.syntax.ExpressionConsumer;
@@ -41,11 +42,8 @@ public class CommandMatcher {
         expressionLexemTypeSet.add(LexemType.PERCENT);
     }
 
-    public CommandMatcher(LexemSequence pattern) {
+    public CommandMatcher(@NonNull LexemSequence pattern) {
         this.pattern = pattern;
-        if (pattern == null) {
-            throw new NullPointerException("mask");
-        }
     }
 
     private static int skipExpression(List<Lexem> commandList, int commandIndex) {

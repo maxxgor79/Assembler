@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.lexem;
 
+import lombok.NonNull;
 import org.apache.commons.text.StringEscapeUtils;
 import ru.zxspectrum.assembler.error.BadCharsetEncodingException;
 import ru.zxspectrum.assembler.error.CompilerException;
@@ -43,19 +44,16 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     }
 
-    public LexemAnalyzer(File file, InputStream is) {
+    public LexemAnalyzer(File file, @NonNull InputStream is) {
         this(file, is, DEFAULT_PLATFORM_ENCODING, DEFAULT_ENCODING);
     }
 
-    public LexemAnalyzer(File file, InputStream is, Encoding platformEncoding) {
+    public LexemAnalyzer(File file, @NonNull InputStream is, Encoding platformEncoding) {
         this(file, is, platformEncoding, DEFAULT_ENCODING);
     }
 
-    public LexemAnalyzer(File file, InputStream is, Encoding platformEncoding, Encoding encoding) {
+    public LexemAnalyzer(File file, @NonNull InputStream is, Encoding platformEncoding, Encoding encoding) {
         this.file = file;
-        if (is == null) {
-            throw new NullPointerException("is");
-        }
         if (platformEncoding == null) {
             platformEncoding = DEFAULT_PLATFORM_ENCODING;
         }

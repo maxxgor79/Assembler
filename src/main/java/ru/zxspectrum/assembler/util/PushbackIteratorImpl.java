@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.util;
 
+import lombok.NonNull;
+
 import java.util.Iterator;
 
 /**
@@ -8,10 +10,7 @@ import java.util.Iterator;
 public class PushbackIteratorImpl<E> implements PushbackIterator<E> {
     private Iterator<E> iterator;
 
-    public PushbackIteratorImpl(Iterator<E> iterator) {
-        if (iterator == null) {
-            throw new IllegalArgumentException("iterator is null");
-        }
+    public PushbackIteratorImpl(@NonNull Iterator<E> iterator) {
         this.iterator = iterator;
     }
 

@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.util;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.bytecode.ByteOrder;
 import ru.zxspectrum.assembler.lang.Type;
 
@@ -26,7 +27,7 @@ public final class TypeUtil {
     private TypeUtil() {
     }
 
-    public static int sizeof(Type t) {
+    public static int sizeof(@NonNull Type t) {
         return switch (t) {
             case Int8 -> 1;
             case UInt8 -> 1;
@@ -40,8 +41,8 @@ public final class TypeUtil {
         };
     }
 
-    private static int getRepeatedCount(String mask, char ch) {
-        if (mask == null || mask.trim().isEmpty()) {
+    private static int getRepeatedCount(@NonNull String mask, char ch) {
+        if (mask.trim().isEmpty()) {
             throw new IllegalArgumentException("s is null or empty");
         }
         int count = 0;
@@ -55,8 +56,8 @@ public final class TypeUtil {
         return count;
     }
 
-    public static Type toType(String pattern) {
-        if (pattern == null || pattern.trim().isEmpty()) {
+    public static Type toType(@NonNull String pattern) {
+        if (pattern.trim().isEmpty()) {
             throw new IllegalArgumentException("pattern is null or empty");
         }
         pattern = pattern.toLowerCase();
@@ -117,13 +118,7 @@ public final class TypeUtil {
         return toBytes(value, type, ByteOrder.LittleEndian);
     }
 
-    public static byte[] toBytes(BigInteger value, Type type, ByteOrder byteOrder) {
-        if (value == null) {
-            throw new IllegalArgumentException("value is null");
-        }
-        if (type == null) {
-            throw new IllegalArgumentException("type is null");
-        }
+    public static byte[] toBytes(@NonNull BigInteger value, @NonNull Type type, ByteOrder byteOrder) {
         if (byteOrder == ByteOrder.BigEndian) {
             return toBytesBigEndian(value, type);
         } else {
@@ -226,10 +221,7 @@ public final class TypeUtil {
         return true;
     }
 
-    public static BigInteger getMin(Type type) {
-        if (type == null) {
-            throw new NullPointerException("type");
-        }
+    public static BigInteger getMin(@NonNull Type type) {
         return switch (type) {
             case Int8 -> BigInteger.valueOf(-128L);
             case UInt8 -> BigInteger.ZERO;
@@ -253,10 +245,7 @@ public final class TypeUtil {
         };
     }
 
-    public static BigInteger getMax(Type type) {
-        if (type == null) {
-            throw new NullPointerException("type");
-        }
+    public static BigInteger getMax(@NonNull Type type) {
         return switch (type) {
 
             case Int8 -> BigInteger.valueOf(127L);
@@ -281,10 +270,7 @@ public final class TypeUtil {
         };
     }
 
-    public static boolean isInRange(Type type, BigInteger value) {
-        if (value == null) {
-            throw new NullPointerException("value");
-        }
+    public static boolean isInRange(@NonNull Type type, @NonNull BigInteger value) {
         BigInteger min = getMin(type);
         BigInteger max = getMax(type);
         return value.compareTo(min) >= 0 && value.compareTo(max) <= 0;

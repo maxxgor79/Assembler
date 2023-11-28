@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.util;
 
+import lombok.NonNull;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,24 +13,21 @@ public class RepeatableIteratorImpl<E> implements RepeatableIterator<E> {
 
     private Iterator<E> iterator;
 
-    public RepeatableIteratorImpl(E... args) {
-        if (args == null || args.length == 0) {
+    public RepeatableIteratorImpl(@NonNull E... args) {
+        if (args.length == 0) {
             throw new IllegalArgumentException("args is null or empty");
         }
         this.iterator = List.of(args).iterator();
     }
 
-    public RepeatableIteratorImpl(List<E> list) {
-        if (list == null || list.isEmpty()) {
+    public RepeatableIteratorImpl(@NonNull List<E> list) {
+        if (list.isEmpty()) {
             throw new IllegalArgumentException("list is null or empty");
         }
         this.iterator = list.iterator();
     }
 
-    public RepeatableIteratorImpl(Iterator<E> iterator) {
-        if (iterator == null) {
-            throw new IllegalArgumentException("iterator is null");
-        }
+    public RepeatableIteratorImpl(@NonNull Iterator<E> iterator) {
         this.iterator = iterator;
     }
 

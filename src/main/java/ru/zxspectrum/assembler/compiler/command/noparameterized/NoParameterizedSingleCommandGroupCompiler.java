@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command.noparameterized;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CommandGroupCompiler;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -15,15 +16,12 @@ public class NoParameterizedSingleCommandGroupCompiler implements CommandGroupCo
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
         return compiler.compile(lexemSequence, ignoreLabel);
     }
 
     @Override
-    public boolean add(CommandCompiler compiler) {
-        if (compiler == null) {
-            throw new IllegalArgumentException("compiler is null");
-        }
+    public boolean add(@NonNull CommandCompiler compiler) {
         this.compiler = compiler;
         return true;
     }

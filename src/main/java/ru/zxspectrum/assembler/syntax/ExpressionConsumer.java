@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.syntax;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemIterator;
 import ru.zxspectrum.assembler.lexem.LexemType;
@@ -17,10 +18,7 @@ public class ExpressionConsumer {
         lexemIterator = null;
     }
 
-    public ExpressionConsumer(Iterator<Lexem> iterator) {
-        if (iterator == null) {
-            throw new NullPointerException("iterator");
-        }
+    public ExpressionConsumer(@NonNull Iterator<Lexem> iterator) {
         this.lexemIterator = new LexemIterator(iterator);
     }
 
@@ -36,7 +34,7 @@ public class ExpressionConsumer {
         return evaluateBitOr(lexem);
     }
 
-    public Lexem evaluate(Lexem lexem) {
+    public Lexem evaluate(@NonNull Lexem lexem) {
         return evaluateBitOr(lexem);
     }
 

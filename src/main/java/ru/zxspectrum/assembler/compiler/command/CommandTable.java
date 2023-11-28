@@ -48,4 +48,8 @@ public class CommandTable {
     public boolean isEmpty() {
         return commandMap.isEmpty();
     }
+
+    public void clear() {
+        commandMap.clear();
+    }
 }

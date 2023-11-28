@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.syntax;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemAnalyzer;
 import ru.zxspectrum.assembler.lexem.LexemType;
@@ -22,26 +23,23 @@ public class LexemSequence {
 
     }
 
-    public LexemSequence(List<Lexem> lexemSequence) {
+    public LexemSequence(@NonNull List<Lexem> lexemSequence) {
         set(lexemSequence);
     }
 
-    public LexemSequence(Lexem... lexemSequence) {
+    public LexemSequence(@NonNull Lexem... lexemSequence) {
         set(List.of(lexemSequence));
     }
 
-    public LexemSequence(Iterator<Lexem> iterator) {
-        if (iterator == null) {
-            throw new IllegalArgumentException("iterator is null");
-        }
+    public LexemSequence(@NonNull Iterator<Lexem> iterator) {
         lexemSequence = new LinkedList<>();
         while (iterator.hasNext()) {
             lexemSequence.add(iterator.next());
         }
     }
 
-    public LexemSequence(String mask) {
-        if (mask == null || mask.trim().isEmpty()) {
+    public LexemSequence(@NonNull String mask) {
+        if (mask.trim().isEmpty()) {
             throw new IllegalArgumentException("mask is null or empty");
         }
         LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(null, new ByteArrayInputStream(mask.getBytes()));
@@ -55,8 +53,8 @@ public class LexemSequence {
         set(seq);
     }
 
-    protected void set(Collection<Lexem> seq) {
-        if (seq == null || seq.isEmpty()) {
+    protected void set(@NonNull Collection<Lexem> seq) {
+        if (seq.isEmpty()) {
             throw new IllegalArgumentException("seq is null or empty");
         }
         this.lexemSequence = new LinkedList<>(seq);

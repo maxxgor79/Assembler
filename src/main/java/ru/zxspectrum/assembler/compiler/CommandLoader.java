@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
@@ -68,7 +69,7 @@ public abstract class CommandLoader<E> {
 
     public abstract E load(InputStream is, Charset encoding) throws IOException;
 
-    public E load(InputStream is) throws IOException {
+    public E load(@NonNull InputStream is) throws IOException {
         return load(is, Charset.defaultCharset());
     }
 }

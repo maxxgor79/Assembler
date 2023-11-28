@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.dummy;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
 
@@ -20,18 +21,10 @@ public class NamespaceApiFreezed implements NamespaceApi {
         this(namespaceApi, namespaceApi.getAddress(), namespaceApi.getCurrentCodeOffset());
     }
 
-    public NamespaceApiFreezed(NamespaceApi namespaceApi, BigInteger address, BigInteger currentCodeOffset) {
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
+    public NamespaceApiFreezed(@NonNull NamespaceApi namespaceApi, @NonNull BigInteger address
+            , @NonNull BigInteger currentCodeOffset) {
         this.namespaceApi = namespaceApi;
-        if (address == null) {
-            throw new NullPointerException("address");
-        }
         this.address = address;
-        if (currentCodeOffset == null) {
-            throw new NullPointerException("currentCodeOffset");
-        }
         this.currentCodeOffset = currentCodeOffset;
     }
 
@@ -41,17 +34,17 @@ public class NamespaceApiFreezed implements NamespaceApi {
     }
 
     @Override
-    public void putLabel(String name) {
+    public void putLabel(@NonNull String name) {
         namespaceApi.putLabel(name);
     }
 
     @Override
-    public BigInteger getLabelCodeOffset(String labelName, boolean used) {
+    public BigInteger getLabelCodeOffset(@NonNull String labelName, boolean used) {
         return namespaceApi.getLabelCodeOffset(labelName, used);
     }
 
     @Override
-    public BigInteger getLabelCodeOffset(String labelName) {
+    public BigInteger getLabelCodeOffset(@NonNull String labelName) {
         return namespaceApi.getLabelCodeOffset(labelName);
     }
 
@@ -61,12 +54,12 @@ public class NamespaceApiFreezed implements NamespaceApi {
     }
 
     @Override
-    public BigInteger incCurrentCodeOffset(BigInteger delta) {
+    public BigInteger incCurrentCodeOffset(@NonNull BigInteger delta) {
         return currentCodeOffset.add(delta);
     }
 
     @Override
-    public void setAddress(BigInteger address) {
+    public void setAddress(@NonNull BigInteger address) {
 
     }
 
@@ -81,27 +74,27 @@ public class NamespaceApiFreezed implements NamespaceApi {
     }
 
     @Override
-    public boolean isCompiled(File file) {
+    public boolean isCompiled(@NonNull File file) {
         return namespaceApi.isCompiled(file);
     }
 
     @Override
-    public boolean addCompiled(File file) {
+    public boolean addCompiled(@NonNull File file) {
         return namespaceApi.addCompiled(file);
     }
 
     @Override
-    public boolean containsVariable(String name) {
+    public boolean containsVariable(@NonNull String name) {
         return namespaceApi.containsVariable(name);
     }
 
     @Override
-    public BigInteger getVariableValue(String name) {
+    public BigInteger getVariableValue(@NonNull String name) {
         return namespaceApi.getVariableValue(name);
     }
 
     @Override
-    public BigInteger addVariable(String name, BigInteger value) {
+    public BigInteger addVariable(@NonNull String name, @NonNull BigInteger value) {
         return namespaceApi.addVariable(name, value);
     }
 }

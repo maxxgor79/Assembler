@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.bytecode;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.error.ParserException;
 
 import java.io.IOException;
@@ -13,8 +14,8 @@ public class ByteCodeCompiler {
 
     private CommandPatternParser parser;
 
-    public ByteCodeCompiler(String codePattern, ByteOrder byteOrder) {
-        if (codePattern == null || codePattern.trim().isEmpty()) {
+    public ByteCodeCompiler(@NonNull String codePattern, ByteOrder byteOrder) {
+        if (codePattern.trim().isEmpty()) {
             throw new IllegalArgumentException("codePattern is null or empty");
         }
         parser = new CommandPatternParser(codePattern, byteOrder);
@@ -30,7 +31,7 @@ public class ByteCodeCompiler {
         }
     }
 
-    public byte[] compile(BigInteger... values) {
+    public byte[] compile(@NonNull BigInteger... values) {
         try {
             return parser.parse(values);
         } catch (IOException e) {

@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
@@ -27,26 +28,15 @@ public class IncludeCommandCompiler implements CommandCompiler {
 
     private CompilerApi compilerApi;
 
-    public IncludeCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
+    public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull CompilerApi compilerApi) {
         this.namespaceApi = namespaceApi;
-        if (settingsApi == null) {
-            throw new NullPointerException("settingsApi");
-        }
         this.settingsApi = settingsApi;
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
         this.compilerApi = compilerApi;
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
-        if (lexemSequence == null) {
-            return null;
-        }
+    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
         if (!iterator.hasNext() ||

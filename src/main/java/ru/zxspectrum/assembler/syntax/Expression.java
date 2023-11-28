@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.syntax;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.DividingByZeroException;
@@ -37,15 +38,10 @@ public class Expression {
         this(file, iterator, namespaceApi, true);
     }
 
-    public Expression(File file, Iterator<Lexem> iterator, NamespaceApi namespaceApi, boolean onlyConst) {
+    public Expression(@NonNull File file, @NonNull Iterator<Lexem> iterator, @NonNull NamespaceApi namespaceApi
+            , boolean onlyConst) {
         this.file = file;
-        if (iterator == null) {
-            throw new NullPointerException("iterator");
-        }
         this.lexemIterator = new LexemIterator(iterator);
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
         this.namespaceApi = namespaceApi;
         this.onlyConst = onlyConst;
     }
@@ -58,7 +54,7 @@ public class Expression {
         return evaluate(lexem);
     }
 
-    public BigInteger evaluate(Lexem lexem) {
+    public BigInteger evaluate(@NonNull Lexem lexem) {
         return evaluateBitOr(lexem);
     }
 

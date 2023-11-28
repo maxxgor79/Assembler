@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command.parameterized;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CommandGroupCompiler;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -14,10 +15,7 @@ public class ParameterizedCommandGroupCompiler implements CommandGroupCompiler {
     private Set<CommandCompiler> compilers = new HashSet<>();
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
-        if (lexemSequence == null) {
-            return null;
-        }
+    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
         for (CommandCompiler compiler : compilers) {
             byte[] byteCode = compiler.compile(lexemSequence, ignoreLabel);
             if (byteCode != null) {
@@ -39,7 +37,7 @@ public class ParameterizedCommandGroupCompiler implements CommandGroupCompiler {
         compilers.clear();
     }
 
-    public boolean remove(CommandCompiler compiler) {
+    public boolean remove(@NonNull CommandCompiler compiler) {
         return compilers.remove(compiler);
     }
 

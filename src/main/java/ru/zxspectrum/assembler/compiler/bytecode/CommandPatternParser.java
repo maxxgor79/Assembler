@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.bytecode;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.error.ParserException;
 import ru.zxspectrum.assembler.util.SymbolUtils;
 import ru.zxspectrum.assembler.util.TypeUtil;
@@ -22,8 +23,8 @@ public class CommandPatternParser implements Cloneable {
 
     }
 
-    public CommandPatternParser(String pattern, ByteOrder byteOrder) {
-        if (pattern == null || pattern.trim().isEmpty()) {
+    public CommandPatternParser(@NonNull String pattern, ByteOrder byteOrder) {
+        if (pattern.trim().isEmpty()) {
             throw new IllegalArgumentException("pattern is null or empty");
         }
         this.pattern = pattern;
@@ -65,7 +66,7 @@ public class CommandPatternParser implements Cloneable {
         return sb.toString();
     }
 
-    public byte[] parse(BigInteger... values) throws IOException {
+    public byte[] parse(@NonNull BigInteger... values) throws IOException {
         PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(pattern.getBytes()));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int ch;

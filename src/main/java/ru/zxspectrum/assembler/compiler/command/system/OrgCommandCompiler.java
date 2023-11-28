@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
@@ -17,6 +19,7 @@ import java.util.Iterator;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class OrgCommandCompiler implements CommandCompiler {
     public static final String NAME = "org";
 
@@ -26,26 +29,15 @@ public class OrgCommandCompiler implements CommandCompiler {
 
     private CompilerApi compilerApi;
 
-    public OrgCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
+    public OrgCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull CompilerApi compilerApi) {
         this.namespaceApi = namespaceApi;
-        if (settingsApi == null) {
-            throw new NullPointerException("settingsApi");
-        }
         this.settingsApi = settingsApi;
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
         this.compilerApi = compilerApi;
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
-        if (lexemSequence == null) {
-            return null;
-        }
+    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
         if (!iterator.hasNext() ||

@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
@@ -17,6 +19,7 @@ import java.math.BigInteger;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class DefCommandCompiler implements CommandCompiler {
     public static final String NAME = "def";
 
@@ -28,26 +31,18 @@ public class DefCommandCompiler implements CommandCompiler {
 
     private CompilerApi compilerApi;
 
-    public DefCommandCompiler(String name, NamespaceApi namespaceApi, CompilerApi compilerApi) {
-        if (name == null || name.trim().isEmpty()) {
+    public DefCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi
+            , @NonNull CompilerApi compilerApi) {
+        if (name.trim().isEmpty()) {
             throw new NullPointerException("name");
         }
         this.name = name;
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
         this.namespaceApi = namespaceApi;
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
         this.compilerApi = compilerApi;
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
-        if (lexemSequence == null) {
-            return null;
-        }
+    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
         RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
         Lexem nextLexem;
         if (!iterator.hasNext() ||

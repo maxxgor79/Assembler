@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command.parameterized;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
@@ -47,36 +48,22 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
 
     private ByteCodeCompiler byteCodeCompiler;
 
-    public ParameterizedCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi
-            , String codePattern, LexemSequence commandPattern) {
-        if (namespaceApi == null) {
-            throw new IllegalArgumentException("namespaceApi is null");
-        }
+    public ParameterizedCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull CompilerApi compilerApi
+            , @NonNull String codePattern, @NonNull LexemSequence commandPattern) {
         this.namespaceApi = namespaceApi;
-        if (settingsApi == null) {
-            throw new NullPointerException("settingsApi");
-        }
         this.settingsApi = settingsApi;
-        if (codePattern == null || codePattern.trim().isEmpty()) {
+        if (codePattern.trim().isEmpty()) {
             throw new IllegalArgumentException("codePattern is null or empty");
         }
         this.codePattern = codePattern;
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
         this.compilerApi = compilerApi;
-        if (commandPattern == null) {
-            throw new IllegalArgumentException("codePattern is null");
-        }
         this.commandPattern = commandPattern;
         this.byteCodeCompiler = new ByteCodeCompiler(codePattern, settingsApi.getByteOrder());
     }
 
     @Override
-    public byte[] compile(LexemSequence command, boolean ignoreLabel) {
-        if (command == null) {
-            return null;
-        }
+    public byte[] compile(@NonNull LexemSequence command, boolean ignoreLabel) {
         CommandMatcher matcher = new CommandMatcher(commandPattern);
         if (!matcher.match(command)) {
             return null;

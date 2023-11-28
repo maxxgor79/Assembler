@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
@@ -29,18 +30,10 @@ public class AssemblerCommandLoader extends CommandLoader<CommandTable> {
 
     private CompilerApi compilerApi;
 
-    public AssemblerCommandLoader(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
-        if (namespaceApi == null) {
-            throw new NullPointerException("namespaceApi");
-        }
+    public AssemblerCommandLoader(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull CompilerApi compilerApi) {
         this.namespaceApi = namespaceApi;
-        if (settingsApi == null) {
-            throw new NullPointerException("settingsApi");
-        }
         this.settingsApi = settingsApi;
-        if (compilerApi == null) {
-            throw new NullPointerException("compilerApi");
-        }
         this.compilerApi = compilerApi;
     }
 
@@ -86,7 +79,7 @@ public class AssemblerCommandLoader extends CommandLoader<CommandTable> {
     }
 
     @Override
-    public CommandTable load(InputStream is, Charset encoding) throws IOException {
+    public CommandTable load(@NonNull InputStream is, Charset encoding) throws IOException {
         CommandTable commandTable = new CommandTable();
         load(commandTable, is, encoding);
         return commandTable;
