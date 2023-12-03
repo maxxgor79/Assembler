@@ -341,6 +341,14 @@ public class Assembler implements NamespaceApi, SettingsApi {
         return variableMap.put(name, value);
     }
 
+    @Override
+    public boolean removeVariable(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
+        return variableMap.remove(name) != null;
+    }
+
     protected void postCompile(File outputFile) {
         RandomAccessFile randomAccessFile = null;
         try {

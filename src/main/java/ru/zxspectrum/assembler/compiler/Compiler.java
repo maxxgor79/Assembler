@@ -12,6 +12,7 @@ import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DefCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.IncludeCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.OrgCommandCompiler;
+import ru.zxspectrum.assembler.compiler.command.system.UdefCommandCompiler;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
@@ -120,6 +121,11 @@ public class Compiler implements CompilerApi {
                 (new DefCommandCompiler(DefCommandCompiler.NAME, namespaceApi, this)));
         commandCompilerTable.put(new LexemSequence(DefCommandCompiler.ALT_NAME), new NoParameterizedSingleCommandGroupCompiler
                 (new DefCommandCompiler(DefCommandCompiler.ALT_NAME, namespaceApi, this)));
+        commandCompilerTable.put(new LexemSequence(UdefCommandCompiler.NAME), new NoParameterizedSingleCommandGroupCompiler
+                (new UdefCommandCompiler(UdefCommandCompiler.NAME, namespaceApi, this)));
+        commandCompilerTable.put(new LexemSequence(UdefCommandCompiler.ALT_NAME), new NoParameterizedSingleCommandGroupCompiler
+                (new UdefCommandCompiler(UdefCommandCompiler.ALT_NAME, namespaceApi, this)));
+
     }
 
     private void loadCustomCommands(CommandTable commandCompilerTable) throws IOException {

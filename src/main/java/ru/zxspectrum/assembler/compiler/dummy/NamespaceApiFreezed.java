@@ -97,4 +97,9 @@ public class NamespaceApiFreezed implements NamespaceApi {
     public BigInteger addVariable(@NonNull String name, @NonNull BigInteger value) {
         return namespaceApi.addVariable(name, value);
     }
+
+    @Override
+    public boolean removeVariable(String name) {
+        return false;
+    }
 }

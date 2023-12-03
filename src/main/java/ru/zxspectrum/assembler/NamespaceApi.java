@@ -7,7 +7,6 @@ import java.math.BigInteger;
 
 /**
  * @Author Maxim Gorin
- *
  */
 public interface NamespaceApi {
     public boolean containsLabel(String labelName);
@@ -37,4 +36,6 @@ public interface NamespaceApi {
     public BigInteger getVariableValue(String name);
 
     public BigInteger addVariable(String name, BigInteger value);
+
+    public boolean removeVariable(String name);
 }
