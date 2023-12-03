@@ -2,6 +2,7 @@ package ru.zxspectrum.assembler.util;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.Closeable;
 import java.io.File;
@@ -35,4 +36,10 @@ public final class FileUtil {
         }
     }
 
+    public static String getRunnableFileExtension() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return "exe";
+        }
+        return null;
+    }
 }

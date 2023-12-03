@@ -72,8 +72,6 @@ public class Assembler implements NamespaceApi, SettingsApi {
 
     private final Set<File> compiledFileSet = new HashSet<>();
 
-    private static final String EXT = "bin";
-
     public Assembler() {
         reset();
         loadSettings();
@@ -134,7 +132,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
         if (!outputDirectory.exists()) {
             outputDirectory.mkdirs();
         }
-        return FileUtil.createNewFileSameName(outputDirectory, file, EXT);
+        return FileUtil.createNewFileSameName(outputDirectory, file, null);
     }
 
     protected CompilerApi runSingle(File file, OutputStream os) throws IOException {
