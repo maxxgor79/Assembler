@@ -22,7 +22,10 @@ import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.util.FileUtil;
 import ru.zxspectrum.assembler.util.SymbolUtils;
 import ru.zxspectrum.assembler.util.TypeUtil;
+import ru.zxspectrum.io.DuplicateOutputStream;
+import ru.zxspectrum.io.tap.TapUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,6 +47,8 @@ import java.util.Set;
 
 @Slf4j
 public class Assembler implements NamespaceApi, SettingsApi {
+    protected static final String EXT_TAP = "tap";
+
     private static String majorVersion = "1";
 
     private static String minorVersion = "1";
@@ -63,6 +68,8 @@ public class Assembler implements NamespaceApi, SettingsApi {
     private static BigInteger maxAddress = new BigInteger("FFFF", 16);
 
     private static File outputDirectory = new File("output");
+
+    private static boolean produceTap;
 
     private final Map<String, LabelInfo> labelMap = new HashMap<>();
 
@@ -104,22 +111,31 @@ public class Assembler implements NamespaceApi, SettingsApi {
     }
 
     public void run(@NonNull File... files) throws IOException {
-        FileOutputStream fos = null;
+        OutputStream os = null;
+        ByteArrayOutputStream baos = null;
         try {
             for (File file : files) {
                 try {
                     reset();
                     File outputFile = createOutputFile(file);
-                    fos = new FileOutputStream(outputFile);
-                    final CompilerApi compilerApi = runSingle(file, fos);
+                    if (produceTap) {
+                        os = new DuplicateOutputStream(new FileOutputStream(outputFile)
+                                , baos = new ByteArrayOutputStream());
+                    } else {
+                        os = new FileOutputStream(outputFile);
+                    }
+                    final CompilerApi compilerApi = runSingle(file, os);
                     postCompile(outputFile);
                     Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
                     Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1),
                             MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(), MessageList
                                     .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
                                     .getMessage(MessageList.SOURCES));
+                    if (produceTap) {
+                        createTap(file, baos.toByteArray(), getAddress());
+                    }
                 } finally {
-                    FileUtil.safeClose(fos);
+                    FileUtil.safeClose(os);
                 }
             }
         } catch (Exception e) {
@@ -128,7 +144,13 @@ public class Assembler implements NamespaceApi, SettingsApi {
         }
     }
 
-    private File createOutputFile(File file) throws IOException {
+    private void createTap(final File file, @NonNull final byte[] data, @NonNull final BigInteger address)
+            throws IOException {
+        final File tapFile = FileUtil.createNewFileSameName(outputDirectory, file, EXT_TAP);
+        TapUtil.createBinaryTap(tapFile, data, address.intValue());
+    }
+
+    private File createOutputFile(File file) {
         if (!outputDirectory.exists()) {
             outputDirectory.mkdirs();
         }
@@ -188,6 +210,7 @@ public class Assembler implements NamespaceApi, SettingsApi {
                 ": little-endian or big-endian.");
         options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
         options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
+        options.addOption("tap", false, "to produce in <TAP> format.");
         return options;
     }
 
@@ -218,6 +241,10 @@ public class Assembler implements NamespaceApi, SettingsApi {
             if (cli.hasOption("p")) {
                 platformEncoding = Encoding.valueByName(cli.getOptionValue("p"));
             }
+            if (cli.hasOption("tap")) {
+                produceTap = true;
+            }
+
             return cli.getArgList();
         } catch (ParseException e) {
             log.debug(e.getMessage());

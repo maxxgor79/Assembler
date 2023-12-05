@@ -28,6 +28,18 @@ public final class FileUtil {
         return new File(dir, fileName);
     }
 
+    public static File createNewFileSameName(@NonNull File source, String ext) {
+        String fileName = source.getName();
+        int index = fileName.indexOf('.');
+        if (index != -1) {
+            fileName = fileName.substring(0, index);
+        }
+        if (ext != null && !ext.trim().isEmpty()) {
+            fileName = fileName + "." + ext;
+        }
+        return new File(fileName);
+    }
+
     public static void safeClose(@NonNull Closeable closeable) {
         try {
             closeable.close();
