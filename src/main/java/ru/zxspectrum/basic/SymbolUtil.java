@@ -6,7 +6,7 @@ public final class SymbolUtil {
     }
 
     public static boolean isWhite(int ch) {
-        return ch == ' ';
+        return " \t".indexOf(ch) != -1;
     }
 
     public static boolean isDigit(int ch) {
@@ -14,11 +14,7 @@ public final class SymbolUtil {
     }
 
     public static boolean isAlphabet(int ch) {
-        return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$".indexOf(ch) != -1;
-    }
-
-    public static boolean isDelimiter(int ch) {
-        return "+-/*\'().,;=\u00c7\u00c8\u00c9".indexOf(ch) != -1;
+        return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(ch) != -1;
     }
 
     public static boolean isOperator(int ch) {
@@ -31,5 +27,13 @@ public final class SymbolUtil {
 
     public static boolean isQuote(int ch) {
         return ch == '"';
+    }
+
+    public static boolean isTextEol(int ch) {
+        return ch == '\r' || ch == '\n';
+    }
+
+    public static boolean isDollar(int ch) {
+        return ch == '$';
     }
 }

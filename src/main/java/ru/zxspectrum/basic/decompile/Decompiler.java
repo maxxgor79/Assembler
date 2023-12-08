@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import ru.zxspectrum.basic.Lexem;
+import ru.zxspectrum.basic.LineNumber;
+import ru.zxspectrum.basic.ParserException;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -23,6 +26,18 @@ public class Decompiler {
     private int type;
 
     private InputStream is;
+
+    public Decompiler() {
+
+    }
+
+    public Decompiler(@NonNull byte[] data) {
+        setData(data);
+    }
+
+    public Decompiler(@NonNull InputStream is) {
+        setInputStream(is);
+    }
 
     public void setData(@NonNull byte[] data) {
         setInputStream(new ByteArrayInputStream(data));

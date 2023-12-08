@@ -1,4 +1,4 @@
-package ru.zxspectrum.basic.decompile;
+package ru.zxspectrum.basic;
 
 public enum LexemType {
     Operator, Identifier, Number, Symbol, String, Delimiter, Eol;

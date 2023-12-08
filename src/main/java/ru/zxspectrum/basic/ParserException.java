@@ -1,4 +1,4 @@
-package ru.zxspectrum.basic.decompile;
+package ru.zxspectrum.basic;
 
 public class ParserException extends Exception {
     public ParserException(String message) {

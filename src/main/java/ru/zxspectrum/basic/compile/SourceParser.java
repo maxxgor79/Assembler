@@ -1,33 +1,14 @@
-package ru.zxspectrum.basic.decompile;
+package ru.zxspectrum.basic.compile;
 
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.basic.Lexem;
 import ru.zxspectrum.basic.LexemType;
-import ru.zxspectrum.basic.Operator;
 import ru.zxspectrum.basic.Parser;
 import ru.zxspectrum.basic.ParserException;
 import ru.zxspectrum.basic.SymbolUtil;
 
 import java.io.IOException;
-import java.io.InputStream;
 
-@Slf4j
-public class LineParser extends Parser {
-    private final byte[] numberCodes = new byte[5];
-
-    public LineParser() {
-
-    }
-
-    public LineParser(@NonNull InputStream is) {
-        setInputStream(is);
-    }
-
-    public LineParser(@NonNull byte[] data) {
-        setData(data);
-    }
-
+public class SourceParser extends Parser {
     @Override
     public Lexem next() throws ParserException, IOException {
         Lexem lexem;
@@ -49,26 +30,40 @@ public class LineParser extends Parser {
                 lexem = getIdentifier(ch);
             } else if (SymbolUtil.isQuote(ch)) {
                 lexem = getString(ch);
-            } else if (SymbolUtil.isOperator(ch)) {
-                lexem = getOperator(ch);
             } else lexem = getSymbol(ch);
             return lexem;
         }
     }
 
-    private Lexem getOperator(int ch) {
-        Operator op = Operator.get(ch);
-        return new Lexem(LexemType.Operator, op.getNativeName());
-    }
-
     @Override
-    protected Lexem getDelimiter(int ch) {
+    protected Lexem getDelimiter(int ch) throws ParserException, IOException {
         StringBuilder sb = new StringBuilder();
-        Operator op = Operator.get(ch);
-        if (op != null) {
-            sb.append(op.getNativeName());//<=, >=, <>
-        } else {
-            sb.append((char) ch);
+        sb.append((char) ch);
+        if (ch == '<') {
+            ch = is.read();
+            switch (ch) {
+                case '>':
+                case '=':
+                    sb.append((char) ch);
+                    break;
+                case -1:
+                    break;
+                default:
+                    is.unread(ch);
+                    break;
+            }
+        } else if (ch == '>') {
+            ch = is.read();
+            switch (ch) {
+                case '=':
+                    sb.append((char) ch);
+                    break;
+                case -1:
+                    break;
+                default:
+                    is.unread(ch);
+                    break;
+            }
         }
         return new Lexem(LexemType.Delimiter, sb.toString());
     }
@@ -77,41 +72,41 @@ public class LineParser extends Parser {
     protected Lexem getInteger(int ch) throws ParserException, IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (true) {
-            ch = is.read();
+        while ((ch = is.read()) != -1) {
             if (SymbolUtil.isDigit(ch)) {
                 sb.append((char) ch);
             } else {
+                is.unread(ch);
                 break;
             }
         }
-        boolean numberCodesError = false;
-        if (ch == 0x0e) {
-            for (int i = 0; i < 5; i++) {
-                ch = is.read();
-                if (ch == -1) {
-                    numberCodesError = true;
-                    break;
-                }
-                numberCodes[i] = (byte) ch;
-            }
-        } else {
-            numberCodesError = true;
-        }
         Lexem lexem = new Lexem(LexemType.Number, sb.toString());
-        if (numberCodesError) {
-            throw new ParserException("Number bytes are excepted (" + lexem.getValue() + "), but found " + ch);
-        }
-        lexem.setIntValue(bytes5ToInt(numberCodes));
+        lexem.setIntValue(Integer.valueOf(sb.toString()));
         return lexem;
     }
 
     @Override
+    protected Lexem getEol(int ch) throws IOException {
+        if (ch == '\r') {
+            ch = is.read();
+            switch (ch) {
+                case -1:
+                case '\n':
+                    break;
+                default:
+                    is.unread(ch);
+                    break;
+            }
+        }
+        return new Lexem(LexemType.Eol, EOL);
+    }
+
+    @Override
     protected boolean isEol(int ch) {
-        return SymbolUtil.isEol(ch);
+        return SymbolUtil.isTextEol(ch);
     }
 
     protected static boolean isDelimiter(int ch) {
-        return "+-*/():\u00c7\u00c8\u00c9".indexOf(ch) != -1;
+        return "+-*/(),;<>=:".indexOf(ch) != -1;
     }
 }

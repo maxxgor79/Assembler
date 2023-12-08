@@ -1,9 +1,8 @@
-package ru.zxspectrum.basic.decompile;
+package ru.zxspectrum.basic;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import ru.zxspectrum.basic.Lexem;
+import ru.zxspectrum.basic.LexemType;
 
 public class StringLexem extends Lexem {
     public StringLexem(@NonNull LexemType type, @NonNull String value, Integer intValue) {

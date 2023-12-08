@@ -1,4 +1,4 @@
-package ru.zxspectrum.basic.decompile;
+package ru.zxspectrum.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @EqualsAndHashCode
 @AllArgsConstructor

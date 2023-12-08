@@ -1,4 +1,4 @@
-package ru.zxspectrum.basic.decompile;
+package ru.zxspectrum.basic;
 
 public enum Order {
     LittleEndian, BigEndian;

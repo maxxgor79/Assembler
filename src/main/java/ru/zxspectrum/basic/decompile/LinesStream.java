@@ -2,6 +2,8 @@ package ru.zxspectrum.basic.decompile;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.zxspectrum.basic.Order;
+import ru.zxspectrum.basic.ParserException;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
