@@ -1,0 +1,3 @@
+10 BORDER NOT PI
+20 LOAD "" CODE loadAddr
+30 RANDOMIZE USR runAddr

@@ -17,6 +17,7 @@ import ru.zxspectrum.assembler.compiler.bytecode.ByteOrder;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Encoding;
+import ru.zxspectrum.assembler.resource.Loader;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.util.FileUtil;
@@ -47,399 +48,409 @@ import java.util.Set;
 
 @Slf4j
 public class Assembler implements NamespaceApi, SettingsApi {
-    protected static final String EXT_TAP = "tap";
 
-    private static String majorVersion = "1";
+  protected static final String EXT_TAP = "tap";
 
-    private static String minorVersion = "1";
+  private static String majorVersion = "1";
 
-    private static BigInteger address = BigInteger.ZERO;
+  private static String minorVersion = "1";
 
-    private static BigInteger currentCodeOffset;
+  private static BigInteger address = BigInteger.ZERO;
 
-    private static Encoding sourceEncoding = Encoding.UTF_8;
+  private static BigInteger currentCodeOffset;
 
-    private static Encoding platformEncoding = Encoding.ASCII;
+  private static Encoding sourceEncoding = Encoding.UTF_8;
 
-    private static ByteOrder byteOrder = ByteOrder.LittleEndian;
+  private static Encoding platformEncoding = Encoding.ASCII;
 
-    private static BigInteger minAddress = BigInteger.ZERO;
+  private static ByteOrder byteOrder = ByteOrder.LittleEndian;
 
-    private static BigInteger maxAddress = new BigInteger("FFFF", 16);
+  private static BigInteger minAddress = BigInteger.ZERO;
 
-    private static File outputDirectory = new File("output");
+  private static BigInteger maxAddress = new BigInteger("FFFF", 16);
 
-    private static boolean produceTap;
+  private static File outputDirectory = new File("output");
 
-    private final Map<String, LabelInfo> labelMap = new HashMap<>();
+  private static boolean produceTap;
 
-    private final Map<String, BigInteger> variableMap = new HashMap<>();
+  private final Map<String, LabelInfo> labelMap = new HashMap<>();
 
-    private final List<PostCommandCompiler> postCommandCompilerList = new LinkedList<>();
+  private final Map<String, BigInteger> variableMap = new HashMap<>();
 
-    private final Set<File> compiledFileSet = new HashSet<>();
+  private final List<PostCommandCompiler> postCommandCompilerList = new LinkedList<>();
 
-    public Assembler() {
-        reset();
-        loadSettings();
+  private final Set<File> compiledFileSet = new HashSet<>();
+
+  public Assembler() {
+    reset();
+    loadSettings();
+  }
+
+  private void reset() {
+    currentCodeOffset = BigInteger.ZERO;
+    postCommandCompilerList.clear();
+    variableMap.clear();
+    labelMap.clear();
+  }
+
+  private void loadSettings() {
+    try {
+      Variables.load(Loader.openRoot("settings.properties"));
+      platformEncoding = Encoding.valueByName(
+          Variables.getString(Variables.PLATFORM_ENCODING, Encoding
+              .ASCII.getName()));
+      sourceEncoding = Encoding.valueByName(Variables.getString(Variables.SOURCE_ENCODING, Encoding
+          .UTF_8.getName()));
+      String value = Variables.getString(Variables.BYTE_ORDER, "little-endian");
+      byteOrder = "big-endian".equals(value) ? ByteOrder.BigEndian : ByteOrder.LittleEndian;
+      minAddress = Variables.getBigInteger(Variables.MIN_ADDRESS, minAddress);
+      maxAddress = Variables.getBigInteger(Variables.MAX_ADDRESS, maxAddress);
+      outputDirectory = new File(Variables.getString(Variables.OUTPUT_DIRECTORY, "output"));
+      majorVersion = Variables.getString(Variables.MAJOR_VERSION, majorVersion);
+      minorVersion = Variables.getString(Variables.MINOR_VERSION, minorVersion);
+    } catch (Exception e) {
+      log.info(e.getMessage());
     }
+  }
 
-    private void reset() {
-        currentCodeOffset = BigInteger.ZERO;
-        postCommandCompilerList.clear();
-        variableMap.clear();
-        labelMap.clear();
-    }
-
-    private void loadSettings() {
+  public void run(@NonNull File... files) throws IOException {
+    OutputStream os = null;
+    ByteArrayOutputStream baos = null;
+    try {
+      for (File file : files) {
         try {
-            Variables.load(Assembler.class.getResourceAsStream("/settings.properties"));
-            platformEncoding = Encoding.valueByName(Variables.getString(Variables.PLATFORM_ENCODING, Encoding
-                    .ASCII.getName()));
-            sourceEncoding = Encoding.valueByName(Variables.getString(Variables.SOURCE_ENCODING, Encoding
-                    .UTF_8.getName()));
-            String value = Variables.getString(Variables.BYTE_ORDER, "little-endian");
-            byteOrder = "big-endian".equals(value) ? ByteOrder.BigEndian : ByteOrder.LittleEndian;
-            minAddress = Variables.getBigInteger(Variables.MIN_ADDRESS, minAddress);
-            maxAddress = Variables.getBigInteger(Variables.MAX_ADDRESS, maxAddress);
-            outputDirectory = new File(Variables.getString(Variables.OUTPUT_DIRECTORY, "output"));
-            majorVersion = Variables.getString(Variables.MAJOR_VERSION, majorVersion);
-            minorVersion = Variables.getString(Variables.MINOR_VERSION, minorVersion);
-        } catch (Exception e) {
-            log.info(e.getMessage());
-        }
-    }
-
-    public void run(@NonNull File... files) throws IOException {
-        OutputStream os = null;
-        ByteArrayOutputStream baos = null;
-        try {
-            for (File file : files) {
-                try {
-                    reset();
-                    File outputFile = createOutputFile(file);
-                    if (produceTap) {
-                        os = new DuplicateOutputStream(new FileOutputStream(outputFile)
-                                , baos = new ByteArrayOutputStream());
-                    } else {
-                        os = new FileOutputStream(outputFile);
-                    }
-                    final CompilerApi compilerApi = runSingle(file, os);
-                    postCompile(outputFile);
-                    Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
-                    Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1),
-                            MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(), MessageList
-                                    .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
-                                    .getMessage(MessageList.SOURCES));
-                    if (produceTap) {
-                        createTap(file, baos.toByteArray(), getAddress());
-                    }
-                } finally {
-                    FileUtil.safeClose(os);
-                }
-            }
-        } catch (Exception e) {
-            Output.println(e.getMessage());
-            log.error(e.getMessage(), e);
-        }
-    }
-
-    private void createTap(final File file, @NonNull final byte[] data, @NonNull final BigInteger address)
-            throws IOException {
-        final File tapFile = FileUtil.createNewFileSameName(outputDirectory, file, EXT_TAP);
-        TapUtil.createBinaryTap(tapFile, data, address.intValue());
-    }
-
-    private File createOutputFile(File file) {
-        if (!outputDirectory.exists()) {
-            outputDirectory.mkdirs();
-        }
-        return FileUtil.createNewFileSameName(outputDirectory, file, null);
-    }
-
-    protected CompilerApi runSingle(File file, OutputStream os) throws IOException {
-        CompilerApi compilerApi = CompilerFactory.create(this, this, file, os);
-        compilerApi.compile();
-        return compilerApi;
-    }
-
-    private static String createWelcome() {
-        StringBuilder sb = new StringBuilder();
-        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), majorVersion
-                , minorVersion);
-        String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
-        String lineExternal = SymbolUtils.fillChar('*', 80);
-        sb.append(lineExternal).append(System.lineSeparator());
-        String lineInternal = (new StringBuilder().append('*').append(SymbolUtils.fillChar(' ', 78))
-                .append('*')).toString();
-        sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
-                , programWelcome)).append(System.lineSeparator());
-        sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
-                , writtenBy)).append(System.lineSeparator());
-        sb.append(lineExternal).append(System.lineSeparator());
-        return sb.toString();
-    }
-
-    public static void main(String[] args) throws Exception {
-        Options options = getOptions();
-        if (args.length == 0) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("z80asm <file1>...<fileN>", options);
-            return;
-        }
-        List<File> fileList = new LinkedList<>();
-        for (String arg : cliParsing(args, options)) {
-            fileList.add(new File(arg));
-        }
-        Output.println(createWelcome());
-        Assembler assembler = new Assembler();
-        assembler.run(fileList.toArray(new File[fileList.size()]));
-    }
-
-    private static Options getOptions() {
-        Options options = new Options();
-        options.addOption("a", "address", true, "'org' address." +
-                " Non negative value.");
-        options.addOption("min", "min-address", true, "minimal address." +
-                " Non negative value.");
-        options.addOption("max", "max-address", true, "maximal address." +
-                " Non negative value.");
-        options.addOption("o", "output", true, "output directory for" +
-                " compiled files.");
-        options.addOption("b", "byte-order", true, "byte order" +
-                ": little-endian or big-endian.");
-        options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
-        options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
-        options.addOption("tap", false, "to produce in <TAP> format.");
-        return options;
-    }
-
-    private static List<String> cliParsing(String[] args, Options options) {
-        CommandLineParser parser = new DefaultParser();
-        try {
-            // parse the command line arguments
-            CommandLine cli = parser.parse(options, args);
-            if (cli.hasOption("a")) {
-                address = new BigInteger(cli.getOptionValue("a"));
-            }
-            if (cli.hasOption("min")) {
-                minAddress = new BigInteger(cli.getOptionValue("min"));
-            }
-            if (cli.hasOption("max")) {
-                minAddress = new BigInteger(cli.getOptionValue("max"));
-            }
-            if (cli.hasOption("o")) {
-                outputDirectory = new File(cli.getOptionValue("o"));
-            }
-            if (cli.hasOption("b")) {
-                byteOrder = "big-endian".equals(cli.getOptionValue("b")) ? ByteOrder.BigEndian :
-                        ByteOrder.LittleEndian;
-            }
-            if (cli.hasOption("s")) {
-                sourceEncoding = Encoding.valueByName(cli.getOptionValue("s"));
-            }
-            if (cli.hasOption("p")) {
-                platformEncoding = Encoding.valueByName(cli.getOptionValue("p"));
-            }
-            if (cli.hasOption("tap")) {
-                produceTap = true;
-            }
-
-            return cli.getArgList();
-        } catch (ParseException e) {
-            log.debug(e.getMessage());
-        }
-        return Collections.emptyList();
-    }
-    //----------------------------------------------------------
-
-    @Override
-    public boolean containsLabel(String labelName) {
-        return labelMap.containsKey(labelName);
-    }
-
-    @Override
-    public void putLabel(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("name is null or empty");
-        }
-        labelMap.put(name, new LabelInfo(currentCodeOffset));
-    }
-
-    @Override
-    public BigInteger getLabelCodeOffset(String labelName, boolean used) {
-        LabelInfo labelInfo = labelMap.get(labelName);
-        if (labelInfo == null) {
-            return BigInteger.valueOf(-1);
-        }
-        labelInfo.setUsed(used);
-        return labelInfo.getCodeOffset();
-    }
-
-    @Override
-    public BigInteger getLabelCodeOffset(String labelName) {
-        LabelInfo labelInfo = labelMap.get(labelName);
-        if (labelInfo == null) {
-            return BigInteger.valueOf(-1);
-        }
-        return labelInfo.getCodeOffset();
-    }
-
-    @Override
-    public BigInteger getCurrentCodeOffset() {
-        return currentCodeOffset;
-    }
-
-    @Override
-    public BigInteger incCurrentCodeOffset(BigInteger delta) {
-        if (delta.signum() == -1) {
-            throw new IllegalArgumentException("delta is negative");
-        }
-        if (delta == null) {
-            throw new NullPointerException("delta");
-        }
-        currentCodeOffset = currentCodeOffset.add(delta);
-        return currentCodeOffset;
-    }
-
-    @Override
-    public void setAddress(BigInteger address) {
-        if (address == null) {
-            throw new NullPointerException("address");
-        }
-        if (address.signum() == -1) {
-            throw new IllegalArgumentException("address is negative");
-        }
-        if (!TypeUtil.isInRange(minAddress, maxAddress, address)) {
-            throw new IllegalArgumentException("address is out of range");
-        }
-        this.address = address;
-    }
-
-    @Override
-    public BigInteger getAddress() {
-        return address;
-    }
-
-    @Override
-    public void addToList(@NonNull PostCommandCompiler postCommandCompiler) {
-        postCommandCompilerList.add(postCommandCompiler);
-    }
-
-    @Override
-    public boolean isCompiled(File file) {
-        if (file == null) {
-            return false;
-        }
-        return compiledFileSet.contains(file);
-    }
-
-    @Override
-    public boolean addCompiled(File file) {
-        if (file == null) {
-            return false;
-        }
-        return compiledFileSet.add(file);
-    }
-
-    @Override
-    public boolean containsVariable(String name) {
-        if (name == null || name.trim().isEmpty())
-            return false;
-        return variableMap.containsKey(name);
-    }
-
-    @Override
-    public BigInteger getVariableValue(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return null;
-        }
-        return variableMap.get(name);
-    }
-
-    @Override
-    public BigInteger addVariable(String name, BigInteger value) {
-        if (name == null || name.trim().isEmpty()) {
-            return null;
-        }
-        if (value == null) {
-            return null;
-        }
-        return variableMap.put(name, value);
-    }
-
-    @Override
-    public boolean removeVariable(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return false;
-        }
-        return variableMap.remove(name) != null;
-    }
-
-    protected void postCompile(File outputFile) {
-        RandomAccessFile randomAccessFile = null;
-        try {
-            Collections.sort(postCommandCompilerList, (o1, o2) -> o1.getCommandOffset().compareTo(o2.getCommandOffset()));
-            randomAccessFile = new RandomAccessFile(outputFile, "rwd");
-            for (PostCommandCompiler postCommandCompiler : postCommandCompilerList) {
-                postCommandCompiler.compile(randomAccessFile);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+          reset();
+          File outputFile = createOutputFile(file);
+          if (produceTap) {
+            os = new DuplicateOutputStream(new FileOutputStream(outputFile)
+                , baos = new ByteArrayOutputStream());
+          } else {
+            os = new FileOutputStream(outputFile);
+          }
+          final CompilerApi compilerApi = runSingle(file, os);
+          postCompile(outputFile);
+          Output.formatPrintln("%d %s", Output.getWarningCount(),
+              MessageList.getMessage(MessageList.N_WARNINGS));
+          Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1),
+              MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(),
+              MessageList
+                  .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
+                  .getMessage(MessageList.SOURCES));
+          if (produceTap) {
+            createTap(file, baos.toByteArray(), getAddress());
+          }
         } finally {
-            FileUtil.safeClose(randomAccessFile);
+          FileUtil.safeClose(os);
         }
+      }
+    } catch (Exception e) {
+      Output.println(e.getMessage());
+      log.error(e.getMessage(), e);
+    }
+  }
+
+  private void createTap(final File file, @NonNull final byte[] data,
+      @NonNull final BigInteger address)
+      throws IOException {
+    final File tapFile = FileUtil.createNewFileSameName(outputDirectory, file, EXT_TAP);
+    TapUtil.createBinaryTap(tapFile, data, address.intValue());
+  }
+
+  private File createOutputFile(File file) {
+    if (!outputDirectory.exists()) {
+      outputDirectory.mkdirs();
+    }
+    return FileUtil.createNewFileSameName(outputDirectory, file, null);
+  }
+
+  protected CompilerApi runSingle(File file, OutputStream os) throws IOException {
+    CompilerApi compilerApi = CompilerFactory.create(this, this, file, os);
+    compilerApi.compile();
+    return compilerApi;
+  }
+
+  private static String createWelcome() {
+    StringBuilder sb = new StringBuilder();
+    String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME),
+        majorVersion
+        , minorVersion);
+    String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
+    String lineExternal = SymbolUtils.fillChar('*', 80);
+    sb.append(lineExternal).append(System.lineSeparator());
+    String lineInternal = (new StringBuilder().append('*').append(SymbolUtils.fillChar(' ', 78))
+        .append('*')).toString();
+    sb.append(
+        SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
+            , programWelcome)).append(System.lineSeparator());
+    sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
+        , writtenBy)).append(System.lineSeparator());
+    sb.append(lineExternal).append(System.lineSeparator());
+    return sb.toString();
+  }
+
+  public static void main(String[] args) throws Exception {
+    Options options = getOptions();
+    if (args.length == 0) {
+      HelpFormatter formatter = new HelpFormatter();
+      formatter.printHelp("z80asm <file1>...<fileN>", options);
+      return;
+    }
+    List<File> fileList = new LinkedList<>();
+    for (String arg : cliParsing(args, options)) {
+      fileList.add(new File(arg));
+    }
+    Output.println(createWelcome());
+    Assembler assembler = new Assembler();
+    assembler.run(fileList.toArray(new File[fileList.size()]));
+  }
+
+  private static Options getOptions() {
+    Options options = new Options();
+    options.addOption("a", "address", true, "'org' address." +
+        " Non negative value.");
+    options.addOption("min", "min-address", true, "minimal address." +
+        " Non negative value.");
+    options.addOption("max", "max-address", true, "maximal address." +
+        " Non negative value.");
+    options.addOption("o", "output", true, "output directory for" +
+        " compiled files.");
+    options.addOption("b", "byte-order", true, "byte order" +
+        ": little-endian or big-endian.");
+    options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
+    options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
+    options.addOption("tap", false, "to produce in <TAP> format.");
+    return options;
+  }
+
+  private static List<String> cliParsing(String[] args, Options options) {
+    CommandLineParser parser = new DefaultParser();
+    try {
+      // parse the command line arguments
+      CommandLine cli = parser.parse(options, args);
+      if (cli.hasOption("a")) {
+        address = new BigInteger(cli.getOptionValue("a"));
+      }
+      if (cli.hasOption("min")) {
+        minAddress = new BigInteger(cli.getOptionValue("min"));
+      }
+      if (cli.hasOption("max")) {
+        minAddress = new BigInteger(cli.getOptionValue("max"));
+      }
+      if (cli.hasOption("o")) {
+        outputDirectory = new File(cli.getOptionValue("o"));
+      }
+      if (cli.hasOption("b")) {
+        byteOrder = "big-endian".equals(cli.getOptionValue("b")) ? ByteOrder.BigEndian :
+            ByteOrder.LittleEndian;
+      }
+      if (cli.hasOption("s")) {
+        sourceEncoding = Encoding.valueByName(cli.getOptionValue("s"));
+      }
+      if (cli.hasOption("p")) {
+        platformEncoding = Encoding.valueByName(cli.getOptionValue("p"));
+      }
+      if (cli.hasOption("tap")) {
+        produceTap = true;
+      }
+
+      return cli.getArgList();
+    } catch (ParseException e) {
+      log.debug(e.getMessage());
+    }
+    return Collections.emptyList();
+  }
+  //----------------------------------------------------------
+
+  @Override
+  public boolean containsLabel(String labelName) {
+    return labelMap.containsKey(labelName);
+  }
+
+  @Override
+  public void putLabel(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      throw new IllegalArgumentException("name is null or empty");
+    }
+    labelMap.put(name, new LabelInfo(currentCodeOffset));
+  }
+
+  @Override
+  public BigInteger getLabelCodeOffset(String labelName, boolean used) {
+    LabelInfo labelInfo = labelMap.get(labelName);
+    if (labelInfo == null) {
+      return BigInteger.valueOf(-1);
+    }
+    labelInfo.setUsed(used);
+    return labelInfo.getCodeOffset();
+  }
+
+  @Override
+  public BigInteger getLabelCodeOffset(String labelName) {
+    LabelInfo labelInfo = labelMap.get(labelName);
+    if (labelInfo == null) {
+      return BigInteger.valueOf(-1);
+    }
+    return labelInfo.getCodeOffset();
+  }
+
+  @Override
+  public BigInteger getCurrentCodeOffset() {
+    return currentCodeOffset;
+  }
+
+  @Override
+  public BigInteger incCurrentCodeOffset(BigInteger delta) {
+    if (delta.signum() == -1) {
+      throw new IllegalArgumentException("delta is negative");
+    }
+    if (delta == null) {
+      throw new NullPointerException("delta");
+    }
+    currentCodeOffset = currentCodeOffset.add(delta);
+    return currentCodeOffset;
+  }
+
+  @Override
+  public void setAddress(BigInteger address) {
+    if (address == null) {
+      throw new NullPointerException("address");
+    }
+    if (address.signum() == -1) {
+      throw new IllegalArgumentException("address is negative");
+    }
+    if (!TypeUtil.isInRange(minAddress, maxAddress, address)) {
+      throw new IllegalArgumentException("address is out of range");
+    }
+    this.address = address;
+  }
+
+  @Override
+  public BigInteger getAddress() {
+    return address;
+  }
+
+  @Override
+  public void addToList(@NonNull PostCommandCompiler postCommandCompiler) {
+    postCommandCompilerList.add(postCommandCompiler);
+  }
+
+  @Override
+  public boolean isCompiled(File file) {
+    if (file == null) {
+      return false;
+    }
+    return compiledFileSet.contains(file);
+  }
+
+  @Override
+  public boolean addCompiled(File file) {
+    if (file == null) {
+      return false;
+    }
+    return compiledFileSet.add(file);
+  }
+
+  @Override
+  public boolean containsVariable(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      return false;
+    }
+    return variableMap.containsKey(name);
+  }
+
+  @Override
+  public BigInteger getVariableValue(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      return null;
+    }
+    return variableMap.get(name);
+  }
+
+  @Override
+  public BigInteger addVariable(String name, BigInteger value) {
+    if (name == null || name.trim().isEmpty()) {
+      return null;
+    }
+    if (value == null) {
+      return null;
+    }
+    return variableMap.put(name, value);
+  }
+
+  @Override
+  public boolean removeVariable(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      return false;
+    }
+    return variableMap.remove(name) != null;
+  }
+
+  protected void postCompile(File outputFile) {
+    RandomAccessFile randomAccessFile = null;
+    try {
+      Collections.sort(postCommandCompilerList,
+          (o1, o2) -> o1.getCommandOffset().compareTo(o2.getCommandOffset()));
+      randomAccessFile = new RandomAccessFile(outputFile, "rwd");
+      for (PostCommandCompiler postCommandCompiler : postCommandCompilerList) {
+        postCommandCompiler.compile(randomAccessFile);
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    } finally {
+      FileUtil.safeClose(randomAccessFile);
+    }
+  }
+
+  @Override
+  public ByteOrder getByteOrder() {
+    return byteOrder;
+  }
+
+  @Override
+  public Encoding getSourceEncoding() {
+    return sourceEncoding;
+  }
+
+  @Override
+  public Encoding getPlatformEncoding() {
+    return platformEncoding;
+  }
+
+  @Override
+  public BigInteger getMinAddress() {
+    return minAddress;
+  }
+
+  @Override
+  public BigInteger getMaxAddress() {
+    return maxAddress;
+  }
+
+  @Override
+  public File getOutputDirectory() {
+    return outputDirectory;
+  }
+
+  static class LabelInfo {
+
+    BigInteger codeOffset;
+
+    boolean used;
+
+    LabelInfo(BigInteger codeOffset) {
+      this.codeOffset = codeOffset;
     }
 
-    @Override
-    public ByteOrder getByteOrder() {
-        return byteOrder;
+    BigInteger getCodeOffset() {
+      return codeOffset;
     }
 
-    @Override
-    public Encoding getSourceEncoding() {
-        return sourceEncoding;
+    boolean isUsed() {
+      return used;
     }
 
-    @Override
-    public Encoding getPlatformEncoding() {
-        return platformEncoding;
+    void setUsed(boolean used) {
+      this.used = used;
     }
-
-    @Override
-    public BigInteger getMinAddress() {
-        return minAddress;
-    }
-
-    @Override
-    public BigInteger getMaxAddress() {
-        return maxAddress;
-    }
-
-    @Override
-    public File getOutputDirectory() {
-        return outputDirectory;
-    }
-
-    static class LabelInfo {
-        BigInteger codeOffset;
-
-        boolean used;
-
-        LabelInfo(BigInteger codeOffset) {
-            this.codeOffset = codeOffset;
-        }
-
-        BigInteger getCodeOffset() {
-            return codeOffset;
-        }
-
-        boolean isUsed() {
-            return used;
-        }
-
-        void setUsed(boolean used) {
-            this.used = used;
-        }
-    }
+  }
 }
