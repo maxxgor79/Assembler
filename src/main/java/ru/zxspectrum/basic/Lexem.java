@@ -11,22 +11,53 @@ import lombok.Setter;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Lexem {
-    @Setter
     @Getter
     @NonNull
     protected LexemType type;
 
-    @Setter
     @Getter
     @NonNull
     protected String value;
 
-    @Setter
     @Getter
     protected Integer intValue;
 
     public Lexem() {
 
+    }
+
+    public Lexem(@NonNull LexemType type, @NonNull Integer intValue) {
+        if (type != LexemType.Number) {
+            throw new IllegalArgumentException("Bad type: " + type);
+        }
+        this.setType(type);
+        this.setIntValue(intValue);
+    }
+
+    public void setType(@NonNull LexemType type) {
+        if (this.type == type) {
+            return;
+        }
+        this.type = type;
+        if (type == LexemType.Number) {
+            value = null;
+            intValue = null;
+        }
+    }
+
+    public void setIntValue(@NonNull Integer intValue) {
+        this.intValue = intValue;
+        this.value = String.valueOf(intValue);
+    }
+
+    public void setValue(@NonNull String value) {
+        if (value.equals(this.value)) {
+            return;
+        }
+        this.value = value;
+        if (type == LexemType.Number) {
+            intValue = Integer.valueOf(value);
+        }
     }
 
     @Override
