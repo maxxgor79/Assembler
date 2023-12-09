@@ -44,7 +44,7 @@ public final class TapUtil {
         header.setFilename(PROGRAM_NAME);
         header.setDataSize(compiled.length - 4);
         final ProgramParams programParams = new ProgramParams();
-        programParams.setProgramSize(compiled.length);
+        programParams.setProgramSize(compiled.length - 4);
         header.setProgramParams(programParams);
 
         final Block block = new Block();

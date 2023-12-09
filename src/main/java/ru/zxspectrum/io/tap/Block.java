@@ -55,10 +55,10 @@ public class Block implements TapElementReader {
         header = new Header();
         header.read(dis);
       }
-      data = IOUtils.readFully(dis, header.getDataSize() + 4);
+      data = IOUtils.readFully(dis, header.getDataSize() + 4); //line number(2b) + basic data size(2b)
     }
     if (flag == Flag.Data) {
-      headerlessData = IOUtils.readFully(dis, blockLength - 1);// - sizeof(code)
+      headerlessData = IOUtils.readFully(dis, blockLength - 1);// - sizeof(code) 1b
     }
   }
 

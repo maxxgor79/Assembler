@@ -67,7 +67,7 @@ public class Compiler {
         baos.write(TYPE);
         translate(baos, lexemList);
         byte[] bytes = baos.toByteArray();
-        int bytesSize2 = bytes.length + 2;
+        int bytesSize2 = bytes.length - 2;
         bytes[0] = (byte) bytesSize2;
         bytes[1] = (byte) (bytesSize2 >>> 8);
         return bytes;
