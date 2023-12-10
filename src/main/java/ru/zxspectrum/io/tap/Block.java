@@ -35,7 +35,7 @@ public class Block implements TapElementReader, TapElementWriter {
     @Setter
     @Getter
     @NonNull
-    private byte[] bytes;
+    private HeaderData headerData;
 
     @Setter
     @Getter
@@ -43,7 +43,7 @@ public class Block implements TapElementReader, TapElementWriter {
     private byte[] headerlessBytes;
 
     public byte[] getContent() {
-        return bytes == null ? headerlessBytes : bytes;
+        return headerData == null ? headerlessBytes : headerData.getContent();
     }
 
     @Override
@@ -54,15 +54,16 @@ public class Block implements TapElementReader, TapElementWriter {
         if (flag == null) {
             throw new IOException("Bad flag format b=" + b);
         }
-        if (blockLength == 19) {
+        if (blockLength == DEFAULT_BLOCK_LENGTH) {
             if (flag == Flag.Header) {
                 header = new Header();
                 header.read(dis);
             }
-            bytes = IOUtils.readFully(dis, header.getDataSize() + 4); //line number(2b) + basic data size(2b)
+            headerData = new HeaderData();
+            headerData.read(dis);//data size(2b) + Type(1b) + checkSum(1b)
         }
-        if (flag == Flag.Data || blockLength != 19) {
-            headerlessBytes = IOUtils.readFully(dis, blockLength - 1);// - sizeof(code) 1b
+        if (flag == Flag.Data || blockLength != DEFAULT_BLOCK_LENGTH) {
+            headerlessBytes = IOUtils.readFully(dis, blockLength - 1);// - checkSum(1b)
         }
     }
 
@@ -77,11 +78,11 @@ public class Block implements TapElementReader, TapElementWriter {
         if (flag != null) {
             dos.writeByte(flag.getCode());
         }
-        if (blockLength == 19 && flag == Flag.Header && header != null) {
+        if (blockLength == DEFAULT_BLOCK_LENGTH && flag == Flag.Header && header != null) {
             header.write(dos);
         }
-        if (blockLength == 19 && bytes != null) {
-            dos.write(bytes);
+        if (blockLength == DEFAULT_BLOCK_LENGTH && headerData != null) {
+            headerData.writeTap(dos);
         }
         if (flag == Flag.Data && headerlessBytes != null) {
             dos.write(headerlessBytes);

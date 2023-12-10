@@ -62,14 +62,8 @@ public class Compiler {
         final SourceParser parser = new SourceParser();
         parser.setInputStream(is);
         final List<Lexem> lexemList = parser.parse();
-        baos.write(0);
-        baos.write(0);
-        baos.write(TYPE);
         translate(baos, lexemList);
         byte[] bytes = baos.toByteArray();
-        int bytesSize2 = bytes.length - 2;
-        bytes[0] = (byte) bytesSize2;
-        bytes[1] = (byte) (bytesSize2 >>> 8);
         return bytes;
     }
 

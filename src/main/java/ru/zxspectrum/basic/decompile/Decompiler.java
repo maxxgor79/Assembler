@@ -51,16 +51,6 @@ public class Decompiler {
         if (is == null) {
             throw new IllegalArgumentException("InputStream is not initialized");
         }
-        int lo = is.read();
-        int hi = is.read();
-        if ((lo | hi) < 0) {
-            throw new EOFException();
-        }
-        size = (hi << 8) + (lo << 0);
-        type = is.read();
-        if (type == -1) {
-            throw new EOFException();
-        }
         final List<Lexem> lexemList = new LinkedList<>();
         final LinesStream stream = new LinesStream(is);
         final Collection<Line> lines = stream.parse();

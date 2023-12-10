@@ -39,19 +39,24 @@ public final class TapUtil {
         Lexem lexem = new Lexem(LexemType.Number, address);
         compiler.setReplacer(new Replacer().add(VAR_LOAD_ADDR, lexem).add(VAR_RUN_ADDR, lexem));
         byte[] compiled = compiler.compile();
+
+        final HeaderData headerData = new HeaderData();
+        headerData.setContent(compiled);
+
         final Header header = new Header();
         header.setHeaderType(HeaderType.Program);
         header.setFilename(PROGRAM_NAME);
-        header.setDataSize(compiled.length - 4);
+        header.setDataSize(headerData.getContent().length);
+
         final ProgramParams programParams = new ProgramParams();
-        programParams.setProgramSize(compiled.length - 4);
+        programParams.setProgramSize(headerData.getContent().length);
         header.setProgramParams(programParams);
 
         final Block block = new Block();
         block.setBlockLength(Block.DEFAULT_BLOCK_LENGTH);
         block.setFlag(Flag.Header);
-        block.setBytes(compiled);
         block.setHeader(header);
+        block.setHeaderData(headerData);
         return block;
     }
 
@@ -59,16 +64,19 @@ public final class TapUtil {
         final BytesParams bytesParams = new BytesParams();
         bytesParams.setStartAddress(address);
 
+        final HeaderData headerData = new HeaderData();
+        headerData.setContent(data);
+
         final Header header = new Header();
         header.setHeaderType(HeaderType.Bytes);
         header.setFilename(DATA_NAME);
-        header.setDataSize(data.length - 4);
+        header.setDataSize(data.length);
         header.setBytesParams(bytesParams);
 
         final Block block = new Block();
         block.setBlockLength(Block.DEFAULT_BLOCK_LENGTH);
         block.setFlag(Flag.Header);
-        block.setBytes(data);
+        block.setHeaderData(headerData);
         block.setHeader(header);
         return block;
     }
@@ -81,7 +89,7 @@ public final class TapUtil {
             log.error(e.getMessage(), e);
             throw new IOException(e);
         }
-        tapData.add(createData(data, address));
+        //tapData.add(createData(data, address));
         return tapData;
     }
 
