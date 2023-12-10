@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @ToString
 public enum HeaderType {
-    Program(0), NumberArray(1), CharArray(2), Bytes(3);
+    Program(0), NumberArray(1), CharArray(2), Bytes(3), Code(3);
 
     HeaderType(int code) {
         this.code = code;

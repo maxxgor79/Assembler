@@ -30,6 +30,11 @@ public class BytesParams implements TapElementReader, TapElementWriter, Binary {
 
     @Override
     public void write(@NonNull final LEDataOutputStream dos) throws IOException {
+        writeTap(dos);
+    }
+
+    @Override
+    public void writeTap(LEDataOutputStream dos) throws IOException {
         dos.writeShort(startAddress);
         dos.writeShort(reserved);
     }

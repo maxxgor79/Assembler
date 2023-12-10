@@ -48,6 +48,13 @@ public class TapData implements TapElementReader, TapElementWriter {
         }
     }
 
+    @Override
+    public void writeTap(@NonNull LEDataOutputStream dos) throws IOException {
+        for (Block block : blockList) {
+            block.writeTap(dos);
+        }
+    }
+
     public List<Block> find(@NonNull Flag flag) {
         List<Block> findList = new LinkedList<>();
         for (Block block : blockList) {

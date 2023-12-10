@@ -43,6 +43,11 @@ public class ArrayParams implements TapElementReader, TapElementWriter, Binary {
 
     @Override
     public void write(@NonNull final LEDataOutputStream dos) throws IOException {
+        writeTap(dos);
+    }
+
+    @Override
+    public void writeTap(LEDataOutputStream dos) throws IOException {
         dos.writeByte(reserved1);
         dos.writeByte(varName);
         dos.write(reserved2);
