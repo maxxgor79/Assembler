@@ -89,7 +89,7 @@ public final class TapUtil {
             log.error(e.getMessage(), e);
             throw new IOException(e);
         }
-        //tapData.add(createData(data, address));
+        tapData.add(createData(data, address));
         return tapData;
     }
 

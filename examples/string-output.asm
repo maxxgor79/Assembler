@@ -5,7 +5,7 @@
 ; Of course such a thing is a little crazy, as it really messes
 ; with disassemblers, but it's still a cute hack.
 ;
-org 16385
+org 40000
 
    call print
    db "This is a test!\n$"
