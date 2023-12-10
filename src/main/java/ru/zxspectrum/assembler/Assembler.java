@@ -194,9 +194,13 @@ public class Assembler implements NamespaceApi, SettingsApi {
         for (String arg : cliParsing(args, options)) {
             fileList.add(new File(arg));
         }
-        Output.println(createWelcome());
-        Assembler assembler = new Assembler();
-        assembler.run(fileList.toArray(new File[fileList.size()]));
+        if (!fileList.isEmpty()) {
+            Output.println(createWelcome());
+            Assembler assembler = new Assembler();
+            assembler.run(fileList.toArray(new File[fileList.size()]));
+        } else {
+            Output.println("No input files");
+        }
     }
 
     private static Options getOptions() {
