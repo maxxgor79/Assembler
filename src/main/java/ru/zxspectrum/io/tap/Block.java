@@ -85,7 +85,7 @@ public class Block implements TapElementReader, TapElementWriter {
         if (blockLength == DEFAULT_BLOCK_LENGTH && headerData != null) {
             headerData.writeTap(dos);
         }
-        if (flag == Flag.Data && headerlessData != null) {
+        if (flag == Flag.Data || headerlessData != null) {
             headerlessData.writeTap(dos);
         }
     }
