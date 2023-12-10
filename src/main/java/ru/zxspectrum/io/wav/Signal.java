@@ -14,7 +14,7 @@ public final class Signal {
     }
 
     public static void writeSignal(OutputStream os, int signalLevel, int clocks, int frequency) throws IOException {
-        double sampleNanoSec = 1000_000_000.0 / frequency;
+        double sampleNanoSec = 1_000_000_000.0 / frequency;
         double cpuClockNanoSec = 286;
         int numSamples = (int) round((cpuClockNanoSec * (double) clocks) / sampleNanoSec);
         for (int i = 0; i < numSamples; i++) {

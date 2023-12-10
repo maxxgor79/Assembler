@@ -49,7 +49,7 @@ public class SoundGenerator {
     private int sampleRate = 22050;
 
     @Getter
-    private float volume;
+    private float volume = 1.0f;
 
     public SoundGenerator() {
 
@@ -62,8 +62,7 @@ public class SoundGenerator {
     protected static void writeDataByte(OutputStream os, int b, int hi, int lo, int frequency) throws IOException {
         int mask = 0x80;
         while (mask != 0) {
-            int len;
-            len = ((b & mask) == 0) ? PULSE_ZERO : PULSE_ONE;
+            int len = ((b & mask) == 0) ? PULSE_ZERO : PULSE_ONE;
             Signal.writeSignal(os, hi, len, frequency);
             Signal.writeSignal(os, lo, len, frequency);
             mask >>= 1;
@@ -106,7 +105,6 @@ public class SoundGenerator {
         for (int b : data) {
             writeDataByte(os, b, hiLevel, loLevel, sampleRate);
         }
-        //writeDataByte(os, checkSum, hiLevel, loLevel, sampleRate);
         Signal.writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
     }
 

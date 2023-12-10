@@ -40,10 +40,10 @@ public class Block implements TapElementReader, TapElementWriter {
     @Setter
     @Getter
     @NonNull
-    private byte[] headerlessBytes;
+    private HeaderlessData headerlessData;
 
     public byte[] getContent() {
-        return headerData == null ? headerlessBytes : headerData.getContent();
+        return headerData == null ? headerlessData.getContent() : headerData.getContent();
     }
 
     @Override
@@ -63,7 +63,8 @@ public class Block implements TapElementReader, TapElementWriter {
             headerData.read(dis);//data size(2b) + Type(1b) + checkSum(1b)
         }
         if (flag == Flag.Data || blockLength != DEFAULT_BLOCK_LENGTH) {
-            headerlessBytes = IOUtils.readFully(dis, blockLength - 1);// - checkSum(1b)
+            headerlessData = new HeaderlessData(blockLength);
+            headerlessData.read(dis);
         }
     }
 
@@ -84,8 +85,8 @@ public class Block implements TapElementReader, TapElementWriter {
         if (blockLength == DEFAULT_BLOCK_LENGTH && headerData != null) {
             headerData.writeTap(dos);
         }
-        if (flag == Flag.Data && headerlessBytes != null) {
-            dos.write(headerlessBytes);
+        if (flag == Flag.Data && headerlessData != null) {
+            headerlessData.writeTap(dos);
         }
     }
 }
