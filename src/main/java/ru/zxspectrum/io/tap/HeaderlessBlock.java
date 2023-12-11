@@ -6,13 +6,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.io.LEDataInputStream;
 import ru.zxspectrum.io.LEDataOutputStream;
 
 import java.io.IOException;
 
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode
+@Slf4j
 public class HeaderlessBlock extends Block implements TapElementReader, TapElementWriter {
 
   @Getter
@@ -43,6 +45,10 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
     if (checkSum != calculated) {
       throw new IllegalStateException(
           "Bad checksum, loaded=" + checkSum + ", calculated=" + calculated);
+    } else {
+      if (log.isInfoEnabled()) {
+        log.info("checkSum is OK");
+      }
     }
   }
 
