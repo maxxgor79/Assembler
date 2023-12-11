@@ -72,6 +72,7 @@ public final class TapUtil {
   public static TapData createBinaryTap(@NonNull byte[] data, int address) throws IOException {
     final TapData tapData = new TapData();
     try {
+      if (false)
       createProgram(tapData, LOADER_NAME, address);
       createData(tapData, data, address);
     } catch (ParserException e) {

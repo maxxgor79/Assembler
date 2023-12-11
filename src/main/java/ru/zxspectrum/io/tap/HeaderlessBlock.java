@@ -25,6 +25,7 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
     checkSum = calcCheckSum();
   }
 
+  @Override
   protected int calcCheckSum() {
     int checkSum = 0;
     if (flag != null) {

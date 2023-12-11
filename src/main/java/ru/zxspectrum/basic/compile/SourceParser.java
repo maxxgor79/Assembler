@@ -17,7 +17,7 @@ public class SourceParser extends Parser {
             if (ch == -1) {
                 return null;
             }
-            if (SymbolUtil.isWhite(ch)) {
+            if (SymbolUtil.isTextWhite(ch)) {
                 continue;
             }
             if (isEol(ch)) {

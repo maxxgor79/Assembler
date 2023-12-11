@@ -24,7 +24,7 @@ public class DataBlock extends Block {
     private byte[] content;
 
     public DataBlock() {
-        flag = Flag.Data;
+        setFlag(Flag.Data);
     }
 
     public void setContent(@NonNull byte[] content) {

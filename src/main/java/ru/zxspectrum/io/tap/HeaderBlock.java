@@ -51,7 +51,7 @@ public class HeaderBlock extends Block {
     private BytesParams bytesParams;
 
     public HeaderBlock() {
-        flag = Flag.Header;
+        setFlag(Flag.Header);
         blockLength = SIZE;
     }
 

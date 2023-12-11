@@ -6,7 +6,7 @@ public final class SymbolUtil {
     }
 
     public static boolean isWhite(int ch) {
-        return " \t".indexOf(ch) != -1;
+        return ch == ' ';
     }
 
     public static boolean isDigit(int ch) {
@@ -18,7 +18,7 @@ public final class SymbolUtil {
     }
 
     public static boolean isOperator(int ch) {
-        return ch >= 0xa5 && ch <= 0xff;
+        return (ch >= 0xa5 && ch <= 0xff) || (ch >= 0x10 && ch <= 0x17);
     }
 
     public static boolean isEol(int ch) {
@@ -31,6 +31,10 @@ public final class SymbolUtil {
 
     public static boolean isTextEol(int ch) {
         return ch == '\r' || ch == '\n';
+    }
+
+    public static boolean isTextWhite(int ch) {
+        return " \t\f\u000b".indexOf(ch) != -1;
     }
 
     public static boolean isDollar(int ch) {
