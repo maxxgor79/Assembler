@@ -1,3 +1,3 @@
 10 CLEAR
-20 LOAD "program1" CODE loadAddr
+20 LOAD "program1" CODE
 30 RANDOMIZE USR runAddr

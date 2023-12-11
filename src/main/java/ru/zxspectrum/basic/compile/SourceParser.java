@@ -107,6 +107,6 @@ public class SourceParser extends Parser {
     }
 
     protected static boolean isDelimiter(int ch) {
-        return "+-*/(),;<>=:".indexOf(ch) != -1;
+        return "+-*/()<>=:".indexOf(ch) != -1;
     }
 }

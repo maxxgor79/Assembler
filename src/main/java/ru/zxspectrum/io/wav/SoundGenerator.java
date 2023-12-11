@@ -3,6 +3,7 @@ package ru.zxspectrum.io.wav;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.io.LEDataOutputStream;
 import ru.zxspectrum.io.tap.Block;
 import ru.zxspectrum.io.tap.Flag;
@@ -14,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+@Slf4j
 public class SoundGenerator {
     protected static final int PULSE_ZERO = 855;
 
@@ -49,7 +51,7 @@ public class SoundGenerator {
     private int sampleRate = 22050;
 
     @Getter
-    private float volume = 1.0f;
+    private float volume = 0.5f;
 
     public SoundGenerator() {
 
@@ -89,7 +91,7 @@ public class SoundGenerator {
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        block.writeTap(new LEDataOutputStream(baos));
+        block.export(new LEDataOutputStream(baos));
         data = baos.toByteArray();
 
         int signalLevel = hiLevel;
@@ -130,7 +132,9 @@ public class SoundGenerator {
             if (silenceBeforeBlock) {
                 writeSilence(baos);
             }
+            //log.info("blockType:{}", block.getFlag());
             writeSoundData(baos, block, sampleRate, volume);
+            //break;
         }
         WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);
         try (FileOutputStream fos = new FileOutputStream(file)) {
