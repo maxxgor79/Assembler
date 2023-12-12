@@ -1,9 +1,15 @@
 package ru.zxspectrum.assembler.compiler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.util.LinkedList;
+import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.zxspectrum.assembler.Assembler;
 import ru.zxspectrum.assembler.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
@@ -23,16 +29,6 @@ import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.syntax.SyntaxAnalyzer;
 import ru.zxspectrum.assembler.util.FileUtil;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @Author Maxim Gorin
