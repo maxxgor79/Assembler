@@ -38,6 +38,11 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
   }
 
   @Override
+  public int size() {
+    return 2 + (content != null ? content.length : 0);
+  }
+
+  @Override
   public void read(@NonNull InputStream is) throws IOException {
     content = new byte[blockLength - 2];
     is.read(content);
@@ -57,7 +62,7 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
   public void write(@NonNull OutputStream os) throws IOException {
     LEDataOutputStream dos = new LEDataOutputStream(os);
     dos.writeShort(blockLength);
-    dos.writeByte(flag.getCode());
+    dos.write(flag.getCode());
     export(os);
   }
 
@@ -67,6 +72,6 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
     if (content != null) {
       os.write(content);
     }
-    os.write(checkSum);
+    os.write(checkSum = calcCheckSum());
   }
 }

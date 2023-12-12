@@ -32,4 +32,6 @@ abstract public class Block implements TapElementReader, TapElementWriter {
     this.flag = flag;
     checkSum = calcCheckSum();
   }
+
+  public abstract int size();
 }

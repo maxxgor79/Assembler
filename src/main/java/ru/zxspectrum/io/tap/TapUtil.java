@@ -41,6 +41,9 @@ public final class TapUtil {
     compiler.setReplacer(new Replacer().add(VAR_LOAD_ADDR, lexem).add(VAR_RUN_ADDR, lexem));
     byte[] compiled = compiler.compile();
 
+    final DataBlock dBlock = new DataBlock();
+    dBlock.setContent(compiled);
+
     final ProgramParams programParams = new ProgramParams();
     programParams.setProgramSize(compiled.length);
     programParams.setAutostartLine(10);
@@ -48,31 +51,26 @@ public final class TapUtil {
     hBlock.setFilename(PROGRAM_NAME);
     hBlock.setDataBlockLength(compiled.length);
     tapData.add(hBlock);
-
-    final DataBlock dBlock = new DataBlock();
-    dBlock.setContent(compiled);
     tapData.add(dBlock);
 
   }
 
   protected static void createData(@NonNull TapData tapData, @NonNull byte[] data, int address) {
+    final DataBlock dBlock = new DataBlock();
+    dBlock.setContent(data);
     final BytesParams bytesParams = new BytesParams();
     bytesParams.setStartAddress(address);
     final HeaderBlock hBlock = new HeaderBlock(bytesParams);
     hBlock.setFilename(DATA_NAME);
     hBlock.setDataBlockLength(data.length);
     tapData.add(hBlock);
-
-    final DataBlock dBlock = new DataBlock();
-    dBlock.setContent(data);
     tapData.add(dBlock);
-
   }
 
   public static TapData createBinaryTap(@NonNull byte[] data, int address) throws IOException {
     final TapData tapData = new TapData();
     try {
-      if (false)
+      if (true)
       createProgram(tapData, LOADER_NAME, address);
       createData(tapData, data, address);
     } catch (ParserException e) {

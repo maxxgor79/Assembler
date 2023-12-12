@@ -51,7 +51,7 @@ public class SoundGenerator {
     private int sampleRate = 22050;
 
     @Getter
-    private float volume = 0.5f;
+    private float volume = 1.f;
 
     public SoundGenerator() {
 
@@ -77,10 +77,10 @@ public class SoundGenerator {
             volLevel = 0;
         }
         if (volLevel > 0x40) {
-            volLevel = 0x040;
+            volLevel = 0x40;
         }
-        int hiLevel = 0xFF - volLevel;
-        int loLevel = 0x00 + volLevel;
+        int hiLevel = 0xc0 - volLevel;
+        int loLevel = 0x40 + volLevel;
 
         byte[] data = null;
         int pilotImpulses;
@@ -91,7 +91,7 @@ public class SoundGenerator {
         }
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        block.export(new LEDataOutputStream(baos));
+        block.export(baos);
         data = baos.toByteArray();
 
         int signalLevel = hiLevel;
@@ -107,7 +107,7 @@ public class SoundGenerator {
         for (int b : data) {
             writeDataByte(os, b, hiLevel, loLevel, sampleRate);
         }
-        Signal.writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
+       Signal.writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
     }
 
     public void setVolume(float volume) {

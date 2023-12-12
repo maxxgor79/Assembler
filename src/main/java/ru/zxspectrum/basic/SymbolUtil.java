@@ -17,6 +17,10 @@ public final class SymbolUtil {
         return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(ch) != -1;
     }
 
+    public static boolean isUnderline(int ch) {
+        return ch == '_';
+    }
+
     public static boolean isOperator(int ch) {
         return (ch >= 0xa5 && ch <= 0xff) || (ch >= 0x10 && ch <= 0x17);
     }

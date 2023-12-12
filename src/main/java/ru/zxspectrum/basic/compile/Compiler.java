@@ -82,7 +82,7 @@ public class Compiler {
         ByteArrayOutputStream bo = new ByteArrayOutputStream();
         boolean pendingNumber = true;
         for (Lexem lexem : lineLexemList) {
-            if (lexem.getType() == LexemType.Identifier) {
+            if (lexem.getType() == LexemType.Variable) {
                 Lexem value = replacer.getValue(lexem.getValue());
                 if (value != null) {
                     lexem = value;

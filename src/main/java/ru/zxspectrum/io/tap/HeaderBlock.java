@@ -117,8 +117,7 @@ public class HeaderBlock extends Block {
         os.write(flag.getCode());
         byte[] data = getBytes();
         os.write(data);
-        checkSum = TapUtil.calculateChecksum(data);
-        os.write(checkSum);
+        os.write(checkSum = TapUtil.calculateChecksum(data));
     }
 
 
@@ -127,7 +126,7 @@ public class HeaderBlock extends Block {
         try {
             LEDataOutputStream dos = new LEDataOutputStream(baos);
             if (headerType != null) {
-                dos.writeByte(headerType.getCode());
+                dos.write(headerType.getCode());
             }
             dos.write(filename);
             dos.writeShort(dataBlockLength);
@@ -178,25 +177,42 @@ public class HeaderBlock extends Block {
         return TapUtil.calculateChecksum(getBytes());
     }
 
+    @Override
+    public int size() {
+        return SIZE;
+    }
+
     public void setBytesParams(@NonNull BytesParams bytesParams) {
+        if (this.bytesParams == bytesParams) {
+            return;
+        }
         headerType = HeaderType.Bytes;
         this.bytesParams = bytesParams;
         checkSum = calcCheckSum();
     }
 
     public void setProgramParams(@NonNull ProgramParams programParams) {
+        if (this.programParams == programParams) {
+            return;
+        }
         headerType = HeaderType.Program;
         this.programParams = programParams;
         checkSum = calcCheckSum();
     }
 
     public void setCharParams(@NonNull ArrayParams charParams) {
+        if (this.charParams == charParams) {
+            return;
+        }
         this.headerType = HeaderType.CharArray;
         this.charParams = charParams;
         checkSum = calcCheckSum();
     }
 
     public void setNumberParams(@NonNull ArrayParams numberParams) {
+        if (this.numberParams == numberParams) {
+            return;
+        }
         this.headerType = HeaderType.NumberArray;
         this.numberParams = numberParams;
         checkSum = calcCheckSum();

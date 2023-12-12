@@ -20,56 +20,63 @@ import ru.zxspectrum.basic.SymbolUtil;
 @EqualsAndHashCode
 public class Replacer {
 
-    private Map<String, Lexem> varMap = new HashMap<>();
+  private Map<String, Lexem> varMap = new HashMap<>();
 
-    public Replacer() {
+  public Replacer() {
 
+  }
+
+  public Replacer(@NonNull final Map<String, Lexem> varMap) {
+    for (Map.Entry<String, Lexem> entry : varMap.entrySet()) {
+      add(entry.getKey(), entry.getValue());
     }
+  }
 
-    public Replacer(@NonNull final Map<String, Lexem> varMap) {
-        for (Map.Entry<String, Lexem> entry : varMap.entrySet()) {
-            add(entry.getKey(), entry.getValue());
+  public boolean isEmpty() {
+    return varMap.isEmpty();
+  }
+
+  private static boolean isValid(String varName) {
+    if (varName == null || varName.trim().isEmpty()) {
+      return false;
+    }
+    byte[] data = varName.getBytes();
+    if (SymbolUtil.isUnderline(data[0]) || SymbolUtil.isAlphabet(data[0])) {
+      for (int i = 1; i < data.length; i++) {
+        if (!SymbolUtil.isAlphabet(data[i]) && !SymbolUtil.isDigit(data[i])
+            && !SymbolUtil.isUnderline(data[i])) {
+          return false;
         }
+      }
+      return true;
     }
+    return false;
+  }
 
-    public boolean isEmpty() {
-        return varMap.isEmpty();
+  public Replacer add(@NonNull final String varName, @NonNull final Lexem value) {
+    if (!isValid(varName)) {
+      throw new IllegalArgumentException("varName='" + varName + "'");
     }
+    varMap.put(varName, value);
+    return this;
+  }
 
-    private static boolean isValid(String varName) {
-        for (int i = 0; i < varName.length(); i++) {
-            int ch = varName.charAt(i);
-            if (!SymbolUtil.isAlphabet(ch)) {
-                return false;
-            }
-        }
-        return true;
-    }
+  public boolean remove(final String varName) {
+    return varMap.remove(varName) != null;
+  }
 
-    public Replacer add(@NonNull final String varName, @NonNull final Lexem value) {
-        if (varName.trim().isEmpty() || !isValid(varName)) {
-            throw new IllegalArgumentException("varName='" + varName + "'");
-        }
-        varMap.put(varName, value);
-        return this;
-    }
+  public Collection<String> variables() {
+    return Collections.unmodifiableCollection(varMap.keySet());
+  }
 
-    public boolean remove(final String varName) {
-        return varMap.remove(varName) != null;
-    }
+  public boolean contains(final String varName) {
+    return varMap.containsKey(varName);
+  }
 
-    public Collection<String> variables() {
-        return Collections.unmodifiableCollection(varMap.keySet());
+  public Lexem getValue(final String varName) {
+    if (varName == null) {
+      return null;
     }
-
-    public boolean contains(final String varName) {
-        return varMap.containsKey(varName);
-    }
-
-    public Lexem getValue(final String varName) {
-        if (varName == null) {
-            return null;
-        }
-        return varMap.get(varName);
-    }
+    return varMap.get(varName);
+  }
 }
