@@ -132,10 +132,9 @@ public class SoundGenerator {
             if (silenceBeforeBlock) {
                 writeSilence(baos);
             }
-            //log.info("blockType:{}", block.getFlag());
             writeSoundData(baos, block, sampleRate, volume);
-            //break;
         }
+        writeSilence(baos);
         WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
