@@ -1,8 +1,8 @@
 package ru.zxspectrum.assembler.lexem;
 
 import ru.zxspectrum.assembler.lang.Encoding;
+import ru.zxspectrum.assembler.lang.Type;
 import ru.zxspectrum.assembler.util.SymbolUtils;
-import ru.zxspectrum.assembler.util.TypeUtil;
 
 import java.math.BigInteger;
 
@@ -74,8 +74,8 @@ public final class Checker {
             return false;
         }
         int size = Encoding.sizeof(encoding);
-        BigInteger min = TypeUtil.getMin(size);
-        BigInteger max = TypeUtil.getMax(size);
+        BigInteger min = BigInteger.valueOf(Type.getUnsignedBySize(size).getMin());
+        BigInteger max = BigInteger.valueOf(Type.getUnsignedBySize(size).getMax());
         for (int i = 0; i < s.length(); i++) {
             BigInteger ch = BigInteger.valueOf(s.charAt(i));
             if (min.compareTo(ch) == 1 || max.compareTo(ch) == -1) {

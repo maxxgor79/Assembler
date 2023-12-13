@@ -131,9 +131,9 @@ D7	RST 10H
 E7	RST 20H
 F7	RST 30H
 08	EX AF,AF'
-18$o	JR $o
-28$o	JR Z,$o
-38$o	JR C,$o
+18$e	JR $e
+28$e	JR Z,$e
+38$e	JR C,$e
 48	LD C,B
 58	LD E,B
 68	LD L,B
@@ -266,9 +266,9 @@ CF	RST 8H
 DF	RST 18H
 EF	RST 28H
 FF	RST 38H
-10$o	DJNZ $o
-20$o	JR NZ, $o
-30$o	JR NC, $o
+10$e	DJNZ $e
+20$e	JR NZ, $e
+30$e	JR NC, $e
 01$aa	LD BC,$aa
 11$aa	LD DE,$aa
 21$aa	LD HL,$aa

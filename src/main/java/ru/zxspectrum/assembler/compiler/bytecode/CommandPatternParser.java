@@ -2,6 +2,7 @@ package ru.zxspectrum.assembler.compiler.bytecode;
 
 import lombok.NonNull;
 import ru.zxspectrum.assembler.error.ParserException;
+import ru.zxspectrum.assembler.lang.Type;
 import ru.zxspectrum.assembler.util.SymbolUtils;
 import ru.zxspectrum.assembler.util.TypeUtil;
 
@@ -10,14 +11,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author Maxim Gorin
  */
 public class CommandPatternParser implements Cloneable {
-    private String pattern;
+    protected String pattern;
 
-    private ByteOrder byteOrder;
+    protected ByteOrder byteOrder;
+
+    protected static final byte[] buf = new byte[256];
 
     protected CommandPatternParser() {
 
@@ -66,28 +72,30 @@ public class CommandPatternParser implements Cloneable {
         return sb.toString();
     }
 
-    public byte[] parse(@NonNull BigInteger... values) throws IOException {
-        PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(pattern.getBytes()));
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    List<Object> preTranslate() throws IOException {
+        final PushbackInputStream pis = new PushbackInputStream(new ByteArrayInputStream(pattern.getBytes()));
+        final List<Object> list = new ArrayList<>();
+        int index = 0;
         int ch;
-        int argIndex = 0;
         while ((ch = pis.read()) != -1) {
             if (SymbolUtils.isHexDigit(ch)) {
-                baos.write(getNumber(pis, ch));
+                buf[index++] = (byte) getNumber(pis, ch);
             } else {
                 if (SymbolUtils.isDollar(ch)) {
-                    String variable = getVariable(pis, ch);
-                    BigInteger arg = BigInteger.ZERO;
-                    if (argIndex < values.length) {
-                        arg = values[argIndex++];
+                    if (index > 0) {
+                        list.add(Arrays.copyOf(buf, index));
+                        index = 0;
                     }
-                    baos.write(TypeUtil.toBytes(arg, TypeUtil.toType(variable), byteOrder));
+                    list.add(TypeUtil.toType(getVariable(pis, ch)));
                 } else {
                     throw new ParserException("Invalid pattern format '" + pattern + "'");
                 }
             }
         }
-        return baos.toByteArray();
+        if (index > 0) {
+            list.add(Arrays.copyOf(buf, index));
+        }
+        return list;
     }
 
     public String getPattern() {

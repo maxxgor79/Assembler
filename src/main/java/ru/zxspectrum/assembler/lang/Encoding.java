@@ -47,10 +47,10 @@ public enum Encoding {
 
     public static int sizeof(Encoding encoding) {
         return switch (encoding) {
-            case MacRoman, MacCyrillic -> 8;
-            case ASCII -> 8;
-            case Windows1250, Windows1251, Windows1252, Windows1253, CP1251, KOI8_R -> 8;
-            case UTF_8, UTF_16 -> 16;
+            case MacRoman, MacCyrillic -> 1;
+            case ASCII -> 1;
+            case Windows1250, Windows1251, Windows1252, Windows1253, CP1251, KOI8_R -> 1;
+            case UTF_8, UTF_16 -> 2;
         };
     }
 }

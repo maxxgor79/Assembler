@@ -1,6 +1,9 @@
 package ru.zxspectrum.assembler.compiler.bytecode;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import ru.zxspectrum.assembler.error.AssemblerException;
 import ru.zxspectrum.assembler.error.ParserException;
 
 import java.io.IOException;
@@ -9,37 +12,33 @@ import java.math.BigInteger;
 /**
  * @Author Maxim Gorin
  */
+@Slf4j
 public class ByteCodeCompiler {
-    private int size;
-
-    private CommandPatternParser parser;
+    private PreTranslatedCommand preTranslatedCommand;
 
     public ByteCodeCompiler(@NonNull String codePattern, ByteOrder byteOrder) {
         if (codePattern.trim().isEmpty()) {
             throw new IllegalArgumentException("codePattern is null or empty");
         }
-        parser = new CommandPatternParser(codePattern, byteOrder);
-        size = calculateSize();
-    }
-
-    private int calculateSize() {
+        final CommandPatternParser parser = new CommandPatternParser(codePattern, byteOrder);
         try {
-            byte[] data = parser.parse(BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
-            return data.length;
+            preTranslatedCommand = new PreTranslatedCommand(parser.preTranslate(), byteOrder);
         } catch (IOException e) {
-            return 0;
+            log.info(e.getMessage(), e);
+            throw new AssemblerException(e.getMessage());
         }
     }
+
 
     public byte[] compile(@NonNull BigInteger... values) {
-        try {
-            return parser.parse(values);
-        } catch (IOException e) {
-            throw new ParserException("IO Error");
-        }
+        return preTranslatedCommand.encode(values);
     }
 
     public int getSize() {
-        return size;
+        return preTranslatedCommand.getSize();
+    }
+
+    public int getArgOffset(int argIndex) {
+        return preTranslatedCommand.getOffset(argIndex);
     }
 }

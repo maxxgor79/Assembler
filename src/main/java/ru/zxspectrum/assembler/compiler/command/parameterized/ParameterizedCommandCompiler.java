@@ -91,10 +91,9 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             , List<BigInteger> argumentCommandList) {
         Type expectedType = TypeUtil.toType(patternLexem.getValue());
         Expression expression = new Expression(compilerApi.getFile(), commandIterator, namespaceApi, false);
-        BigInteger offset = expression.evaluate(commandLexem);
+        final BigInteger address = expression.evaluate(commandLexem);
         commandIterator.rollback();
         if (TypeUtil.isAddressPattern(patternLexem.getValue())) {
-            final BigInteger address = offset.add(namespaceApi.getAddress());
             if (!TypeUtil.isInRange(expectedType, address)) {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), address.toString());
@@ -102,12 +101,15 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             argumentCommandList.add(address);
         } else {
             if (TypeUtil.isAddressOffsetPattern(patternLexem.getValue())) {
-                final BigInteger correctedOffset = offset.subtract(namespaceApi.getCurrentCodeOffset());
-                if (!TypeUtil.isInRange(expectedType, correctedOffset)) {
+                final BigInteger offset = address.subtract(namespaceApi.getAddress())
+                        .subtract(namespaceApi.getCurrentCodeOffset().add(BigInteger.valueOf(byteCodeCompiler
+                                .getArgOffset(argumentCommandList.size()))));
+
+                if (!TypeUtil.isInRange(expectedType, offset)) {
                     throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
-                            .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), correctedOffset.toString());
+                            .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), offset.toString());
                 }
-                argumentCommandList.add(correctedOffset);
+                argumentCommandList.add(offset);
             } else {
                 throw new AssemblerException("Invalid pattern type");
             }
@@ -130,7 +132,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         if (isAddressPattern(patternLexem.getValue()) || isAddressOffsetPattern(patternLexem.getValue())) {
             compileAddress(command, patternLexem, commandLexem, commandIterator, argumentCommandList, ignoreLabel);
         } else {
-            if (isIntegerPattern(patternLexem.getValue()) || isOffsetPattern(patternLexem.getValue())) {
+                if (isIntegerPattern(patternLexem.getValue()) || isOffsetPattern(patternLexem.getValue())) {
                 compileExpression(patternLexem, commandLexem, commandIterator, argumentCommandList);
             } else {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList

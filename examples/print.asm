@@ -1,5 +1,6 @@
 	org 40000
 	ld hl, text
+	ld a, end
 l1:	
 	ld a, (hl)
 	and a
@@ -10,3 +11,4 @@ l1:
 	inc hl
 	jr l1
 text:   db "Hello world!\0"
+end:

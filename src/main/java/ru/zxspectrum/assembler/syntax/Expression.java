@@ -293,7 +293,7 @@ public class Expression {
             throw new CompilerException(file, lexem.getLineNumber(), MessageList
                     .getMessage(MessageList.LABEL_NOT_FOUND), lexem.getValue());
         }
-        return result;
+        return result.add(namespaceApi.getAddress());//absolut address
     }
 
     private BigInteger evaluateVariable(Lexem lexem) {
