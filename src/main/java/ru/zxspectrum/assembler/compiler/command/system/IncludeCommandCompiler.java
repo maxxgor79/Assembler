@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
@@ -13,6 +13,7 @@ import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -83,10 +84,13 @@ public class IncludeCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.CYCLIC_DEPENDENCIES_ERROR), file.getAbsolutePath());
         }
-        CompilerApi compiler = CompilerFactory.create(namespaceApi, settingsApi, file, compilerApi.getOutputStream());
-        namespaceApi.addCompiled(file);
-        compiler.compile();
-        compilerApi.addCompiledLineCount(compiler.getCompiledLineCount());
-        compilerApi.addCompiledSourceCount(compiler.getCompiledSourceCount());
+        try (FileInputStream fis = new FileInputStream(file)) {
+            CompilerApi compiler = CompilerFactory.create(namespaceApi, settingsApi, file, fis
+                    , compilerApi.getOutputStream());
+            namespaceApi.addCompiled(file);
+            compiler.compile();
+            compilerApi.addCompiledLineCount(compiler.getCompiledLineCount());
+            compilerApi.addCompiledSourceCount(compiler.getCompiledSourceCount());
+        }
     }
 }

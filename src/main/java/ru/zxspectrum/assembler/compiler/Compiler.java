@@ -1,17 +1,17 @@
 package ru.zxspectrum.assembler.compiler;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.Assembler;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.command.CommandTable;
 import ru.zxspectrum.assembler.compiler.command.noparameterized.NoParameterizedSingleCommandGroupCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
@@ -28,7 +28,6 @@ import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.syntax.SyntaxAnalyzer;
-import ru.zxspectrum.assembler.util.FileUtil;
 
 /**
  * @Author Maxim Gorin
@@ -45,8 +44,6 @@ public class Compiler implements CompilerApi {
 
     private SyntaxAnalyzer syntaxAnalyzer;
 
-    private InputStream is;
-
     private OutputStream os;
 
     private File file;
@@ -56,13 +53,11 @@ public class Compiler implements CompilerApi {
     protected CommandTable commandCompilerTable;
 
     public Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull SyntaxAnalyzer syntaxAnalyzer
-            , @NonNull FileInputStream is, @NonNull OutputStream os) {
+            , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
         this.namespaceApi = namespaceApi;
         this.settingsApi = settingsApi;
         this.syntaxAnalyzer = syntaxAnalyzer;
         this.os = os;
-        this.is = is;
         initDefaultValues();
     }
 
@@ -156,29 +151,25 @@ public class Compiler implements CompilerApi {
 
     @Override
     public void compile() throws IOException {
-        try {
-            loadCommandTables();
-            if (commandCompilerTable.isEmpty()) {
-                throw new CompilerException(MessageList.getMessage(MessageList.COMMAND_DATA_IS_NOT_LOADED));
-            }
-            Output.println(MessageList.getMessage(MessageList.COMPILING) + " " + getFile().getAbsolutePath());
-            for (LexemSequence lexemSequence : syntaxAnalyzer) {
-                Lexem lexem = lexemSequence.first();
-                setLineNumber(lexem.getLineNumber());
-                if (lexem.getType() == LexemType.LABEL) {
-                    processLabel(lexem);
-                } else {
-                    if (!processCommand(lexemSequence)) {
-                        throw new CompilerException(getFile(), lexemSequence.getLineNumber(), MessageList
-                                .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
-                    }
+        loadCommandTables();
+        if (commandCompilerTable.isEmpty()) {
+            throw new CompilerException(MessageList.getMessage(MessageList.COMMAND_DATA_IS_NOT_LOADED));
+        }
+        Output.println(MessageList.getMessage(MessageList.COMPILING) + " " + getFile().getAbsolutePath());
+        for (LexemSequence lexemSequence : syntaxAnalyzer) {
+            Lexem lexem = lexemSequence.first();
+            setLineNumber(lexem.getLineNumber());
+            if (lexem.getType() == LexemType.LABEL) {
+                processLabel(lexem);
+            } else {
+                if (!processCommand(lexemSequence)) {
+                    throw new CompilerException(getFile(), lexemSequence.getLineNumber(), MessageList
+                            .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
                 }
             }
-            sourceCount++;
-            compiledLineCount += syntaxAnalyzer.getLineCount();
-        } finally {
-            FileUtil.safeClose(is);
         }
+        sourceCount++;
+        compiledLineCount += syntaxAnalyzer.getLineCount();
     }
 
     @Override

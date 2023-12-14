@@ -2,7 +2,7 @@ package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.error.CompilerException;

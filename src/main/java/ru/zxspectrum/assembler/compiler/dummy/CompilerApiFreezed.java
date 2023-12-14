@@ -12,6 +12,7 @@ import java.io.OutputStream;
  */
 public class CompilerApiFreezed implements CompilerApi {
     private CompilerApi compilerApi;
+
     private int lineNumber;
 
     private int compiledLineNumber;

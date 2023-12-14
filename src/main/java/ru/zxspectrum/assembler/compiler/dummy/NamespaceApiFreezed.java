@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.compiler.dummy;
 
 import lombok.NonNull;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
 
 import java.io.File;
@@ -26,6 +26,12 @@ public class NamespaceApiFreezed implements NamespaceApi {
         this.namespaceApi = namespaceApi;
         this.address = address;
         this.currentCodeOffset = currentCodeOffset;
+    }
+
+    @Override
+    public void reset() {
+        address = BigInteger.ZERO;
+        currentCodeOffset = BigInteger.ZERO;
     }
 
     @Override

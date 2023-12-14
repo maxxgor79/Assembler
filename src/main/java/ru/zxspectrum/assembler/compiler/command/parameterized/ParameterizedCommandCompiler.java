@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.compiler.command.parameterized;
 
 import lombok.NonNull;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;

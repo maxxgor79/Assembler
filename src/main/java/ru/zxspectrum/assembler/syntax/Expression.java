@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.syntax;
 
 import lombok.NonNull;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.DividingByZeroException;
 import ru.zxspectrum.assembler.error.ExpressionException;

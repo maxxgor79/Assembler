@@ -1,19 +1,16 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
-import ru.zxspectrum.assembler.NamespaceApi;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
-import ru.zxspectrum.assembler.syntax.Expression;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.util.RepeatableIterator;
 import ru.zxspectrum.assembler.util.RepeatableIteratorImpl;
-
-import java.math.BigInteger;
 
 public class UdefCommandCompiler implements CommandCompiler {
     public static final String NAME = "udef";
