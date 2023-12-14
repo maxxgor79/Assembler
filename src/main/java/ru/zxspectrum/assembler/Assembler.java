@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -19,6 +20,8 @@ import ru.zxspectrum.assembler.lang.Encoding;
 import ru.zxspectrum.assembler.ns.AbstractNamespaceApi;
 import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.resource.Loader;
+import ru.zxspectrum.assembler.settings.AssemblerSettings;
+import ru.zxspectrum.assembler.settings.ResourceSettings;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.util.FileUtil;
@@ -48,15 +51,17 @@ import java.util.Set;
  */
 
 @Slf4j
-public class Assembler extends AbstractNamespaceApi implements SettingsApi {
+public class Assembler extends AbstractNamespaceApi {
 
-    protected static final String EXT_TAP = "tap";
+    public static final String EXT_TAP = "tap";
 
-    protected static final String EXT_WAV = "wav";
+    public static final String EXT_WAV = "wav";
 
     private final List<PostCommandCompiler> postCommandCompilerList = new LinkedList<>();
 
-    private final static Args ARGS = new Args();
+    private final AssemblerSettings settings = new AssemblerSettings();
+
+    private BigInteger address = new BigInteger("8000", 16);
 
     public Assembler() {
         reset();
@@ -71,26 +76,16 @@ public class Assembler extends AbstractNamespaceApi implements SettingsApi {
 
     private void loadSettings() {
         try {
-            Variables.load(Loader.openRoot("settings.properties"));
-            ARGS.setPlatformEncoding(Encoding.valueByName(
-                    Variables.getString(Variables.PLATFORM_ENCODING, Encoding
-                            .ASCII.getName())));
-            ARGS.setSourceEncoding(
-                    Encoding.valueByName(Variables.getString(Variables.SOURCE_ENCODING, Encoding
-                            .UTF_8.getName())));
-            String value = Variables.getString(Variables.BYTE_ORDER, "little-endian");
-            ARGS.setByteOrder("big-endian".equals(value) ? ByteOrder.BigEndian : ByteOrder.LittleEndian);
-            ARGS.setMinAddress(Variables.getBigInteger(Variables.MIN_ADDRESS, ARGS.getMinAddress()));
-            ARGS.setMaxAddress(Variables.getBigInteger(Variables.MAX_ADDRESS, ARGS.getMaxAddress()));
-            ARGS.setOutputDirectory(new File(Variables.getString(Variables.OUTPUT_DIRECTORY, "output")));
-            ARGS.setMajorVersion(Variables.getString(Variables.MAJOR_VERSION, ARGS.getMajorVersion()));
-            ARGS.setMinorVersion(Variables.getString(Variables.MINOR_VERSION, ARGS.getMinorVersion()));
+            ResourceSettings resourceSettings = new ResourceSettings();
+            resourceSettings.load("settings.properties");
+            settings.merge(resourceSettings);
+            setDefaultSettings();
         } catch (Exception e) {
             log.info(e.getMessage());
         }
     }
 
-    public void run(@NonNull File... files) throws IOException {
+    public void run(@NonNull final File... files) throws IOException {
         OutputStream os = null;
         try {
             for (File file : files) {
@@ -110,10 +105,10 @@ public class Assembler extends AbstractNamespaceApi implements SettingsApi {
                 } finally {
                     FileUtil.safeClose(os);
                 }
-                if (ARGS.isProduceTap()) {
+                if (settings.isProduceTap()) {
                     createTap(outputFile, getAddress());
                 }
-                if (ARGS.isProduceWav()) {
+                if (settings.isProduceWav()) {
                     createWav(outputFile, getAddress());
                 }
             }
@@ -123,11 +118,11 @@ public class Assembler extends AbstractNamespaceApi implements SettingsApi {
         }
     }
 
-    private void createWav(File file, @NonNull final BigInteger address)
+    private void createWav(final File file, @NonNull final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(file);
         final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
-        final File wavFile = FileUtil.createNewFileSameName(ARGS.getOutputDirectory(), file, EXT_WAV);
+        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, EXT_WAV);
         final SoundGenerator sg = new SoundGenerator(wavFile);
         sg.setSilenceBeforeBlock(true);
         sg.generateWav(tapData);
@@ -136,30 +131,30 @@ public class Assembler extends AbstractNamespaceApi implements SettingsApi {
     private TapData createTap(final File file, @NonNull final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(file);
-        final File tapFile = FileUtil.createNewFileSameName(ARGS.getOutputDirectory(), file, EXT_TAP);
+        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, EXT_TAP);
         return TapUtil.createBinaryTap(tapFile, data, address.intValue());
     }
 
-    private File createOutputFile(File file) {
-        if (!ARGS.getOutputDirectory().exists()) {
-            ARGS.getOutputDirectory().mkdirs();
+    private File createOutputFile(final File file) {
+        if (!settings.getOutputDirectory().exists()) {
+            settings.getOutputDirectory().mkdirs();
         }
-        return FileUtil.createNewFileSameName(ARGS.getOutputDirectory(), file, null);
+        return FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, null);
     }
 
-    protected CompilerApi runSingle(File file, OutputStream os) throws IOException {
+    protected CompilerApi runSingle(final File file, final OutputStream os) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
-            CompilerApi compilerApi = CompilerFactory.create(this, this, file, fis, os);
+            CompilerApi compilerApi = CompilerFactory.create(this, settings, file, fis, os);
             compilerApi.compile();
             return compilerApi;
         }
     }
 
-    private static String createWelcome() {
+    private String createWelcome() {
         StringBuilder sb = new StringBuilder();
         String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME),
-                ARGS.getMajorVersion()
-                , ARGS.getMinorVersion());
+                settings.getMajorVersion()
+                , settings.getMinorVersion());
         String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
         String lineExternal = SymbolUtils.fillChar('*', 80);
         sb.append(lineExternal).append(System.lineSeparator());
@@ -174,20 +169,79 @@ public class Assembler extends AbstractNamespaceApi implements SettingsApi {
         return sb.toString();
     }
 
-    public static void main(String[] args) throws Exception {
+    private List<File> setCli(String[] args, final Options options) {
+        final CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            final CommandLine cli = parser.parse(options, args);
+            settings.load(cli);
+            setDefaultSettings();
+            final List<File> files = new LinkedList<>();
+            for (final String fileName : cli.getArgList()) {
+                files.add(new File(fileName));
+            }
+            return files;
+        } catch (ParseException e) {
+            log.debug(e.getMessage());
+        }
+        return Collections.emptyList();
+    }
+
+    private void setDefaultSettings() {
+        if (settings.getAddress() != null) {
+            setAddress(settings.getAddress());
+        }
+    }
+
+    //----------------------------------------------------------
+    @Override
+    public void setAddress(@NonNull final BigInteger address) {
+        if (address.signum() == -1) {
+            throw new IllegalArgumentException("address is negative");
+        }
+        if (!TypeUtil.isInRange(settings.getMinAddress(), settings.getMaxAddress(), address)) {
+            throw new IllegalArgumentException("address is out of range");
+        }
+        this.address = address;
+    }
+
+    @Override
+    public BigInteger getAddress() {
+        return this.address;
+    }
+
+    @Override
+    public void addToList(@NonNull PostCommandCompiler postCommandCompiler) {
+        postCommandCompilerList.add(postCommandCompiler);
+    }
+
+    protected void postCompile(final File outputFile) {
+        RandomAccessFile randomAccessFile = null;
+        try {
+            Collections.sort(postCommandCompilerList,
+                    (o1, o2) -> o1.getCommandOffset().compareTo(o2.getCommandOffset()));
+            randomAccessFile = new RandomAccessFile(outputFile, "rwd");
+            for (PostCommandCompiler postCommandCompiler : postCommandCompilerList) {
+                postCommandCompiler.compile(randomAccessFile);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            FileUtil.safeClose(randomAccessFile);
+        }
+    }
+
+    public static void main(final String[] args) throws Exception {
         Options options = getOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("z80asm <file1>...<fileN>", options);
             return;
         }
-        List<File> fileList = new LinkedList<>();
-        for (String arg : cliParsing(args, options)) {
-            fileList.add(new File(arg));
-        }
+        Assembler assembler = new Assembler();
+        List<File> fileList = assembler.setCli(args, options);
         if (!fileList.isEmpty()) {
-            Output.println(createWelcome());
-            Assembler assembler = new Assembler();
+            Output.println(assembler.createWelcome());
             assembler.run(fileList.toArray(new File[fileList.size()]));
         } else {
             Output.println("No input files");
@@ -211,115 +265,5 @@ public class Assembler extends AbstractNamespaceApi implements SettingsApi {
         options.addOption("tap", false, "to produce in <TAP> format.");
         options.addOption("wav", false, "to produce in <WAV> format.");
         return options;
-    }
-
-    private static List<String> cliParsing(String[] args, Options options) {
-        CommandLineParser parser = new DefaultParser();
-        try {
-            // parse the command line arguments
-            CommandLine cli = parser.parse(options, args);
-            if (cli.hasOption("a")) {
-                ARGS.setAddress(new BigInteger(cli.getOptionValue("a")));
-            }
-            if (cli.hasOption("min")) {
-                ARGS.setMinAddress(new BigInteger(cli.getOptionValue("min")));
-            }
-            if (cli.hasOption("max")) {
-                ARGS.setMaxAddress(new BigInteger(cli.getOptionValue("max")));
-            }
-            if (cli.hasOption("o")) {
-                ARGS.setOutputDirectory(new File(cli.getOptionValue("o")));
-            }
-            if (cli.hasOption("b")) {
-                ARGS.setByteOrder("big-endian".equals(cli.getOptionValue("b")) ? ByteOrder.BigEndian :
-                        ByteOrder.LittleEndian);
-            }
-            if (cli.hasOption("s")) {
-                ARGS.setSourceEncoding(Encoding.valueByName(cli.getOptionValue("s")));
-            }
-            if (cli.hasOption("p")) {
-                ARGS.setPlatformEncoding(Encoding.valueByName(cli.getOptionValue("p")));
-            }
-            if (cli.hasOption("tap")) {
-                ARGS.setProduceTap(true);
-            }
-
-            if (cli.hasOption("wav")) {
-                ARGS.setProduceWav(true);
-            }
-
-            return cli.getArgList();
-        } catch (ParseException e) {
-            log.debug(e.getMessage());
-        }
-        return Collections.emptyList();
-    }
-
-    //----------------------------------------------------------
-    @Override
-    public void setAddress(@NonNull BigInteger address) {
-        if (address.signum() == -1) {
-            throw new IllegalArgumentException("address is negative");
-        }
-        if (!TypeUtil.isInRange(ARGS.getMinAddress(), ARGS.getMaxAddress(), address)) {
-            throw new IllegalArgumentException("address is out of range");
-        }
-        ARGS.setAddress(address);
-    }
-
-    @Override
-    public BigInteger getAddress() {
-        return ARGS.getAddress();
-    }
-
-    @Override
-    public void addToList(@NonNull PostCommandCompiler postCommandCompiler) {
-        postCommandCompilerList.add(postCommandCompiler);
-    }
-
-    protected void postCompile(File outputFile) {
-        RandomAccessFile randomAccessFile = null;
-        try {
-            Collections.sort(postCommandCompilerList,
-                    (o1, o2) -> o1.getCommandOffset().compareTo(o2.getCommandOffset()));
-            randomAccessFile = new RandomAccessFile(outputFile, "rwd");
-            for (PostCommandCompiler postCommandCompiler : postCommandCompilerList) {
-                postCommandCompiler.compile(randomAccessFile);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        } finally {
-            FileUtil.safeClose(randomAccessFile);
-        }
-    }
-
-    @Override
-    public ByteOrder getByteOrder() {
-        return ARGS.getByteOrder();
-    }
-
-    @Override
-    public Encoding getSourceEncoding() {
-        return ARGS.getSourceEncoding();
-    }
-
-    @Override
-    public Encoding getPlatformEncoding() {
-        return ARGS.getPlatformEncoding();
-    }
-
-    @Override
-    public BigInteger getMinAddress() {
-        return ARGS.getMinAddress();
-    }
-
-    @Override
-    public BigInteger getMaxAddress() {
-        return ARGS.getMaxAddress();
-    }
-
-    @Override
-    public File getOutputDirectory() {
-        return ARGS.getOutputDirectory();
     }
 }

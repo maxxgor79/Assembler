@@ -4,6 +4,7 @@ import ru.zxspectrum.assembler.compiler.bytecode.ByteOrder;
 import ru.zxspectrum.assembler.lang.Encoding;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 
 /**
@@ -11,16 +12,23 @@ import java.math.BigInteger;
  */
 public interface SettingsApi {
 
-    public ByteOrder getByteOrder();
+    void load(String name) throws IOException;
 
-    public Encoding getSourceEncoding();
+    ByteOrder getByteOrder();
 
-    public Encoding getPlatformEncoding();
+    Encoding getSourceEncoding();
 
-    public BigInteger getMinAddress();
+    Encoding getPlatformEncoding();
 
-    public BigInteger getMaxAddress();
+    BigInteger getMinAddress();
 
-    public File getOutputDirectory();
+    BigInteger getMaxAddress();
 
+    File getOutputDirectory();
+
+    String getMajorVersion();
+
+    String getMinorVersion();
+
+    void merge(SettingsApi setting);
 }
