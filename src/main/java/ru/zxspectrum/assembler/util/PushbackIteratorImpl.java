@@ -19,7 +19,7 @@ public class PushbackIteratorImpl<E> implements PushbackIterator<E> {
     private E lastElement;
 
     @Override
-    public boolean rollback() {
+    public boolean back() {
         if (lastElement != null) {
             rollbackElement = lastElement;
             lastElement = null;

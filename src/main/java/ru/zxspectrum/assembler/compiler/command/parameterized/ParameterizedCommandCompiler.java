@@ -80,7 +80,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         try {
             final Expression expression = new Expression(compilerApi.getFile(), commandIterator, namespaceApi);
             value = expression.evaluate(commandLexem);
-            commandIterator.rollback();
+            commandIterator.back();
             if (!TypeUtil.isInRange(expectedType, value)) {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.VALUE_OUT_OF_RANGE), value.toString());
@@ -103,7 +103,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             final BigInteger offset = address.subtract(namespaceApi.getAddress())
                     .subtract(namespaceApi.getCurrentCodeOffset().add(BigInteger.valueOf(byteCodeCompiler
                             .getArgOffset(argumentCommandList.size()))));
-            commandIterator.rollback();
+            commandIterator.back();
             if (!TypeUtil.isInRange(expectedType, offset)) {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.VALUE_OUT_OF_RANGE), offset.toString());

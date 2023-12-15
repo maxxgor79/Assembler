@@ -289,10 +289,10 @@ public class Expression {
 
     private BigInteger evaluateLabel(Lexem lexem) {
         BigInteger result = namespaceApi.getLabelCodeOffset(lexem.getValue());
-        lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         if (result == null) {
             throw new UndefinedLabelException();
         }
+        lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         return result.add(namespaceApi.getAddress());//absolut address
     }
 
