@@ -19,24 +19,94 @@ import java.util.Arrays;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCommand {
-    private static final String BASIC_INST = "nop\nld bc,10h\n";
+    private static final String BASIC_INST1 = "nop\nld bc,8000h\nld (bc),a\ninc bc\ninc b\ndec b\nld b,120\nrlca\n" +
+            "ex af,af'\nadd hl, bc\nld a,(bc)\ndec bc\ninc c\ndec c\nld c,0xff\nrrca\ndjnz 32768\nld de,$1313\n" +
+            "ld (de),a\ninc de\ninc d\ndec d\nld d,60h\nrla\njr 32768\nadd hl,de\nld a,(de)\ndec de\ninc e\ndec e\n" +
+            "ld e,$11\nrra\njr nz, 32768\nld hl,0x4040\nld(0x6363),hl\ninc hl\ninc h\ndec h\nld h,$15\ndaa\n" +
+            "jr z, 32768\nadd hl,hl\nld hl,(16383)\n";
+    private static final String BASIC_INST2 = "";
 
     @Test
-    void testBasicCommands() throws IOException {
+    void testBasicCommands1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
         resourceSettings.load("settings.properties");
-        ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST.getBytes());
+        ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST1.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-        CompilerApi compiler = CompilerFactory.create(new CompilerNamespace(), new ConstantSettings()
+        CompilerNamespace namespace = new CompilerNamespace();
+        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
         Assertions.assertEquals(bytes[pc++], 0);
         Assertions.assertEquals(bytes[pc++], 1);
-        Assertions.assertEquals(bytes[pc++], 0x10);
         Assertions.assertEquals(bytes[pc++], 0);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x80);
+        Assertions.assertEquals(bytes[pc++], 0x02);
+        Assertions.assertEquals(bytes[pc++], 0x03);
+        Assertions.assertEquals(bytes[pc++], 0x04);
+        Assertions.assertEquals(bytes[pc++], 0x05);
+        Assertions.assertEquals(bytes[pc++], 0x06);
+        Assertions.assertEquals(bytes[pc++], 120);
+        Assertions.assertEquals(bytes[pc++], 0x07);
+        Assertions.assertEquals(bytes[pc++], 0x08);
+        Assertions.assertEquals(bytes[pc++], 0x09);
+        Assertions.assertEquals(bytes[pc++], 0x0A);
+        Assertions.assertEquals(bytes[pc++], 0x0B);
+        Assertions.assertEquals(bytes[pc++], 0x0C);
+        Assertions.assertEquals(bytes[pc++], 0x0D);
+        Assertions.assertEquals(bytes[pc++], 0x0E);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xff);
+        Assertions.assertEquals(bytes[pc++], 0x0F);
+        int codeOff = namespace.getCurrentCodeOffset().intValue();
+        Assertions.assertEquals(bytes[pc++], 0x10);
+        Assertions.assertEquals(bytes[pc++], -22);
+        Assertions.assertEquals(bytes[pc++], 0x11);
+        Assertions.assertEquals(bytes[pc++], 0x13);
+        Assertions.assertEquals(bytes[pc++], 0x13);
+        Assertions.assertEquals(bytes[pc++], 0x12);
+        Assertions.assertEquals(bytes[pc++], 0x13);//inc de
+        Assertions.assertEquals(bytes[pc++], 0x14);
+        Assertions.assertEquals(bytes[pc++], 0x15);
+        Assertions.assertEquals(bytes[pc++], 0x16);
+        Assertions.assertEquals(bytes[pc++], 0x60);
+        Assertions.assertEquals(bytes[pc++], 0x17);
+        Assertions.assertEquals(bytes[pc++], 0x18);
+        Assertions.assertEquals(bytes[pc++], -34);
+        Assertions.assertEquals(bytes[pc++], 0x19);
+        Assertions.assertEquals(bytes[pc++], 0x1A);
+        Assertions.assertEquals(bytes[pc++], 0x1B);
+        Assertions.assertEquals(bytes[pc++], 0x1C);
+        Assertions.assertEquals(bytes[pc++], 0x1D);
+        Assertions.assertEquals(bytes[pc++], 0x1E);
+        Assertions.assertEquals(bytes[pc++], 0x11);
+        Assertions.assertEquals(bytes[pc++], 0x1F);
+        Assertions.assertEquals(bytes[pc++], 0x20);
+        Assertions.assertEquals(bytes[pc++], -44);
+        Assertions.assertEquals(bytes[pc++], 0x21);
+        Assertions.assertEquals(bytes[pc++], 0x40);
+        Assertions.assertEquals(bytes[pc++], 0x40);
+        Assertions.assertEquals(bytes[pc++], 0x22);
+        Assertions.assertEquals(bytes[pc++], 0x63);
+        Assertions.assertEquals(bytes[pc++], 0x63);
+        Assertions.assertEquals(bytes[pc++], 0x23);
+        Assertions.assertEquals(bytes[pc++], 0x24);
+        Assertions.assertEquals(bytes[pc++], 0x25);
+        Assertions.assertEquals(bytes[pc++], 0x26);
+        Assertions.assertEquals(bytes[pc++], 0x15);
+        Assertions.assertEquals(bytes[pc++], 0x27);
+        Assertions.assertEquals(bytes[pc++], 0x28);
+        Assertions.assertEquals(bytes[pc++], -58);
+        Assertions.assertEquals(bytes[pc++], 0x29);
+        Assertions.assertEquals(bytes[pc++], 0x2A);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFF);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x3F);
+        /*
+        System.out.println(bytes[pc++]);
+        System.out.println(bytes[pc++]);
+        System.out.println(bytes[pc++]);
+         */
         log.info(Arrays.toString(bytes));
     }
 

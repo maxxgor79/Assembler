@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.compiler.command;
 
+import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CommandGroupCompiler;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -24,14 +25,11 @@ public class CommandTable {
         return commandMap.get(command);
     }
 
-    public CommandCompiler put(LexemSequence command, CommandGroupCompiler commandGroupCompiler) {
-        if (command == null) {
-            return null;
-        }
+    public CommandCompiler put(@NonNull LexemSequence command, @NonNull CommandGroupCompiler commandGroupCompiler) {
         return commandMap.put(command, commandGroupCompiler);
     }
 
-    public void putAll(CommandTable t) {
+    public void putAll(@NonNull CommandTable t) {
         if (t == null) {
             return;
         }

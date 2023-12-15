@@ -74,9 +74,8 @@ public class Compiler implements CompilerApi {
             os.write(commandData);
             return true;
         } else {
-            List<Lexem> lexemList = new LinkedList<>();
-            for (Lexem lexem : lexemSequence.get()) {
-                lexemList.add(lexem);
+            LinkedList<Lexem> lexemList = new LinkedList<>(lexemSequence.get());//non best solution, but it works
+            while (!lexemList.isEmpty()) {
                 compiler = commandCompilerTable.get(new LexemSequence(lexemList));
                 if (compiler != null) {
                     byte[] commandData = compiler.compile(lexemSequence);
@@ -86,6 +85,7 @@ public class Compiler implements CompilerApi {
                         return true;
                     }
                 }
+                lexemList.removeLast();
             }
         }
         return false;
