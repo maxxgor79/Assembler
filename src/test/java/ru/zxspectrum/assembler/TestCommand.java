@@ -23,8 +23,9 @@ public class TestCommand {
             "ex af,af'\nadd hl, bc\nld a,(bc)\ndec bc\ninc c\ndec c\nld c,0xff\nrrca\ndjnz 32768\nld de,$1313\n" +
             "ld (de),a\ninc de\ninc d\ndec d\nld d,60h\nrla\njr 32768\nadd hl,de\nld a,(de)\ndec de\ninc e\ndec e\n" +
             "ld e,$11\nrra\njr nz, 32768\nld hl,0x4040\nld(0x6363),hl\ninc hl\ninc h\ndec h\nld h,$15\ndaa\n" +
-            "jr z, 32768\nadd hl,hl\nld hl,(16383)\n";
-    private static final String BASIC_INST2 = "";
+            "jr z, 32768\nadd hl,hl\nld hl,(16383)\ndec hl\ninc l\ndec l\nld l,$22\ncpl\njr nc, 32768\nld sp, 7777\n" +
+            "ld (0x9999), A\ninc sp\ninc (hl)\ndec(hl)\nld(hl),$55\nSCF\njr c,32768\nadd hl,sp\nld a,($1111)\n" +
+            "dec sp\ninc a\nDEC A\nLd a,  1\nccf\n";
 
     @Test
     void testBasicCommands1() throws IOException {
@@ -102,16 +103,63 @@ public class TestCommand {
         Assertions.assertEquals(bytes[pc++], 0x2A);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFF);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0x3F);
+        Assertions.assertEquals(bytes[pc++], 0x2B);
+        Assertions.assertEquals(bytes[pc++], 0x2C);
+        Assertions.assertEquals(bytes[pc++], 0x2D);
+        Assertions.assertEquals(bytes[pc++], 0x2E);
+        Assertions.assertEquals(bytes[pc++], 0x22);
+        Assertions.assertEquals(bytes[pc++], 0x2F);
+        Assertions.assertEquals(bytes[pc++], 0x30);
+        Assertions.assertEquals(bytes[pc++], -70);
+        Assertions.assertEquals(bytes[pc++], 0x31);
+        Assertions.assertEquals(bytes[pc++], 97);
+        Assertions.assertEquals(bytes[pc++], 30);
+        Assertions.assertEquals(bytes[pc++], 0x32);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x99);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x99);
+        Assertions.assertEquals(bytes[pc++], 0x33);
+        Assertions.assertEquals(bytes[pc++], 0x34);
+        Assertions.assertEquals(bytes[pc++], 0x35);
+        Assertions.assertEquals(bytes[pc++], 0x36);
+        Assertions.assertEquals(bytes[pc++], 0x55);
+        Assertions.assertEquals(bytes[pc++], 0x37);
+        Assertions.assertEquals(bytes[pc++], 0x38);
+        Assertions.assertEquals(bytes[pc++], -84);
+        Assertions.assertEquals(bytes[pc++], 0x39);
+        Assertions.assertEquals(bytes[pc++], 0x3A);
+        Assertions.assertEquals(bytes[pc++], 0x11);
+        Assertions.assertEquals(bytes[pc++], 0x11);
+        Assertions.assertEquals(bytes[pc++], 0x3B);
+        Assertions.assertEquals(bytes[pc++], 0x3C);
+        Assertions.assertEquals(bytes[pc++], 0x3D);
+        Assertions.assertEquals(bytes[pc++], 0x3E);
+        Assertions.assertEquals(bytes[pc++], 1);
+        Assertions.assertEquals(bytes[pc++], 0x3F);
         /*
         System.out.println(bytes[pc++]);
         System.out.println(bytes[pc++]);
         System.out.println(bytes[pc++]);
+
+
          */
         log.info(Arrays.toString(bytes));
     }
 
+    private static final String BASIC_INST2 = "";
     @Test
-    void test2() {
+    void testBasicCommands2() throws IOException {
+        ResourceSettings resourceSettings = new ResourceSettings();
+        resourceSettings.load("settings.properties");
+        ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST1.getBytes());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
+        CompilerNamespace namespace = new CompilerNamespace();
+        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+                , new File("test"), bis, bos);
+        compiler.compile();
+        byte[] bytes = bos.toByteArray();
+        int pc = 0;
+        //Assertions.assertEquals(bytes[pc++], 0);
+        log.info(Arrays.toString(bytes));
     }
 }
