@@ -16,8 +16,8 @@ public class NoParameterizedSingleCommandGroupCompiler implements CommandGroupCo
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
-        return compiler.compile(lexemSequence, ignoreLabel);
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
+        return compiler.compile(lexemSequence);
     }
 
     @Override

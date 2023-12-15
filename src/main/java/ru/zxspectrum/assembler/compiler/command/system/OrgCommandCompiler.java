@@ -37,7 +37,7 @@ public class OrgCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
         if (!iterator.hasNext() ||

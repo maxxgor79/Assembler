@@ -9,9 +9,9 @@ DDE3	EX (SP),IX
 DDE5	PUSH IX
 DDE9	JP (IX)
 DDF9	LD SP,IX
-DD21$aa	LD IX,$aa
-DD22$aa	LD ($aa),IX
-DD2A$aa	LD IX,$aa
+DD21$nn	LD IX,$nn
+DD22$nn	LD ($nn),IX
+DD2A$nn	LD IX,($nn)
 DD34$d	INC (IX+$d)
 DD35$d	DEC (IX+$d)
 DD36$d$n	LD (IX+$d),$n

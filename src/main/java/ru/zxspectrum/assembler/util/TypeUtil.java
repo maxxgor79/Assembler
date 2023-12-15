@@ -15,8 +15,6 @@ import static ru.zxspectrum.assembler.lang.Type.Unknown;
 public final class TypeUtil {
     public static final char NUMBER_SYMBOL = 'n';
 
-    public static final char ADDRESS_SYMBOL = 'a';
-
     public static final char OFFSET_SYMBOL = 'd';
 
     public static final char ADDRESS_OFFSET = 'e';
@@ -50,20 +48,12 @@ public final class TypeUtil {
             if (pattern.startsWith(String.valueOf(OFFSET_SYMBOL))) {
                 return Type.getSignedBySize(getRepeatedCount(pattern, OFFSET_SYMBOL));
             } else {
-                if (pattern.startsWith(String.valueOf(ADDRESS_SYMBOL))) {
-                    return Type.getUnsignedBySize(getRepeatedCount(pattern, ADDRESS_SYMBOL));
-                } else {
-                    if (pattern.startsWith(String.valueOf(ADDRESS_OFFSET))) {
-                        return Type.getSignedBySize(getRepeatedCount(pattern, ADDRESS_OFFSET));
-                    }
+                if (pattern.startsWith(String.valueOf(ADDRESS_OFFSET))) {
+                    return Type.getSignedBySize(getRepeatedCount(pattern, ADDRESS_OFFSET));
                 }
             }
         }
         return Unknown;
-    }
-
-    public static boolean isAddressPattern(String pattern) {
-        return isPattern(pattern, ADDRESS_SYMBOL);
     }
 
     public static boolean isAddressOffsetPattern(String pattern) {
@@ -80,9 +70,6 @@ public final class TypeUtil {
 
     public static boolean isPatternSymbol(int ch) {
         if (ch == ADDRESS_OFFSET) {
-            return true;
-        }
-        if (ch == ADDRESS_SYMBOL) {
             return true;
         }
         if (ch == OFFSET_SYMBOL) {

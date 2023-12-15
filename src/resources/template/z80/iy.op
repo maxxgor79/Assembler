@@ -9,9 +9,9 @@ FDE3	EX (SP),IY
 FDE5	PUSH IY
 FDE9	JP (IY)
 FDF9	LD SP,IY
-FD21$aa	LD IY,$aa
-FD22$aa	LD ($aa),IY
-FD2A$aa	LD IY,$aa
+FD21$nn	LD IY,$nn
+FD22$nn	LD ($nn),IY
+FD2A$nn	LD IY,($nn)
 FD34$d	INC (IY+$d)
 FD35$d	DEC (IY+$d)
 FD36$d$n	LD (IY+$d),$n

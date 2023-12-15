@@ -42,7 +42,7 @@ public class DefCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
         Lexem nextLexem;
         if (!iterator.hasNext() ||

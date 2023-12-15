@@ -34,7 +34,7 @@ public class UdefCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(LexemSequence lexemSequence) {
         RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
         Lexem nextLexem;
         if (!iterator.hasNext() ||

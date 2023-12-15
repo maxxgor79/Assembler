@@ -15,9 +15,9 @@ public class ParameterizedCommandGroupCompiler implements CommandGroupCompiler {
     private Set<CommandCompiler> compilers = new HashSet<>();
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         for (CommandCompiler compiler : compilers) {
-            byte[] byteCode = compiler.compile(lexemSequence, ignoreLabel);
+            byte[] byteCode = compiler.compile(lexemSequence);
             if (byteCode != null) {
                 return byteCode;
             }
@@ -45,7 +45,7 @@ public class ParameterizedCommandGroupCompiler implements CommandGroupCompiler {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (CommandCompiler compiler : compilers) {
-            sb.append(compilers.toString()).append(" ");
+            sb.append(compiler.toString()).append(" ");
         }
         return sb.toString();
     }

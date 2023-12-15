@@ -37,7 +37,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
         if (!iterator.hasNext() ||
@@ -54,7 +54,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
                 String path = nextLexem.getValue();
                 nextLexem = iterator.hasNext() ? iterator.next() : null;
                 try {
-                    compileFile(nextLexem, path, ignoreLabel);
+                    compileFile(nextLexem, path);
                 } catch (IOException e) {
                     e.printStackTrace();
                     throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
@@ -71,7 +71,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
         return new byte[0];
     }
 
-    private void compileFile(Lexem nextLexem, String path, boolean ignoreLabel) throws IOException {
+    private void compileFile(@NonNull Lexem nextLexem, @NonNull String path) throws IOException {
         File file = new File(path);
         if (!file.isAbsolute()) {
             file = new File(compilerApi.getFile().getParentFile(), path);

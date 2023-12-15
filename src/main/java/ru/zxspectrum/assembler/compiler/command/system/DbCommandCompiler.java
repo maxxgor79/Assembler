@@ -48,7 +48,7 @@ public class DbCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
         Lexem nextLexem;

@@ -1,6 +1,7 @@
 package ru.zxspectrum.assembler.syntax;
 
 import lombok.NonNull;
+import ru.zxspectrum.assembler.error.UndefinedLabelException;
 import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.DividingByZeroException;
@@ -35,7 +36,7 @@ public class Expression {
     }
 
     public Expression(File file, Iterator<Lexem> iterator, NamespaceApi namespaceApi) {
-        this(file, iterator, namespaceApi, true);
+        this(file, iterator, namespaceApi, false);
     }
 
     public Expression(@NonNull File file, @NonNull Iterator<Lexem> iterator, @NonNull NamespaceApi namespaceApi
@@ -290,8 +291,7 @@ public class Expression {
         BigInteger result = namespaceApi.getLabelCodeOffset(lexem.getValue());
         lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         if (result == null) {
-            throw new CompilerException(file, lexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.LABEL_NOT_FOUND), lexem.getValue());
+            throw new UndefinedLabelException();
         }
         return result.add(namespaceApi.getAddress());//absolut address
     }

@@ -35,15 +35,15 @@ public class NoParametersCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence, boolean ignoreLabel) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         if (originalLexemSequence.equals(lexemSequence)) {
             return commandCode;
         }
         return null;
     }
 
-    private static byte[] toBytes(String code) {
-        if (code == null || code.isEmpty()) {
+    private static byte[] toBytes(@NonNull String code) {
+        if (code.isEmpty()) {
             return new byte[0];
         }
         int bytesCount = code.length() / 2;

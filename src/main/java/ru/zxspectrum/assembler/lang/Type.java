@@ -10,14 +10,17 @@ import java.math.BigInteger;
  * @Author Maxim Gorin
  */
 public enum Type {
-    Int8(1, -128, 127), UInt8(1, 0, 255), Int16(2, -32768, 32767)
-    , UInt16(2, 0, 65535), Int32(4, Integer.MIN_VALUE, Integer.MAX_VALUE)
-    , UInt32(4, 0, 0xFFFFFFFF), Unknown(0, 0, 0);
+    Int8(1, -128, 127, new String[]{"d", "e"}), UInt8(1, 0, 255, new String[]{"n"})
+    , Int16(2, -32768, 32767, new String[]{"dd", "ee"})
+    , UInt16(2, 0, 65535, new String[]{"nn"})
+    , Int32(4, Integer.MIN_VALUE, Integer.MAX_VALUE, new String[]{"dddd", "eeee"})
+    , UInt32(4, 0, 0xFFFFFFFF, new String[]{"nnnn"}), Unknown(0, 0, 0, null);
 
-    Type(int size, long min, long max) {
+    Type(int size, long min, long max, String[] masks) {
         this.size = size;
         this.min = min;
         this.max = max;
+        this.masks = masks;
     }
 
     public static Type getUnsignedBySize(int size) {
@@ -107,6 +110,21 @@ public enum Type {
         throw new NumberFormatException();
     }
 
+    public Type getByMask(@NonNull String mask) {
+        if (!mask.trim().isEmpty()) {
+            for (Type t : values()) {
+                if (t.masks != null) {
+                    for (String m : t.masks) {
+                        if (mask.equals(m)) {
+                            return t;
+                        }
+                    }
+                }
+            }
+        }
+        return Unknown;
+    }
+
     @Getter
     private int size;
 
@@ -115,4 +133,7 @@ public enum Type {
 
     @Getter
     private long max;
+
+    @Getter
+    private String[] masks;
 }

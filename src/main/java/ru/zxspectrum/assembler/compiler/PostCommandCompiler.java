@@ -27,7 +27,7 @@ public class PostCommandCompiler {
     }
 
     public int compile(@NonNull RandomAccessFile randomAccessFile) throws IOException {
-        byte[] generatedData = commandCompiler.compile(command, false);
+        byte[] generatedData = commandCompiler.compile(command);
         randomAccessFile.seek(commandOffset.longValue());
         randomAccessFile.write(generatedData);
         return generatedData.length;

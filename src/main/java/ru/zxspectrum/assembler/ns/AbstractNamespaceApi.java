@@ -19,7 +19,7 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
 
     protected final Set<File> compiledFileSet = new HashSet<>();
 
-    protected BigInteger currentCodeOffset;
+    protected BigInteger currentCodeOffset = BigInteger.ZERO;
 
     @NonNull
     public void reset() {
@@ -55,7 +55,7 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
     public BigInteger getLabelCodeOffset(String labelName) {
         LabelInfo labelInfo = labelMap.get(labelName);
         if (labelInfo == null) {
-            return BigInteger.valueOf(-1);
+            return null;
         }
         return labelInfo.getCodeOffset();
     }

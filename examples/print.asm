@@ -1,4 +1,6 @@
 	org 40000
+	ld a,255
+	ld a, l2-l1
 	ld hl, text
 l1:	ld a,(hl)
 	push hl

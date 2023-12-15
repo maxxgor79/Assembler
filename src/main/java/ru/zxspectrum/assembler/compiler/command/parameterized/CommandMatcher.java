@@ -80,8 +80,7 @@ public class CommandMatcher {
                 patternIndex++;
                 commandIndex++;
             } else {
-                if (TypeUtil.isAddressPattern(patternLexem.getValue()) ||
-                        TypeUtil.isAddressOffsetPattern(patternLexem.getValue())) {
+                if (TypeUtil.isAddressOffsetPattern(patternLexem.getValue())) {
                     patternIndex++;
                     commandIndex = skipExpression(commandList, commandIndex);
 
