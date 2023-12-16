@@ -35,17 +35,17 @@ import static ru.zxspectrum.assembler.util.TypeUtil.isOffsetPattern;
  */
 @Slf4j
 public class ParameterizedCommandCompiler implements CommandCompiler {
-    private NamespaceApi namespaceApi;
+    protected NamespaceApi namespaceApi;
 
-    private SettingsApi settingsApi;
+    protected SettingsApi settingsApi;
 
-    private CompilerApi compilerApi;
+    protected CompilerApi compilerApi;
 
-    private String codePattern;
+    protected String codePattern;
 
-    private LexemSequence commandPattern;
+    protected LexemSequence commandPattern;
 
-    private ByteCodeCompiler byteCodeCompiler;
+    protected ByteCodeCompiler byteCodeCompiler;
 
     public ParameterizedCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
             , @NonNull CompilerApi compilerApi
@@ -71,7 +71,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         return byteCodeCompiler.compile(parameters.toArray(new BigInteger[parameters.size()]));
     }
 
-    private BigInteger compileExpressionNumber(LexemSequence command, Lexem patternLexem, Lexem commandLexem
+    protected BigInteger compileExpressionNumber(LexemSequence command, Lexem patternLexem, Lexem commandLexem
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         final Type expectedType = TypeUtil.toType(patternLexem.getValue());
         final BigInteger currentCodeOffset = namespaceApi.getCurrentCodeOffset();
@@ -79,7 +79,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         final Expression.Result result = expression.evaluate(commandLexem);
         commandIterator.back();
         if (result.isUndefined()) {
-            namespaceApi.addToQueue(new PostCommandCompiler(cloneFreezed(), currentCodeOffset
+            namespaceApi.addToQueue(new PostCommandCompiler(createPostCommandCompiler(), currentCodeOffset
                     , command));
             argumentCommandList.add(BigInteger.ZERO);
             return BigInteger.ZERO;
@@ -94,7 +94,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         }
     }
 
-    private void compileExpressionOffset(LexemSequence command, Lexem patternLexem, Lexem commandLexem
+    protected void compileExpressionOffset(LexemSequence command, Lexem patternLexem, Lexem commandLexem
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         final Type expectedType = TypeUtil.toType(patternLexem.getValue());
         final BigInteger currentCodeOffset = namespaceApi.getCurrentCodeOffset();
@@ -102,12 +102,12 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         final Expression.Result address = expression.evaluate(commandLexem);
         commandIterator.back();
         if (address.isUndefined()) {
-            namespaceApi.addToQueue(new PostCommandCompiler(cloneFreezed(), currentCodeOffset
+            namespaceApi.addToQueue(new PostCommandCompiler(createPostCommandCompiler(), currentCodeOffset
                     , command));
             argumentCommandList.add(BigInteger.ZERO);
         } else {
             final BigInteger offset = address.getValue().subtract(namespaceApi.getAddress())
-                    .subtract(namespaceApi.getCurrentCodeOffset().add(BigInteger.valueOf(byteCodeCompiler
+                    .subtract(currentCodeOffset.add(BigInteger.valueOf(byteCodeCompiler
                             .getArgOffset(argumentCommandList.size()))));
             if (!TypeUtil.isInRange(expectedType, offset)) {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
@@ -115,10 +115,9 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             }
             argumentCommandList.add(offset);
         }
-
     }
 
-    private void compileVariable(LexemSequence command, Lexem patternLexem, Lexem commandLexem
+    protected void compileVariable(LexemSequence command, Lexem patternLexem, Lexem commandLexem
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         if (isAddressOffsetPattern(patternLexem.getValue())) {
             compileExpressionOffset(command, patternLexem, commandLexem, commandIterator, argumentCommandList);
@@ -132,7 +131,7 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         }
     }
 
-    private List<BigInteger> compileCommand(LexemSequence command) {
+    protected List<BigInteger> compileCommand(LexemSequence command) {
         List<BigInteger> commandArgumentList = new LinkedList<>();
         Iterator<Lexem> patternIterator = commandPattern.get().iterator();
         PushbackIterator<Lexem> commandIterator = new PushbackIteratorImpl(command.get().iterator());
@@ -151,8 +150,8 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         return commandArgumentList;
     }
 
-    protected CommandCompiler cloneFreezed() {
-        return new ParameterizedCommandCompiler(new NamespaceApiFreezed(namespaceApi), settingsApi
+    protected CommandCompiler createPostCommandCompiler() {
+        return new PostParameterizedCommandCompiler(new NamespaceApiFreezed(namespaceApi), settingsApi
                 , new CompilerApiFreezed(compilerApi), codePattern, commandPattern);
     }
 
@@ -160,4 +159,6 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
     public String toString() {
         return commandPattern.getCaption();
     }
+
+
 }

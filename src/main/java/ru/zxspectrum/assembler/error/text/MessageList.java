@@ -95,6 +95,8 @@ public class MessageList {
 
     public static final String CONSTANT_VALUE_REQUIRED = "constantValueRequired";
 
+    public static final String UNKNOWN_IDENTIFIER = "unknownIdentifier";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {

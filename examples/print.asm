@@ -1,4 +1,5 @@
 	org 40000
+	ld a,n
 	ld a,255
 	ld a, l2-l1
 	ld hl, text

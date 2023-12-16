@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.syntax;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -291,10 +292,9 @@ public class Expression {
 
     private Result evaluateLabel(Lexem lexem) {
         BigInteger value = namespaceApi.getLabelCodeOffset(lexem.getValue());
-        Result result = new Result();
+        Result result = new Result(lexem);
         if (value == null) {
             value = BigInteger.ZERO;
-            result.setUndefined(true);
         }
         lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         value = value.add(namespaceApi.getAddress());
@@ -318,8 +318,19 @@ public class Expression {
 
     @Data
     @NoArgsConstructor
-    @RequiredArgsConstructor
     public static class Result {
+        Result(@NonNull BigInteger value) {
+            this.value = value;
+        }
+
+        Result(@NonNull Lexem lexem) {
+            this.unknown = lexem;
+            this.undefined = true;
+        }
+
+        @NonNull
+        private Lexem unknown;
+
         @NonNull
         private BigInteger value;
 

@@ -287,15 +287,14 @@ public class LexemAnalyzer implements Iterable<Lexem> {
         if (SymbolUtils.isDecDigit(ch)) {
             return getHexadecimalNumber(ch);
         }
-        pbReader.unread(ch);
-        return getVariable(ch);
+        if (SymbolUtils.isLetter(ch) || SymbolUtils.isUnderline(ch)) {
+            return getVariable(ch);
+        } else {
+            throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED));
+        }
     }
 
     private Lexem getVariable(int ch) throws IOException {
-        ch = pbReader.read();//get next symbol
-        if (!SymbolUtils.isLetter(ch) && !SymbolUtils.isUnderline(ch)) {
-            throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED));
-        }
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
         while (!SymbolUtils.isEOS(ch = pbReader.read())) {
