@@ -9,7 +9,6 @@ import ru.zxspectrum.assembler.compiler.bytecode.ByteCodeCompiler;
 import ru.zxspectrum.assembler.compiler.dummy.CompilerApiFreezed;
 import ru.zxspectrum.assembler.compiler.dummy.NamespaceApiFreezed;
 import ru.zxspectrum.assembler.error.CompilerException;
-import ru.zxspectrum.assembler.error.UndefinedLabelException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.lang.Type;
 import ru.zxspectrum.assembler.lexem.Lexem;
@@ -76,44 +75,47 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         final Type expectedType = TypeUtil.toType(patternLexem.getValue());
         final BigInteger currentCodeOffset = namespaceApi.getCurrentCodeOffset();
-        BigInteger value = BigInteger.ZERO;
-        try {
-            final Expression expression = new Expression(compilerApi.getFile(), commandIterator, namespaceApi);
-            value = expression.evaluate(commandLexem);
-            commandIterator.back();
-            if (!TypeUtil.isInRange(expectedType, value)) {
-                throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
-                        .getMessage(MessageList.VALUE_OUT_OF_RANGE), value.toString());
-            }
-        } catch (UndefinedLabelException e) {
-            namespaceApi.addToList(new PostCommandCompiler(cloneFreezed(), currentCodeOffset
+        final Expression expression = new Expression(compilerApi.getFile(), commandIterator, namespaceApi);
+        final Expression.Result result = expression.evaluate(commandLexem);
+        commandIterator.back();
+        if (result.isUndefined()) {
+            namespaceApi.addToQueue(new PostCommandCompiler(cloneFreezed(), currentCodeOffset
                     , command));
+            argumentCommandList.add(BigInteger.ZERO);
+            return BigInteger.ZERO;
+
+        } else {
+            if (!TypeUtil.isInRange(expectedType, result.getValue())) {
+                throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
+                        .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.toString());
+            }
+            argumentCommandList.add(result.getValue());
+            return result.getValue();
         }
-        argumentCommandList.add(value);
-        return value;
     }
 
     private void compileExpressionOffset(LexemSequence command, Lexem patternLexem, Lexem commandLexem
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         final Type expectedType = TypeUtil.toType(patternLexem.getValue());
         final BigInteger currentCodeOffset = namespaceApi.getCurrentCodeOffset();
-        try {
-            final Expression expression = new Expression(compilerApi.getFile(), commandIterator, namespaceApi);
-            final BigInteger address = expression.evaluate(commandLexem);
-            final BigInteger offset = address.subtract(namespaceApi.getAddress())
+        final Expression expression = new Expression(compilerApi.getFile(), commandIterator, namespaceApi);
+        final Expression.Result address = expression.evaluate(commandLexem);
+        commandIterator.back();
+        if (address.isUndefined()) {
+            namespaceApi.addToQueue(new PostCommandCompiler(cloneFreezed(), currentCodeOffset
+                    , command));
+            argumentCommandList.add(BigInteger.ZERO);
+        } else {
+            final BigInteger offset = address.getValue().subtract(namespaceApi.getAddress())
                     .subtract(namespaceApi.getCurrentCodeOffset().add(BigInteger.valueOf(byteCodeCompiler
                             .getArgOffset(argumentCommandList.size()))));
-            commandIterator.back();
             if (!TypeUtil.isInRange(expectedType, offset)) {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.VALUE_OUT_OF_RANGE), offset.toString());
             }
             argumentCommandList.add(offset);
-        } catch (UndefinedLabelException e) {
-            namespaceApi.addToList(new PostCommandCompiler(cloneFreezed(), currentCodeOffset
-                    , command));
-            argumentCommandList.add(BigInteger.ZERO);
         }
+
     }
 
     private void compileVariable(LexemSequence command, Lexem patternLexem, Lexem commandLexem

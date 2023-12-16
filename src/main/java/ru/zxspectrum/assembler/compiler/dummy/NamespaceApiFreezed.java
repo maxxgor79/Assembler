@@ -75,8 +75,8 @@ public class NamespaceApiFreezed implements NamespaceApi {
     }
 
     @Override
-    public void addToList(@NonNull PostCommandCompiler commandCompiler) {
-        namespaceApi.addToList(commandCompiler);
+    public void addToQueue(@NonNull PostCommandCompiler commandCompiler) {
+        namespaceApi.addToQueue(commandCompiler);
     }
 
     @Override

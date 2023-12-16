@@ -68,14 +68,19 @@ public class DbCommandCompiler implements CommandCompiler {
             } else {
                 if (nextLexem.getType() == LexemType.CHAR || nextLexem.getType() == LexemType.DECIMAL ||
                         nextLexem.getType() == LexemType.OCTAL || nextLexem.getType() == LexemType.HEXADECIMAL) {
-                    Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
-                    BigInteger result = expression.evaluate(nextLexem);
+                    final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+                    final Expression.Result result = expression.evaluate(nextLexem);
+                    if (result.isUndefined()) {
+                        throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
+                                , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+                    }
                     nextLexem = expression.getLastLexem();
-                    if (!TypeUtil.isInRange(Type.Int8, result)) {
+                    if (!TypeUtil.isInRange(Type.Int8, result.getValue()) &&
+                            !TypeUtil.isInRange(Type.UInt8, result.getValue())) {
                         Output.throwWarning(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                                 .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.toString(), Type.UInt8.toString());
                     }
-                    writeByte(baos, result.byteValue());
+                    writeByte(baos, result.getValue().byteValue());
                 } else {
                     throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());

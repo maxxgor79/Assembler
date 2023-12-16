@@ -63,9 +63,13 @@ public class DefCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.VALUE_EXCEPTED));
         }
-        Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+        final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
         nextLexem = iterator.next();
-        BigInteger value = expression.evaluate(nextLexem);
+        final Expression.Result result = expression.evaluate(nextLexem);
+        if (result.isUndefined()) {
+            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
+                    , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+        }
         if (expression.getLastLexem() != null) {
             nextLexem = expression.getLastLexem();
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
@@ -76,7 +80,7 @@ public class DefCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList.
                     getMessage(MessageList.VARIABLE_IS_ALREADY_DEFINED), name);
         }
-        namespaceApi.addVariable(name, value);
+        namespaceApi.addVariable(name, result.getValue());
         return new byte[0];
     }
 }

@@ -50,17 +50,21 @@ public class OrgCommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.next();
         Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
-        BigInteger address = expression.evaluate(nextLexem);
+        Expression.Result result = expression.evaluate(nextLexem);
+        if (result.isUndefined()) {
+            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
+                    , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+        }
         nextLexem = expression.getLastLexem();
         if (nextLexem != null) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
-        if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(), address)) {
+        if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(), result.getValue())) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(address));
+                    .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
         }
-        namespaceApi.setAddress(address);
+        namespaceApi.setAddress(result.getValue());
         return new byte[0];
     }
 }

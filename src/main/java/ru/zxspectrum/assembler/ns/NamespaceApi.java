@@ -26,7 +26,7 @@ public interface NamespaceApi {
 
     BigInteger getAddress();
 
-    void addToList(PostCommandCompiler commandCompiler);
+    void addToQueue(PostCommandCompiler commandCompiler);
 
     boolean isCompiled(File file);
 

@@ -24,7 +24,7 @@ public class CompilerNamespace extends AbstractNamespaceApi {
     }
 
     @Override
-    public void addToList(@NonNull PostCommandCompiler commandCompiler) {
+    public void addToQueue(@NonNull PostCommandCompiler commandCompiler) {
 
     }
 }

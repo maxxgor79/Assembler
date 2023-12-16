@@ -84,7 +84,7 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
     public abstract BigInteger getAddress();
 
     @Override
-    public abstract void addToList(@NonNull PostCommandCompiler commandCompiler);
+    public abstract void addToQueue(@NonNull PostCommandCompiler commandCompiler);
 
     @Override
     public boolean isCompiled(File file) {

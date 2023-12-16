@@ -41,6 +41,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class Assembler extends AbstractNamespaceApi {
 
     public static final String EXT_WAV = "wav";
 
-    private final List<PostCommandCompiler> postCommandCompilerList = new LinkedList<>();
+    private final Map<BigInteger, PostCommandCompiler> postCommandCompilerMap = new LinkedHashMap<>();
 
     private final AssemblerSettings settings = new AssemblerSettings();
 
@@ -71,7 +72,7 @@ public class Assembler extends AbstractNamespaceApi {
     @Override
     public void reset() {
         super.reset();
-        postCommandCompilerList.clear();
+        postCommandCompilerMap.clear();
     }
 
     private void loadSettings() {
@@ -211,18 +212,16 @@ public class Assembler extends AbstractNamespaceApi {
     }
 
     @Override
-    public void addToList(@NonNull PostCommandCompiler postCommandCompiler) {
-        postCommandCompilerList.add(postCommandCompiler);
+    public void addToQueue(@NonNull PostCommandCompiler postCommandCompiler) {
+        postCommandCompilerMap.put(postCommandCompiler.getCommandOffset(), postCommandCompiler);
     }
 
     protected void postCompile(final File outputFile) {
         RandomAccessFile randomAccessFile = null;
         try {
-            Collections.sort(postCommandCompilerList,
-                    (o1, o2) -> o1.getCommandOffset().compareTo(o2.getCommandOffset()));
             randomAccessFile = new RandomAccessFile(outputFile, "rwd");
-            for (PostCommandCompiler postCommandCompiler : postCommandCompilerList) {
-                postCommandCompiler.compile(randomAccessFile);
+            for (Map.Entry<BigInteger, PostCommandCompiler> entry : postCommandCompilerMap.entrySet()) {
+                entry.getValue().compile(randomAccessFile);
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

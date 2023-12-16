@@ -93,6 +93,8 @@ public class MessageList {
 
     public static final String COMMAND_DATA_IS_NOT_LOADED = "commandDataIsNotLoaded";
 
+    public static final String CONSTANT_VALUE_REQUIRED = "constantValueRequired";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
