@@ -1,10 +1,8 @@
 package ru.zxspectrum.assembler.syntax;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.DividingByZeroException;
@@ -295,6 +293,7 @@ public class Expression {
         Result result = new Result(lexem);
         if (value == null) {
             value = BigInteger.ZERO;
+            result.setUndefined(true);
         }
         lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         value = value.add(namespaceApi.getAddress());
@@ -324,12 +323,11 @@ public class Expression {
         }
 
         Result(@NonNull Lexem lexem) {
-            this.unknown = lexem;
-            this.undefined = true;
+            this.lexem = lexem;
         }
 
         @NonNull
-        private Lexem unknown;
+        private Lexem lexem;
 
         @NonNull
         private BigInteger value;

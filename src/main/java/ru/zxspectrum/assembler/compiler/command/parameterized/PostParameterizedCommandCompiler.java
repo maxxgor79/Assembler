@@ -32,7 +32,7 @@ class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
         commandIterator.back();
         if (result.isUndefined()) {
             throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.UNKNOWN_IDENTIFIER), result.getUnknown().getValue());
+                    .getMessage(MessageList.UNKNOWN_IDENTIFIER), result.getLexem().getValue());
 
         } else {
             BigInteger value = result.getValue();
@@ -62,7 +62,7 @@ class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
         commandIterator.back();
         if (address.isUndefined()) {
             throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.UNKNOWN_IDENTIFIER), address.getUnknown().getValue());
+                    .getMessage(MessageList.UNKNOWN_IDENTIFIER), address.getLexem().getValue());
         } else {
             final BigInteger offset = address.getValue().subtract(namespaceApi.getAddress())
                     .subtract(currentCodeOffset.add(BigInteger.valueOf(byteCodeCompiler
