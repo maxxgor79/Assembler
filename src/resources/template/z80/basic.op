@@ -289,12 +289,12 @@ C3$nn	JP $nn
 D3$n	OUT($n),A
 C4$nn	CALL NZ,($nn)
 C4$nn	CALL NZ,$nn
-D4$nn	CALL NC,($nn)
 D4$nn	CALL NC,$nn
+D4$nn	CALL NC,($nn)
 E4$nn	CALL PO,($nn)
 E4$nn	CALL PO,$nn
-F4$nn	CALL NC,($nn)
-F4$nn	CALL NC,$nn
+F4$nn	CALL P,$nn
+F4$nn	CALL P,($nn)
 06$n	LD B,$n
 16$n	LD D,$n
 26$n	LD H,$n

@@ -322,8 +322,10 @@ public class TestCommand {
     private static final String BASIC_INST4 = "RET NZ\nPOP BC\nJP NZ,($0F0F0)\nJP (c0c0h)\nCALL NZ,($1368)\nPUSH BC\nADD A,12\n" +
             "RST 0H\nRET Z\nRET\nJP Z,($3333)\nCALL Z,($4444)\nCALL ($5555)\nADC A,14\nRST 8H\nRET NC\nPOP DE\nJP NC,($3333)\n" +
             "OUT (254),A\nCALL NC,(16)\nPUSH DE\nSUB A,66\nRST 10H\nRET C\nEXX\nJP C,($0099)\nIN A,(128)\nCALL C,(100)\nSBC A,feh\nRST 18H\n" +
-            "RET PO\nPOP HL\nJP PO,(65535)\nEX (SP),HL\nCALL PO,(16385)\nPUSH HL\nAND A,1\nRST 20H\nRET PE\nJP (HL)\nJP PE,(0)\nEX DE,HL\nCALL PE,(0x1111)\n" +
-            "XOR A,55\nRST 28H\n";
+            "RET PO\nPOP HL\nJP PO,(65535)\nEX (SP),HL\nCALL PO,(16385)\nPUSH HL\nAND A,1\nRST 20H\nRET PE\nJP (HL)\nJP PE,(0)\n" +
+            "EX DE,HL\nCALL PE,(0x1111)\nXOR A,55\nRST 28H\n" +
+            "RET P\nPOP AF\nJP P,(0b10101010)\nDI\nCALL P,(0255)\nPUSH AF\nOR A,0b111\nRST 30H\nRET M\nLD SP,HL\nJP M,(6000)\n" +
+            "EI\nCALL M,(255)\nCP A,255\nRST 38H";
     @Test
     void testBasicCommands4() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
@@ -420,11 +422,32 @@ public class TestCommand {
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xEE);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 55);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xEF);
-        /*
-        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xD6);
-        Assertions.assertEquals(bytes[pc++] & 0xFF, 66);
 
-         */
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF0);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF1);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF2);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0b10101010);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF3);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF4);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 173);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF5);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF6);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0b111);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF7);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF8);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xF9);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFA);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 112);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 23);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFB);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFC);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFF);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFE);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFF);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xFF);
         log.info(Arrays.toString(bytes));
     }
 }
