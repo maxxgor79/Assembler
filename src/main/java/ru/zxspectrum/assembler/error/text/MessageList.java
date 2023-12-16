@@ -97,6 +97,8 @@ public class MessageList {
 
     public static final String UNKNOWN_IDENTIFIER = "unknownIdentifier";
 
+    public static final String LOSS_PRECISION_TYPE_FOR = "lossPrecisionTypeFor";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {

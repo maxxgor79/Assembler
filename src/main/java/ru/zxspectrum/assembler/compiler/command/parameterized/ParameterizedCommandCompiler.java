@@ -9,7 +9,9 @@ import ru.zxspectrum.assembler.compiler.bytecode.ByteCodeCompiler;
 import ru.zxspectrum.assembler.compiler.dummy.CompilerApiFreezed;
 import ru.zxspectrum.assembler.compiler.dummy.NamespaceApiFreezed;
 import ru.zxspectrum.assembler.error.CompilerException;
+import ru.zxspectrum.assembler.error.ConversationException;
 import ru.zxspectrum.assembler.error.text.MessageList;
+import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Type;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
@@ -85,12 +87,21 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             return BigInteger.ZERO;
 
         } else {
-            if (!TypeUtil.isInRange(expectedType, result.getValue())) {
+            BigInteger value = result.getValue();
+            try {
+                value = TypeUtil.convertTo(value, expectedType, settingsApi.isStrictConversion());
+            } catch (ConversationException e) {
+                log.error(e.getMessage(), e);
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
-                        .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.toString());
+                        .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
             }
-            argumentCommandList.add(result.getValue());
-            return result.getValue();
+            if (!result.getValue().equals(value)) {
+                Output.throwWarning(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
+                                .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
+                        , value.toString());
+            }
+            argumentCommandList.add(value);
+            return value;
         }
     }
 

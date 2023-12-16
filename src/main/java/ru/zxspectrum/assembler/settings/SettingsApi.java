@@ -30,5 +30,7 @@ public interface SettingsApi {
 
     String getMinorVersion();
 
+    boolean isStrictConversion();
+
     void merge(SettingsApi setting);
 }

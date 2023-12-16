@@ -42,6 +42,9 @@ public class AssemblerSettings extends BaseSettings {
     }
 
     public void load(@NonNull CommandLine cli) {
+        if (cli.hasOption("st")) {
+            setStrictConversion(true);
+        }
         if (cli.hasOption("a")) {
             setAddress(new BigInteger(cli.getOptionValue("a")));
         }

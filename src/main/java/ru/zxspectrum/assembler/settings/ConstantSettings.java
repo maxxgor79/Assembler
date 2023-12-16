@@ -63,6 +63,11 @@ public class ConstantSettings implements SettingsApi {
     }
 
     @Override
+    public boolean isStrictConversion() {
+        return false;
+    }
+
+    @Override
     public void merge(@NonNull SettingsApi setting) {
         throw new UnsupportedOperationException();
     }

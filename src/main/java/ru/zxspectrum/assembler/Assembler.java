@@ -249,6 +249,8 @@ public class Assembler extends AbstractNamespaceApi {
 
     private static Options getOptions() {
         Options options = new Options();
+        options.addOption("st", "strict-type-conversion", false
+                , "Turn on strict type conversation");
         options.addOption("a", "address", true, "'org' address." +
                 " Non negative value.");
         options.addOption("min", "min-address", true, "minimal address." +

@@ -43,6 +43,9 @@ public abstract class BaseSettings implements SettingsApi {
     @NonNull
     private String majorVersion;
 
+    @Setter(AccessLevel.PROTECTED)
+    private boolean strictConversion;
+
     BaseSettings() {
 
     }
@@ -93,6 +96,11 @@ public abstract class BaseSettings implements SettingsApi {
     }
 
     @Override
+    public boolean isStrictConversion() {
+        return strictConversion;
+    }
+
+    @Override
     public void merge(@NonNull SettingsApi settings) {
         if (settings.getPlatformEncoding() != null) {
             setPlatformEncoding(settings.getPlatformEncoding());
@@ -118,5 +126,6 @@ public abstract class BaseSettings implements SettingsApi {
         if (settings.getMinorVersion() != null) {
             setMinorVersion(settings.getMinorVersion());
         }
+        setStrictConversion(settings.isStrictConversion());
     }
 }

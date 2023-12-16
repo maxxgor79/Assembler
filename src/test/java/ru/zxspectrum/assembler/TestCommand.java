@@ -325,7 +325,7 @@ public class TestCommand {
             "RET PO\nPOP HL\nJP PO,(65535)\nEX (SP),HL\nCALL PO,(16385)\nPUSH HL\nAND A,1\nRST 20H\nRET PE\nJP (HL)\nJP PE,(0)\n" +
             "EX DE,HL\nCALL PE,(0x1111)\nXOR A,55\nRST 28H\n" +
             "RET P\nPOP AF\nJP P,(0b10101010)\nDI\nCALL P,(0255)\nPUSH AF\nOR A,0b111\nRST 30H\nRET M\nLD SP,HL\nJP M,(6000)\n" +
-            "EI\nCALL M,(255)\nCP A,255\nRST 38H";
+            "EI\nCALL M,(255)\nCP A,-1\nRST 38H";
     @Test
     void testBasicCommands4() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
