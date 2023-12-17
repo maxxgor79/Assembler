@@ -39,7 +39,6 @@ public class TestCommandED {
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
-
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xed);
         Assertions.assertEquals(bytes[pc++], 0x40);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xed);
@@ -178,7 +177,6 @@ public class TestCommandED {
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xba);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xed);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xbb);
-
         log.info(Arrays.toString(bytes));
     }
 }

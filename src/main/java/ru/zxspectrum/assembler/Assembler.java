@@ -6,24 +6,17 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
-import ru.zxspectrum.assembler.compiler.bytecode.ByteOrder;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
-import ru.zxspectrum.assembler.lang.Encoding;
 import ru.zxspectrum.assembler.ns.AbstractNamespaceApi;
-import ru.zxspectrum.assembler.ns.NamespaceApi;
-import ru.zxspectrum.assembler.resource.Loader;
 import ru.zxspectrum.assembler.settings.AssemblerSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
-import ru.zxspectrum.assembler.settings.SettingsApi;
-import ru.zxspectrum.assembler.settings.Variables;
 import ru.zxspectrum.assembler.util.FileUtil;
 import ru.zxspectrum.assembler.util.SymbolUtils;
 import ru.zxspectrum.assembler.util.TypeUtil;
@@ -39,13 +32,10 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Author Maxim Gorin
@@ -229,6 +219,7 @@ public class Assembler extends AbstractNamespaceApi {
             FileUtil.safeClose(randomAccessFile);
         }
     }
+
 
     public static void main(final String[] args) throws Exception {
         Options options = getOptions();
