@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -167,5 +168,6 @@ public class TestCommandFD {
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xe9);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xfd);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xf9);
+        log.info(Arrays.toString(bytes));
     }
 }

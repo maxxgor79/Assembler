@@ -7,6 +7,7 @@ import ru.zxspectrum.assembler.error.ConversationException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Type;
+import ru.zxspectrum.assembler.lang.TypeConverter;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.settings.SettingsApi;
@@ -33,11 +34,11 @@ class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
         if (result.isUndefined()) {
             throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNKNOWN_IDENTIFIER), result.getLexem().getValue());
-
         } else {
             BigInteger value = result.getValue();
             try {
-                value = TypeUtil.convertTo(value, expectedType, settingsApi.isStrictConversion());
+                final Type srcType = TypeUtil.typeOf(value);
+                value = TypeConverter.convert(srcType, value, expectedType, settingsApi.isStrictConversion());
             } catch (ConversationException e) {
                 throw new CompilerException(compilerApi.getFile(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
