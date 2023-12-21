@@ -78,7 +78,7 @@ public class TestUndocumented {
     private static final String INST3 = "RL (IX+1),A\nRR (IX+2),B\nRR (IX+3),C\nRR (IX+$4),D\nRR (IX+5h),E\n" +
             "RR(IX+6h)\nRR(IX+7h),A\n" +
             "SLA (IX+255),B\nSLA(IX+254),C\nSla(IX+253),D\nSLA (IX+252),E\nSLA (IX+251),H\nSLA (IX+250),L\nSLA (IX+249)\n" +
-            "SLA A, (IX+248)\n";
+            "SLA (IX+248),a\n";
 
     @Test
     void testDDCBCommands3() throws IOException {
@@ -156,7 +156,7 @@ public class TestUndocumented {
         log.info(Arrays.toString(bytes));
     }
 
-    private static final String INST4 = "SLL (IX+0),B\nSLL C, (IX+1)\nSLL (IX+2),D\nSLL (IX+3),E\nSLL H,(IX+4)\n" +
+    private static final String INST4 = "SLL (IX+0),B\nSLL (IX+1),c\nSLL (IX+2),D\nSLL (IX+3),E\nSLL (IX+4),h\n" +
             "SLL (IX+5),L\nSLL (IX+6)\nSLL (IX+7),A\n" +
             "srl(IX+07),B\nsrl(IX+06),C\nSrl(IX+05),d\nSrl(IX+04),e\nSrl(IX+03),h\nSrl(IX+02),l\nSrl(IX+01)\nSrl(IX+00),a\n";
 
