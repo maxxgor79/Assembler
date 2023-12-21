@@ -6,6 +6,7 @@ import ru.zxspectrum.assembler.lexem.LexemAnalyzer;
 import ru.zxspectrum.assembler.lexem.LexemType;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,7 +33,7 @@ public class LexemSequence {
     }
 
     public LexemSequence(@NonNull Iterator<Lexem> iterator) {
-        lexemSequence = new LinkedList<>();
+        lexemSequence = new ArrayList<>();
         while (iterator.hasNext()) {
             lexemSequence.add(iterator.next());
         }
@@ -68,7 +69,7 @@ public class LexemSequence {
     }
 
     public Lexem first() {
-        return lexemSequence.get(0);
+        return !lexemSequence.isEmpty() ? lexemSequence.get(0) : null;
     }
 
     public int getLineNumber() {
@@ -92,6 +93,29 @@ public class LexemSequence {
 
     public int size() {
         return lexemSequence.size();
+    }
+
+    public Lexem get(int index) {
+        return lexemSequence.get(index);
+    }
+
+    public void set(int index, @NonNull Lexem lexem) {
+        lexemSequence.set(index, lexem);
+    }
+
+    public Collection<Lexem> getVariables() {
+        final List<Lexem> variables = new ArrayList<>();
+        for (int i = 0; i < lexemSequence.size(); i++) {
+            final Lexem lexem = lexemSequence.get(i);
+            if (lexem.getType() == LexemType.VARIABLE) {
+                variables.add(lexem);
+            }
+        }
+        return Collections.unmodifiableList(variables);
+    }
+
+    public boolean hasVariables() {
+        return !getVariables().isEmpty();
     }
 
     @Override

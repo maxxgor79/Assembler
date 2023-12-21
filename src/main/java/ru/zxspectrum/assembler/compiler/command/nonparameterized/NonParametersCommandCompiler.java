@@ -1,10 +1,7 @@
-package ru.zxspectrum.assembler.compiler.command.noparameterized;
+package ru.zxspectrum.assembler.compiler.command.nonparameterized;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.zxspectrum.assembler.Assembler;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -13,18 +10,18 @@ import ru.zxspectrum.assembler.syntax.LexemSequence;
  * @Author Maxim Gorin
  */
 @Slf4j
-public class NoParametersCommandCompiler implements CommandCompiler {
+public class NonParametersCommandCompiler implements CommandCompiler {
     protected byte[] commandCode;
 
     protected LexemSequence originalLexemSequence;
 
     protected CompilerApi compilerApi;
 
-    public NoParametersCommandCompiler(CompilerApi compilerApi, String code, String command) {
+    public NonParametersCommandCompiler(CompilerApi compilerApi, String code, String command) {
         this(compilerApi, code, new LexemSequence(command));
     }
 
-    public NoParametersCommandCompiler(@NonNull CompilerApi compilerApi, @NonNull String code
+    public NonParametersCommandCompiler(@NonNull CompilerApi compilerApi, @NonNull String code
             , @NonNull LexemSequence lexemSequence) {
         this.compilerApi = compilerApi;
         if (code.trim().isEmpty()) {

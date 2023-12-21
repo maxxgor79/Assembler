@@ -4,15 +4,13 @@ import lombok.NonNull;
 
 /**
  * @Author Maxim Gorin
- *
  */
-public final class SymbolUtils {
-
+public final class SymbolUtil {
     private static char EOL_SYMBOL = '\n';
 
     private static String IGNORED_SYMBOLS = "\r\t\b\f";
 
-    private SymbolUtils() {
+    private SymbolUtil() {
 
     }
 

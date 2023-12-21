@@ -9,7 +9,8 @@ import ru.zxspectrum.assembler.error.LexemException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.lang.Encoding;
 import ru.zxspectrum.assembler.util.AnalyzerIterator;
-import ru.zxspectrum.assembler.util.SymbolUtils;
+import ru.zxspectrum.assembler.util.LexemUtil;
+import ru.zxspectrum.assembler.util.SymbolUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     private int skipSpace() throws IOException {
         int ch;
-        while (SymbolUtils.isSpace(ch = pbReader.read())) ;
+        while (SymbolUtil.isSpace(ch = pbReader.read())) ;
         return ch;
     }
 
@@ -81,8 +82,8 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     private Lexem getComment(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
-        while (!SymbolUtils.isEOS(ch = pbReader.read())) {
-            if (SymbolUtils.isEOL(ch)) {
+        while (!SymbolUtil.isEOS(ch = pbReader.read())) {
+            if (SymbolUtil.isEOL(ch)) {
                 pbReader.unread(ch);
                 break;
             }
@@ -94,16 +95,16 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getDottedIdentifier(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         ch = pbReader.read();
-        if (!SymbolUtils.isLetter(ch) && !SymbolUtils.isUnderline(ch)) {
+        if (!SymbolUtil.isLetter(ch) && !SymbolUtil.isUnderline(ch)) {
             throw new CompilerException(file, lineNumber, MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED));
         }
         sb.append((char) ch);
-        while (!SymbolUtils.isEOS(ch)) {
+        while (!SymbolUtil.isEOS(ch)) {
             ch = pbReader.read();
-            if (SymbolUtils.isIdentifier(ch)) {
+            if (SymbolUtil.isIdentifier(ch)) {
                 sb.append((char) ch);
             } else {
-                if (!SymbolUtils.isEOS(ch)) {
+                if (!SymbolUtil.isEOS(ch)) {
                     pbReader.unread(ch);
                 }
                 break;
@@ -113,48 +114,54 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
 
     private Lexem getIdentifier(int ch) throws IOException {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        if (SymbolUtils.isHexDigit(ch)) {
-            while (SymbolUtils.isHexDigit(ch = pbReader.read())) {
+        if (SymbolUtil.isHexDigit(ch)) {
+            while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
                 sb.append((char) ch);
             }
-            if (SymbolUtils.isHexOldStylePostfix(ch)) {
+            if (SymbolUtil.isHexOldStylePostfix(ch)) {
                 return new Lexem(lineNumber, LexemType.HEXADECIMAL, sb.toString());
             }
-            if (!SymbolUtils.isEOS(ch)) {
+            if (!SymbolUtil.isEOS(ch)) {
                 pbReader.unread(ch);
             }
         }
         LexemType lexemType = LexemType.IDENTIFIER;
-        while (!SymbolUtils.isEOS(ch = pbReader.read())) {
-            if (SymbolUtils.isIdentifier(ch)) {
+        while (!SymbolUtil.isEOS(ch = pbReader.read())) {
+            if (SymbolUtil.isIdentifier(ch)) {
                 sb.append((char) ch);
             } else {
-                if (SymbolUtils.isColon(ch)) {
+                if (SymbolUtil.isColon(ch)) {
                     lexemType = LexemType.LABEL;
                     break;
                 }
-                if (SymbolUtils.isApostrophe(ch)) {
+                if (SymbolUtil.isApostrophe(ch)) {
                     sb.append((char) ch);
                     break;
                 }
-                if (!SymbolUtils.isEOS(ch)) {
+                if (!SymbolUtil.isEOS(ch)) {
                     pbReader.unread(ch);
                 }
                 break;
             }
         }
-        return new Lexem(lineNumber, lexemType, sb.toString());
+        final String name = sb.toString();
+        if (lexemType == LexemType.IDENTIFIER) {
+            if (LexemUtil.isKeyword(name)) {
+                lexemType = LexemType.KEYWORD;
+            }
+        }
+        return new Lexem(lineNumber, lexemType, name);
     }
 
     private Lexem getBinaryNumber(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (SymbolUtils.isBinaryDigit(ch = pbReader.read())) {
+        while (SymbolUtil.isBinaryDigit(ch = pbReader.read())) {
             sb.append((char) ch);
         }
-        if (!SymbolUtils.isEOS(ch)) {
+        if (!SymbolUtil.isEOS(ch)) {
             pbReader.unread(ch);
         }
         return new Lexem(lineNumber, LexemType.BINARY, sb.toString());
@@ -163,10 +170,10 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getOctalNumber(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (SymbolUtils.isOctalDigit(ch = pbReader.read())) {
+        while (SymbolUtil.isOctalDigit(ch = pbReader.read())) {
             sb.append((char) ch);
         }
-        if (!SymbolUtils.isEOS(ch)) {
+        if (!SymbolUtil.isEOS(ch)) {
             pbReader.unread(ch);
         }
         return new Lexem(lineNumber, LexemType.OCTAL, sb.toString());
@@ -175,10 +182,10 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getHexadecimalNumber(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (SymbolUtils.isHexDigit(ch = pbReader.read())) {
+        while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
             sb.append((char) ch);
         }
-        if (!SymbolUtils.isEOS(ch)) {
+        if (!SymbolUtil.isEOS(ch)) {
             pbReader.unread(ch);
         }
         return new Lexem(lineNumber, LexemType.HEXADECIMAL, sb.toString());
@@ -186,7 +193,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     private Lexem getCheckedHexadecimalNumber(int ch) throws IOException {
         ch = pbReader.read();
-        if (!SymbolUtils.isHexDigit(ch)) {
+        if (!SymbolUtil.isHexDigit(ch)) {
             throw new CompilerException(file, lineNumber, MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED)
                     , String.valueOf((char) ch));
         }
@@ -198,29 +205,29 @@ public class LexemAnalyzer implements Iterable<Lexem> {
             StringBuilder sb = new StringBuilder();
             sb.append((char) ch);
             ch = pbReader.read();
-            if (SymbolUtils.isHexNewStylePrefix(ch)) {
+            if (SymbolUtil.isHexNewStylePrefix(ch)) {
                 ch = pbReader.read();
-                if (!SymbolUtils.isHexDigit(ch)) {
+                if (!SymbolUtil.isHexDigit(ch)) {
                     throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
                             .INVALID_NUMBER_FORMAT), sb.toString());
                 }
                 return getHexadecimalNumber(ch);
             } else {
-                if (SymbolUtils.isBinaryNewStylePrefix(ch)) {
+                if (SymbolUtil.isBinaryNewStylePrefix(ch)) {
                     ch = pbReader.read();
-                    if (!SymbolUtils.isBinaryDigit(ch)) {
+                    if (!SymbolUtil.isBinaryDigit(ch)) {
                         throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
                                 .INVALID_NUMBER_FORMAT), sb.toString());
                     }
                     return getBinaryNumber(ch);
                 } else {
-                    if (SymbolUtils.isOctalDigit(ch)) {
+                    if (SymbolUtil.isOctalDigit(ch)) {
                         return getOctalNumber(ch);
                     } else {
-                        if (SymbolUtils.isHexDigit(ch)) {
+                        if (SymbolUtil.isHexDigit(ch)) {
                             return getNumber(ch);
                         } else {
-                            if (!SymbolUtils.isEOS(ch)) {
+                            if (!SymbolUtil.isEOS(ch)) {
                                 pbReader.unread(ch);
                             }
                             return new Lexem(lineNumber, LexemType.DECIMAL, sb.toString());
@@ -235,11 +242,11 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getOldStyleNumber(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (SymbolUtils.isDecDigit(ch = pbReader.read())) {
+        while (SymbolUtil.isDecDigit(ch = pbReader.read())) {
             sb.append((char) ch);
         }
         String number = sb.toString();
-        if (SymbolUtils.isBinaryOldStylePostfix(ch)) {
+        if (SymbolUtil.isBinaryOldStylePostfix(ch)) {
             if (!Checker.isBinaryNumber(number)) {
                 throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
                         .INVALID_BINARY_NUMBER_FORMAT), number);
@@ -247,7 +254,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                 return new Lexem(lineNumber, LexemType.BINARY, number);
             }
         }
-        if (SymbolUtils.isOctalOldStylePostfix(ch)) {
+        if (SymbolUtil.isOctalOldStylePostfix(ch)) {
             if (!Checker.isOctalNumber(number)) {
                 throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
                         .INVALID_OCTAL_NUMBER_FORMAT), number);
@@ -255,7 +262,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                 return new Lexem(lineNumber, LexemType.OCTAL, number);
             }
         }
-        if (SymbolUtils.isHexOldStylePostfix(ch)) {
+        if (SymbolUtil.isHexOldStylePostfix(ch)) {
             if (!Checker.isHexadecimalNumber(number)) {
                 throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
                         .INVALID_HEXADECIMAL_NUMBER_FORMAT), number);
@@ -263,20 +270,20 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                 return new Lexem(lineNumber, LexemType.HEXADECIMAL, number);
             }
         }
-        if (SymbolUtils.isHexDigit(ch)) {
+        if (SymbolUtil.isHexDigit(ch)) {
             sb.append((char) ch);
-            while (SymbolUtils.isHexDigit(ch = pbReader.read())) {
+            while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
                 sb.append((char) ch);
             }
             number = sb.toString();
-            if (SymbolUtils.isHexOldStylePostfix(ch)) {
+            if (SymbolUtil.isHexOldStylePostfix(ch)) {
                 return new Lexem(lineNumber, LexemType.HEXADECIMAL, number);
             }
         }
         if (!Checker.isDecimalNumber(number)) {
             throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList.INVALID_NUMBER_FORMAT), number);
         }
-        if (!SymbolUtils.isEOS(ch)) {
+        if (!SymbolUtil.isEOS(ch)) {
             pbReader.unread(ch);
         }
         return new Lexem(lineNumber, LexemType.DECIMAL, number);
@@ -284,10 +291,10 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     private Lexem getHexadecimalNumberOrVariable(int ch) throws IOException {
         ch = pbReader.read();
-        if (SymbolUtils.isDecDigit(ch)) {
+        if (SymbolUtil.isDecDigit(ch)) {
             return getHexadecimalNumber(ch);
         }
-        if (SymbolUtils.isLetter(ch) || SymbolUtils.isUnderline(ch)) {
+        if (SymbolUtil.isLetter(ch) || SymbolUtil.isUnderline(ch)) {
             return getVariable(ch);
         } else {
             throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED));
@@ -297,11 +304,11 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getVariable(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (!SymbolUtils.isEOS(ch = pbReader.read())) {
-            if (SymbolUtils.isUnderline(ch) || SymbolUtils.isLetter(ch) || SymbolUtils.isDecDigit(ch)) {
+        while (!SymbolUtil.isEOS(ch = pbReader.read())) {
+            if (SymbolUtil.isUnderline(ch) || SymbolUtil.isLetter(ch) || SymbolUtil.isDecDigit(ch)) {
                 sb.append((char) ch);
             } else {
-                if (!SymbolUtils.isEOS(ch)) {
+                if (!SymbolUtil.isEOS(ch)) {
                     pbReader.unread(ch);
                 }
                 break;
@@ -359,7 +366,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                         type = LexemType.LSHIFT;
                         break;
                     default:
-                        if (!SymbolUtils.isEOS(ch)) {
+                        if (!SymbolUtil.isEOS(ch)) {
                             pbReader.unread(ch);
                             break;
                         }
@@ -373,7 +380,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                         type = LexemType.RSHIFT;
                         break;
                     default:
-                        if (!SymbolUtils.isEOS(ch)) {
+                        if (!SymbolUtil.isEOS(ch)) {
                             pbReader.unread(ch);
                             break;
                         }
@@ -386,14 +393,14 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     private Lexem getChar(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
-        while (!SymbolUtils.isApostrophe(ch = pbReader.read())) {
-            if (SymbolUtils.isEOS(ch) || SymbolUtils.isEOL(ch)) {
+        while (!SymbolUtil.isApostrophe(ch = pbReader.read())) {
+            if (SymbolUtil.isEOS(ch) || SymbolUtil.isEOL(ch)) {
                 throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "'");
             }
             if (ch == '\\') {
                 sb.append((char) ch);
                 ch = pbReader.read();
-                if (SymbolUtils.isEOS(ch) || SymbolUtils.isEOL(ch)) {
+                if (SymbolUtil.isEOS(ch) || SymbolUtil.isEOL(ch)) {
                     throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "'");
                 }
             }
@@ -416,22 +423,22 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getString(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         do {
-            while (!SymbolUtils.isQuote(ch = pbReader.read())) {
-                if (SymbolUtils.isEOS(ch) || SymbolUtils.isEOL(ch)) {
+            while (!SymbolUtil.isQuote(ch = pbReader.read())) {
+                if (SymbolUtil.isEOS(ch) || SymbolUtil.isEOL(ch)) {
                     throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "\"");
                 }
                 if (ch == '\\') {
                     sb.append((char) ch);
                     ch = pbReader.read();
-                    if (SymbolUtils.isEOS(ch) || SymbolUtils.isEOL(ch)) {
+                    if (SymbolUtil.isEOS(ch) || SymbolUtil.isEOL(ch)) {
                         throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "\"");
                     }
                 }
                 sb.append((char) ch);
             }
             ch = pbReader.read();
-            if (!SymbolUtils.isQuote(ch)) {
-                if (!SymbolUtils.isEOS(ch)) {
+            if (!SymbolUtil.isQuote(ch)) {
+                if (!SymbolUtil.isEOS(ch)) {
                     pbReader.unread(ch);
                 }
                 break;
@@ -450,40 +457,40 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     protected Lexem getNext() throws IOException {
         int ch = pbReader.read();
-        if (SymbolUtils.isSpace(ch)) {
+        if (SymbolUtil.isSpace(ch)) {
             ch = skipSpace();
         }
-        if (SymbolUtils.isEOS(ch)) {
+        if (SymbolUtil.isEOS(ch)) {
             return getEOS();
         }
-        if (SymbolUtils.isEOL(ch)) {
+        if (SymbolUtil.isEOL(ch)) {
             return getEOL(ch);
         }
-        if (SymbolUtils.isComment(ch)) {
+        if (SymbolUtil.isComment(ch)) {
             return getComment(ch);
         }
-        if (SymbolUtils.isLetter(ch) || SymbolUtils.isUnderline(ch)) {
+        if (SymbolUtil.isLetter(ch) || SymbolUtil.isUnderline(ch)) {
             return getIdentifier(ch);
         }
-        if (SymbolUtils.isDot(ch)) {
+        if (SymbolUtil.isDot(ch)) {
             return getDottedIdentifier(ch);
         }
-        if (SymbolUtils.isDecDigit(ch)) {
+        if (SymbolUtil.isDecDigit(ch)) {
             return getNumber(ch);
         }
-        if (SymbolUtils.isDelimiter(ch)) {
+        if (SymbolUtil.isDelimiter(ch)) {
             return getDelimiter(ch);
         }
-        if (SymbolUtils.isApostrophe(ch)) {
+        if (SymbolUtil.isApostrophe(ch)) {
             return getChar(ch);
         }
-        if (SymbolUtils.isQuote(ch)) {
+        if (SymbolUtil.isQuote(ch)) {
             return getString(ch);
         }
-        if (SymbolUtils.isDollar(ch)) {
+        if (SymbolUtil.isDollar(ch)) {
             return getHexadecimalNumberOrVariable(ch);
         }
-        if (SymbolUtils.isHash(ch)) {
+        if (SymbolUtil.isHash(ch)) {
             return getCheckedHexadecimalNumber(ch);
         }
         throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.UNEXPECTED_SYMBOL)

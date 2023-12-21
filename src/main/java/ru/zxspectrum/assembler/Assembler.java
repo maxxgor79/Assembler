@@ -18,7 +18,7 @@ import ru.zxspectrum.assembler.ns.AbstractNamespaceApi;
 import ru.zxspectrum.assembler.settings.AssemblerSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
 import ru.zxspectrum.assembler.util.FileUtil;
-import ru.zxspectrum.assembler.util.SymbolUtils;
+import ru.zxspectrum.assembler.util.SymbolUtil;
 import ru.zxspectrum.assembler.util.TypeUtil;
 import ru.zxspectrum.io.tap.TapData;
 import ru.zxspectrum.io.tap.TapUtil;
@@ -147,14 +147,14 @@ public class Assembler extends AbstractNamespaceApi {
                 settings.getMajorVersion()
                 , settings.getMinorVersion());
         String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
-        String lineExternal = SymbolUtils.fillChar('*', 80);
+        String lineExternal = SymbolUtil.fillChar('*', 80);
         sb.append(lineExternal).append(System.lineSeparator());
-        String lineInternal = (new StringBuilder().append('*').append(SymbolUtils.fillChar(' ', 78))
+        String lineInternal = (new StringBuilder().append('*').append(SymbolUtil.fillChar(' ', 78))
                 .append('*')).toString();
         sb.append(
-                SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
+                SymbolUtil.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
                         , programWelcome)).append(System.lineSeparator());
-        sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
+        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
                 , writtenBy)).append(System.lineSeparator());
         sb.append(lineExternal).append(System.lineSeparator());
         return sb.toString();

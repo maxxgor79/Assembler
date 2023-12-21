@@ -4,6 +4,7 @@ package ru.zxspectrum.assembler.lexem;
  * @Author Maxim Gorin
  */
 public enum LexemType {
+    KEYWORD,
     IDENTIFIER,
     BINARY,
     OCTAL,

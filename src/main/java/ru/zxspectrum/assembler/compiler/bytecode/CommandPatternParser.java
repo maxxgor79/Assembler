@@ -2,15 +2,12 @@ package ru.zxspectrum.assembler.compiler.bytecode;
 
 import lombok.NonNull;
 import ru.zxspectrum.assembler.error.ParserException;
-import ru.zxspectrum.assembler.lang.Type;
-import ru.zxspectrum.assembler.util.SymbolUtils;
+import ru.zxspectrum.assembler.util.SymbolUtil;
 import ru.zxspectrum.assembler.util.TypeUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +41,7 @@ public class CommandPatternParser implements Cloneable {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
         ch = pis.read();
-        if (!SymbolUtils.isHexDigit(ch)) {
+        if (!SymbolUtil.isHexDigit(ch)) {
             throw new NumberFormatException();
         }
         sb.append((char) ch);
@@ -56,7 +53,7 @@ public class CommandPatternParser implements Cloneable {
         int firstCh = pis.read();
         if (TypeUtil.isPatternSymbol(firstCh)) {
             sb.append((char) firstCh);
-            while (!SymbolUtils.isEOS(ch = pis.read())) {
+            while (!SymbolUtil.isEOS(ch = pis.read())) {
                 if (firstCh == ch && TypeUtil.isPatternSymbol(ch)) {
                     sb.append((char) ch);
                 } else {
@@ -66,7 +63,7 @@ public class CommandPatternParser implements Cloneable {
         } else {
             throw new ParserException("Invalid variable name");
         }
-        if (!SymbolUtils.isEOS(ch)) {
+        if (!SymbolUtil.isEOS(ch)) {
             pis.unread(ch);
         }
         return sb.toString();
@@ -78,10 +75,10 @@ public class CommandPatternParser implements Cloneable {
         int index = 0;
         int ch;
         while ((ch = pis.read()) != -1) {
-            if (SymbolUtils.isHexDigit(ch)) {
+            if (SymbolUtil.isHexDigit(ch)) {
                 buf[index++] = (byte) getNumber(pis, ch);
             } else {
-                if (SymbolUtils.isDollar(ch)) {
+                if (SymbolUtil.isDollar(ch)) {
                     if (index > 0) {
                         list.add(Arrays.copyOf(buf, index));
                         index = 0;

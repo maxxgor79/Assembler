@@ -2,7 +2,7 @@ package ru.zxspectrum.assembler.lexem;
 
 import ru.zxspectrum.assembler.lang.Encoding;
 import ru.zxspectrum.assembler.lang.Type;
-import ru.zxspectrum.assembler.util.SymbolUtils;
+import ru.zxspectrum.assembler.util.SymbolUtil;
 
 import java.math.BigInteger;
 
@@ -19,7 +19,7 @@ public final class Checker {
             return false;
         }
         for (int i = 0; i < s.length(); i++) {
-            if (!SymbolUtils.isBinaryDigit(s.charAt(i))) {
+            if (!SymbolUtil.isBinaryDigit(s.charAt(i))) {
                 return false;
             }
         }
@@ -31,7 +31,7 @@ public final class Checker {
             return false;
         }
         for (int i = 0; i < s.length(); i++) {
-            if (!SymbolUtils.isOctalDigit(s.charAt(i))) {
+            if (!SymbolUtil.isOctalDigit(s.charAt(i))) {
                 return false;
             }
         }
@@ -43,7 +43,7 @@ public final class Checker {
             return false;
         }
         for (int i = 0; i < s.length(); i++) {
-            if (!SymbolUtils.isHexDigit(s.charAt(i))) {
+            if (!SymbolUtil.isHexDigit(s.charAt(i))) {
                 return false;
             }
         }
@@ -55,7 +55,7 @@ public final class Checker {
             return false;
         }
         for (int i = 0; i < s.length(); i++) {
-            if (!SymbolUtils.isDecDigit(s.charAt(i))) {
+            if (!SymbolUtil.isDecDigit(s.charAt(i))) {
                 return false;
             }
         }

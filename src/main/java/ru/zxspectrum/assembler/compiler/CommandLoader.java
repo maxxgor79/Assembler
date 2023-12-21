@@ -2,6 +2,7 @@ package ru.zxspectrum.assembler.compiler;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.zxspectrum.assembler.error.AssemblerException;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 
@@ -20,7 +21,7 @@ import static ru.zxspectrum.assembler.error.text.MessageList.INVALID_TABLE_FORMA
 public abstract class CommandLoader<E> {
     protected E load(E value, InputStream is, Charset encoding) throws IOException {
         Scanner scanner = new Scanner(is, encoding);
-        scanner.useDelimiter("[\t\n]");
+        scanner.useDelimiter("[\t\n]+");
         int lineNumber = 1;
         String codePattern = null;
         String commandPattern = null;
@@ -32,15 +33,16 @@ public abstract class CommandLoader<E> {
                     throw new CompilerException(null, lineNumber, MessageList.getMessage(MessageList
                             .VARIABLE_PATTERNS_ARE_NOT_EQUAL), codePattern + "\t" + commandPattern);
                 }
-                parse(value, lineNumber, codePattern, commandPattern);
+                prepare(value, lineNumber, codePattern, commandPattern);
                 lineNumber++;
             }
         } catch(NoSuchElementException e) {
-            throw new CompilerException(null, lineNumber, MessageList.getMessage(INVALID_TABLE_FORMAT)
+            throw new AssemblerException(null, lineNumber, MessageList.getMessage(INVALID_TABLE_FORMAT)
                     , codePattern + "\t" + commandPattern);
         }
         catch (RuntimeException e) {
             log.debug("" + lineNumber + ": " + e.getMessage());
+            throw new AssemblerException(e.getMessage());
         }
         return value;
     }
@@ -65,7 +67,7 @@ public abstract class CommandLoader<E> {
         }
     }
 
-    protected abstract void parse(E value, int lineNumber, String code, String command);
+    protected abstract void prepare(E value, int lineNumber, String code, String command);
 
     public abstract E load(InputStream is, Charset encoding) throws IOException;
 
