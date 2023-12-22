@@ -23,40 +23,36 @@ public class Lexem {
     protected Integer intValue;
 
     public Lexem() {
-
+        setType(LexemType.Symbol);
     }
 
-    public Lexem(@NonNull LexemType type, @NonNull Integer intValue) {
-        if (type != LexemType.Number) {
-            throw new IllegalArgumentException("Bad type: " + type);
-        }
-        this.setType(type);
+    public Lexem(@NonNull Integer intValue) {
         this.setIntValue(intValue);
     }
 
     public void setType(@NonNull LexemType type) {
-        if (this.type == type) {
-            return;
-        }
         this.type = type;
-        if (type == LexemType.Number) {
-            value = null;
-            intValue = null;
+        switch (type) {
+            case Number -> this.intValue = (value == null) ? null : Integer.valueOf(value);
+            case Symbol -> value = (value == null || value.isEmpty()) ? null : String.valueOf(value.charAt(0));
+            case Eol -> value = System.lineSeparator();
+            default -> intValue = null;
         }
     }
 
     public void setIntValue(@NonNull Integer intValue) {
+        this.type = LexemType.Number;
         this.intValue = intValue;
         this.value = String.valueOf(intValue);
     }
 
     public void setValue(@NonNull String value) {
-        if (value.equals(this.value)) {
-            return;
-        }
         this.value = value;
-        if (type == LexemType.Number) {
-            intValue = Integer.valueOf(value);
+        switch (type) {
+            case Number -> intValue = Integer.valueOf(value);
+            case Symbol -> this.value = (value == null || value.isEmpty()) ? null
+                    : String.valueOf(value.charAt(0));
+            case Eol -> this.value = System.lineSeparator();
         }
     }
 

@@ -205,7 +205,9 @@ public class LexemAnalyzer implements Iterable<Lexem> {
             StringBuilder sb = new StringBuilder();
             sb.append((char) ch);
             ch = pbReader.read();
-            if (SymbolUtil.isHexNewStylePrefix(ch)) {
+            if (SymbolUtil.isHexOldStylePostfix(ch)) {
+                return new Lexem(lineNumber, LexemType.HEXADECIMAL, sb.toString());
+            } else if (SymbolUtil.isHexNewStylePrefix(ch)) {
                 ch = pbReader.read();
                 if (!SymbolUtil.isHexDigit(ch)) {
                     throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList

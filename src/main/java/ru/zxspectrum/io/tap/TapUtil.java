@@ -37,7 +37,7 @@ public final class TapUtil {
       throws ParserException, IOException {
     final Compiler compiler = new Compiler();
     compiler.setInputStream(Loader.openBasic(resourseName));
-    Lexem lexem = new Lexem(LexemType.Number, address);
+    Lexem lexem = new Lexem(Integer.valueOf(address));
     compiler.setReplacer(new Replacer().add(VAR_LOAD_ADDR, lexem).add(VAR_RUN_ADDR, lexem));
     byte[] compiled = compiler.compile();
 
