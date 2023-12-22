@@ -375,7 +375,7 @@ FDCB$dA2	RES 4,(IY+$d),D
 FDCB$dA3	RES 4,(IY+$d),E
 FDCB$dA4	RES 4,(IY+$d),H
 FDCB$dA5	RES 4,(IY+$d),L
-FDCB$dA7	RES 4,(IY+$d).A
+FDCB$dA7	RES 4,(IY+$d),A
 FDCB$dA8	RES 5,(IY+$d),B
 FDCB$dA9	RES 5,(IY+$d),C
 FDCB$dAA	RES 5,(IY+$d),D
