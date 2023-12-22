@@ -42,6 +42,7 @@ public abstract class CommandLoader<E> {
         }
         catch (RuntimeException e) {
             log.debug("" + lineNumber + ": " + e.getMessage());
+            log.error(String.format("[%d][%s][%s]", lineNumber, codePattern, commandPattern), e);
             throw new AssemblerException(e.getMessage());
         }
         return value;
