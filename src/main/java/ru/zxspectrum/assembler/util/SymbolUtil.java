@@ -3,7 +3,7 @@ package ru.zxspectrum.assembler.util;
 import lombok.NonNull;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class SymbolUtil {
     private static char EOL_SYMBOL = '\n';

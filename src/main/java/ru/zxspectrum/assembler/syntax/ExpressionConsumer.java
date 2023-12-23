@@ -9,7 +9,7 @@ import ru.zxspectrum.assembler.util.RepeatableIteratorImpl;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class ExpressionConsumer {
     private RepeatableIteratorImpl<Lexem> lexemIterator;

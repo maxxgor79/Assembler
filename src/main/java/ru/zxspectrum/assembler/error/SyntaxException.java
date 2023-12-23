@@ -3,7 +3,7 @@ package ru.zxspectrum.assembler.error;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class SyntaxException extends AssemblerException {
     public SyntaxException(File file, int lineNumber, String text, String... args) {

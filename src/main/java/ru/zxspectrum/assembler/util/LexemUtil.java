@@ -5,6 +5,9 @@ import lombok.NonNull;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Maxim Gorin
+ */
 public final class LexemUtil {
     private static final Set<String> KEYWORDS = new HashSet<>();
 

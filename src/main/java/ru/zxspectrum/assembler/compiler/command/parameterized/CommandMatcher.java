@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class CommandMatcher {
     private final LexemSequence pattern;

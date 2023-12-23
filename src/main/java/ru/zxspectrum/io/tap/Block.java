@@ -6,6 +6,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 @ToString
 abstract public class Block implements TapElementReader, TapElementWriter {

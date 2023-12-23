@@ -3,6 +3,9 @@ package ru.zxspectrum.assembler.compiler.command.tree;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.lexem.Lexem;
 
+/**
+ * @author Maxim Gorin
+ */
 public interface Node {
     boolean isTerminal(Lexem lexem);
 

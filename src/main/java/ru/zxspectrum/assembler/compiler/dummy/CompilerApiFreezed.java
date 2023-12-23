@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class CompilerApiFreezed implements CompilerApi {
     private CompilerApi compilerApi;

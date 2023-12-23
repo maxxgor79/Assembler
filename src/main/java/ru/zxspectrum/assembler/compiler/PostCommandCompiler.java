@@ -12,7 +12,7 @@ import java.io.RandomAccessFile;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public class PostCommandCompiler {

@@ -34,7 +34,7 @@ import static ru.zxspectrum.assembler.util.TypeUtil.isIntegerPattern;
 import static ru.zxspectrum.assembler.util.TypeUtil.isOffsetPattern;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public class ParameterizedCommandCompiler implements CommandCompiler {

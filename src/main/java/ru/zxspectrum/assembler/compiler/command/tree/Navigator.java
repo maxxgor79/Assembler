@@ -4,6 +4,9 @@ import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.lexem.Lexem;
 
+/**
+ * @author Maxim Gorin
+ */
 class Navigator {
     protected Node current;
 

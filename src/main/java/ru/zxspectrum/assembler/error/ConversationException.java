@@ -1,5 +1,8 @@
 package ru.zxspectrum.assembler.error;
 
+/**
+ * @author Maxim Gorin
+ */
 public class ConversationException extends RuntimeException {
     public ConversationException() {
     }

@@ -7,6 +7,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author Maxim Gorin
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @RequiredArgsConstructor

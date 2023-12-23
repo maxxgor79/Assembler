@@ -10,6 +10,9 @@ import ru.zxspectrum.assembler.syntax.LexemSequence;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * @author Maxim Gorin
+ */
 public class CommandTree {
     protected static final Lexem VAR_D = new Lexem(1, LexemType.VARIABLE, "d");
 

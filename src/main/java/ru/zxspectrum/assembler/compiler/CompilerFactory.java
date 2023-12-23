@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class CompilerFactory {
     private CompilerFactory() {

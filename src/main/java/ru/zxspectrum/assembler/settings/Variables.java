@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class Variables {
     private Variables() {

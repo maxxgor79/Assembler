@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class RepeatableIteratorImpl<E> implements RepeatableIterator<E> {
     private E current;

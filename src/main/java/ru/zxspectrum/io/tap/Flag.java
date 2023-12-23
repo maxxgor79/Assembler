@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author Maxim Gorin
+ */
 @ToString
 public enum Flag {
     Header(0), Data(255), Unknown(-1);

@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.lexem;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public enum LexemType {
     KEYWORD,

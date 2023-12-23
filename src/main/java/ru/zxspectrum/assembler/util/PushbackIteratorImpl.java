@@ -5,7 +5,7 @@ import lombok.NonNull;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class PushbackIteratorImpl<E> implements PushbackIterator<E> {
     private Iterator<E> iterator;

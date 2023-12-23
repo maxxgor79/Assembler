@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class LexemAnalyzer implements Iterable<Lexem> {
     private final static Encoding DEFAULT_ENCODING = Encoding.UTF_8;

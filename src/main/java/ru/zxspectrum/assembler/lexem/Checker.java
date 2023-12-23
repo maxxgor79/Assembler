@@ -7,7 +7,7 @@ import ru.zxspectrum.assembler.util.SymbolUtil;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class Checker {
     private Checker() {

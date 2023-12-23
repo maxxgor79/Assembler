@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.Arrays;
 
+/**
+ * @author Maxim Gorin
+ */
 @ToString
 @Slf4j
 public class ArrayParams implements TapElementReader, TapElementWriter {

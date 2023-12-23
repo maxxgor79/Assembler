@@ -14,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.io.LEDataInputStream;
 import ru.zxspectrum.io.LEDataOutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 @ToString(callSuper = true)
 public class HeaderBlock extends Block {

@@ -1,18 +1,19 @@
 package ru.zxspectrum.io.tap;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.io.LEDataOutputStream;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+/**
+ * @author Maxim Gorin
+ */
 @ToString(callSuper = true)
 @EqualsAndHashCode
 @Slf4j

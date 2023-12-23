@@ -3,7 +3,7 @@ package ru.zxspectrum.assembler.error;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class CompilerException extends AssemblerException {
     public CompilerException(File file, int lineNumber, String text, String... args) {

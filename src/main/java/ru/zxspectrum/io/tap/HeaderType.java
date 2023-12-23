@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author Maxim Gorin
+ */
 @ToString
 public enum HeaderType {
     Program(0), NumberArray(1), CharArray(2), Bytes(3), Code(3);

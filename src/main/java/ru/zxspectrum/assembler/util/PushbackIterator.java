@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.util;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public interface PushbackIterator<E> extends RepeatableIterator<E> {
     public boolean back();

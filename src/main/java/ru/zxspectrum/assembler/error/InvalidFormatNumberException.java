@@ -3,7 +3,7 @@ package ru.zxspectrum.assembler.error;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class InvalidFormatNumberException extends LexemException {
 

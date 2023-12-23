@@ -15,6 +15,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 public class SoundGenerator {
     protected static final int PULSE_ZERO = 855;

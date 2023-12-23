@@ -1,7 +1,7 @@
 package ru.zxspectrum.assembler.lang;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public enum Encoding {
     ASCII("ASCII"),

@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * @author Maxim Gorin
+ */
 public class BasicNode implements Node {
     protected CommandCompiler compiler;
     protected final Map<Lexem, Node> linkMap = new HashMap<>();

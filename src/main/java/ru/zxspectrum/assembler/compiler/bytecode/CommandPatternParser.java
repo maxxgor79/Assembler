@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class CommandPatternParser implements Cloneable {
     protected String pattern;

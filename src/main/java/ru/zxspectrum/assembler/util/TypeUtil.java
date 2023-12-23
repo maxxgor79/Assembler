@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import static ru.zxspectrum.assembler.lang.Type.Unknown;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public final class TypeUtil {

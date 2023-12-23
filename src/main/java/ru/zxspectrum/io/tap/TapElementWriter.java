@@ -1,10 +1,11 @@
 package ru.zxspectrum.io.tap;
 
-import ru.zxspectrum.io.LEDataOutputStream;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
 public interface TapElementWriter {
     void write(OutputStream os) throws IOException;
 

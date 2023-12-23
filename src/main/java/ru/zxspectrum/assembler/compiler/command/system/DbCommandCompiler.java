@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public class DbCommandCompiler implements CommandCompiler {

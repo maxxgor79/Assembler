@@ -6,7 +6,7 @@ import java.io.File;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public interface NamespaceApi {
     void reset();

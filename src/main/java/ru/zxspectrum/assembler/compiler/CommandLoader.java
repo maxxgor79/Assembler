@@ -15,7 +15,7 @@ import java.util.Scanner;
 import static ru.zxspectrum.assembler.error.text.MessageList.INVALID_TABLE_FORMAT;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public abstract class CommandLoader<E> {

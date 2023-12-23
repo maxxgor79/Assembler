@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class MessageList {
     public static final String INVALID_NUMBER_FORMAT = "invalidNumberFormat";

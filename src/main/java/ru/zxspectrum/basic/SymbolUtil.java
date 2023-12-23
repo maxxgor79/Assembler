@@ -1,5 +1,8 @@
 package ru.zxspectrum.basic;
 
+/**
+ * @author Maxim Gorin
+ */
 public final class SymbolUtil {
     private SymbolUtil() {
 

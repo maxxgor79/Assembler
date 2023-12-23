@@ -3,6 +3,9 @@ package ru.zxspectrum.io.wav;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
 public final class Signal {
     public static double round(double value) {
         if (value < 0.0) {

@@ -3,7 +3,7 @@ package ru.zxspectrum.assembler.error.text;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class MessageFormatter {
     private MessageFormatter() {

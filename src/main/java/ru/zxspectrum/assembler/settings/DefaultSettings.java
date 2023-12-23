@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
+/**
+ * @author Maxim Gorin
+ */
 public class DefaultSettings implements SettingsApi {
     protected static final ByteOrder BYTE_ORDER = ByteOrder.LittleEndian;
 

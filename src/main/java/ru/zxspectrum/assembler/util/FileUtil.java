@@ -8,7 +8,7 @@ import java.io.Closeable;
 import java.io.File;
 
 /**
- * @Author: Maxim Gorin
+ * @author Maxim Gorin
  * Date: 01.03.2023
  */
 @Slf4j

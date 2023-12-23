@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class SyntaxAnalyzer implements Iterable<LexemSequence> {
     private RepeatableIterator<Lexem> lexemIterator;

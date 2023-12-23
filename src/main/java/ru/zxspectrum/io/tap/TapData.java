@@ -17,6 +17,9 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.io.LEDataInputStream;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 @Getter
 @EqualsAndHashCode

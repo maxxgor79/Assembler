@@ -5,6 +5,9 @@ import lombok.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Maxim Gorin
+ */
 public enum Operator {
     RND(0xa5), _INKEY(0xa6, "INKEY$"), PI(0xa7), FN(0xa8), POINT(0xa9)
     , _SCREEN(0xaa, "SCREEN$"), ATTR(0xab), AT(0xac), TAB(0xad)

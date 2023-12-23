@@ -17,6 +17,9 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
 public class Compiler {
 
     private static final int TYPE = 0xff;

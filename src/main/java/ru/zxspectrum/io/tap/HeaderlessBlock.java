@@ -12,6 +12,9 @@ import ru.zxspectrum.io.LEDataOutputStream;
 
 import java.io.IOException;
 
+/**
+ * @author Maxim Gorin
+ */
 @ToString(callSuper = true)
 @EqualsAndHashCode
 @Slf4j

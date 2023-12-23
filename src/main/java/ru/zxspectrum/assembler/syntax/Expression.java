@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class Expression {
     private RepeatableIteratorImpl<Lexem> lexemIterator;

@@ -9,6 +9,9 @@ import java.io.PushbackInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
 public abstract class Parser {
     protected static final String EOL = "eol";
 

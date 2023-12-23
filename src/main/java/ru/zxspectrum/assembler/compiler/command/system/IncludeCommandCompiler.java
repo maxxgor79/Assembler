@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class IncludeCommandCompiler implements CommandCompiler {
     public static final String NAME = "include";

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public interface CompilerApi {
     public int getLineNumber();

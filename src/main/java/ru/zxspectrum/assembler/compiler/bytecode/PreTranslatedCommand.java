@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
 @EqualsAndHashCode
 @ToString
 @Slf4j

@@ -13,6 +13,9 @@ import ru.zxspectrum.io.LEDataOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 @ToString
 public class BytesParams implements TapElementReader, TapElementWriter {

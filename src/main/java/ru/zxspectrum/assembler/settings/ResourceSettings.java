@@ -1,9 +1,7 @@
 package ru.zxspectrum.assembler.settings;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.compiler.bytecode.ByteOrder;
@@ -14,6 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 @EqualsAndHashCode
 @ToString

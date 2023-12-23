@@ -12,6 +12,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @author Maxim Gorin
+ */
 public abstract class AbstractNamespaceApi implements NamespaceApi {
     protected final Map<String, LabelInfo> labelMap = new HashMap<>();
 

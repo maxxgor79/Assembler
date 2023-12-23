@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public interface SettingsApi {
 

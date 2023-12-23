@@ -15,6 +15,9 @@ import java.io.IOException;
 
 import ru.zxspectrum.basic.compile.Compiler;
 
+/**
+ * @author Maxim Gorin
+ */
 @Slf4j
 public final class TapUtil {
 

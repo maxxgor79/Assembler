@@ -5,7 +5,7 @@ import ru.zxspectrum.assembler.error.text.MessageFormatter;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class AssemblerException extends RuntimeException {
     private String message;

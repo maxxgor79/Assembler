@@ -12,6 +12,9 @@ import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.util.RepeatableIterator;
 import ru.zxspectrum.assembler.util.RepeatableIteratorImpl;
 
+/**
+ * @author Maxim Gorin
+ */
 public class UdefCommandCompiler implements CommandCompiler {
     public static final String NAME = "udef";
 

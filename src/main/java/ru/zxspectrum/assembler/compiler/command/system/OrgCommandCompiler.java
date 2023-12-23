@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public class OrgCommandCompiler implements CommandCompiler {

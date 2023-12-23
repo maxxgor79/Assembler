@@ -8,7 +8,7 @@ import java.io.File;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class NamespaceApiFreezed implements NamespaceApi {
     private NamespaceApi namespaceApi;

@@ -8,6 +8,9 @@ import ru.zxspectrum.basic.SymbolUtil;
 
 import java.io.IOException;
 
+/**
+ * @author Maxim Gorin
+ */
 public class SourceParser extends Parser {
 
   @Override

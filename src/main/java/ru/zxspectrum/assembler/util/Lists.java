@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class Lists {
     private Lists() {

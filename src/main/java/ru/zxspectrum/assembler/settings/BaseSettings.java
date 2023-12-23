@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 
+/**
+ * @author Maxim Gorin
+ */
 public abstract class BaseSettings implements SettingsApi {
     @Setter(AccessLevel.PROTECTED)
     @NonNull

@@ -5,7 +5,7 @@ import lombok.NonNull;
 import java.math.BigInteger;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  *
  */
 public final class Converter {

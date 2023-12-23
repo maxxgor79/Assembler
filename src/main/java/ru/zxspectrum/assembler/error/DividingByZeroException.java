@@ -6,7 +6,7 @@ import ru.zxspectrum.assembler.error.text.MessageList;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class DividingByZeroException extends ArithmeticException {
     public DividingByZeroException(File file, int lineNumber) {

@@ -3,6 +3,9 @@ package ru.zxspectrum.basic;
 import lombok.NonNull;
 import ru.zxspectrum.basic.Lexem;
 
+/**
+ * @author Maxim Gorin
+ */
 public class LineNumber extends Lexem {
     public LineNumber() {
         super();

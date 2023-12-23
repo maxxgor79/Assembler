@@ -5,7 +5,7 @@ import ru.zxspectrum.assembler.error.AssemblerException;
 import java.io.File;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public final class Output {
     private static int warningCount;

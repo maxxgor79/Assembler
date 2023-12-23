@@ -7,7 +7,7 @@ import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public class NonParametersCommandCompiler implements CommandCompiler {

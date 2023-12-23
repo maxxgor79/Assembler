@@ -7,6 +7,9 @@ import ru.zxspectrum.io.LEDataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
 public class WavFile {
     public static final String EXTENSION = "wav";
 

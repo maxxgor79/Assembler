@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public abstract class AnalyzerIterator<E> implements Iterator {
     protected E lastItem;

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class LexemSequence {
     private List<Lexem> lexemSequence;

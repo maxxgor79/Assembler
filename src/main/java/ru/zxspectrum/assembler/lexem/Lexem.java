@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 public class Lexem {
     @Getter

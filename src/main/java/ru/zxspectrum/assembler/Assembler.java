@@ -44,9 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
-
 @Slf4j
 public class Assembler extends AbstractNamespaceApi {
     protected AssemblerSettings settings;

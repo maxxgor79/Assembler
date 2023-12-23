@@ -19,6 +19,9 @@ import ru.zxspectrum.assembler.util.TypeUtil;
 import java.math.BigInteger;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
 class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
     public PostParameterizedCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi, @NonNull CompilerApi compilerApi, @NonNull String codePattern, @NonNull LexemSequence commandPattern) {
         super(namespaceApi, settingsApi, compilerApi, codePattern, commandPattern);

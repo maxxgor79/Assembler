@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 
 /**
- * @Author: Maxim Gorin
+ * @author Maxim Gorin
  * Date: 26.02.2023
  */
 public class PatternParameterScanner {

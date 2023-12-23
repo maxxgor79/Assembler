@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Author Maxim Gorin
+ * @author Maxim Gorin
  */
 @Slf4j
 public class AssemblerCommandLoader extends CommandLoader<MultiValuedMap<String, LexemSequence>> {
