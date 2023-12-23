@@ -28,7 +28,7 @@ public class DefaultSettings implements SettingsApi {
 
     protected static final boolean STRICT_CONVERSION = false;
 
-    protected static final String CMD_FILENAME = "z80disasm";
+    protected static final String CMD_FILENAME = "asm";
 
     @Override
     public void load(String name) throws IOException {
@@ -87,6 +87,6 @@ public class DefaultSettings implements SettingsApi {
 
     @Override
     public void merge(@NonNull SettingsApi setting) {
-
+        throw new UnsupportedOperationException();
     }
 }
