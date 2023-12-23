@@ -34,5 +34,6 @@ public class ResourceSettings extends BaseSettings {
         setOutputDirectory(new File(Variables.getString(Variables.OUTPUT_DIRECTORY, "output")));
         setMajorVersion(Variables.getString(Variables.MAJOR_VERSION, "1"));
         setMinorVersion(Variables.getString(Variables.MINOR_VERSION, "0"));
+        setCmdFilename(Variables.getString(Variables.CMD_FILENAME, "asm"));
     }
 }

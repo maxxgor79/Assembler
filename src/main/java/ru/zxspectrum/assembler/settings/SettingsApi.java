@@ -32,5 +32,7 @@ public interface SettingsApi {
 
     boolean isStrictConversion();
 
+    String getCmdFilename();
+
     void merge(SettingsApi setting);
 }

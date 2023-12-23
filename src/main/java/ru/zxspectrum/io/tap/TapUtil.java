@@ -18,6 +18,8 @@ import ru.zxspectrum.basic.compile.Compiler;
 @Slf4j
 public final class TapUtil {
 
+  public static  final String EXTENSION = "tap";
+
   private static final String LOADER_NAME = "loader.bas";
 
   private static final String PROGRAM_NAME = "program";

@@ -1,6 +1,9 @@
 package ru.zxspectrum.assembler;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -9,6 +12,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
@@ -23,6 +27,7 @@ import ru.zxspectrum.assembler.util.TypeUtil;
 import ru.zxspectrum.io.tap.TapData;
 import ru.zxspectrum.io.tap.TapUtil;
 import ru.zxspectrum.io.wav.SoundGenerator;
+import ru.zxspectrum.io.wav.WavFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,20 +48,15 @@ import java.util.Map;
 
 @Slf4j
 public class Assembler extends AbstractNamespaceApi {
+    protected AssemblerSettings settings;
 
-    public static final String EXT_TAP = "tap";
+    protected final Map<BigInteger, PostCommandCompiler> postCommandCompilerMap = new LinkedHashMap<>();
 
-    public static final String EXT_WAV = "wav";
-
-    private final Map<BigInteger, PostCommandCompiler> postCommandCompilerMap = new LinkedHashMap<>();
-
-    private final AssemblerSettings settings = new AssemblerSettings();
-
-    private BigInteger address = new BigInteger("8000", 16);
+    @Getter
+    protected BigInteger address = new BigInteger("8000", 16);
 
     public Assembler() {
         reset();
-        loadSettings();
     }
 
     @Override
@@ -65,14 +65,10 @@ public class Assembler extends AbstractNamespaceApi {
         postCommandCompilerMap.clear();
     }
 
-    private void loadSettings() {
-        try {
-            ResourceSettings resourceSettings = new ResourceSettings();
-            resourceSettings.load("settings.properties");
-            settings.merge(resourceSettings);
-            setDefaultSettings();
-        } catch (Exception e) {
-            log.info(e.getMessage());
+    protected void setSettings(@NonNull AssemblerSettings settings) {
+        this.settings = settings;
+        if (settings.getAddress() != null) {
+            setAddress(settings.getAddress());
         }
     }
 
@@ -80,19 +76,14 @@ public class Assembler extends AbstractNamespaceApi {
         OutputStream os = null;
         try {
             for (File file : files) {
-                File outputFile = createOutputFile(file);
+                final File outputFile = createOutputFile(file);
                 try {
                     reset();
                     os = new FileOutputStream(outputFile);
                     final CompilerApi compilerApi = runSingle(file, os);
                     postCompile(outputFile);
-                    Output.formatPrintln("%d %s", Output.getWarningCount(),
-                            MessageList.getMessage(MessageList.N_WARNINGS));
-                    Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1),
-                            MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(),
-                            MessageList
-                                    .getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList
-                                    .getMessage(MessageList.SOURCES));
+                    Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
+                    Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1), MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(), MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList.getMessage(MessageList.SOURCES));
                 } finally {
                     FileUtil.safeClose(os);
                 }
@@ -109,20 +100,18 @@ public class Assembler extends AbstractNamespaceApi {
         }
     }
 
-    private void createWav(final File file, @NonNull final BigInteger address)
-            throws IOException {
+    private void createWav(final File file, @NonNull final BigInteger address) throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(file);
         final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
-        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, EXT_WAV);
+        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavFile.EXTENSION);
         final SoundGenerator sg = new SoundGenerator(wavFile);
         sg.setSilenceBeforeBlock(true);
         sg.generateWav(tapData);
     }
 
-    private TapData createTap(final File file, @NonNull final BigInteger address)
-            throws IOException {
+    private TapData createTap(final File file, @NonNull final BigInteger address) throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(file);
-        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, EXT_TAP);
+        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, TapUtil.EXTENSION);
         return TapUtil.createBinaryTap(tapFile, data, address.intValue());
     }
 
@@ -143,19 +132,13 @@ public class Assembler extends AbstractNamespaceApi {
 
     private String createWelcome() {
         StringBuilder sb = new StringBuilder();
-        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME),
-                settings.getMajorVersion()
-                , settings.getMinorVersion());
+        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), settings.getMajorVersion(), settings.getMinorVersion());
         String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
         String lineExternal = SymbolUtil.fillChar('*', 80);
         sb.append(lineExternal).append(System.lineSeparator());
-        String lineInternal = (new StringBuilder().append('*').append(SymbolUtil.fillChar(' ', 78))
-                .append('*')).toString();
-        sb.append(
-                SymbolUtil.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
-                        , programWelcome)).append(System.lineSeparator());
-        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
-                , writtenBy)).append(System.lineSeparator());
+        String lineInternal = (new StringBuilder().append('*').append(SymbolUtil.fillChar(' ', 78)).append('*')).toString();
+        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2, programWelcome)).append(System.lineSeparator());
+        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2, writtenBy)).append(System.lineSeparator());
         sb.append(lineExternal).append(System.lineSeparator());
         return sb.toString();
     }
@@ -166,7 +149,6 @@ public class Assembler extends AbstractNamespaceApi {
             // parse the command line arguments
             final CommandLine cli = parser.parse(options, args);
             settings.load(cli);
-            setDefaultSettings();
             final List<File> files = new LinkedList<>();
             for (final String fileName : cli.getArgList()) {
                 files.add(new File(fileName));
@@ -176,12 +158,6 @@ public class Assembler extends AbstractNamespaceApi {
             log.debug(e.getMessage());
         }
         return Collections.emptyList();
-    }
-
-    private void setDefaultSettings() {
-        if (settings.getAddress() != null) {
-            setAddress(settings.getAddress());
-        }
     }
 
     //----------------------------------------------------------
@@ -197,16 +173,11 @@ public class Assembler extends AbstractNamespaceApi {
     }
 
     @Override
-    public BigInteger getAddress() {
-        return this.address;
-    }
-
-    @Override
     public void addToQueue(@NonNull PostCommandCompiler postCommandCompiler) {
         postCommandCompilerMap.put(postCommandCompiler.getCommandOffset(), postCommandCompiler);
     }
 
-    protected void postCompile(final File outputFile) {
+    protected void postCompile(@NonNull final File outputFile) {
         RandomAccessFile randomAccessFile = null;
         try {
             randomAccessFile = new RandomAccessFile(outputFile, "rwd");
@@ -220,16 +191,17 @@ public class Assembler extends AbstractNamespaceApi {
         }
     }
 
-
     public static void main(final String[] args) throws Exception {
+        AssemblerSettings settings = loadSettings();
         Options options = getOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("z80asm <file1>...<fileN>", options);
+            formatter.printHelp(settings.getCmdFilename() + " <file1>...<fileN>", options);
             return;
         }
-        Assembler assembler = new Assembler();
-        List<File> fileList = assembler.setCli(args, options);
+        final Assembler assembler = new Assembler();
+        assembler.setSettings(settings);
+        final List<File> fileList = assembler.setCli(args, options);
         if (!fileList.isEmpty()) {
             Output.println(assembler.createWelcome());
             assembler.run(fileList.toArray(new File[fileList.size()]));
@@ -238,20 +210,26 @@ public class Assembler extends AbstractNamespaceApi {
         }
     }
 
-    private static Options getOptions() {
+    protected static AssemblerSettings loadSettings() {
+        AssemblerSettings settings = new AssemblerSettings();
+        try {
+            ResourceSettings resourceSettings = new ResourceSettings();
+            resourceSettings.load("settings.properties");
+            settings.merge(resourceSettings);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+        }
+        return settings;
+    }
+
+    protected static Options getOptions() {
         Options options = new Options();
-        options.addOption("st", "strict-type-conversion", false
-                , "Turn on strict type conversion");
-        options.addOption("a", "address", true, "'org' address." +
-                " Non negative value.");
-        options.addOption("min", "min-address", true, "minimal address." +
-                " Non negative value.");
-        options.addOption("max", "max-address", true, "maximal address." +
-                " Non negative value.");
-        options.addOption("o", "output", true, "output directory for" +
-                " compiled files.");
-        options.addOption("b", "byte-order", true, "byte order" +
-                ": little-endian or big-endian.");
+        options.addOption("st", "strict-type-conversion", false, "Turn on strict type conversion");
+        options.addOption("a", "address", true, "'org' address." + " Non negative value.");
+        options.addOption("min", "min-address", true, "minimal address." + " Non negative value.");
+        options.addOption("max", "max-address", true, "maximal address." + " Non negative value.");
+        options.addOption("o", "output", true, "output directory for" + " compiled files.");
+        options.addOption("b", "byte-order", true, "byte order" + ": little-endian or big-endian.");
         options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
         options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
         options.addOption("tap", false, "to produce in <TAP> format.");

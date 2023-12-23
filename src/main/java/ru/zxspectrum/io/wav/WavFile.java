@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class WavFile {
+    public static final String EXTENSION = "wav";
+
     protected static final int PCM_FORMAT = 1;
 
     protected static final int BPS = 8;

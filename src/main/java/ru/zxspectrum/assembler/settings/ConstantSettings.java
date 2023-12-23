@@ -68,6 +68,11 @@ public class ConstantSettings implements SettingsApi {
     }
 
     @Override
+    public String getCmdFilename() {
+        return "z80asm";
+    }
+
+    @Override
     public void merge(@NonNull SettingsApi setting) {
         throw new UnsupportedOperationException();
     }

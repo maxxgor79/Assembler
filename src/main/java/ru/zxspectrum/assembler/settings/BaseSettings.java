@@ -46,6 +46,9 @@ public abstract class BaseSettings implements SettingsApi {
     @Setter(AccessLevel.PROTECTED)
     private boolean strictConversion;
 
+    @Setter(AccessLevel.PROTECTED)
+    private String cmdFilename;
+
     BaseSettings() {
 
     }
@@ -101,6 +104,11 @@ public abstract class BaseSettings implements SettingsApi {
     }
 
     @Override
+    public String getCmdFilename() {
+        return cmdFilename;
+    }
+
+    @Override
     public void merge(@NonNull SettingsApi settings) {
         if (settings.getPlatformEncoding() != null) {
             setPlatformEncoding(settings.getPlatformEncoding());
@@ -127,5 +135,8 @@ public abstract class BaseSettings implements SettingsApi {
             setMinorVersion(settings.getMinorVersion());
         }
         setStrictConversion(settings.isStrictConversion());
+        if (settings.getCmdFilename() != null) {
+            setCmdFilename(settings.getCmdFilename());
+        }
     }
 }
