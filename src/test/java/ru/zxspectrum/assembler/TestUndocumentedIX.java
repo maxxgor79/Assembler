@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
-import ru.zxspectrum.assembler.settings.ConstantSettings;
+import ru.zxspectrum.assembler.settings.DefaultSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
 
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -63,7 +63,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -88,7 +88,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -168,7 +168,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -258,7 +258,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -415,7 +415,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -568,7 +568,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -709,7 +709,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -837,7 +837,7 @@ public class TestUndocumentedIX {
             + "SET 5,(IX+-1),B\nSET 5,(IX+-2),C\nSET 5,(IX+-3),D\nSET 5,(IX+-4),E\n"
             + "SET 5,(IX+-5),H\nSET 5,(IX+-6),L\nSET 5,(IX+-7),A\n"
             + "SET 6,(IX+-0x1),B\nSET 6,(IX+-0x2),C\nSET 6,(IX+-0x3),D\nSET 6,(IX+-0x4),E\n"
-                    + "SET 6,(IX+-0x5),H\nSET 6,(IX+-0x6),L\nSET 6,(IX+-0x7),A\n"
+            + "SET 6,(IX+-0x5),H\nSET 6,(IX+-0x6),L\nSET 6,(IX+-0x7),A\n"
             + "SET 7,(IX+-01),B\nSET 7,(IX+-02),C\nSET 7,(IX+-03),D\nSET 7,(IX+-04),E\n"
             + "SET 7,(IX+-05),H\nSET 7,(IX+-06),L\nSET 7,(IX+-07),A\n";
 
@@ -849,7 +849,7 @@ public class TestUndocumentedIX {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();

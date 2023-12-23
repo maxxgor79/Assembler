@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
-import ru.zxspectrum.assembler.settings.ConstantSettings;
+import ru.zxspectrum.assembler.settings.DefaultSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
 
 import java.io.ByteArrayInputStream;
@@ -32,7 +32,7 @@ public class TestCommandFD {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -100,7 +100,7 @@ public class TestCommandFD {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();

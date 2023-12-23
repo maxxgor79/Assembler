@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
-import ru.zxspectrum.assembler.settings.ConstantSettings;
+import ru.zxspectrum.assembler.settings.DefaultSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
 
 import java.io.ByteArrayInputStream;
@@ -35,7 +35,7 @@ public class TestCommand {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -153,7 +153,7 @@ public class TestCommand {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -243,7 +243,7 @@ public class TestCommand {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
@@ -326,6 +326,7 @@ public class TestCommand {
             "EX DE,HL\nCALL PE,(0x1111)\nXOR A,55\nRST 28H\n" +
             "RET P\nPOP AF\nJP P,(0b10101010)\nDI\nCALL P,(0255)\nPUSH AF\nOR A,0b111\nRST 30H\nRET M\nLD SP,HL\nJP M,(6000)\n" +
             "EI\nCALL M,(255)\nCP A,-1\nRST 38H";
+
     @Test
     void testBasicCommands4() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
@@ -334,7 +335,7 @@ public class TestCommand {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         CompilerNamespace namespace = new CompilerNamespace();
-        CompilerApi compiler = CompilerFactory.create(namespace, new ConstantSettings()
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
                 , new File("test"), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();

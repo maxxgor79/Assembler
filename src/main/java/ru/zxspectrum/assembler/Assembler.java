@@ -20,6 +20,7 @@ import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.ns.AbstractNamespaceApi;
 import ru.zxspectrum.assembler.settings.AssemblerSettings;
+import ru.zxspectrum.assembler.settings.DefaultSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
 import ru.zxspectrum.assembler.util.FileUtil;
 import ru.zxspectrum.assembler.util.SymbolUtil;
@@ -212,6 +213,7 @@ public class Assembler extends AbstractNamespaceApi {
 
     protected static AssemblerSettings loadSettings() {
         AssemblerSettings settings = new AssemblerSettings();
+        settings.merge(new DefaultSettings());
         try {
             ResourceSettings resourceSettings = new ResourceSettings();
             resourceSettings.load("settings.properties");
