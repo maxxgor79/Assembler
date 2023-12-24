@@ -969,5 +969,140 @@ public class TestUndocumentedIX {
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xcb);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xf9);
         Assertions.assertEquals(bytes[pc++] & 0xFF, 0xff);
+        log.info(Arrays.toString(bytes));
+    }
+
+
+    private static final String INST10 = "INC IXh\nDEC IXh\nLD IXh,0x7f\nINC IXl\ndec IXl\nLD IXl,15\nLD B,IXh\n" +
+            "LD B,IXl\nLD C,IXh\nLD C,IXl\nLD d,IXh\nLD d,IXl\nLD E,IXh\nLD E,IXl\nLD IXh,B\nLD IXh,c\nLD ixh,d\n" +
+            "LD IXh,e\nLD IXh,Ixh\nLD IXh,IXl\nLD IXh,A\nLD IXl,B\nLD IXl,C\nLD IXl,D\nLD IXl,e\nLD Ixl,Ixh\nLD Ixl,ixl\n" +
+            "LD IXl,A\nLD A,IXh\nLD A,IXl\nADD A,IXh\nADD IXl\nADC A,IXh\nADC A,IXl\nSUB IXh\nSUB Ixl\n";
+
+    @Test
+    void testDDCBCommands10() throws IOException {
+        ResourceSettings resourceSettings = new ResourceSettings();
+        resourceSettings.load("settings.properties");
+        ByteArrayInputStream bis = new ByteArrayInputStream(INST10.getBytes());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        CompilerNamespace namespace = new CompilerNamespace();
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
+                , new File("test"), bis, bos);
+        compiler.compile();
+        byte[] bytes = bos.toByteArray();
+        int pc = 0;
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x24);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x25);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x26);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x7f);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x2c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x2d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x2e);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x0f);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x44);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x45);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x4c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x4d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x54);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x55);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x5c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x5d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x60);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x61);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x62);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x63);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x64);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x65);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x67);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x68);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x69);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x6a);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x6b);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x6c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x6d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x6f);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x7c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x7d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x84);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x85);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x8c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x8d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x94);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x95);
+        log.info(Arrays.toString(bytes));
+    }
+
+    private static final String INST11 = "SBC A,IXh\nSBC A,IXl\nAND IXh\nAND IXl\nXOR IXh\nXOR IXl\nOR IXh\nOR IXl\n" +
+            "CP IXh\nCP IXl\n";
+
+    @Test
+    void testDDCBCommands11() throws IOException {
+        ResourceSettings resourceSettings = new ResourceSettings();
+        resourceSettings.load("settings.properties");
+        ByteArrayInputStream bis = new ByteArrayInputStream(INST11.getBytes());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        CompilerNamespace namespace = new CompilerNamespace();
+        CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
+                , new File("test"), bis, bos);
+        compiler.compile();
+        byte[] bytes = bos.toByteArray();
+        int pc = 0;
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x9c);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0x9d);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xa4);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xa5);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xac);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xad);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xb4);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xb5);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xbc);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xdd);
+        Assertions.assertEquals(bytes[pc++] & 0xFF, 0xbd);
     }
 }
