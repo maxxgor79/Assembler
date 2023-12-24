@@ -135,9 +135,6 @@ public class Compiler implements CompilerApi {
             if (is != null) {
                 MultiValuedMap<String, LexemSequence> map = assemblerCommandLoader.load(is);
                 for (Map.Entry<String, LexemSequence> entry : map.entries()) {
-                    if ("DD8E".equals(entry.getValue())) {
-                        System.out.println();
-                    }
                     if (entry.getValue().hasVariables()) {
                         commandCompilerTree.add(entry.getValue(), new ParameterizedCommandCompiler(namespaceApi
                                 , settingsApi, this, entry.getKey(), entry.getValue()));

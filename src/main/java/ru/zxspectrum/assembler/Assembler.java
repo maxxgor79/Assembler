@@ -13,6 +13,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
@@ -132,11 +133,12 @@ public class Assembler extends AbstractNamespaceApi {
 
     private String createWelcome() {
         StringBuilder sb = new StringBuilder();
-        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), settings.getMajorVersion(), settings.getMinorVersion());
+        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), settings.getMajorVersion()
+                , settings.getMinorVersion());
         String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
-        String lineExternal = SymbolUtil.fillChar('*', 80);
+        String lineExternal = StringUtils.repeat('*', 80);
         sb.append(lineExternal).append(System.lineSeparator());
-        String lineInternal = (new StringBuilder().append('*').append(SymbolUtil.fillChar(' ', 78)).append('*')).toString();
+        String lineInternal = (new StringBuilder().append('*').append(StringUtils.repeat(' ', 78)).append('*')).toString();
         sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2, programWelcome)).append(System.lineSeparator());
         sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2, writtenBy)).append(System.lineSeparator());
         sb.append(lineExternal).append(System.lineSeparator());

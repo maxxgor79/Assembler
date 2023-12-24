@@ -1,6 +1,7 @@
 package ru.zxspectrum.assembler.lexem;
 
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import ru.zxspectrum.assembler.error.BadCharsetEncodingException;
 import ru.zxspectrum.assembler.error.CompilerException;
@@ -134,7 +135,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
         }
         final String name = sb.toString();
         if (SymbolUtil.isHexOldStylePostfix(name.charAt(name.length() - 1))) {
-            final String number = name.substring(0, sb.length() - 1);
+            final String number = StringUtils.chop(name);
             if (LexemUtil.isHexNumber(number)) {
                 return new Lexem(lineNumber, LexemType.HEXADECIMAL, number);
             }
