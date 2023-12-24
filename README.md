@@ -12,6 +12,11 @@ Supports commands:
  db <value0>,<value0>...<valueN>
 .defb <value0>,<value0>...<valueN>
  defb <value0>,<value0>...<valueN>
+saveWav <text> save compiled data into wave format
+.saveWav <text> save compiled data into wave format
+saveTap <text> save compiled data into <tap> format
+.saveTap <text> save compiled data into <tap> format
+
 
 Supports number formats:
 00-9  - octal number (C-style)

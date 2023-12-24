@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
 import ru.zxspectrum.assembler.compiler.PostCommandCompiler;
+import ru.zxspectrum.assembler.compiler.option.Option;
+import ru.zxspectrum.assembler.compiler.option.OptionType;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.ns.AbstractNamespaceApi;
@@ -74,46 +76,64 @@ public class Assembler extends AbstractNamespaceApi {
     }
 
     public void run(@NonNull final File... files) throws IOException {
-        OutputStream os = null;
-        try {
-            for (File file : files) {
-                final File outputFile = createOutputFile(file);
-                try {
-                    reset();
-                    os = new FileOutputStream(outputFile);
-                    final CompilerApi compilerApi = runSingle(file, os);
-                    postCompile(outputFile);
-                    Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
-                    Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1), MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount(), MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount(), MessageList.getMessage(MessageList.SOURCES));
-                } finally {
-                    FileUtil.safeClose(os);
-                }
-                if (settings.isProduceTap()) {
-                    createTap(outputFile, getAddress());
+        OutputStream os;
+        for (File file : files) {
+            final File outputFile = createOutputFile(file);
+            try {
+                reset();
+                os = new FileOutputStream(outputFile);
+                final CompilerApi compilerApi = runSingle(file, os);
+                os.close();
+                postCompile(outputFile);
+                Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
+                Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1)
+                        , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
+                        , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
+                        , MessageList.getMessage(MessageList.SOURCES));
+                if (compilerApi.hasOption(OptionType.ProduceWav)) {
+                    final Option option = compilerApi.getOption(OptionType.ProduceWav);
+                    createWav(outputFile, new File(option.getContent().toString()), getAddress());
                 }
                 if (settings.isProduceWav()) {
                     createWav(outputFile, getAddress());
                 }
+                if (compilerApi.hasOption(OptionType.ProduceTap)) {
+                    final Option option = compilerApi.getOption(OptionType.ProduceTap);
+                    createTap(outputFile, new File(option.getContent().toString()), getAddress());
+                }
+                if (settings.isProduceTap()) {
+                    createTap(outputFile, getAddress());
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                Output.println(e.getMessage());
             }
-        } catch (Exception e) {
-            Output.println(e.getMessage());
-            log.error(e.getMessage(), e);
         }
     }
 
-    private void createWav(final File file, @NonNull final BigInteger address) throws IOException {
-        final byte[] data = FileUtils.readFileToByteArray(file);
-        final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
+    private void createWav(final File file, final BigInteger address) throws IOException {
         final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavFile.EXTENSION);
-        final SoundGenerator sg = new SoundGenerator(wavFile);
+        createWav(file, wavFile, address);
+    }
+
+    private void createWav(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
+            throws IOException {
+        final byte[] data = FileUtils.readFileToByteArray(src);
+        final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
+        final SoundGenerator sg = new SoundGenerator(dst);
         sg.setSilenceBeforeBlock(true);
         sg.generateWav(tapData);
     }
 
     private TapData createTap(final File file, @NonNull final BigInteger address) throws IOException {
-        final byte[] data = FileUtils.readFileToByteArray(file);
         final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, TapUtil.EXTENSION);
-        return TapUtil.createBinaryTap(tapFile, data, address.intValue());
+        return createTap(file, tapFile, address);
+    }
+
+    private TapData createTap(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
+            throws IOException {
+        final byte[] data = FileUtils.readFileToByteArray(src);
+        return TapUtil.createBinaryTap(dst, data, address.intValue());
     }
 
     private File createOutputFile(final File file) {

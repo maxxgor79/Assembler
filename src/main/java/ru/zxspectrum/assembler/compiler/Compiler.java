@@ -10,8 +10,12 @@ import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DefCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.IncludeCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.OrgCommandCompiler;
+import ru.zxspectrum.assembler.compiler.command.system.TapCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.UdefCommandCompiler;
+import ru.zxspectrum.assembler.compiler.command.system.WavCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.tree.CommandTree;
+import ru.zxspectrum.assembler.compiler.option.Option;
+import ru.zxspectrum.assembler.compiler.option.OptionType;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
@@ -32,6 +36,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Maxim Gorin
@@ -57,6 +62,8 @@ public class Compiler implements CompilerApi {
     private final CommandTree commandCompilerTree = new CommandTree();
 
     private final Map<LexemSequence, CommandCompiler> commandCompilerMap = new HashMap<>();
+
+    private final Map<OptionType, Option> optionsMap = new HashMap<>();
 
     public Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
             , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
@@ -114,6 +121,8 @@ public class Compiler implements CompilerApi {
                 .NAME, namespaceApi, this));
         commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.ALT_NAME), new UdefCommandCompiler(UdefCommandCompiler
                 .ALT_NAME, namespaceApi, this));
+        commandCompilerMap.put(new LexemSequence(WavCommandCompiler.NAME), new WavCommandCompiler(this));
+        commandCompilerMap.put(new LexemSequence(TapCommandCompiler.NAME), new TapCommandCompiler(this));
 
     }
 
@@ -219,6 +228,21 @@ public class Compiler implements CompilerApi {
     @Override
     public OutputStream getOutputStream() {
         return os;
+    }
+
+    @Override
+    public boolean hasOption(@NonNull OptionType type) {
+        return optionsMap.containsKey(type);
+    }
+
+    @Override
+    public Option getOption(@NonNull OptionType type) {
+        return optionsMap.get(type);
+    }
+
+    @Override
+    public boolean addOption(@NonNull Option option) {
+        return optionsMap.put(option.getType(), option) != null;
     }
 
     public void setFile(@NonNull File file) {

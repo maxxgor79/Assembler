@@ -2,6 +2,8 @@ package ru.zxspectrum.assembler.compiler.dummy;
 
 import lombok.NonNull;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
+import ru.zxspectrum.assembler.compiler.option.Option;
+import ru.zxspectrum.assembler.compiler.option.OptionType;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,5 +76,20 @@ public class CompilerApiFreezed implements CompilerApi {
     @Override
     public OutputStream getOutputStream() {
         return null;
+    }
+
+    @Override
+    public boolean hasOption(OptionType type) {
+        return false;
+    }
+
+    @Override
+    public Option getOption(@NonNull OptionType type) {
+        return null;
+    }
+
+    @Override
+    public boolean addOption(@NonNull Option option) {
+        return false;
     }
 }

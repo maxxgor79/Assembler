@@ -1,6 +1,7 @@
 package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
@@ -20,6 +21,7 @@ import java.util.Iterator;
 /**
  * @author Maxim Gorin
  */
+@Slf4j
 public class IncludeCommandCompiler implements CommandCompiler {
     public static final String NAME = "include";
 
@@ -56,7 +58,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
                 try {
                     compileFile(nextLexem, path);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                     throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_READ_ERROR), path);
                 }

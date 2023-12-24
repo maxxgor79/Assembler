@@ -1,5 +1,8 @@
 package ru.zxspectrum.assembler.compiler;
 
+import ru.zxspectrum.assembler.compiler.option.Option;
+import ru.zxspectrum.assembler.compiler.option.OptionType;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,21 +11,27 @@ import java.io.OutputStream;
  * @author Maxim Gorin
  */
 public interface CompilerApi {
-    public int getLineNumber();
+    int getLineNumber();
 
-    public void compile() throws IOException;
+    void compile() throws IOException;
 
-    public int getCompiledLineCount();
+    int getCompiledLineCount();
 
-    public int addCompiledLineCount(int lineCount);
+    int addCompiledLineCount(int lineCount);
 
-    public int getCompiledSourceCount();
+    int getCompiledSourceCount();
 
-    public int addCompiledSourceCount(int sourceCount);
+    int addCompiledSourceCount(int sourceCount);
 
-    public String getFileName();
+    String getFileName();
 
-    public File getFile();
+    File getFile();
 
-    public OutputStream getOutputStream();
+    OutputStream getOutputStream();
+
+    boolean hasOption(OptionType type);
+
+    Option getOption(OptionType type);
+
+    boolean addOption(Option option);
 }
