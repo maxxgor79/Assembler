@@ -88,7 +88,7 @@ public class TestCommand {
         Assertions.assertEquals(bytes[pc++], 0x21);
         Assertions.assertEquals(bytes[pc++], 0x40);
         Assertions.assertEquals(bytes[pc++], 0x40);
-        Assertions.assertEquals(bytes[pc++], 0x22);
+        Assertions.assertEquals(bytes[pc++] & 0xff, 0x22);///llll
         Assertions.assertEquals(bytes[pc++], 0x63);
         Assertions.assertEquals(bytes[pc++], 0x63);
         Assertions.assertEquals(bytes[pc++], 0x23);

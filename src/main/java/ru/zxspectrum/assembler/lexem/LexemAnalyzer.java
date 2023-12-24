@@ -116,43 +116,30 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getIdentifier(int ch) throws IOException {
         final StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        if (SymbolUtil.isHexDigit(ch)) {
-            while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
+        while (!SymbolUtil.isEOS(ch = pbReader.read())) {
+            if (SymbolUtil.isLetter(ch) || SymbolUtil.isDecDigit(ch) || SymbolUtil.isUnderline(ch)) {
                 sb.append((char) ch);
+            } else {
+                break;
             }
-            if (SymbolUtil.isHexOldStylePostfix(ch)) {
-                return new Lexem(lineNumber, LexemType.HEXADECIMAL, sb.toString());
-            }
+        }
+        if (SymbolUtil.isColon(ch)) {
+            return new Lexem(lineNumber, LexemType.LABEL, sb.toString());
+        } else if (SymbolUtil.isApostrophe(ch)) {
+            sb.append((char) ch);
+        } else {
             if (!SymbolUtil.isEOS(ch)) {
                 pbReader.unread(ch);
             }
         }
-        LexemType lexemType = LexemType.IDENTIFIER;
-        while (!SymbolUtil.isEOS(ch = pbReader.read())) {
-            if (SymbolUtil.isIdentifier(ch)) {
-                sb.append((char) ch);
-            } else {
-                if (SymbolUtil.isColon(ch)) {
-                    lexemType = LexemType.LABEL;
-                    break;
-                }
-                if (SymbolUtil.isApostrophe(ch)) {
-                    sb.append((char) ch);
-                    break;
-                }
-                if (!SymbolUtil.isEOS(ch)) {
-                    pbReader.unread(ch);
-                }
-                break;
-            }
-        }
         final String name = sb.toString();
-        if (lexemType == LexemType.IDENTIFIER) {
-            if (LexemUtil.isKeyword(name)) {
-                lexemType = LexemType.KEYWORD;
+        if (SymbolUtil.isHexOldStylePostfix(name.charAt(name.length() - 1))) {
+            final String number = name.substring(0, sb.length() - 1);
+            if (LexemUtil.isHexNumber(number)) {
+                return new Lexem(lineNumber, LexemType.HEXADECIMAL, number);
             }
         }
-        return new Lexem(lineNumber, lexemType, name);
+        return new Lexem(lineNumber, LexemType.IDENTIFIER, name);
     }
 
     private Lexem getBinaryNumber(int ch) throws IOException {

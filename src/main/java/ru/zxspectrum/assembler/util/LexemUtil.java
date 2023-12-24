@@ -9,20 +9,20 @@ import java.util.Set;
  * @author Maxim Gorin
  */
 public final class LexemUtil {
-    private static final Set<String> KEYWORDS = new HashSet<>();
 
     private LexemUtil() {
 
     }
 
-    public static boolean isKeyword(String identifier) {
-        if (identifier == null || identifier.trim().isEmpty()) {
+    public static boolean isHexNumber(String s) {
+        if (s == null || s.trim().isEmpty()) {
             return false;
         }
-        return KEYWORDS.contains(identifier.toUpperCase());
-    }
-
-    public static boolean putKeyword(@NonNull String identifier) {
-        return KEYWORDS.add(identifier.toUpperCase());
+        for (int i = 0; i < s.length(); i++) {
+            if (!SymbolUtil.isHexDigit(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
