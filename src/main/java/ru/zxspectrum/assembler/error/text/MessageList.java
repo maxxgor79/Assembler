@@ -99,6 +99,24 @@ public class MessageList {
 
     public static final String LOSS_PRECISION_TYPE_FOR = "lossPrecisionTypeFor";
 
+    public static final String IDENTIFIER = "identifier";
+
+    public static final String NUMBER = "number";
+
+    public static final String DELIMITER = "delimiter";
+
+    public static final String STRING = "string";
+
+    public static final String COMMENT = "comment";
+
+    public static final String VARIABLE = "variable";
+
+    public static final String CHAR = "char";
+
+    public static final String LABEL = "label";
+
+    public static final String EOL = "eol";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {

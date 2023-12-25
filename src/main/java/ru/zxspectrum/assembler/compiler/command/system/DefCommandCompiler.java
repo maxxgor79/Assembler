@@ -56,7 +56,7 @@ public class DefCommandCompiler implements CommandCompiler {
         nextLexem = iterator.next();
         if (nextLexem.getType() != LexemType.IDENTIFIER) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
+                    .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getType().getName());
         }
         String name = nextLexem.getValue();
         if (!iterator.hasNext()) {
