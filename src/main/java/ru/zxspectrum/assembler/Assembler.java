@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
@@ -75,39 +76,47 @@ public class Assembler extends AbstractNamespaceApi {
         }
     }
 
-    public void run(@NonNull final File... files) throws IOException {
-        OutputStream os;
+    public void run(@NonNull final File... files) {
         for (File file : files) {
-            final File outputFile = createOutputFile(file);
-            try {
-                reset();
-                os = new FileOutputStream(outputFile);
-                final CompilerApi compilerApi = runSingle(file, os);
-                os.close();
-                postCompile(outputFile);
-                Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
-                Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1)
-                        , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
-                        , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
-                        , MessageList.getMessage(MessageList.SOURCES));
-                if (compilerApi.hasOption(OptionType.ProduceWav)) {
-                    final Option option = compilerApi.getOption(OptionType.ProduceWav);
-                    createWav(outputFile, new File(option.getContent().toString()), getAddress());
-                }
-                if (settings.isProduceWav()) {
-                    createWav(outputFile, getAddress());
-                }
-                if (compilerApi.hasOption(OptionType.ProduceTap)) {
-                    final Option option = compilerApi.getOption(OptionType.ProduceTap);
-                    createTap(outputFile, new File(option.getContent().toString()), getAddress());
-                }
-                if (settings.isProduceTap()) {
-                    createTap(outputFile, getAddress());
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                Output.println(e.getMessage());
-            }
+            run(file);
+        }
+    }
+
+    protected void run(File file) {
+        OutputStream os;
+        final File outputFile = createOutputFile(file);
+        try {
+            reset();
+            os = new FileOutputStream(outputFile);
+            final CompilerApi compilerApi = compile(file, os);
+            os.close();
+            postCompile(outputFile);
+            runOptions(outputFile, compilerApi);
+            runSettings(outputFile);
+            outputCompileResult(compilerApi);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            Output.println(e.getMessage());
+        }
+    }
+
+    protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
+        if (compilerApi.hasOption(OptionType.ProduceWav)) {
+            final Option option = compilerApi.getOption(OptionType.ProduceWav);
+            createWav(outputFile, new File(option.getContent().toString()), getAddress());
+        }
+        if (compilerApi.hasOption(OptionType.ProduceTap)) {
+            final Option option = compilerApi.getOption(OptionType.ProduceTap);
+            createTap(outputFile, new File(option.getContent().toString()), getAddress());
+        }
+    }
+
+    protected void runSettings(File outputFile) throws IOException {
+        if (settings.isProduceWav()) {
+            createWav(outputFile, getAddress());
+        }
+        if (settings.isProduceTap()) {
+            createTap(outputFile, getAddress());
         }
     }
 
@@ -143,12 +152,16 @@ public class Assembler extends AbstractNamespaceApi {
         return FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, null);
     }
 
-    protected CompilerApi runSingle(final File file, final OutputStream os) throws IOException {
+    protected CompilerApi compile(final File file, final OutputStream os) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
-            CompilerApi compilerApi = CompilerFactory.create(this, settings, file, fis, os);
-            compilerApi.compile();
-            return compilerApi;
+            return compile(file, fis, os);
         }
+    }
+
+    protected CompilerApi compile(final File file, final InputStream is, final OutputStream os) throws IOException {
+        CompilerApi compilerApi = CompilerFactory.create(this, settings, file, is, os);
+        compilerApi.compile();
+        return compilerApi;
     }
 
     private String createWelcome() {
@@ -258,5 +271,13 @@ public class Assembler extends AbstractNamespaceApi {
         options.addOption("tap", false, "to produce in <TAP> format.");
         options.addOption("wav", false, "to produce in <WAV> format.");
         return options;
+    }
+
+    protected static void outputCompileResult(@NonNull CompilerApi compilerApi) {
+        Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
+        Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1)
+                , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
+                , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
+                , MessageList.getMessage(MessageList.SOURCES));
     }
 }
