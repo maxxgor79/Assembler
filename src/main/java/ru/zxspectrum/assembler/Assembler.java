@@ -120,12 +120,12 @@ public class Assembler extends AbstractNamespaceApi {
         }
     }
 
-    private void createWav(final File file, final BigInteger address) throws IOException {
+    protected void createWav(final File file, final BigInteger address) throws IOException {
         final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavFile.EXTENSION);
         createWav(file, wavFile, address);
     }
 
-    private void createWav(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
+    protected void createWav(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(src);
         final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
@@ -164,7 +164,7 @@ public class Assembler extends AbstractNamespaceApi {
         return compilerApi;
     }
 
-    private String createWelcome() {
+    protected String createWelcome() {
         StringBuilder sb = new StringBuilder();
         String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), settings.getMajorVersion()
                 , settings.getMinorVersion());
@@ -178,7 +178,7 @@ public class Assembler extends AbstractNamespaceApi {
         return sb.toString();
     }
 
-    private List<File> setCli(String[] args, final Options options) {
+    protected List<File> setCli(String[] args, final Options options) {
         final CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
