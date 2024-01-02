@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.util;
 
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.Iterator;
@@ -9,8 +10,9 @@ import java.util.List;
  * @author Maxim Gorin
  */
 public class IndexedArrayIterator<E> implements Iterator {
-    private List<E> list;
+    private final List<E> list;
 
+    @Getter
     private int index;
 
     public IndexedArrayIterator(@NonNull List<E> list, int index) {
@@ -19,10 +21,6 @@ public class IndexedArrayIterator<E> implements Iterator {
             throw new ArrayIndexOutOfBoundsException("index");
         }
         this.index = index;
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     @Override

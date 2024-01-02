@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Maxim Gorin
@@ -47,17 +46,17 @@ import java.util.Set;
 public class Compiler implements CompilerApi {
     private static final String TEMPLATE_NAME = "template";
 
-    private NamespaceApi namespaceApi;
+    private final NamespaceApi namespaceApi;
 
-    private SettingsApi settingsApi;
+    private final SettingsApi settingsApi;
 
     private int lineNumber;
 
     private int compiledLineCount;
 
-    private SyntaxAnalyzer syntaxAnalyzer;
+    private final SyntaxAnalyzer syntaxAnalyzer;
 
-    private OutputStream os;
+    private final OutputStream os;
 
     private File file;
 
@@ -100,7 +99,7 @@ public class Compiler implements CompilerApi {
         return true;
     }
 
-    private void processLabel(Lexem lexem) throws IOException {
+    private void processLabel(Lexem lexem) {
         if (namespaceApi.containsLabel(lexem.getValue())) {
             throw new CompilerException(getFile(), lexem.getLineNumber(), MessageList.getMessage(MessageList
                     .LABEL_IS_ALREADY_DEFINED), lexem.getValue());

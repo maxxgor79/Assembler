@@ -2,18 +2,17 @@ package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.error.CompilerException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.lexem.Lexem;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.syntax.Expression;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
 import ru.zxspectrum.assembler.util.TypeUtil;
 
-import java.math.BigInteger;
 import java.util.Iterator;
 
 /**
@@ -23,11 +22,11 @@ import java.util.Iterator;
 public class OrgCommandCompiler implements CommandCompiler {
     public static final String NAME = "org";
 
-    private NamespaceApi namespaceApi;
+    private final NamespaceApi namespaceApi;
 
-    private SettingsApi settingsApi;
+    private final SettingsApi settingsApi;
 
-    private CompilerApi compilerApi;
+    private final CompilerApi compilerApi;
 
     public OrgCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
             , @NonNull CompilerApi compilerApi) {

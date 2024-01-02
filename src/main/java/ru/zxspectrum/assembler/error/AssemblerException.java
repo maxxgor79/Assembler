@@ -8,7 +8,6 @@ import java.io.File;
  * @author Maxim Gorin
  */
 public class AssemblerException extends RuntimeException {
-    private String message;
 
     private AssemblerException() {
 

@@ -1,9 +1,7 @@
 package ru.zxspectrum.assembler;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -12,7 +10,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.compiler.CompilerFactory;
@@ -71,9 +68,7 @@ public class Assembler extends AbstractNamespaceApi {
 
     protected void setSettings(@NonNull AssemblerSettings settings) {
         this.settings = settings;
-        if (settings.getAddress() != null) {
-            setAddress(settings.getAddress());
-        }
+        setAddress(settings.getAddress());
     }
 
     public void run(@NonNull final File... files) {

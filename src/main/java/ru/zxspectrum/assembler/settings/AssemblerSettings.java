@@ -19,7 +19,7 @@ import java.math.BigInteger;
  * @author Maxim Gorin
  */
 @Slf4j
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class AssemblerSettings extends BaseSettings {
     @NonNull

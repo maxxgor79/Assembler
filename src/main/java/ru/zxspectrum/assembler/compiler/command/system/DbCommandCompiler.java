@@ -2,17 +2,17 @@ package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.assembler.error.ConversationException;
-import ru.zxspectrum.assembler.lang.TypeConverter;
-import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.error.CompilerException;
+import ru.zxspectrum.assembler.error.ConversationException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Type;
+import ru.zxspectrum.assembler.lang.TypeConverter;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.syntax.Expression;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -23,7 +23,6 @@ import ru.zxspectrum.assembler.util.TypeUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigInteger;
 
 /**
@@ -35,7 +34,7 @@ public class DbCommandCompiler implements CommandCompiler {
 
     public static final String ALT_NAME = "defb";
 
-    private String name;
+    private final String name;
 
     protected CompilerApi compilerApi;
 
@@ -58,10 +57,10 @@ public class DbCommandCompiler implements CommandCompiler {
     public byte[] compile(@NonNull LexemSequence lexemSequence) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
+            RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(lexemSequence.get().iterator());
             Lexem nextLexem;
             if (!iterator.hasNext() ||
-                    (name.compareToIgnoreCase((nextLexem = iterator.next()).getValue())) != 0) {
+                    (name.compareToIgnoreCase((iterator.next()).getValue())) != 0) {
                 return null;
             }
             nextLexem = iterator.hasNext() ? iterator.next() : null;

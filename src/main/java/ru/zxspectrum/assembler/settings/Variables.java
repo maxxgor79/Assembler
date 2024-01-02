@@ -50,7 +50,7 @@ public final class Variables {
             radix = 16;
         }
         if (value.toLowerCase().startsWith("0x")) {
-            value = value.substring(2, value.length());
+            value = value.substring(2);
             radix = 16;
         }
         if (value.toLowerCase().endsWith("b")) {
@@ -78,7 +78,7 @@ public final class Variables {
             radix = 16;
         }
         if (value.toLowerCase().startsWith("0x")) {
-            value = value.substring(2, value.length());
+            value = value.substring(2);
             radix = 16;
         }
         if (value.toLowerCase().endsWith("b")) {

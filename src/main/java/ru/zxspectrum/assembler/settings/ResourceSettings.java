@@ -16,7 +16,7 @@ import java.math.BigInteger;
  * @author Maxim Gorin
  */
 @Slf4j
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @ToString
 public class ResourceSettings extends BaseSettings {
     @Override

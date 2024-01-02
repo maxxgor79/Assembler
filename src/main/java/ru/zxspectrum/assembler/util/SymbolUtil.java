@@ -12,7 +12,7 @@ import java.util.Set;
 public final class SymbolUtil {
     private static char EOL_SYMBOL = '\n';
 
-    private static String IGNORED_SYMBOLS = "\r\t\b\f";
+    private static final String IGNORED_SYMBOLS = "\r\t\b\f";
 
     private SymbolUtil() {
 
@@ -22,10 +22,7 @@ public final class SymbolUtil {
         if (" ".indexOf(ch) >= 0) {
             return true;
         }
-        if (IGNORED_SYMBOLS.indexOf(ch) >= 0) {
-            return true;
-        }
-        return false;
+        return IGNORED_SYMBOLS.indexOf(ch) >= 0;
     }
 
     public static boolean isLetter(int ch) {

@@ -31,7 +31,7 @@ public class DwCommandCompiler implements CommandCompiler {
 
     public static final String ALT_NAME = "defw";
 
-    private String name;
+    private final String name;
 
     protected CompilerApi compilerApi;
 
@@ -54,10 +54,10 @@ public class DwCommandCompiler implements CommandCompiler {
     public byte[] compile(LexemSequence lexemSequence) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
+            RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(lexemSequence.get().iterator());
             Lexem nextLexem;
             if (!iterator.hasNext() ||
-                    (name.compareToIgnoreCase((nextLexem = iterator.next()).getValue())) != 0) {
+                    (name.compareToIgnoreCase((iterator.next()).getValue())) != 0) {
                 return null;
             }
             nextLexem = iterator.hasNext() ? iterator.next() : null;
