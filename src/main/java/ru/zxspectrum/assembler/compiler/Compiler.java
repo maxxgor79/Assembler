@@ -149,7 +149,7 @@ public class Compiler implements CompilerApi {
             templatePath.add(path);
             i++;
         }
-        AssemblerCommandLoader assemblerCommandLoader = new AssemblerCommandLoader();
+        AssemblerCommandLoader assemblerCommandLoader = new AssemblerCommandLoader(settingsApi);
         InputStream is;
         for (String path : templatePath) {
             is = Assembler.class.getResourceAsStream(path);

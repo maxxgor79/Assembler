@@ -36,5 +36,6 @@ public class ResourceSettings extends BaseSettings {
         setMajorVersion(Variables.getString(Variables.MAJOR_VERSION, "1"));
         setMinorVersion(Variables.getString(Variables.MINOR_VERSION, "0"));
         setCmdFilename(Variables.getString(Variables.CMD_FILENAME, "asm"));
+        setCpuModels(Variables.getString(Variables.CPU_MODELS));
     }
 }

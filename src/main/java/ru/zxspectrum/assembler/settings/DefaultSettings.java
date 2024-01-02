@@ -89,6 +89,11 @@ public class DefaultSettings implements SettingsApi {
     }
 
     @Override
+    public String getCpuModels() {
+        return null;
+    }
+
+    @Override
     public void merge(@NonNull SettingsApi setting) {
         throw new UnsupportedOperationException();
     }

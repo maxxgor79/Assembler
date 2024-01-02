@@ -6,6 +6,7 @@ import ru.zxspectrum.assembler.lang.Encoding;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Set;
 
 /**
  * @author Maxim Gorin
@@ -33,6 +34,8 @@ public interface SettingsApi {
     boolean isStrictConversion();
 
     String getCmdFilename();
+
+    String getCpuModels();
 
     void merge(SettingsApi setting);
 }

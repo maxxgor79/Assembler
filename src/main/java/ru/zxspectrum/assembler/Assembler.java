@@ -268,8 +268,9 @@ public class Assembler extends AbstractNamespaceApi {
         options.addOption("b", "byte-order", true, "byte order" + ": little-endian or big-endian.");
         options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
         options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
-        options.addOption("tap", false, "to produce in <TAP> format.");
-        options.addOption("wav", false, "to produce in <WAV> format.");
+        options.addOption("tap", false, "produce in <TAP> format.");
+        options.addOption("wav", false, "produce in <WAV> format.");
+        options.addOption("cpu", true, "use special processor instructions for the cpu model.");
         return options;
     }
 

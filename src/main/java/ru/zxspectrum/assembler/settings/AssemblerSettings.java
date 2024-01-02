@@ -32,7 +32,7 @@ public class AssemblerSettings extends BaseSettings {
     private boolean produceTap;
 
     @Getter
-    @Setter(AccessLevel.PROTECTED   )
+    @Setter(AccessLevel.PROTECTED)
     private boolean produceWav;
 
 
@@ -73,9 +73,11 @@ public class AssemblerSettings extends BaseSettings {
         if (cli.hasOption("tap")) {
             setProduceTap(true);
         }
-
         if (cli.hasOption("wav")) {
             setProduceWav(true);
+        }
+        if (cli.hasOption("cpu")) {
+            setCpuModels(cli.getOptionValue("cpu"));
         }
     }
 

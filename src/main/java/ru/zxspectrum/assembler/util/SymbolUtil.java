@@ -2,6 +2,10 @@ package ru.zxspectrum.assembler.util;
 
 import lombok.NonNull;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Maxim Gorin
  */
@@ -138,5 +142,19 @@ public final class SymbolUtil {
             sb.setCharAt(i + index, s2.charAt(i));
         }
         return sb.toString();
+    }
+
+    public static Set<String> parseEnumeration(String s, @NonNull String delimiter) {
+        if (s == null || s.trim().isEmpty()) {
+            return Collections.emptySet();
+        }
+        Set<String> result = new HashSet<>();
+        String[] units = s.split(delimiter);
+        for (String unit : units) {
+            if (!unit.trim().isEmpty()) {
+                result.add(unit);
+            }
+        }
+        return Collections.unmodifiableSet(result);
     }
 }

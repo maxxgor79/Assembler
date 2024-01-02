@@ -16,6 +16,10 @@ Supports commands:
 dw <word expr0>,<word expr1>...<word exprN>
 .defw <word expr0>,<word expr1>...<word exprN>
 defw <word expr0>,<word expr1>...<word exprN>
+.ddw <dword expr0>,<dword expr1>...<dword exprN>
+ddw <dword expr0>,<dword expr1>...<dword exprN>
+.defdw <dword expr0>,<dword expr1>...<dword exprN>
+defdw <dword expr0>,<dword expr1>...<dword exprN>
 
 saveWav <text> save compiled data into wave format
 .saveWav <text> save compiled data into wave format

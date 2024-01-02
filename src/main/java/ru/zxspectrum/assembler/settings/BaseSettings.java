@@ -52,6 +52,9 @@ public abstract class BaseSettings implements SettingsApi {
     @Setter(AccessLevel.PROTECTED)
     private String cmdFilename;
 
+    @Setter(AccessLevel.PROTECTED)
+    private String cpuModels;
+
     BaseSettings() {
 
     }
@@ -112,6 +115,11 @@ public abstract class BaseSettings implements SettingsApi {
     }
 
     @Override
+    public String getCpuModels() {
+        return cpuModels;
+    }
+
+    @Override
     public void merge(@NonNull SettingsApi settings) {
         if (settings.getPlatformEncoding() != null) {
             setPlatformEncoding(settings.getPlatformEncoding());
@@ -140,6 +148,9 @@ public abstract class BaseSettings implements SettingsApi {
         setStrictConversion(settings.isStrictConversion());
         if (settings.getCmdFilename() != null) {
             setCmdFilename(settings.getCmdFilename());
+        }
+        if (settings.getCpuModels() != null) {
+            setCpuModels(settings.getCpuModels());
         }
     }
 }

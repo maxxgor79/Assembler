@@ -34,6 +34,8 @@ public final class Variables {
 
     public static final String CMD_FILENAME = "cmd_filename";
 
+    public static final String CPU_MODELS = "cpu_models";
+
     public static int getInt(String name, int defaultValue) {
         if (name == null) {
             return defaultValue;
@@ -92,6 +94,10 @@ public final class Variables {
 
     public static String getString(String name, String def) {
         return System.getProperty(name, def);
+    }
+
+    public static String getString(String name) {
+        return System.getProperty(name);
     }
 
     public static void load(@NonNull InputStream is) throws IOException {
