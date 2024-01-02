@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author  Maxim Gorin
+ * @author Maxim Gorin
  */
 public class IndexedArrayIterator<E> implements Iterator {
     private List<E> list;

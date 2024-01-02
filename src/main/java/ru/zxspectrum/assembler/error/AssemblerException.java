@@ -21,4 +21,8 @@ public class AssemblerException extends RuntimeException {
     public AssemblerException(String text) {
         super(text);
     }
+
+    public AssemblerException(String text, Throwable cause) {
+        super(text, cause);
+    }
 }

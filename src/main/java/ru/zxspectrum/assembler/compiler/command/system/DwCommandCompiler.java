@@ -2,17 +2,17 @@ package ru.zxspectrum.assembler.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.assembler.error.ConversationException;
-import ru.zxspectrum.assembler.lang.TypeConverter;
-import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.compiler.CommandCompiler;
 import ru.zxspectrum.assembler.compiler.CompilerApi;
 import ru.zxspectrum.assembler.error.CompilerException;
+import ru.zxspectrum.assembler.error.ConversationException;
 import ru.zxspectrum.assembler.error.text.MessageList;
 import ru.zxspectrum.assembler.error.text.Output;
 import ru.zxspectrum.assembler.lang.Type;
+import ru.zxspectrum.assembler.lang.TypeConverter;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
+import ru.zxspectrum.assembler.ns.NamespaceApi;
 import ru.zxspectrum.assembler.settings.SettingsApi;
 import ru.zxspectrum.assembler.syntax.Expression;
 import ru.zxspectrum.assembler.syntax.LexemSequence;
@@ -23,17 +23,13 @@ import ru.zxspectrum.assembler.util.TypeUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigInteger;
 
-/**
- * @author Maxim Gorin
- */
 @Slf4j
-public class DbCommandCompiler implements CommandCompiler {
-    public static final String NAME = "db";
+public class DwCommandCompiler implements CommandCompiler {
+    public static final String NAME = "dw";
 
-    public static final String ALT_NAME = "defb";
+    public static final String ALT_NAME = "defw";
 
     private String name;
 
@@ -43,7 +39,7 @@ public class DbCommandCompiler implements CommandCompiler {
 
     protected SettingsApi settingsApi;
 
-    public DbCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi
+    public DwCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi
             , @NonNull SettingsApi settingsApi, @NonNull CompilerApi compilerApi) {
         if (name.trim().isEmpty()) {
             throw new NullPointerException("name");
@@ -55,7 +51,7 @@ public class DbCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence) {
+    public byte[] compile(LexemSequence lexemSequence) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<Lexem>(lexemSequence.get().iterator());
@@ -70,41 +66,36 @@ public class DbCommandCompiler implements CommandCompiler {
                     throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
                             .getMessage(MessageList.VALUE_EXCEPTED));
                 }
-                if (nextLexem.getType() == LexemType.STRING) {
-                    IOUtils.writeString(baos, nextLexem.getValue());
-                    nextLexem = iterator.hasNext() ? iterator.next() : null;
-                } else {
-                    if (nextLexem.getType() == LexemType.CHAR || nextLexem.getType() == LexemType.DECIMAL ||
-                            nextLexem.getType() == LexemType.OCTAL || nextLexem.getType() == LexemType.HEXADECIMAL) {
-                        final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
-                        final Expression.Result result = expression.evaluate(nextLexem);
-                        if (result.isUndefined()) {
-                            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
-                                    , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
-                        }
-                        if (expression.getLastLexem() != null) {
-                            nextLexem = expression.getLastLexem();
-                        }
-                        BigInteger value = result.getValue();
-                        try {
-                            final Type srcType = TypeUtil.typeOf(value);
-                            value = TypeConverter.convert(srcType, value, Type.UInt8, settingsApi.isStrictConversion());
-                        } catch (ConversationException e) {
-                            log.error(e.getMessage(), e);
-                            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                                    .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
-                        }
-                        if (!result.getValue().equals(value)) {
-                            Output.throwWarning(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                                            .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
-                                    , value.toString());
-                        }
-                        IOUtils.writeByte(baos, value.byteValue());
-                        nextLexem = expression.getLastLexem();
-                    } else {
-                        throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                                .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+                if (nextLexem.getType() == LexemType.CHAR || nextLexem.getType() == LexemType.DECIMAL ||
+                        nextLexem.getType() == LexemType.OCTAL || nextLexem.getType() == LexemType.HEXADECIMAL) {
+                    final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+                    final Expression.Result result = expression.evaluate(nextLexem);
+                    if (result.isUndefined()) {
+                        throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
+                                , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
                     }
+                    if (expression.getLastLexem() != null) {
+                        nextLexem = expression.getLastLexem();
+                    }
+                    BigInteger value = result.getValue();
+                    try {
+                        final Type srcType = TypeUtil.typeOf(value);
+                        value = TypeConverter.convert(srcType, value, Type.UInt16, settingsApi.isStrictConversion());
+                    } catch (ConversationException e) {
+                        log.error(e.getMessage(), e);
+                        throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                                .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
+                    }
+                    if (!result.getValue().equals(value)) {
+                        Output.throwWarning(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                                        .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
+                                , value.toString());
+                    }
+                    IOUtils.writeWord(baos, value.byteValue(), settingsApi.getByteOrder());
+                    nextLexem = expression.getLastLexem();
+                } else {
+                    throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                            .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
                 }
                 if (nextLexem == null) {
                     break;

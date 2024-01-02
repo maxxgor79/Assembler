@@ -13,4 +13,8 @@ public class CompilerException extends AssemblerException {
     public CompilerException(String text) {
         super(text);
     }
+
+    public CompilerException(String text, Throwable cause) {
+        super(text, cause);
+    }
 }

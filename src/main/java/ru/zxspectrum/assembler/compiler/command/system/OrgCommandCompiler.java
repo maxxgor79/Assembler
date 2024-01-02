@@ -55,14 +55,14 @@ public class OrgCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
                     , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
         }
+        if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(), result.getValue())) {
+            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                    .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
+        }
         nextLexem = expression.getLastLexem();
         if (nextLexem != null) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
-        }
-        if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(), result.getValue())) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
         }
         namespaceApi.setAddress(result.getValue());
         return new byte[0];

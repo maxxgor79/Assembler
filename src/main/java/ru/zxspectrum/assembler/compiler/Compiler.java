@@ -8,6 +8,7 @@ import ru.zxspectrum.assembler.compiler.command.nonparameterized.NonParametersCo
 import ru.zxspectrum.assembler.compiler.command.parameterized.ParameterizedCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DefCommandCompiler;
+import ru.zxspectrum.assembler.compiler.command.system.DwCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.IncludeCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.OrgCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.TapCommandCompiler;
@@ -43,6 +44,8 @@ import java.util.Set;
  */
 @Slf4j
 public class Compiler implements CompilerApi {
+    private static final String TEMPLATE_NAME = "template";
+
     private NamespaceApi namespaceApi;
 
     private SettingsApi settingsApi;
@@ -108,9 +111,13 @@ public class Compiler implements CompilerApi {
         commandCompilerMap.put(new LexemSequence(OrgCommandCompiler.NAME), new OrgCommandCompiler(namespaceApi
                 , settingsApi, this));
         commandCompilerMap.put(new LexemSequence(DbCommandCompiler.NAME), new DbCommandCompiler(DbCommandCompiler.NAME
-                , this, namespaceApi));
+                , namespaceApi, settingsApi, this));
         commandCompilerMap.put(new LexemSequence(DbCommandCompiler.ALT_NAME), new DbCommandCompiler(DbCommandCompiler
-                .ALT_NAME, this, namespaceApi));
+                .ALT_NAME, namespaceApi, settingsApi, this));
+        commandCompilerMap.put(new LexemSequence(DwCommandCompiler.NAME), new DwCommandCompiler(DwCommandCompiler.NAME
+                , namespaceApi, settingsApi, this));
+        commandCompilerMap.put(new LexemSequence(DwCommandCompiler.ALT_NAME), new DwCommandCompiler(DwCommandCompiler
+                .ALT_NAME, namespaceApi, settingsApi, this));
         commandCompilerMap.put(new LexemSequence(IncludeCommandCompiler.NAME), new IncludeCommandCompiler(namespaceApi
                 , settingsApi, this));
         commandCompilerMap.put(new LexemSequence(DefCommandCompiler.NAME), new DefCommandCompiler(DefCommandCompiler
@@ -130,7 +137,7 @@ public class Compiler implements CompilerApi {
         List<String> templatePath = new LinkedList<>();
         int i = 0;
         while (true) {
-            String path = Variables.getString("template" + i, null);
+            String path = Variables.getString(TEMPLATE_NAME + i, null);
             if (path == null) {
                 break;
             }

@@ -6,7 +6,6 @@ import java.math.BigInteger;
 
 /**
  * @author Maxim Gorin
- *
  */
 public final class Converter {
     private Converter() {

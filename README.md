@@ -8,10 +8,15 @@ Supports commands:
  def <variable> <value>
 .define <variable> <value>
  define <variable> <value>
-.db <value0>,<value0>...<valueN>
- db <value0>,<value0>...<valueN>
-.defb <value0>,<value0>...<valueN>
- defb <value0>,<value0>...<valueN>
+.db <byte expr0>,<expr byte1>...<byte exprN>
+ db <string0>,<string1>...<stringN>
+.defb <byte expr0>,<byte expr1>...<byte exprN>
+ defb <string0>,<string0>...<stringN>
+.dw <word expr0>,<word expr1>...<word exprN>
+dw <word expr0>,<word expr1>...<word exprN>
+.defw <word expr0>,<word expr1>...<word exprN>
+defw <word expr0>,<word expr1>...<word exprN>
+
 saveWav <text> save compiled data into wave format
 .saveWav <text> save compiled data into wave format
 saveTap <text> save compiled data into <tap> format
