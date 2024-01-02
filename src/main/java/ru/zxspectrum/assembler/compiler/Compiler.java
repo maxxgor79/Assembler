@@ -7,6 +7,7 @@ import ru.zxspectrum.assembler.Assembler;
 import ru.zxspectrum.assembler.compiler.command.nonparameterized.NonParametersCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.parameterized.ParameterizedCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
+import ru.zxspectrum.assembler.compiler.command.system.DdwCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DefCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DwCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.IncludeCommandCompiler;
@@ -117,6 +118,10 @@ public class Compiler implements CompilerApi {
         commandCompilerMap.put(new LexemSequence(DwCommandCompiler.NAME), new DwCommandCompiler(DwCommandCompiler.NAME
                 , namespaceApi, settingsApi, this));
         commandCompilerMap.put(new LexemSequence(DwCommandCompiler.ALT_NAME), new DwCommandCompiler(DwCommandCompiler
+                .ALT_NAME, namespaceApi, settingsApi, this));
+        commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.NAME), new DdwCommandCompiler(DdwCommandCompiler.NAME
+                , namespaceApi, settingsApi, this));
+        commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.ALT_NAME), new DdwCommandCompiler(DdwCommandCompiler
                 .ALT_NAME, namespaceApi, settingsApi, this));
         commandCompilerMap.put(new LexemSequence(IncludeCommandCompiler.NAME), new IncludeCommandCompiler(namespaceApi
                 , settingsApi, this));

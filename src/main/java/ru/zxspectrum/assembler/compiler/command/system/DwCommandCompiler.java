@@ -80,7 +80,7 @@ public class DwCommandCompiler implements CommandCompiler {
                     BigInteger value = result.getValue();
                     try {
                         final Type srcType = TypeUtil.typeOf(value);
-                        value = TypeConverter.convert(srcType, value, Type.UInt16, settingsApi.isStrictConversion());
+                        value = TypeConverter.convert(srcType, value, getDestType(), settingsApi.isStrictConversion());
                     } catch (ConversationException e) {
                         log.error(e.getMessage(), e);
                         throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
@@ -112,5 +112,9 @@ public class DwCommandCompiler implements CommandCompiler {
             log.error(e.getMessage(), e);
             throw new CompilerException(e.getMessage(), e);
         }
+    }
+
+    protected Type getDestType() {
+        return Type.UInt16;
     }
 }
