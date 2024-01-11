@@ -49,6 +49,8 @@ import java.util.Map;
  */
 @Slf4j
 public class Assembler extends AbstractNamespaceApi {
+    private static final String SETTINGS_NAME = "settings.properties";
+
     protected AssemblerSettings settings;
 
     protected final Map<BigInteger, PostCommandCompiler> postCommandCompilerMap = new LinkedHashMap<>();
@@ -245,7 +247,7 @@ public class Assembler extends AbstractNamespaceApi {
         settings.merge(new DefaultSettings());
         try {
             ResourceSettings resourceSettings = new ResourceSettings();
-            resourceSettings.load("settings.properties");
+            resourceSettings.load(SETTINGS_NAME);
             settings.merge(resourceSettings);
         } catch (Exception e) {
             log.info(e.getMessage());
