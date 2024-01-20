@@ -16,7 +16,7 @@ import java.util.Iterator;
 public class WavCommandCompiler implements CommandCompiler {
     public static final String NAME = "saveWav";
 
-    private CompilerApi compilerApi;
+    private final CompilerApi compilerApi;
 
     public WavCommandCompiler(@NonNull CompilerApi compilerApi) {
         this.compilerApi = compilerApi;

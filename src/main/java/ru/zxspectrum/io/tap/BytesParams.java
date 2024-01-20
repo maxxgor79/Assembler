@@ -18,14 +18,11 @@ import java.io.IOException;
  */
 @Slf4j
 @ToString
+@Getter
+@Setter
 public class BytesParams implements TapElementReader, TapElementWriter {
-
-  @Setter
-  @Getter
   private int startAddress;//2b
 
-  @Setter
-  @Getter
   private int reserved = 32768;//2b
 
   @Override

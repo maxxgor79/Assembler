@@ -11,19 +11,14 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @ToString
+@Getter
 abstract public class Block implements TapElementReader, TapElementWriter {
-
-
   @Setter
-  @Getter
   protected int blockLength;
 
-  @Getter
   @NonNull
   protected Flag flag;
 
-
-  @Getter
   protected int checkSum;
 
   protected abstract int calcCheckSum();

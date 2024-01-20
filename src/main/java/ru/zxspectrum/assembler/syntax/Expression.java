@@ -1,6 +1,7 @@
 package ru.zxspectrum.assembler.syntax;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import ru.zxspectrum.assembler.ns.NamespaceApi;
@@ -22,12 +23,13 @@ import java.util.Iterator;
  * @author Maxim Gorin
  */
 public class Expression {
-    private RepeatableIteratorImpl<Lexem> lexemIterator;
+    private final RepeatableIteratorImpl<Lexem> lexemIterator;
 
     private File file;
 
     private NamespaceApi namespaceApi;
 
+    @Getter
     private Lexem lastLexem;
 
     private boolean onlyConst;
@@ -309,10 +311,6 @@ public class Expression {
                     .getMessage(MessageList.VARIABLE_NOT_FOUND), lexem.getValue());
         }
         return new Result(value);
-    }
-
-    public Lexem getLastLexem() {
-        return lastLexem;
     }
 
     @Data

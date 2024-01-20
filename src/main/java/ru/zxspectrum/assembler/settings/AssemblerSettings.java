@@ -21,17 +21,15 @@ import java.math.BigInteger;
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 @ToString
+@Getter
 public class AssemblerSettings extends BaseSettings {
     @NonNull
-    @Getter
     @Setter(AccessLevel.PROTECTED)
     private BigInteger address;
 
-    @Getter
     @Setter(AccessLevel.PROTECTED)
     private boolean produceTap;
 
-    @Getter
     @Setter(AccessLevel.PROTECTED)
     private boolean produceWav;
 

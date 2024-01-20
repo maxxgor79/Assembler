@@ -18,13 +18,11 @@ import java.io.IOException;
  */
 @ToString
 @Slf4j
+@Setter
+@Getter
 public class ProgramParams implements TapElementReader, TapElementWriter {
-  @Setter
-  @Getter
   private int autostartLine;//2b
 
-  @Setter
-  @Getter
   private int programSize;//2b
 
   @Override

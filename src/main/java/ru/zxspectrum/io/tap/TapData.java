@@ -26,9 +26,7 @@ import ru.zxspectrum.io.LEDataInputStream;
 @ToString
 @NoArgsConstructor
 public class TapData implements TapElementReader, TapElementWriter {
-
-    @Getter
-    private List<Block> blockList = new ArrayList<>();
+    private final List<Block> blockList = new ArrayList<>();
 
     @Override
     public void read(@NonNull InputStream is) throws IOException {

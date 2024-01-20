@@ -1,5 +1,6 @@
 package ru.zxspectrum.basic;
 
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.HashMap;
@@ -45,10 +46,6 @@ public enum Operator {
         return nativeName == null ? this.name() : nativeName;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static Operator get(int code) {
         initTable();
         return codeToOperatorMap.get(Integer.valueOf(code));
@@ -79,9 +76,10 @@ public enum Operator {
         return getNativeName();
     }
 
-    private int code;
+    @Getter
+    private final int code;
 
-    private String nativeName;
+    private final String nativeName;
 
     private static Map<Integer, Operator> codeToOperatorMap = null;
 

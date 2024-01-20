@@ -9,13 +9,12 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
+@Getter
 public class Option {
-    @Getter
     @Setter(AccessLevel.PROTECTED)
     @NonNull
     private OptionType type;
-
-    @Getter
+    
     @Setter(AccessLevel.PROTECTED)
     @NonNull
     private Object content;

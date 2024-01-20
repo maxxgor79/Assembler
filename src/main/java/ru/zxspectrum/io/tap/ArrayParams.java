@@ -20,20 +20,15 @@ import java.util.Arrays;
  */
 @ToString
 @Slf4j
+@Getter
+@Setter
 public class ArrayParams implements TapElementReader, TapElementWriter {
-
-  @Setter
-  @Getter
   @NonNull
   private int reserved1;//1b
 
-  @Setter
-  @Getter
   @NonNull
   private int varName;//1b
 
-  @Setter
-  @Getter
   @NonNull
   private byte[] reserved2 = {0, -128};
 

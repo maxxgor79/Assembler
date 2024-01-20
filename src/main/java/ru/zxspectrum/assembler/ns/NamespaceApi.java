@@ -10,6 +10,7 @@ import java.math.BigInteger;
  */
 public interface NamespaceApi {
     void reset();
+
     boolean containsLabel(String labelName);
 
     void putLabel(String name);

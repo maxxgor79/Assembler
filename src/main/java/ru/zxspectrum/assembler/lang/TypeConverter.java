@@ -163,7 +163,7 @@ public final class TypeConverter {
         throw new ConversationException();
     }
 
-    private static Map<Type, Map<Type, Converter>> nonStrictConverterTable = new EnumMap<>(Type.class);
+    private static final Map<Type, Map<Type, Converter>> nonStrictConverterTable = new EnumMap<>(Type.class);
 
     static {
         final Map<Type, Converter> int8ConverterTable = new EnumMap<>(Type.class);
@@ -221,7 +221,7 @@ public final class TypeConverter {
         return funcMap.get(dst).apply(val);
     }
 
-    private static Map<Type, Map<Type, Converter>> strictConverterTable = new EnumMap<>(Type.class);
+    private static final Map<Type, Map<Type, Converter>> strictConverterTable = new EnumMap<>(Type.class);
 
     static {
         final Map<Type, Converter> int8ConverterTable = new EnumMap<>(Type.class);

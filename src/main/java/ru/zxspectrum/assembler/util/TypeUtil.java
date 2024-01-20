@@ -2,7 +2,6 @@ package ru.zxspectrum.assembler.util;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.assembler.error.ConversationException;
 import ru.zxspectrum.assembler.lang.Type;
 
 import java.math.BigInteger;
@@ -76,10 +75,7 @@ public final class TypeUtil {
         if (ch == OFFSET_SYMBOL) {
             return true;
         }
-        if (ch == NUMBER_SYMBOL) {
-            return true;
-        }
-        return false;
+        return ch == NUMBER_SYMBOL;
     }
 
     private static boolean isPattern(@NonNull String pattern, char patternLetter) {

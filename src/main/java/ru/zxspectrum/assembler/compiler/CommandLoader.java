@@ -73,11 +73,7 @@ public abstract class CommandLoader<E> {
                     return false;
                 }
             } else {
-                if (!hasNextVariable1 && !hasNextVariable2) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return !hasNextVariable1 && !hasNextVariable2;
             }
         }
     }

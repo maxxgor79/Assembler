@@ -17,7 +17,7 @@ public class WavFile {
 
     protected static final int BPS = 8;
 
-    private byte[] data;
+    private final byte[] data;
 
     @Getter
     private int sampleRate = 11025;

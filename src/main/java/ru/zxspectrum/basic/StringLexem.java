@@ -1,8 +1,6 @@
 package ru.zxspectrum.basic;
 
 import lombok.NonNull;
-import ru.zxspectrum.basic.Lexem;
-import ru.zxspectrum.basic.LexemType;
 
 /**
  * @author Maxim Gorin

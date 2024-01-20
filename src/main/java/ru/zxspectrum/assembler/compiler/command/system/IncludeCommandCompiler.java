@@ -25,11 +25,11 @@ import java.util.Iterator;
 public class IncludeCommandCompiler implements CommandCompiler {
     public static final String NAME = "include";
 
-    private NamespaceApi namespaceApi;
+    private final NamespaceApi namespaceApi;
 
-    private SettingsApi settingsApi;
+    private final SettingsApi settingsApi;
 
-    private CompilerApi compilerApi;
+    private final CompilerApi compilerApi;
 
     public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
             , @NonNull CompilerApi compilerApi) {

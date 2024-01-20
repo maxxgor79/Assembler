@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.lexem;
 
+import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -38,6 +39,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
 
     private LexemInternalIterator lexemInternalIterator;
 
+    @Getter
     private Encoding encoding;
 
     private Encoding platformEncoding;
@@ -493,10 +495,6 @@ public class LexemAnalyzer implements Iterable<Lexem> {
             lexemInternalIterator = new LexemInternalIterator();
         }
         return lexemInternalIterator;
-    }
-
-    public Encoding getEncoding() {
-        return encoding;
     }
 
     private class LexemInternalIterator extends AnalyzerIterator<Lexem> {

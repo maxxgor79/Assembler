@@ -7,6 +7,7 @@ import ru.zxspectrum.assembler.error.text.MessageList;
 /**
  * @author Maxim Gorin
  */
+@Getter
 public enum LexemType {
     IDENTIFIER(MessageList.getMessage(MessageList.IDENTIFIER)),
     BINARY(MessageList.getMessage(MessageList.NUMBER)),
@@ -42,6 +43,5 @@ public enum LexemType {
         this.name = name;
     }
 
-    @Getter
-    private String name;
+    private final String name;
 }

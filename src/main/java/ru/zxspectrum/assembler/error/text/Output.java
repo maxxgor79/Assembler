@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.error.text;
 
+import lombok.Getter;
 import ru.zxspectrum.assembler.error.AssemblerException;
 
 import java.io.File;
@@ -8,8 +9,10 @@ import java.io.File;
  * @author Maxim Gorin
  */
 public final class Output {
+    @Getter
     private static int warningCount;
 
+    @Getter
     private static int maxAdmirableWarningCount = Integer.MAX_VALUE;
 
     private Output() {
@@ -35,14 +38,6 @@ public final class Output {
         if (warningCount >= maxAdmirableWarningCount) {
             throw new AssemblerException(text);
         }
-    }
-
-    public static int getWarningCount() {
-        return warningCount;
-    }
-
-    public static int getMaxAdmirableWarningCount() {
-        return maxAdmirableWarningCount;
     }
 
     public void setMaxAdmirableWarningCount(int value) {

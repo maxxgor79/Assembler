@@ -8,6 +8,7 @@ import lombok.ToString;
  * @author Maxim Gorin
  */
 @ToString
+@Getter
 public enum HeaderType {
     Program(0), NumberArray(1), CharArray(2), Bytes(3), Code(3);
 
@@ -15,8 +16,6 @@ public enum HeaderType {
         this.code = code;
     }
 
-    @Getter
-    @Setter
     private final int code;
 
     public static HeaderType getByCode(int code) {

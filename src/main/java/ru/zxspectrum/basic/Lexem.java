@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author Maxim Gorin
@@ -13,16 +12,14 @@ import lombok.Setter;
 @EqualsAndHashCode
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Getter
 public class Lexem {
-    @Getter
     @NonNull
     protected LexemType type;
 
-    @Getter
     @NonNull
     protected String value;
 
-    @Getter
     protected Integer intValue;
 
     public Lexem() {

@@ -9,7 +9,6 @@ import ru.zxspectrum.basic.LineNumber;
 import ru.zxspectrum.basic.ParserException;
 
 import java.io.ByteArrayInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;

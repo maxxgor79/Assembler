@@ -46,7 +46,7 @@ public class LEDataInputStream extends FilterInputStream implements DataInput {
 
     public final int skipBytes(int n) throws IOException {
         int total = 0;
-        int cur = 0;
+        int cur;
 
         while ((total < n) && ((cur = (int) in.skip(n - total)) > 0)) {
             total += cur;
@@ -172,10 +172,10 @@ public class LEDataInputStream extends FilterInputStream implements DataInput {
         return readUTF(this);
     }
 
-    public static final String readUTF(DataInput in) throws IOException {
+    public static String readUTF(DataInput in) throws IOException {
         int utflen = in.readUnsignedShort();
-        byte[] bytearr = null;
-        char[] chararr = null;
+        byte[] bytearr;
+        char[] chararr;
         if (in instanceof LEDataInputStream) {
             LEDataInputStream dis = (LEDataInputStream) in;
             if (dis.bytearr.length < utflen) {

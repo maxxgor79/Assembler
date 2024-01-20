@@ -1,5 +1,7 @@
 package ru.zxspectrum.assembler.lang;
 
+import lombok.Getter;
+
 /**
  * @author Maxim Gorin
  */
@@ -26,14 +28,11 @@ public enum Encoding {
 
     UTF_16("UTF-16");
 
+    @Getter
     private final String name;
 
-    private Encoding(String name) {
+    Encoding(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public static Encoding valueByName(String name) {
@@ -47,9 +46,8 @@ public enum Encoding {
 
     public static int sizeof(Encoding encoding) {
         return switch (encoding) {
-            case MacRoman, MacCyrillic -> 1;
-            case ASCII -> 1;
-            case Windows1250, Windows1251, Windows1252, Windows1253, CP1251, KOI8_R -> 1;
+            case MacRoman, MacCyrillic, ASCII, Windows1250, Windows1251
+                    , Windows1252, Windows1253, CP1251, KOI8_R -> 1;
             case UTF_8, UTF_16 -> 2;
         };
     }

@@ -1,26 +1,24 @@
 package ru.zxspectrum.io.tap;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.io.LEDataInputStream;
 import ru.zxspectrum.io.LEDataOutputStream;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author Maxim Gorin
  */
 @ToString(callSuper = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
+@Getter
 public class HeaderlessBlock extends Block implements TapElementReader, TapElementWriter {
-
-  @Getter
   private byte[] content;
 
   public void setContent(@NonNull byte[] content) {

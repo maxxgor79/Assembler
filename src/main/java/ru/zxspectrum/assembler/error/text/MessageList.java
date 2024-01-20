@@ -1,6 +1,5 @@
 package ru.zxspectrum.assembler.error.text;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**

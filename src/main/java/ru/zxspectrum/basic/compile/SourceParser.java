@@ -63,7 +63,7 @@ public class SourceParser extends Parser {
   }
 
   @Override
-  protected Lexem getDelimiter(int ch) throws ParserException, IOException {
+  protected Lexem getDelimiter(int ch) throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append((char) ch);
     if (ch == '<') {
@@ -96,7 +96,7 @@ public class SourceParser extends Parser {
   }
 
   @Override
-  protected Lexem getInteger(int ch) throws ParserException, IOException {
+  protected Lexem getInteger(int ch) throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append((char) ch);
     while ((ch = is.read()) != -1) {

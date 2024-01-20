@@ -7,12 +7,10 @@ import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
+@Getter
+@Setter
 public class Line {
-    @Getter
-    @Setter
     private int lineNumber;
 
-    @Getter
-    @Setter
     private byte [] lineData;
 }

@@ -9,6 +9,7 @@ import java.math.BigInteger;
 /**
  * @author Maxim Gorin
  */
+@Getter
 public enum Type {
     Int8(1, -128, 127, new String[]{"d", "e"}), UInt8(1, 0, 255, new String[]{"n"})
     , Int16(2, -32768, 32767, new String[]{"dd", "ee"})
@@ -125,15 +126,11 @@ public enum Type {
         return Unknown;
     }
 
-    @Getter
-    private int size;
+    private final int size;
 
-    @Getter
-    private long min;
+    private final long min;
 
-    @Getter
-    private long max;
+    private final long max;
 
-    @Getter
-    private String[] masks;
+    private final String[] masks;
 }

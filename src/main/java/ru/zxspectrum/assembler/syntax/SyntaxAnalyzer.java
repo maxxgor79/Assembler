@@ -1,5 +1,6 @@
 package ru.zxspectrum.assembler.syntax;
 
+import lombok.Getter;
 import lombok.NonNull;
 import ru.zxspectrum.assembler.lexem.Lexem;
 import ru.zxspectrum.assembler.lexem.LexemType;
@@ -19,6 +20,7 @@ public class SyntaxAnalyzer implements Iterable<LexemSequence> {
 
     private LexemSequenceInternalIterator lexemSequenceInternalIterator;
 
+    @Getter
     private int lineCount;
 
     private SyntaxAnalyzer() {
@@ -81,14 +83,10 @@ public class SyntaxAnalyzer implements Iterable<LexemSequence> {
         return lexemSequenceInternalIterator;
     }
 
-    public int getLineCount() {
-        return lineCount;
-    }
-
     private class LexemSequenceInternalIterator extends AnalyzerIterator<LexemSequence> {
 
         @Override
-        protected LexemSequence externalNext() throws IOException {
+        protected LexemSequence externalNext() {
             return getNext();
         }
 

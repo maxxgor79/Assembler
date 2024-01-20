@@ -1,10 +1,5 @@
 package ru.zxspectrum.assembler.util;
 
-import lombok.NonNull;
-
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author Maxim Gorin
  */

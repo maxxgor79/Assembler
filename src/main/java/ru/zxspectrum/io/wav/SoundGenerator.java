@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.io.LEDataOutputStream;
 import ru.zxspectrum.io.tap.Block;
 import ru.zxspectrum.io.tap.Flag;
 import ru.zxspectrum.io.tap.TapData;
@@ -19,6 +18,7 @@ import java.io.OutputStream;
  * @author Maxim Gorin
  */
 @Slf4j
+@Getter
 public class SoundGenerator {
     protected static final int PULSE_ZERO = 855;
 
@@ -38,22 +38,17 @@ public class SoundGenerator {
 
     @NonNull
     @Setter
-    @Getter
     private File file;
 
-    @Getter
     @Setter
     private boolean silenceBeforeBlock;
 
     @Setter
-    @Getter
     private int silenceDuration = 1;//in seconds
 
     @Setter
-    @Getter
     private int sampleRate = 22050;
 
-    @Getter
     private float volume = 1.f;
 
     public SoundGenerator() {

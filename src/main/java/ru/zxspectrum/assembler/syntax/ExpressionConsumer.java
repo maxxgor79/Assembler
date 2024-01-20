@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @author Maxim Gorin
  */
 public class ExpressionConsumer {
-    private RepeatableIteratorImpl<Lexem> lexemIterator;
+    private final RepeatableIteratorImpl<Lexem> lexemIterator;
 
     private ExpressionConsumer() {
         lexemIterator = null;
@@ -58,7 +58,7 @@ public class ExpressionConsumer {
 
     private Lexem evaluateBitAnd(Lexem lexem) {
         lexem = evaluateBitShift(lexem);
-        while (!isNull(null) && lexem.getType() == LexemType.AMPERSAND) {
+        while (!isNull(lexem) && lexem.getType() == LexemType.AMPERSAND) {
             lexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
             lexem = evaluateBitShift(lexem);
         }

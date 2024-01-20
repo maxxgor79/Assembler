@@ -11,7 +11,7 @@ import java.util.List;
 public class RepeatableIteratorImpl<E> implements RepeatableIterator<E> {
     private E current;
 
-    private Iterator<E> iterator;
+    private final Iterator<E> iterator;
 
     public RepeatableIteratorImpl(@NonNull E... args) {
         if (args.length == 0) {

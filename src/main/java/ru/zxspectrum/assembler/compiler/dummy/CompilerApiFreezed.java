@@ -13,15 +13,13 @@ import java.io.OutputStream;
  * @author Maxim Gorin
  */
 public class CompilerApiFreezed implements CompilerApi {
-    private CompilerApi compilerApi;
+    private final int lineNumber;
 
-    private int lineNumber;
+    private final int compiledLineNumber;
 
-    private int compiledLineNumber;
+    private final int compiledSourceNumber;
 
-    private int compiledSourceNumber;
-
-    private File file;
+    private final File file;
 
     public CompilerApiFreezed(@NonNull CompilerApi compilerApi) {
         lineNumber = compilerApi.getLineNumber();

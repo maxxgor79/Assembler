@@ -11,11 +11,11 @@ import java.math.BigInteger;
  * @author Maxim Gorin
  */
 public class NamespaceApiFreezed implements NamespaceApi {
-    private NamespaceApi namespaceApi;
+    private final NamespaceApi namespaceApi;
 
-    private BigInteger address = BigInteger.ZERO;
+    private BigInteger address;
 
-    private BigInteger currentCodeOffset = BigInteger.ZERO;
+    private BigInteger currentCodeOffset;
 
     public NamespaceApiFreezed(NamespaceApi namespaceApi) {
         this(namespaceApi, namespaceApi.getAddress(), namespaceApi.getCurrentCodeOffset());

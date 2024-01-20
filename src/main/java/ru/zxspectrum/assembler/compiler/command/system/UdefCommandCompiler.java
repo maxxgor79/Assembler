@@ -20,11 +20,11 @@ public class UdefCommandCompiler implements CommandCompiler {
 
     public static final String ALT_NAME = "undefine";
 
-    private String name;
+    private final String name;
 
-    private NamespaceApi namespaceApi;
+    private final NamespaceApi namespaceApi;
 
-    private CompilerApi compilerApi;
+    private final CompilerApi compilerApi;
 
     public UdefCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi
             , @NonNull CompilerApi compilerApi) {

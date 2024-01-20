@@ -9,7 +9,6 @@ import lombok.NonNull;
  * @author Maxim Gorin
  */
 public final class Loader {
-
   private Loader() {
 
   }

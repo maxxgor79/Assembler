@@ -8,7 +8,7 @@ import java.util.Iterator;
  * @author Maxim Gorin
  */
 public class PushbackIteratorImpl<E> implements PushbackIterator<E> {
-    private Iterator<E> iterator;
+    private final Iterator<E> iterator;
 
     public PushbackIteratorImpl(@NonNull Iterator<E> iterator) {
         this.iterator = iterator;

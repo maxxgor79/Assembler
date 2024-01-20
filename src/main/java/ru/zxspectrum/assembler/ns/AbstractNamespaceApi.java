@@ -73,9 +73,6 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
         if (delta.signum() == -1) {
             throw new IllegalArgumentException("delta is negative");
         }
-        if (delta == null) {
-            throw new NullPointerException("delta");
-        }
         currentCodeOffset = currentCodeOffset.add(delta);
         return currentCodeOffset;
     }
@@ -120,10 +117,7 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
 
     @Override
     public BigInteger addVariable(@NonNull String name, @NonNull BigInteger value) {
-        if (name == null || name.trim().isEmpty()) {
-            return null;
-        }
-        if (value == null) {
+        if (name.trim().isEmpty()) {
             return null;
         }
         return variableMap.put(name, value);

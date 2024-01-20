@@ -17,11 +17,10 @@ import java.io.OutputStream;
 @ToString(callSuper = true)
 @EqualsAndHashCode
 @Slf4j
+@Getter
 public class DataBlock extends Block {
-
   public static final int TYPE = 0xFF;
 
-  @Getter
   @NonNull
   private byte[] content;
 

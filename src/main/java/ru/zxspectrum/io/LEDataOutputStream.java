@@ -147,7 +147,7 @@ public class LEDataOutputStream extends FilterOutputStream implements DataOutput
         bytearr[count++] = (byte) ((utflen >>> 8) & 0xFF);
         bytearr[count++] = (byte) ((utflen >>> 0) & 0xFF);
 
-        int i = 0;
+        int i;
         for (i = 0; i < strlen; i++) { // optimized for initial run of ASCII
             int c = str.charAt(i);
             if (c >= 0x80 || c == 0) break;

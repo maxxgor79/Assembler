@@ -14,10 +14,7 @@ public abstract class AnalyzerIterator<E> implements Iterator {
         if (lastItem == null) {
             lastItem = next();
         }
-        if (lastItem != null && externalHasNext()) {
-            return true;
-        }
-        return false;
+        return lastItem != null && externalHasNext();
     }
 
     @Override

@@ -10,14 +10,12 @@ import java.util.Objects;
 /**
  * @author Maxim Gorin
  */
+@Getter
 public class Lexem {
-    @Getter
     private int lineNumber;
 
-    @Getter
     private LexemType type;
 
-    @Getter
     private String value;
 
     private Lexem() {

@@ -20,7 +20,7 @@ import ru.zxspectrum.basic.SymbolUtil;
 @EqualsAndHashCode
 public class Replacer {
 
-  private Map<String, Lexem> varMap = new HashMap<>();
+  private final Map<String, Lexem> varMap = new HashMap<>();
 
   public Replacer() {
 

@@ -29,7 +29,7 @@ public class CommandTree {
     protected static final Lexem VAR_NNNN = new Lexem(1, LexemType.VARIABLE, "nnnn");
 
 
-    private BasicNode rootNode;
+    private final BasicNode rootNode;
 
     public CommandTree() {
         rootNode = new BasicNode(null);

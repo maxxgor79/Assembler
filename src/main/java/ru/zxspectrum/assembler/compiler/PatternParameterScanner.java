@@ -12,7 +12,7 @@ import java.util.Scanner;
  * Date: 26.02.2023
  */
 public class PatternParameterScanner {
-    private Iterator<MatchResult> iter;
+    private final Iterator<MatchResult> iter;
 
     public PatternParameterScanner(@NonNull String pattern) {
         Scanner scanner = new Scanner(pattern);

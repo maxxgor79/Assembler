@@ -10,7 +10,7 @@ import java.util.Set;
  * @author Maxim Gorin
  */
 public final class SymbolUtil {
-    private static char EOL_SYMBOL = '\n';
+    private static final char EOL_SYMBOL = '\n';
 
     private static final String IGNORED_SYMBOLS = "\r\t\b\f";
 
@@ -19,7 +19,7 @@ public final class SymbolUtil {
     }
 
     public static boolean isSpace(int ch) {
-        if (" ".indexOf(ch) >= 0) {
+        if (ch == ' ') {
             return true;
         }
         return IGNORED_SYMBOLS.indexOf(ch) >= 0;
@@ -105,10 +105,7 @@ public final class SymbolUtil {
     }
 
     public static boolean isIdentifier(int ch) {
-        if (isLetter(ch) || isDecDigit(ch) || isUnderline(ch)) {
-            return true;
-        }
-        return false;
+        return isLetter(ch) || isDecDigit(ch) || isUnderline(ch);
     }
 
     public static boolean isDot(int ch) {
