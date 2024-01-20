@@ -26,6 +26,10 @@ public abstract class BaseSettings implements SettingsApi {
     @NonNull
     private ByteOrder byteOrder;
 
+    @NonNull
+    @Setter(AccessLevel.PROTECTED)
+    private BigInteger defaultAddress;
+
     @Setter(AccessLevel.PROTECTED)
     @NonNull
     private BigInteger minAddress;
@@ -80,6 +84,9 @@ public abstract class BaseSettings implements SettingsApi {
     }
 
     @Override
+    public BigInteger getDefaultAddress() {return defaultAddress;}
+
+    @Override
     public BigInteger getMinAddress() {
         return minAddress;
     }
@@ -129,6 +136,9 @@ public abstract class BaseSettings implements SettingsApi {
         }
         if (settings.getByteOrder() != null) {
             setByteOrder(settings.getByteOrder());
+        }
+        if (settings.getDefaultAddress() != null) {
+            setDefaultAddress(settings.getDefaultAddress());
         }
         if (settings.getMinAddress() != null) {
             setMinAddress(settings.getMinAddress());

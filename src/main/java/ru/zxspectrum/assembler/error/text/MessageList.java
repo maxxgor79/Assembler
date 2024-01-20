@@ -1,11 +1,13 @@
 package ru.zxspectrum.assembler.error.text;
 
+import lombok.NonNull;
+
 import java.util.ResourceBundle;
 
 /**
  * @author Maxim Gorin
  */
-public class MessageList {
+public final class MessageList {
     public static final String INVALID_NUMBER_FORMAT = "invalidNumberFormat";
 
     public static final String INVALID_HEXADECIMAL_NUMBER_FORMAT = "invalidHexadecimalNumberFormat";
@@ -122,7 +124,7 @@ public class MessageList {
 
     }
 
-    public static String getMessage(String s) {
+    public static String getMessage(@NonNull String s) {
         return resourceBundle.getString(s);
     }
 }

@@ -23,10 +23,6 @@ import java.math.BigInteger;
 @ToString
 @Getter
 public class AssemblerSettings extends BaseSettings {
-    @NonNull
-    @Setter(AccessLevel.PROTECTED)
-    private BigInteger address;
-
     @Setter(AccessLevel.PROTECTED)
     private boolean produceTap;
 
@@ -47,7 +43,7 @@ public class AssemblerSettings extends BaseSettings {
             setStrictConversion(true);
         }
         if (cli.hasOption("a")) {
-            setAddress(new BigInteger(cli.getOptionValue("a")));
+            setDefaultAddress(new BigInteger(cli.getOptionValue("a")));
         }
         if (cli.hasOption("min")) {
             setMinAddress(new BigInteger(cli.getOptionValue("min")));

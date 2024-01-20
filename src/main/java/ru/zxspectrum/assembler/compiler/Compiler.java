@@ -3,7 +3,7 @@ package ru.zxspectrum.assembler.compiler;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MultiValuedMap;
-import ru.zxspectrum.assembler.Assembler;
+import ru.zxspectrum.assembler.Z80Assembler;
 import ru.zxspectrum.assembler.compiler.command.nonparameterized.NonParametersCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.parameterized.ParameterizedCommandCompiler;
 import ru.zxspectrum.assembler.compiler.command.system.DbCommandCompiler;
@@ -151,7 +151,7 @@ public class Compiler implements CompilerApi {
         AssemblerCommandLoader assemblerCommandLoader = new AssemblerCommandLoader(settingsApi);
         InputStream is;
         for (String path : templatePath) {
-            is = Assembler.class.getResourceAsStream(path);
+            is = Z80Assembler.class.getResourceAsStream(path);
             if (is != null) {
                 MultiValuedMap<String, LexemSequence> map = assemblerCommandLoader.load(is);
                 for (Map.Entry<String, LexemSequence> entry : map.entries()) {

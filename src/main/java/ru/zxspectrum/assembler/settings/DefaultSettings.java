@@ -39,6 +39,11 @@ public class DefaultSettings implements SettingsApi {
     }
 
     @Override
+    public BigInteger getDefaultAddress() {
+        return BigInteger.valueOf(0x4000L);
+    }
+
+    @Override
     public ByteOrder getByteOrder() {
         return BYTE_ORDER;
     }

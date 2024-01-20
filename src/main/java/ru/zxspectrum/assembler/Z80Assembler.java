@@ -22,6 +22,7 @@ import ru.zxspectrum.assembler.ns.AbstractNamespaceApi;
 import ru.zxspectrum.assembler.settings.AssemblerSettings;
 import ru.zxspectrum.assembler.settings.DefaultSettings;
 import ru.zxspectrum.assembler.settings.ResourceSettings;
+import ru.zxspectrum.assembler.text.Z80Messages;
 import ru.zxspectrum.assembler.util.FileUtil;
 import ru.zxspectrum.assembler.util.SymbolUtil;
 import ru.zxspectrum.assembler.util.TypeUtil;
@@ -42,13 +43,14 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author Maxim Gorin
  */
 @Slf4j
-public class Assembler extends AbstractNamespaceApi {
+public class Z80Assembler extends AbstractNamespaceApi {
     private static final String SETTINGS_NAME = "settings.properties";
 
     protected AssemblerSettings settings;
@@ -58,7 +60,7 @@ public class Assembler extends AbstractNamespaceApi {
     @Getter
     protected BigInteger address = new BigInteger("8000", 16);
 
-    public Assembler() {
+    public Z80Assembler() {
         reset();
     }
 
@@ -70,7 +72,7 @@ public class Assembler extends AbstractNamespaceApi {
 
     protected void setSettings(@NonNull AssemblerSettings settings) {
         this.settings = settings;
-        setAddress(settings.getAddress());
+        setAddress(settings.getDefaultAddress());
     }
 
     public void run(@NonNull final File... files) {
@@ -163,14 +165,17 @@ public class Assembler extends AbstractNamespaceApi {
 
     protected String createWelcome() {
         StringBuilder sb = new StringBuilder();
-        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME), settings.getMajorVersion()
-                , settings.getMinorVersion());
+        String programWelcome = String.format(MessageList.getMessage(MessageList.PROGRAM_WELCOME)
+                , settings.getMajorVersion(), settings.getMinorVersion());
         String writtenBy = MessageList.getMessage(MessageList.WRITTEN_BY);
         String lineExternal = StringUtils.repeat('*', 80);
         sb.append(lineExternal).append(System.lineSeparator());
-        String lineInternal = (new StringBuilder().append('*').append(StringUtils.repeat(' ', 78)).append('*')).toString();
-        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2, programWelcome)).append(System.lineSeparator());
-        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2, writtenBy)).append(System.lineSeparator());
+        String lineInternal = (new StringBuilder().append('*').append(StringUtils.repeat(' ', 78))
+                .append('*')).toString();
+        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
+                , programWelcome)).append(System.lineSeparator());
+        sb.append(SymbolUtil.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2, writtenBy))
+                .append(System.lineSeparator());
         sb.append(lineExternal).append(System.lineSeparator());
         return sb.toString();
     }
@@ -228,17 +233,18 @@ public class Assembler extends AbstractNamespaceApi {
         Options options = getOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(settings.getCmdFilename() + " <file1>...<fileN>", options);
+            formatter.printHelp(settings.getCmdFilename() + " " + Z80Messages.getMessage(Z80Messages
+                    .FILE_ENUM), options);
             return;
         }
-        final Assembler assembler = new Assembler();
-        assembler.setSettings(settings);
-        final List<File> fileList = assembler.setCli(args, options);
+        final Z80Assembler z80Assembler = new Z80Assembler();
+        z80Assembler.setSettings(settings);
+        final List<File> fileList = z80Assembler.setCli(args, options);
         if (!fileList.isEmpty()) {
-            Output.println(assembler.createWelcome());
-            assembler.run(fileList.toArray(new File[fileList.size()]));
+            Output.println(z80Assembler.createWelcome());
+            z80Assembler.run(fileList.toArray(new File[fileList.size()]));
         } else {
-            Output.println("No input files");
+            Output.println(Z80Messages.getMessage(Z80Messages.NO_INPUT_FILES));
         }
     }
 
@@ -257,17 +263,22 @@ public class Assembler extends AbstractNamespaceApi {
 
     protected static Options getOptions() {
         Options options = new Options();
-        options.addOption("st", "strict-type-conversion", false, "Turn on strict type conversion");
-        options.addOption("a", "address", true, "'org' address." + " Non negative value.");
-        options.addOption("min", "min-address", true, "minimal address." + " Non negative value.");
-        options.addOption("max", "max-address", true, "maximal address." + " Non negative value.");
-        options.addOption("o", "output", true, "output directory for" + " compiled files.");
-        options.addOption("b", "byte-order", true, "byte order" + ": little-endian or big-endian.");
-        options.addOption("s", "source-encoding", true, "source encoding. UTF-8 is default.");
-        options.addOption("p", "platform-encoding", true, "platform encoding. ASCII is default.");
-        options.addOption("tap", false, "produce in <TAP> format.");
-        options.addOption("wav", false, "produce in <WAV> format.");
-        options.addOption("cpu", true, "use special processor instructions for the cpu model.");
+        options.addOption("st", "strict-type-conversion", false, Z80Messages.getMessage(Z80Messages
+                .O_STRICT_CONVERSION));
+        options.addOption("a", "address", true, Z80Messages.getMessage(Z80Messages.O_ORG_ADDRESS));
+        options.addOption("min", "min-address", true, Z80Messages.getMessage(Z80Messages
+                .O_MINIMAL_ADDRESS));
+        options.addOption("max", "max-address", true, Z80Messages.getMessage(Z80Messages
+                .O_MAXIMAL_ADDRESS));
+        options.addOption("o", "output", true, Z80Messages.getMessage(Z80Messages.O_OUTPUT_DIRECTORY));
+        options.addOption("b", "byte-order", true, Z80Messages.getMessage(Z80Messages.O_BYTE_ORDER));
+        options.addOption("s", "source-encoding", true, Z80Messages.getMessage(Z80Messages
+                .O_SOURCE_ENCODING));
+        options.addOption("p", "platform-encoding", true, Z80Messages.getMessage(Z80Messages
+                .O_PLATFORM_ENCODING));
+        options.addOption("tap", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_TAP));
+        options.addOption("wav", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_WAV));
+        options.addOption("cpu", true, Z80Messages.getMessage(Z80Messages.O_USE_SPECIAL_PROCESSOR));
         return options;
     }
 

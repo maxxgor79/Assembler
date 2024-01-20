@@ -29,6 +29,7 @@ public class ResourceSettings extends BaseSettings {
                 Encoding.valueByName(Variables.getString(Variables.SOURCE_ENCODING, Encoding
                         .UTF_8.getName())));
         final String value = Variables.getString(Variables.BYTE_ORDER, "little-endian");
+        setDefaultAddress(Variables.getBigInteger(Variables.DEFAULT_ADDRESS, BigInteger.valueOf(0x4000)));
         setByteOrder("big-endian".equals(value) ? ByteOrder.BigEndian : ByteOrder.LittleEndian);
         setMinAddress(Variables.getBigInteger(Variables.MIN_ADDRESS, BigInteger.ZERO));
         setMaxAddress(Variables.getBigInteger(Variables.MAX_ADDRESS, new BigInteger("ffff", 16)));

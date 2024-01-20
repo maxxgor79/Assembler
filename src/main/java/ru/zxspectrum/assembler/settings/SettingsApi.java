@@ -14,6 +14,8 @@ public interface SettingsApi {
 
     void load(String name) throws IOException;
 
+    BigInteger getDefaultAddress();
+
     ByteOrder getByteOrder();
 
     Encoding getSourceEncoding();
