@@ -4,7 +4,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.compiler.bytecode.ByteOrder;
 
+import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 @Slf4j
@@ -48,5 +50,16 @@ public final class IOUtils {
             log.error(e.getMessage(), e);
             throw e;
         }
+    }
+
+    public static int readWord(@NonNull InputStream is, @NonNull ByteOrder order) throws IOException {
+        int ch1 = is.read();
+        int ch2 = is.read();
+        if ((ch1 | ch2) < 0)
+            throw new EOFException();
+        return switch (order) {
+            case LittleEndian -> (ch2 << 8) + (ch1 << 0);
+            case BigEndian -> (ch2 << 0) + (ch1 << 8);
+        };
     }
 }

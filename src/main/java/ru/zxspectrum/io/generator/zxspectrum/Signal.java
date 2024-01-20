@@ -1,4 +1,4 @@
-package ru.zxspectrum.io.wav;
+package ru.zxspectrum.io.generator.zxspectrum;
 
 import java.io.IOException;
 import java.io.OutputStream;

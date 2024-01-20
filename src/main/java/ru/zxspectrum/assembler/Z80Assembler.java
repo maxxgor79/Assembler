@@ -28,7 +28,7 @@ import ru.zxspectrum.assembler.util.SymbolUtil;
 import ru.zxspectrum.assembler.util.TypeUtil;
 import ru.zxspectrum.io.tap.TapData;
 import ru.zxspectrum.io.tap.TapUtil;
-import ru.zxspectrum.io.wav.SoundGenerator;
+import ru.zxspectrum.io.generator.zxspectrum.SoundGenerator;
 import ru.zxspectrum.io.wav.WavFile;
 
 import java.io.File;
@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**

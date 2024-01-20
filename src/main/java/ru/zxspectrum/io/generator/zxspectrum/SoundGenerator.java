@@ -1,12 +1,14 @@
-package ru.zxspectrum.io.wav;
+package ru.zxspectrum.io.generator.zxspectrum;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import ru.zxspectrum.io.generator.Generator;
 import ru.zxspectrum.io.tap.Block;
 import ru.zxspectrum.io.tap.Flag;
 import ru.zxspectrum.io.tap.TapData;
+import ru.zxspectrum.io.wav.WavFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,7 +21,8 @@ import java.io.OutputStream;
  */
 @Slf4j
 @Getter
-public class SoundGenerator {
+@Setter
+public class SoundGenerator extends Generator {
     protected static final int PULSE_ZERO = 855;
 
     protected static final int PULSE_ONE = 1710;
@@ -37,19 +40,11 @@ public class SoundGenerator {
     protected static final int IMPULSE_NUMBER_PILOT_DATA = 3223;
 
     @NonNull
-    @Setter
     private File file;
 
-    @Setter
     private boolean silenceBeforeBlock;
 
-    @Setter
     private int silenceDuration = 1;//in seconds
-
-    @Setter
-    private int sampleRate = 22050;
-
-    private float volume = 1.f;
 
     public SoundGenerator() {
 
@@ -105,7 +100,7 @@ public class SoundGenerator {
         for (int b : data) {
             writeDataByte(os, b, hiLevel, loLevel, sampleRate);
         }
-       Signal.writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
+        Signal.writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
     }
 
     public void setVolume(float volume) {
@@ -124,7 +119,12 @@ public class SoundGenerator {
         }
     }
 
-    public void generateWav(@NonNull TapData tapData) throws IOException {
+    @Override
+    public void generateWav(@NonNull Object data) throws IOException {
+        if (!(data instanceof TapData)) {
+            throw new IllegalArgumentException("Unsupported argument type: " + data.getClass());
+        }
+        final TapData tapData = (TapData) data;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         for (Block block : tapData.getBlockList()) {
             if (silenceBeforeBlock) {
