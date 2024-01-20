@@ -1,10 +1,8 @@
 package ru.zxspectrum.assembler.compiler.bytecode;
 
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.error.AssemblerException;
-import ru.zxspectrum.assembler.error.ParserException;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -14,7 +12,7 @@ import java.math.BigInteger;
  */
 @Slf4j
 public class ByteCodeCompiler {
-    private PreTranslatedCommand preTranslatedCommand;
+    private final PreTranslatedCommand preTranslatedCommand;
 
     public ByteCodeCompiler(@NonNull String codePattern, ByteOrder byteOrder) {
         if (codePattern.trim().isEmpty()) {

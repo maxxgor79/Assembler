@@ -24,7 +24,7 @@ public class TestCommandDD {
             "DEC (IX+0x80)\nLD(IX+3),255\nLD B,(IX+1)\nLD C,(IX+2)\nLD d,(ix+3)\nld e,(ix+4)\nld h,(ix+5)\n" +
             "LD L,(IX+6)\nLD A,(IX+7)\n";
 
-    //@Test
+    @Test
     void testCommand1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
         resourceSettings.load("settings.properties");

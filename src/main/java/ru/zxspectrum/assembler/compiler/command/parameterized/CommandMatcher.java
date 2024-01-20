@@ -50,7 +50,6 @@ public class CommandMatcher {
         IndexedArrayIterator indexedArrayIterator = new IndexedArrayIterator<>(commandList, commandIndex);
         ExpressionConsumer expressionConsumer = new ExpressionConsumer(indexedArrayIterator);
         Lexem lastLexem = expressionConsumer.evaluate();
-        //System.out.println("LAST:"+lastLexem);
         if (lastLexem == null) {
             return commandList.size();
         } else {
@@ -90,9 +89,6 @@ public class CommandMatcher {
                 }
             }
         }
-        if (patternIndex == patternList.size() && commandIndex == commandList.size()) {
-            return true;
-        }
-        return false;
+        return patternIndex == patternList.size() && commandIndex == commandList.size();
     }
 }

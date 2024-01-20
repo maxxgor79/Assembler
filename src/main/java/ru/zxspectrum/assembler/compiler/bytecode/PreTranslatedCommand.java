@@ -7,7 +7,6 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.assembler.error.AssemblerException;
 import ru.zxspectrum.assembler.lang.Type;
-import ru.zxspectrum.assembler.util.TypeUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,13 +20,13 @@ import java.util.List;
 @ToString
 @Slf4j
 public class PreTranslatedCommand {
-    private Object[] data;
+    private final Object[] data;
 
     @Getter
-    private int size;
+    private final int size;
 
     @Getter
-    private ByteOrder byteOrder;
+    private final ByteOrder byteOrder;
 
     public PreTranslatedCommand(@NonNull Object[] data, ByteOrder byteOrder) {
         this.data = data;
