@@ -39,8 +39,8 @@ public class RkmData {
 
     public void read(@NonNull InputStream is) throws IOException {
         startAddress16 = IOUtils.readWord(is, ByteOrder.BigEndian);
-        int endAddress16 = IOUtils.readWord(is, ByteOrder.BigEndian);
-        int size16 = endAddress16 - startAddress16 + 1;
+        final int endAddress16 = IOUtils.readWord(is, ByteOrder.BigEndian);
+        final int size16 = endAddress16 - startAddress16 + 1;
         data = new byte[size16];
         int readBytes = is.read(data);
         if (readBytes != size16) {
