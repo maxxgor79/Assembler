@@ -10,6 +10,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
@@ -139,7 +140,11 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     private RkmData createRkm(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(src);
-        return new RkmData(address.intValue(), data);
+        RkmData rkmData = new RkmData(address.intValue(), data);
+        try (FileOutputStream fos = new FileOutputStream(dst)) {
+            rkmData.save(fos);
+            return rkmData;
+        }
     }
 
     private File createOutputFile(final File file) {

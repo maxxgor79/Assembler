@@ -62,7 +62,7 @@ public class RkmData {
     public static int calcCrc16(@NonNull final byte[] data) {
         int csm_lo = 0, csm_hi = 0;
         for (int i = 0; i < data.length; i++) {
-            if (i++ % 2 == 0) {
+            if (i % 2 == 0) {
                 csm_lo ^= data[i] & 0x00FF;
             } else {
                 csm_hi ^= data[i] & 0x00FF;
