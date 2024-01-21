@@ -22,6 +22,8 @@ import java.util.Objects;
  */
 @Slf4j
 public class SoundGenerator extends Generator {
+    private static final int DEFAULT_SAMPLE_RATE = 44100;// in Hertz
+
     private static final int BAUD_RATE = 700;
 
     private byte[] zeroBitData;
@@ -57,7 +59,7 @@ public class SoundGenerator extends Generator {
     private byte[] firWindow = new byte[FIR_WEIGHTS.length];
 
     public SoundGenerator(@NonNull File file) {
-        sampleRate = 44100;// Hz
+        sampleRate = DEFAULT_SAMPLE_RATE;
         setFile(file);
         initData();
     }
@@ -85,6 +87,7 @@ public class SoundGenerator extends Generator {
         // some intermediate values in the end, for the FIR filter
         write(baos, Arrays.copyOf(buf, FIR_WEIGHTS.length));
         WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);
+        wavFile.setSampleRate(getSampleRate());
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }

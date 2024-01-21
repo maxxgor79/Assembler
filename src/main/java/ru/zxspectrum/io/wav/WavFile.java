@@ -2,6 +2,7 @@ package ru.zxspectrum.io.wav;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import ru.zxspectrum.io.LEDataOutputStream;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class WavFile {
     private final byte[] data;
 
     @Getter
+    @Setter
     private int sampleRate = 11025;
 
     @Getter

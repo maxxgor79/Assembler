@@ -44,7 +44,7 @@ public class SoundGenerator extends Generator {
 
     private boolean silenceBeforeBlock;
 
-    private int silenceDuration = 1;//in seconds
+    private int silenceDuration = 1;// in seconds
 
     public SoundGenerator() {
 
@@ -133,7 +133,7 @@ public class SoundGenerator extends Generator {
             writeSoundData(baos, block, sampleRate, volume);
         }
         writeSilence(baos);
-        WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);
+        WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);// 11025 Hz
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }

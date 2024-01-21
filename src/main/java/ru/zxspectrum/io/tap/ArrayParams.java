@@ -23,10 +23,8 @@ import java.util.Arrays;
 @Getter
 @Setter
 public class ArrayParams implements TapElementReader, TapElementWriter {
-  @NonNull
   private int reserved1;//1b
 
-  @NonNull
   private int varName;//1b
 
   @NonNull
