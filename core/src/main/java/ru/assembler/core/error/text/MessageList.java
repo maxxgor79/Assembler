@@ -1,12 +1,15 @@
 package ru.assembler.core.error.text;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
  * @author Maxim Gorin
  */
+@Slf4j
 public final class MessageList {
     public static final String INVALID_NUMBER_FORMAT = "invalidNumberFormat";
 
@@ -117,7 +120,6 @@ public final class MessageList {
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
-
     }
 
     public static String getMessage(@NonNull String s) {

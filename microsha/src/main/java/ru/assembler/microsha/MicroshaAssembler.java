@@ -156,7 +156,9 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected CompilerApi compile(final File file, final InputStream is, final OutputStream os) throws IOException {
-        CompilerApi compilerApi = CompilerFactory.create(MicroshaCompiler.class, this, settings, file, is, os);
+        final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
+                        -> new MicroshaCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os)
+                , this, settings, file, is, os);
         compilerApi.compile();
         return compilerApi;
     }

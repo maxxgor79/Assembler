@@ -11,6 +11,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import ru.assembler.core.compiler.Compiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
@@ -159,7 +160,9 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     protected CompilerApi compile(final File file, final InputStream is, final OutputStream os) throws IOException {
-        CompilerApi compilerApi = CompilerFactory.create(Z80Compiler.class, this, settings, file, is, os);
+        final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
+                        -> new Z80Compiler(namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
+                , this, settings, file, is, os);
         compilerApi.compile();
         return compilerApi;
     }
@@ -229,7 +232,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         Z80AssemblerSettings settings = loadSettings();
         Options options = getOptions();
         if (args.length == 0) {

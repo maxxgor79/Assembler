@@ -1,6 +1,8 @@
 package ru.assembler.core.compiler;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.lexem.LexemAnalyzer;
 import ru.assembler.core.ns.NamespaceApi;
@@ -20,37 +22,31 @@ import java.lang.reflect.InvocationTargetException;
  */
 @Slf4j
 public final class CompilerFactory {
+    private static Factory defaultFactory = (namespace, settings, analyzer, os) -> new Compiler(namespace, settings
+            , analyzer, os);
+
     private CompilerFactory() {
 
     }
 
-    public static CompilerApi create(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull File file, @NonNull InputStream is, @NonNull OutputStream os) throws IOException {
-        return create(Compiler.class, namespaceApi, settingsApi, file, is, os);
-    }
-
-    public static CompilerApi create(@NonNull Class<?> clazz, @NonNull NamespaceApi namespaceApi
-            , @NonNull SettingsApi settingsApi, @NonNull File file, @NonNull InputStream is, @NonNull OutputStream os)
-            throws IOException {
+    public static CompilerApi create(@NonNull final Factory factory, @NonNull NamespaceApi namespaceApi
+            , @NonNull SettingsApi settingsApi, @NonNull File file, @NonNull InputStream is
+            , @NonNull OutputStream os) {
         LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(file, is, settingsApi.getPlatformEncoding()
                 , settingsApi.getSourceEncoding());
         SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(new RepeatableIteratorImpl(lexemAnalyzer.iterator()));
-        try {
-            Compiler compiler = createCompiler(clazz, namespaceApi, settingsApi, syntaxAnalyzer, os);
-            compiler.setFile(file);
-            return compiler;
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException
-                 | IllegalAccessException e) {
-            log.error(e.getMessage(), e);
-            throw new IllegalArgumentException("Bad class: " + clazz.getName());
-        }
+        Compiler compiler = factory.newCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os);
+        compiler.setFile(file);
+        return compiler;
     }
 
-    private static Compiler createCompiler(Class<?> clazz, NamespaceApi namespaceApi, SettingsApi settingsApi
-            , SyntaxAnalyzer syntaxAnalyzer, OutputStream os) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Constructor<?> cons = clazz.getConstructor(NamespaceApi.class, SettingsApi.class, SyntaxAnalyzer.class
-                , OutputStream.class);
-        final Compiler compiler = (Compiler) cons.newInstance(namespaceApi, settingsApi, syntaxAnalyzer, os);
-        return compiler;
+    public static CompilerApi create(@NonNull NamespaceApi namespaceApi
+            , @NonNull SettingsApi settingsApi, @NonNull File file, @NonNull InputStream is
+            , @NonNull OutputStream os) {
+        return create(defaultFactory, namespaceApi, settingsApi, file, is, os);
+    }
+
+    public static interface Factory {
+        Compiler newCompiler(NamespaceApi namespace, SettingsApi settings, SyntaxAnalyzer analyzer, OutputStream os);
     }
 }

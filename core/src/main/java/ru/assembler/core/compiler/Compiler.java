@@ -59,7 +59,7 @@ public class Compiler implements CompilerApi {
 
     private int sourceCount;
 
-    private final CommandTree commandCompilerTree = new CommandTree();
+    private final CommandTree commandCompilerTree;
 
     private final Map<LexemSequence, CommandCompiler> commandCompilerMap = new HashMap<>();
 
@@ -71,6 +71,7 @@ public class Compiler implements CompilerApi {
         this.settingsApi = settingsApi;
         this.syntaxAnalyzer = syntaxAnalyzer;
         this.os = os;
+        this.commandCompilerTree = new CommandTree();
         initDefaultValues();
     }
 
