@@ -16,7 +16,9 @@ public class WavFile {
 
     protected static final int PCM_FORMAT = 1;
 
-    protected static final int BPS = 8;
+    @Setter
+    @Getter
+    protected int bps = 8;
 
     private final byte[] data;
 
@@ -34,6 +36,13 @@ public class WavFile {
     public WavFile(@NonNull byte[] data, int sampleRate, int numChannels) {
         this.data = data;
         this.sampleRate = sampleRate;
+        this.numChannels = numChannels;
+    }
+
+    public WavFile(@NonNull byte[] data, int sampleRate, int bps, int numChannels) {
+        this.data = data;
+        this.sampleRate = sampleRate;
+        this.bps = bps;
         this.numChannels = numChannels;
     }
 
@@ -55,9 +64,9 @@ public class WavFile {
         os.writeShort(PCM_FORMAT);//audio format
         os.writeShort(numChannels);//num channels
         os.writeInt(sampleRate);//sample rate
-        os.writeInt((sampleRate * BPS * numChannels) / 8);//byte rate
-        os.writeShort((BPS * numChannels) / 8);//block align
-        os.writeShort(BPS);//Bit per sample
+        os.writeInt((sampleRate * bps * numChannels) / 8);//byte rate
+        os.writeShort((bps * numChannels) / 8);//block align
+        os.writeShort(bps);//Bit per sample
         writeWavChunkHeader(os, data.length);
         os.write(data);
     }

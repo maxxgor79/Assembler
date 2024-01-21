@@ -14,9 +14,9 @@ public abstract class Generator {
     @NonNull
     protected File file;
 
-    protected int sampleRate = 22050;
+    protected int sampleRate;
 
-    protected float volume = 1.f;
+    protected float volume = 1.0f;
 
     public abstract void generateWav(@NonNull Object data) throws IOException;
 }

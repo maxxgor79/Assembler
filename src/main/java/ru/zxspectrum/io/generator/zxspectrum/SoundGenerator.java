@@ -23,6 +23,8 @@ import java.io.OutputStream;
 @Getter
 @Setter
 public class SoundGenerator extends Generator {
+    protected static final int DEFAULT_SAMPLE_RATE = 22050;
+
     protected static final int PULSE_ZERO = 855;
 
     protected static final int PULSE_ONE = 1710;
@@ -47,10 +49,11 @@ public class SoundGenerator extends Generator {
     private int silenceDuration = 1;// in seconds
 
     public SoundGenerator() {
-
+        setSampleRate(DEFAULT_SAMPLE_RATE);
     }
 
     public SoundGenerator(@NonNull File file) {
+        setSampleRate(DEFAULT_SAMPLE_RATE);
         setFile(file);
     }
 

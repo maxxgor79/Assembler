@@ -54,12 +54,17 @@ public class SoundGenerator extends Generator {
             -0.005878331252147732, -0.006139718992073923, -0.005893881011277897, -0.005290040439872781,
             -0.004469734119871819, -0.003557457996743629, -0.002653914944386688, -0.001832200078313594,
             -0.001136970252974637, -0.000586368131836170, -0.000176232019410298, 0.000114058758552773,
-            0.000314862245890515,  0.000459465018502213, 0.000577926080672738};
+            0.000314862245890515, 0.000459465018502213, 0.000577926080672738};
 
-    private byte[] firWindow = new byte[FIR_WEIGHTS.length];
+    private int[] firWindow = new int[FIR_WEIGHTS.length];
+
+    public SoundGenerator() {
+        setSampleRate(DEFAULT_SAMPLE_RATE);
+        initData();
+    }
 
     public SoundGenerator(@NonNull File file) {
-        sampleRate = DEFAULT_SAMPLE_RATE;
+        setSampleRate(DEFAULT_SAMPLE_RATE);
         setFile(file);
         initData();
     }
@@ -87,7 +92,6 @@ public class SoundGenerator extends Generator {
         // some intermediate values in the end, for the FIR filter
         write(baos, Arrays.copyOf(buf, FIR_WEIGHTS.length));
         WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);
-        wavFile.setSampleRate(getSampleRate());
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }
@@ -100,11 +104,11 @@ public class SoundGenerator extends Generator {
         for (int i = 0; i < data.length; i++) {
             ArrayUtils.shift(firWindow, 1);
             firWindow[0] = data[i];
-            double sum = 0;
+            double sum = 0.0;
             for (int j = 0; j < firWindow.length; j++) {
                 sum += firWindow[j] * FIR_WEIGHTS[j];
             }
-            buf[i] = (byte) sum;
+            buf[i] = (byte) (sum + 0x80);// convert into unsigned
         }
         return buf;
     }
@@ -132,9 +136,9 @@ public class SoundGenerator extends Generator {
         buf = new byte[samplePerBit];
         for (int i = 0; i < samplePerBit; i++) {
             if (i < samplePerBit / 2) {
-                buf[i] = (byte) (255 - 32);
+                buf[i] = (byte) ((255 - 96) * volume);
             } else {
-                buf[i] = 32;
+                buf[i] = (byte) (96 * volume);
             }
         }
         zeroBitData = Arrays.copyOf(buf, buf.length);
@@ -150,6 +154,7 @@ public class SoundGenerator extends Generator {
 
     @Override
     public void setVolume(float volume) {
-        throw new UnsupportedOperationException();
+        super.setVolume(volume);
+        initData();
     }
 }
