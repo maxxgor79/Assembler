@@ -21,10 +21,15 @@ ddw <dword expr0>,<dword expr1>...<dword exprN>
 .defdw <dword expr0>,<dword expr1>...<dword exprN>
 defdw <dword expr0>,<dword expr1>...<dword exprN>
 
-saveWav <text> save compiled data into wave format
-.saveWav <text> save compiled data into wave format
-saveTap <text> save compiled data into <tap> format
-.saveTap <text> save compiled data into <tap> format
+saveWav <text> save compiled data into wave format (for zxspectrum)
+.saveWav <text> save compiled data into wave format (for zxspectrum)
+saveTap <text> save compiled data into <tap> format (for zxspectrum)
+.saveTap <text> save compiled data into <tap> format (for zxspectrum)
+
+saveWav <text> save compiled data into wave format (for microsha)
+.saveWav <text> save compiled data into wave format (for microsha)
+saveRkm <text> save compiled data into <rkm> format (for microsha)
+.saveRkm <text> save compiled data into <rkm> format (for microsha)
 
 
 Supports number formats:
