@@ -46,14 +46,18 @@
                     <include>**/*.properties</include>
                     <include>**/*.bas</include>
                 </includes>
+		<filtering>true</filtering>
             </resource>
         </resources>
     </build>
+
     <properties>
         <java.version>14</java.version>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
+	<exec.name>z80asm</exec.name>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -129,6 +133,6 @@
             <artifactId>core</artifactId>
             <version>1.1</version>
         </dependency>
-
     </dependencies>
+
 </project>

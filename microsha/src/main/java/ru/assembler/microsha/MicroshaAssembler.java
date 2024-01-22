@@ -169,7 +169,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected String createWelcome() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         String programWelcome = String.format(MicroshaMessages.getMessage(MicroshaMessages.PROGRAM_WELCOME)
                 , settings.getMajorVersion(), settings.getMinorVersion());
         String writtenBy = MicroshaMessages.getMessage(MicroshaMessages.WRITTEN_BY);
@@ -233,9 +233,9 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         }
     }
 
-    public static void main(final String[] args) throws Exception {
-        MicroshaAssemblerSettings settings = loadSettings();
-        Options options = getOptions();
+    public static void main(final String[] args) {
+        final MicroshaAssemblerSettings settings = loadSettings();
+        final Options options = getOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(settings.getCmdFilename() + " " + MicroshaMessages.getMessage(MicroshaMessages
@@ -257,7 +257,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         MicroshaAssemblerSettings settings = new MicroshaAssemblerSettings();
         settings.merge(new DefaultSettings());
         try {
-            ResourceSettings resourceSettings = new ResourceSettings();
+            final ResourceSettings resourceSettings = new ResourceSettings();
             resourceSettings.load(SETTINGS_NAME);
             settings.merge(resourceSettings);
         } catch (Exception e) {
@@ -267,7 +267,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected static Options getOptions() {
-        Options options = new Options();
+        final Options options = new Options();
         options.addOption("st", "strict-type-conversion", false, MicroshaMessages
                 .getMessage(MicroshaMessages.O_STRICT_CONVERSION));
         options.addOption("a", "address", true, MicroshaMessages

@@ -23,6 +23,7 @@ import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.AssemblerSettings;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
+import ru.assembler.core.settings.Variables;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
 import ru.assembler.zxspectrum.text.Z80Messages;
@@ -168,7 +169,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     protected String createWelcome() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         String programWelcome = String.format(Z80Messages.getMessage(Z80Messages.PROGRAM_WELCOME)
                 , settings.getMajorVersion(), settings.getMinorVersion());
         String writtenBy = Z80Messages.getMessage(Z80Messages.WRITTEN_BY);
@@ -233,8 +234,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     public static void main(final String[] args) {
-        Z80AssemblerSettings settings = loadSettings();
-        Options options = getOptions();
+        final Z80AssemblerSettings settings = loadSettings();
+        final Options options = getOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(settings.getCmdFilename() + " " + Z80Messages.getMessage(Z80Messages
@@ -256,7 +257,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         Z80AssemblerSettings settings = new Z80AssemblerSettings();
         settings.merge(new DefaultSettings());
         try {
-            ResourceSettings resourceSettings = new ResourceSettings();
+            final ResourceSettings resourceSettings = new ResourceSettings();
             resourceSettings.load(SETTINGS_NAME);
             settings.merge(resourceSettings);
         } catch (Exception e) {
@@ -266,7 +267,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     protected static Options getOptions() {
-        Options options = new Options();
+        final Options options = new Options();
         options.addOption("st", "strict-type-conversion", false, Z80Messages.getMessage(Z80Messages
                 .O_STRICT_CONVERSION));
         options.addOption("a", "address", true, Z80Messages.getMessage(Z80Messages.O_ORG_ADDRESS));

@@ -14,6 +14,8 @@ public final class Variables {
 
     }
 
+    public static final String LOG_FILE = "log_file";
+
     public static final String DEFAULT_ADDRESS = "default_address";
 
     public static final String MIN_ADDRESS = "min_address";
@@ -98,6 +100,10 @@ public final class Variables {
 
     public static String getString(String name) {
         return System.getProperty(name);
+    }
+
+    public static void setString(@NonNull String name, @NonNull String value) {
+        System.setProperty(name, value);
     }
 
     public static void load(@NonNull InputStream is) throws IOException {
