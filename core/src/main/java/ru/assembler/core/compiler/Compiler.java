@@ -45,9 +45,9 @@ import java.util.Map;
 public class Compiler implements CompilerApi {
     private static final String TEMPLATE_NAME = "template";
 
-    private final NamespaceApi namespaceApi;
+    protected final NamespaceApi namespaceApi;
 
-    private final SettingsApi settingsApi;
+    protected final SettingsApi settingsApi;
 
     private int lineNumber;
 

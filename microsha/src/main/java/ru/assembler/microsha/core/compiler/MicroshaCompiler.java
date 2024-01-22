@@ -6,6 +6,7 @@ import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.syntax.SyntaxAnalyzer;
 import ru.assembler.microsha.core.compiler.command.system.RkmCommandCompiler;
+import ru.assembler.microsha.core.compiler.command.system.SetCommandCompiler;
 import ru.assembler.microsha.core.compiler.command.system.WavCommandCompiler;
 
 import java.io.OutputStream;
@@ -19,5 +20,7 @@ public class MicroshaCompiler extends Compiler {
     private void addCommands() {
         addCommand(WavCommandCompiler.NAME, new WavCommandCompiler(this));
         addCommand(RkmCommandCompiler.NAME, new RkmCommandCompiler(this));
+        addCommand(SetCommandCompiler.NAME, new SetCommandCompiler(SetCommandCompiler.NAME, namespaceApi
+                , this));
     }
 }
