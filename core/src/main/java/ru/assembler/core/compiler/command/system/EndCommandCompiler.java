@@ -25,7 +25,7 @@ public class EndCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(LexemSequence lexemSequence) {
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
         if (!iterator.hasNext() ||

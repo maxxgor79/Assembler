@@ -10,6 +10,7 @@ import ru.assembler.core.compiler.command.system.DdwCommandCompiler;
 import ru.assembler.core.compiler.command.system.DefCommandCompiler;
 import ru.assembler.core.compiler.command.system.DwCommandCompiler;
 import ru.assembler.core.compiler.command.system.EndCommandCompiler;
+import ru.assembler.core.compiler.command.system.EquCommandCompiler;
 import ru.assembler.core.compiler.command.system.IncludeCommandCompiler;
 import ru.assembler.core.compiler.command.system.OrgCommandCompiler;
 import ru.assembler.core.compiler.command.system.UdefCommandCompiler;
@@ -135,6 +136,8 @@ public class Compiler implements CompilerApi {
                 .ALT_NAME, namespaceApi, this));
         commandCompilerMap.put(new LexemSequence(EndCommandCompiler.NAME), new EndCommandCompiler(namespaceApi
                 , this));
+        commandCompilerMap.put(new LexemSequence(EquCommandCompiler.NAME), new EquCommandCompiler(namespaceApi
+                , settingsApi, this));
     }
 
     private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {

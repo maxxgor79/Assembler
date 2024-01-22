@@ -51,8 +51,6 @@ print_loop:
    ;
    push hl
 
-   ;end
-
    ;
    ; Is the character '$'?  If so we return - because we've
    ; just stored the next address on the stack we'll go to

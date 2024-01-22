@@ -20,6 +20,7 @@ defw <word expr0>,<word expr1>...<word exprN>
 ddw <dword expr0>,<dword expr1>...<dword exprN>
 .defdw <dword expr0>,<dword expr1>...<dword exprN>
 defdw <dword expr0>,<dword expr1>...<dword exprN>
+end - force compiler to be stopped
 
 saveWav <text> save compiled data into wave format (for zxspectrum)
 .saveWav <text> save compiled data into wave format (for zxspectrum)
@@ -30,6 +31,9 @@ saveWav <text> save compiled data into wave format (for microsha)
 .saveWav <text> save compiled data into wave format (for microsha)
 saveRkm <text> save compiled data into <rkm> format (for microsha)
 .saveRkm <text> save compiled data into <rkm> format (for microsha)
+
+.equ <label name> <address>
+equ <label name> <address>
 
 
 Supports number formats:

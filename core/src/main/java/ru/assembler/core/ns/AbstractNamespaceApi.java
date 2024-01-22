@@ -37,12 +37,18 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
     }
 
     @Override
-    public void putLabel(@NonNull String name) {
+    public void putLabel(String name) {
+        putLabel(name, currentCodeOffset);
+    }
+
+    @Override
+    public void putLabel(@NonNull String name, @NonNull BigInteger absAddress) {
         if (name.trim().isEmpty()) {
             throw new IllegalArgumentException("name is null or empty");
         }
-        labelMap.put(name, new LabelInfo(currentCodeOffset));
+        labelMap.put(name, new LabelInfo(absAddress.subtract(getAddress())));
     }
+
 
     @Override
     public BigInteger getLabelCodeOffset(String labelName, boolean used) {

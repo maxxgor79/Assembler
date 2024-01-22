@@ -116,6 +116,7 @@ public final class SymbolUtil {
         return ch == '#';
     }
 
+
     public static String fillChar(char c, int count) {
         if (count < 0) {
             throw new IllegalArgumentException("count is negative");
