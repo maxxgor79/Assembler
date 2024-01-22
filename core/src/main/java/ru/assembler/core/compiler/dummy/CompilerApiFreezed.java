@@ -96,4 +96,14 @@ public class CompilerApiFreezed implements CompilerApi {
     public boolean addCommand(@NonNull String name, @NonNull CommandCompiler commandCompiler) {
         return false;
     }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public boolean isStopped() {
+        return false;
+    }
 }

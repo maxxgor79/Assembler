@@ -15,6 +15,10 @@ public class DdwCommandCompiler extends DwCommandCompiler {
         super(name, namespaceApi, settingsApi, compilerApi);
     }
 
+    public DdwCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
+        super(NAME, namespaceApi, settingsApi, compilerApi);
+    }
+
     @Override
     protected Type getDestType() {
         return Type.UInt32;

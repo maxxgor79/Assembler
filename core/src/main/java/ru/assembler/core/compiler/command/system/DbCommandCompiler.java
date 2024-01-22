@@ -53,6 +53,10 @@ public class DbCommandCompiler implements CommandCompiler {
         this.settingsApi = settingsApi;
     }
 
+    public DbCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
+        this(NAME, namespaceApi, settingsApi, compilerApi);
+    }
+
     @Override
     public byte[] compile(@NonNull LexemSequence lexemSequence) {
         try {

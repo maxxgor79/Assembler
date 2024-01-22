@@ -39,6 +39,10 @@ public class DefCommandCompiler implements CommandCompiler {
         this.compilerApi = compilerApi;
     }
 
+    public DefCommandCompiler(NamespaceApi namespaceApi, CompilerApi compilerApi) {
+        this(NAME, namespaceApi, compilerApi);
+    }
+
     @Override
     public byte[] compile(@NonNull LexemSequence lexemSequence) {
         RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(lexemSequence.get().iterator());

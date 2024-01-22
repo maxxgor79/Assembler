@@ -36,4 +36,8 @@ public interface CompilerApi {
     boolean addOption(Option option);
 
     boolean addCommand(String name, CommandCompiler commandCompiler);
+
+    void stop();
+
+    boolean isStopped();
 }

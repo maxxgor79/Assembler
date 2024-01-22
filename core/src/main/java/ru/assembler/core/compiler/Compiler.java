@@ -9,6 +9,7 @@ import ru.assembler.core.compiler.command.system.DbCommandCompiler;
 import ru.assembler.core.compiler.command.system.DdwCommandCompiler;
 import ru.assembler.core.compiler.command.system.DefCommandCompiler;
 import ru.assembler.core.compiler.command.system.DwCommandCompiler;
+import ru.assembler.core.compiler.command.system.EndCommandCompiler;
 import ru.assembler.core.compiler.command.system.IncludeCommandCompiler;
 import ru.assembler.core.compiler.command.system.OrgCommandCompiler;
 import ru.assembler.core.compiler.command.system.UdefCommandCompiler;
@@ -64,6 +65,8 @@ public class Compiler implements CompilerApi {
     private final Map<LexemSequence, CommandCompiler> commandCompilerMap = new HashMap<>();
 
     private final Map<OptionType, Option> optionsMap = new HashMap<>();
+
+    private boolean stopped;
 
     public Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
             , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
@@ -130,6 +133,8 @@ public class Compiler implements CompilerApi {
                 .NAME, namespaceApi, this));
         commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.ALT_NAME), new UdefCommandCompiler(UdefCommandCompiler
                 .ALT_NAME, namespaceApi, this));
+        commandCompilerMap.put(new LexemSequence(EndCommandCompiler.NAME), new EndCommandCompiler(namespaceApi
+                , this));
     }
 
     private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {
@@ -185,6 +190,9 @@ public class Compiler implements CompilerApi {
                     throw new CompilerException(getFile(), lexemSequence.getLineNumber(), MessageList
                             .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
                 }
+            }
+            if (isStopped()) {
+                break;
             }
         }
         sourceCount++;
@@ -259,6 +267,16 @@ public class Compiler implements CompilerApi {
         }
         commandCompilerMap.put(lexemSequence, commandCompiler);
         return true;
+    }
+
+    @Override
+    public void stop() {
+        this.stopped = true;
+    }
+
+    @Override
+    public boolean isStopped() {
+        return stopped;
     }
 
     public void setFile(@NonNull File file) {

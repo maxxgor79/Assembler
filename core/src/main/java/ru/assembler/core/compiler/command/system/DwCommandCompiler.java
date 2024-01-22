@@ -50,6 +50,10 @@ public class DwCommandCompiler implements CommandCompiler {
         this.settingsApi = settingsApi;
     }
 
+    public DwCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
+        this(NAME, namespaceApi, settingsApi, compilerApi);
+    }
+
     @Override
     public byte[] compile(LexemSequence lexemSequence) {
         try {
