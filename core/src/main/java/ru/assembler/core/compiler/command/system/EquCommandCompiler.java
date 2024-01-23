@@ -14,24 +14,17 @@ import ru.assembler.core.syntax.Expression;
 import ru.assembler.core.syntax.LexemSequence;
 import ru.assembler.core.util.RepeatableIterator;
 import ru.assembler.core.util.RepeatableIteratorImpl;
-import ru.assembler.core.util.TypeUtil;
 
 @Slf4j
 public class EquCommandCompiler implements CommandCompiler {
     public static final String NAME = "equ";
 
-    private static final String LET = "=";
-
     private final NamespaceApi namespaceApi;
-
-    private final SettingsApi settingsApi;
 
     private final CompilerApi compilerApi;
 
-    public EquCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull CompilerApi compilerApi) {
+    public EquCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull CompilerApi compilerApi) {
         this.namespaceApi = namespaceApi;
-        this.settingsApi = settingsApi;
         this.compilerApi = compilerApi;
     }
 
