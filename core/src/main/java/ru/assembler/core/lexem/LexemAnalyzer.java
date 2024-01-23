@@ -148,25 +148,18 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     private Lexem getBinaryNumber(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
-        while (SymbolUtil.isBinaryDigit(ch = pbReader.read())) {
+        while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
             sb.append((char) ch);
+        }
+        final String number = sb.toString();
+        if (!Checker.isBinaryNumber(number)) {
+            throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
+                    .INVALID_BINARY_NUMBER_FORMAT), number);
         }
         if (!SymbolUtil.isEOS(ch)) {
             pbReader.unread(ch);
         }
-        return new Lexem(lineNumber, LexemType.BINARY, sb.toString());
-    }
-
-    private Lexem getOctalNumber(int ch) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append((char) ch);
-        while (SymbolUtil.isOctalDigit(ch = pbReader.read())) {
-            sb.append((char) ch);
-        }
-        if (!SymbolUtil.isEOS(ch)) {
-            pbReader.unread(ch);
-        }
-        return new Lexem(lineNumber, LexemType.OCTAL, sb.toString());
+        return new Lexem(lineNumber, LexemType.BINARY, number);
     }
 
     private Lexem getHexadecimalNumber(int ch) throws IOException {
@@ -191,13 +184,12 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
 
     private Lexem getNumber(int ch) throws IOException {
+        final int oldCh = ch;
         if (ch == '0') {
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             sb.append((char) ch);
             ch = pbReader.read();
-            if (SymbolUtil.isHexOldStylePostfix(ch)) {
-                return new Lexem(lineNumber, LexemType.HEXADECIMAL, sb.toString());
-            } else if (SymbolUtil.isHexNewStylePrefix(ch)) {
+            if (SymbolUtil.isHexNewStylePrefix(ch)) {
                 ch = pbReader.read();
                 if (!SymbolUtil.isHexDigit(ch)) {
                     throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
@@ -213,18 +205,10 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                     }
                     return getBinaryNumber(ch);
                 } else {
-                    if (SymbolUtil.isOctalDigit(ch)) {
-                        return getOctalNumber(ch);
-                    } else {
-                        if (SymbolUtil.isHexDigit(ch)) {
-                            return getNumber(ch);
-                        } else {
-                            if (!SymbolUtil.isEOS(ch)) {
-                                pbReader.unread(ch);
-                            }
-                            return new Lexem(lineNumber, LexemType.DECIMAL, sb.toString());
-                        }
+                    if (!SymbolUtil.isEOS(ch)) {
+                        pbReader.unread(ch);
                     }
+                    ch = oldCh;
                 }
             }
         }
@@ -232,20 +216,39 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
 
     private Lexem getOldStyleNumber(int ch) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append((char) ch);
-        while (SymbolUtil.isDecDigit(ch = pbReader.read())) {
+        LexemType lexemType = (ch == '0') ? LexemType.OCTAL : LexemType.DECIMAL;
+        final StringBuilder sb = new StringBuilder();
+        String number;
+        if (SymbolUtil.isBinaryDigit(ch)) {
             sb.append((char) ch);
-        }
-        String number = sb.toString();
-        if (SymbolUtil.isBinaryOldStylePostfix(ch)) {
-            if (!Checker.isBinaryNumber(number)) {
-                throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
-                        .INVALID_BINARY_NUMBER_FORMAT), number);
-            } else {
+            while (SymbolUtil.isBinaryDigit(ch = pbReader.read())) {
+                sb.append((char) ch);
+            }
+            if (SymbolUtil.isBinaryOldStylePostfix(ch)) {
+                number = sb.toString();
                 return new Lexem(lineNumber, LexemType.BINARY, number);
             }
         }
+        if (SymbolUtil.isOctalDigit(ch)) {
+            sb.append((char) ch);
+            while (SymbolUtil.isOctalDigit(ch = pbReader.read())) {
+                sb.append((char) ch);
+            }
+        }
+        if (SymbolUtil.isDecDigit(ch)) {
+            lexemType = LexemType.DECIMAL;
+            sb.append((char) ch);
+            while (SymbolUtil.isDecDigit(ch = pbReader.read())) {
+                sb.append((char) ch);
+            }
+        }
+        if (SymbolUtil.isHexDigit(ch)) {
+            sb.append((char) ch);
+            while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
+                sb.append((char) ch);
+            }
+        }
+        number = sb.toString();
         if (SymbolUtil.isOctalOldStylePostfix(ch)) {
             if (!Checker.isOctalNumber(number)) {
                 throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
@@ -262,23 +265,24 @@ public class LexemAnalyzer implements Iterable<Lexem> {
                 return new Lexem(lineNumber, LexemType.HEXADECIMAL, number);
             }
         }
-        if (SymbolUtil.isHexDigit(ch)) {
-            sb.append((char) ch);
-            while (SymbolUtil.isHexDigit(ch = pbReader.read())) {
-                sb.append((char) ch);
-            }
-            number = sb.toString();
-            if (SymbolUtil.isHexOldStylePostfix(ch)) {
-                return new Lexem(lineNumber, LexemType.HEXADECIMAL, number);
-            }
-        }
-        if (!Checker.isDecimalNumber(number)) {
-            throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList.INVALID_NUMBER_FORMAT), number);
-        }
         if (!SymbolUtil.isEOS(ch)) {
             pbReader.unread(ch);
         }
-        return new Lexem(lineNumber, LexemType.DECIMAL, number);
+        switch (lexemType) {
+            case DECIMAL:
+                if (!Checker.isDecimalNumber(number)) {
+                    throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
+                            .INVALID_NUMBER_FORMAT), number);
+                }
+                break;
+            case OCTAL:
+                if (!Checker.isOctalNumber(number)) {
+                    throw new InvalidFormatNumberException(file, lineNumber, MessageList.getMessage(MessageList
+                            .INVALID_OCTAL_NUMBER_FORMAT), number);
+                }
+                break;
+        }
+        return new Lexem(lineNumber, lexemType, number);
     }
 
     private Lexem getHexadecimalNumberOrVariable(int ch) throws IOException {

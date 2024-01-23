@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.assembler.zxspectrum</groupId>
     <artifactId>mcsasm</artifactId>
-    <version>1.2</version>
+    <version>1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -48,6 +48,7 @@
                 <directory>src/resources</directory>
                 <includes>
                     <include>**/*.properties</include>
+		    <include>**/*.op</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
