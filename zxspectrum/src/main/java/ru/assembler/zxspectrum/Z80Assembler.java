@@ -276,11 +276,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
         options.addOption("max", "max-address", true, Z80Messages.getMessage(Z80Messages
                 .O_MAXIMAL_ADDRESS));
         options.addOption("o", "output", true, Z80Messages.getMessage(Z80Messages.O_OUTPUT_DIRECTORY));
-        options.addOption("b", "byte-order", true, Z80Messages.getMessage(Z80Messages.O_BYTE_ORDER));
         options.addOption("s", "source-encoding", true, Z80Messages.getMessage(Z80Messages
                 .O_SOURCE_ENCODING));
-        options.addOption("p", "platform-encoding", true, Z80Messages.getMessage(Z80Messages
-                .O_PLATFORM_ENCODING));
         options.addOption("tap", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_TAP));
         options.addOption("wav", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_WAV));
         options.addOption("cpu", true, Z80Messages.getMessage(Z80Messages.O_USE_SPECIAL_PROCESSOR));

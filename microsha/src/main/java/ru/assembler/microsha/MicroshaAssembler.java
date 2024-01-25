@@ -278,12 +278,8 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
                 .O_MAXIMAL_ADDRESS));
         options.addOption("o", "output", true, MicroshaMessages.getMessage(MicroshaMessages
                 .O_OUTPUT_DIRECTORY));
-        options.addOption("b", "byte-order", true, MicroshaMessages.getMessage(MicroshaMessages
-                .O_BYTE_ORDER));
         options.addOption("s", "source-encoding", true, MicroshaMessages.getMessage(MicroshaMessages
                 .O_SOURCE_ENCODING));
-        options.addOption("p", "platform-encoding", true, MicroshaMessages.getMessage(MicroshaMessages
-                .O_PLATFORM_ENCODING));
         options.addOption("rkm", false, MicroshaMessages.getMessage(MicroshaMessages.O_PRODUCE_RKM));
         options.addOption("wav", false, MicroshaMessages.getMessage(MicroshaMessages.O_PRODUCE_WAV));
         options.addOption("cpu", true, MicroshaMessages.getMessage(MicroshaMessages.O_USE_SPECIAL_PROCESSOR));
