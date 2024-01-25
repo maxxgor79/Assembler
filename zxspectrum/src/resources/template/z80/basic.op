@@ -1,4 +1,3 @@
-01	DDT	i8080
 00	NOP
 40	LD B,B
 50	LD D,B
