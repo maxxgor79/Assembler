@@ -11,13 +11,16 @@ import java.io.InputStream;
 
 @Slf4j
 public class WavInputStream extends InputStream {
-    protected static final int PCM_FORMAT = 1;
+    public static final int PCM_FORMAT = 1;
 
     @Getter
     protected short bps;
 
     @Getter
     private int sampleRate;
+
+    @Getter
+    private int format;
 
     @Getter
     private int byteRate;
@@ -62,7 +65,7 @@ public class WavInputStream extends InputStream {
         if (chunkSize != 16) {
             throw new IOException("Bad chunk size: " + chunkSize);
         }
-        final short format = leDis.readShort();
+        this.format = leDis.readShort();
         if (format != PCM_FORMAT) {
             throw new IOException("Unsupported format:" + format);
         }
@@ -96,8 +99,9 @@ public class WavInputStream extends InputStream {
             case 16:
                 ch1 = read();
                 ch2 = read();
-                if ((ch1 | ch2) < 0)
+                if ((ch1 | ch2) < 0) {
                     throw new EOFException();
+                }
                 return (ch2 << 8) + (ch1 << 0);
             default:
                 throw new IOException("Unsupported format");
@@ -105,11 +109,18 @@ public class WavInputStream extends InputStream {
     }
 
     public int[] readSamples() throws IOException {
+        int ch1, ch2;
         switch (numChannels) {
             case 1:
-                return new int[]{readSample()};
+                ch1 = readSample();
+                return ch1 == -1 ? null : new int[]{ch1};
             case 2:
-                return new int[]{readSample(), readSample()};
+                ch1 = readSample();
+                ch2 = readSample();
+                if ((ch1 | ch2) < 0) {
+                    throw new EOFException();
+                }
+                return new int[]{ch1, ch2};
             default:
                 throw new IOException("Unsupported channel number");
         }
