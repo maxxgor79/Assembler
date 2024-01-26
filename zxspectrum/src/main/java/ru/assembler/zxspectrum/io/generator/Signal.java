@@ -6,8 +6,26 @@ import java.io.OutputStream;
 /**
  * @author Maxim Gorin
  */
-public final class Signal {
-    public static double round(double value) {
+public interface Signal {
+    int DEFAULT_SAMPLE_RATE = 22050;
+
+    int PULSE_ZERO = 855;
+
+    int PULSE_ONE = 1710;
+
+    int PULSE_PILOT = 2168;
+
+    int PULSE_SYNC1 = 667;
+
+    int PULSE_SYNC2 = 735;
+
+    int PULSE_SYNC3 = 954;
+
+    int IMPULSE_NUMBER_PILOT_HEADER = 8063;
+
+    int IMPULSE_NUMBER_PILOT_DATA = 3223;
+
+    default double round(double value) {
         if (value < 0.0) {
             value -= 0.5;
         } else {
@@ -16,7 +34,7 @@ public final class Signal {
         return value;
     }
 
-    public static void writeSignal(OutputStream os, int signalLevel, int clocks, int frequency) throws IOException {
+    default void writeSignal(OutputStream os, int signalLevel, int clocks, int frequency) throws IOException {
         double sampleNanoSec = 1_000_000_000.0 / frequency;
         double cpuClockNanoSec = 286;
         int numSamples = (int) round((cpuClockNanoSec * (double) clocks) / sampleNanoSec);

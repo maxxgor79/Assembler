@@ -22,25 +22,7 @@ import java.io.OutputStream;
 @Slf4j
 @Getter
 @Setter
-public class SoundGenerator extends Generator {
-    protected static final int DEFAULT_SAMPLE_RATE = 22050;
-
-    protected static final int PULSE_ZERO = 855;
-
-    protected static final int PULSE_ONE = 1710;
-
-    protected static final int PULSE_PILOT = 2168;
-
-    protected static final int PULSE_SYNC1 = 667;
-
-    protected static final int PULSE_SYNC2 = 735;
-
-    protected static final int PULSE_SYNC3 = 954;
-
-    protected static final int IMPULSE_NUMBER_PILOT_HEADER = 8063;
-
-    protected static final int IMPULSE_NUMBER_PILOT_DATA = 3223;
-
+public class SignalGenerator extends Generator implements Signal {
     @NonNull
     private File file;
 
@@ -48,26 +30,26 @@ public class SoundGenerator extends Generator {
 
     private int silenceDuration = 1;// in seconds
 
-    public SoundGenerator() {
+    public SignalGenerator() {
         setSampleRate(DEFAULT_SAMPLE_RATE);
     }
 
-    public SoundGenerator(@NonNull File file) {
+    public SignalGenerator(@NonNull File file) {
         setSampleRate(DEFAULT_SAMPLE_RATE);
         setFile(file);
     }
 
-    protected static void writeDataByte(OutputStream os, int b, int hi, int lo, int frequency) throws IOException {
+    protected void writeDataByte(OutputStream os, int b, int hi, int lo, int frequency) throws IOException {
         int mask = 0x80;
         while (mask != 0) {
             int len = ((b & mask) == 0) ? PULSE_ZERO : PULSE_ONE;
-            Signal.writeSignal(os, hi, len, frequency);
-            Signal.writeSignal(os, lo, len, frequency);
+            writeSignal(os, hi, len, frequency);
+            writeSignal(os, lo, len, frequency);
             mask >>= 1;
         }
     }
 
-    protected static void writeSoundData(OutputStream os, Block block, int sampleRate, float volume) throws IOException {
+    protected void writeSoundData(OutputStream os, Block block, int sampleRate, float volume) throws IOException {
         int volLevel = (int) ((1.00f - volume) * 0x40);
         if (volLevel < 0) {
             volLevel = 0;
@@ -78,32 +60,31 @@ public class SoundGenerator extends Generator {
         int hiLevel = 0xc0 - volLevel;
         int loLevel = 0x40 + volLevel;
 
-        byte[] data = null;
+        byte[] data;
         int pilotImpulses;
         if (block.getFlag() == Flag.Header) {
             pilotImpulses = IMPULSE_NUMBER_PILOT_HEADER;
         } else {
             pilotImpulses = IMPULSE_NUMBER_PILOT_DATA;
         }
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         block.export(baos);
         data = baos.toByteArray();
 
         int signalLevel = hiLevel;
         for (int i = 0; i < pilotImpulses; i++) {
-            Signal.writeSignal(os, signalLevel, PULSE_PILOT, sampleRate);
+            writeSignal(os, signalLevel, PULSE_PILOT, sampleRate);
             signalLevel = signalLevel == hiLevel ? loLevel : hiLevel;
         }
         if (signalLevel == loLevel) {
-            Signal.writeSignal(os, loLevel, PULSE_PILOT, sampleRate);
+            writeSignal(os, loLevel, PULSE_PILOT, sampleRate);
         }
-        Signal.writeSignal(os, hiLevel, PULSE_SYNC1, sampleRate);
-        Signal.writeSignal(os, loLevel, PULSE_SYNC2, sampleRate);
+        writeSignal(os, hiLevel, PULSE_SYNC1, sampleRate);
+        writeSignal(os, loLevel, PULSE_SYNC2, sampleRate);
         for (int b : data) {
             writeDataByte(os, b, hiLevel, loLevel, sampleRate);
         }
-        Signal.writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
+        writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
     }
 
     public void setVolume(float volume) {

@@ -11,7 +11,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import ru.assembler.core.compiler.Compiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
@@ -20,10 +19,8 @@ import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
-import ru.assembler.core.settings.AssemblerSettings;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
-import ru.assembler.core.settings.Variables;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
 import ru.assembler.zxspectrum.text.Z80Messages;
@@ -32,7 +29,7 @@ import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
 import ru.assembler.zxspectrum.io.tap.TapData;
 import ru.assembler.zxspectrum.io.tap.TapUtil;
-import ru.assembler.zxspectrum.io.generator.SoundGenerator;
+import ru.assembler.zxspectrum.io.generator.SignalGenerator;
 import ru.assembler.io.wav.WavFile;
 
 import java.io.File;
@@ -131,7 +128,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(src);
         final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
-        final SoundGenerator sg = new SoundGenerator(dst);
+        final SignalGenerator sg = new SignalGenerator(dst);
         sg.setSilenceBeforeBlock(true);
         sg.generateWav(tapData);
     }
