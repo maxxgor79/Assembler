@@ -3,9 +3,13 @@ package ru.assembler.io.wav;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import ru.assembler.io.LEDataInputStream;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -42,6 +46,18 @@ public class WavInputStream extends InputStream {
     public WavInputStream(@NonNull InputStream is) throws IOException {
         this.leDis = new LEDataInputStream(is);
         readHeader();
+    }
+
+    public WavInputStream(@NonNull final File file) throws IOException {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            final byte[] data = IOUtils.toByteArray(fis);
+            this.leDis = new LEDataInputStream(new ByteArrayInputStream(data));
+            readHeader();
+        }
+    }
+
+    public WavInputStream(@NonNull final String filename) throws IOException {
+        this(new File(filename));
     }
 
     private void readHeader() throws IOException {
