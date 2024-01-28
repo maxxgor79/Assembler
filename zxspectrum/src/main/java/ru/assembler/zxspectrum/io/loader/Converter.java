@@ -2,6 +2,7 @@ package ru.assembler.zxspectrum.io.loader;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.io.wav.WavInputStream;
 
@@ -62,6 +63,12 @@ public class Converter {
     private boolean edgeFound;
 
     private double edge;
+
+    @Getter
+    @Setter
+    private boolean saveInTzx;
+
+    private TzxWriter tzxWriter;
 
     public Converter(final int sampleRate, final int bps, final int numChannels, @NonNull final InputStream is
             , @NonNull final OutputStream os) throws UnsupportedAudioFileException {
@@ -144,6 +151,12 @@ public class Converter {
         int flipFlop = 0; // bit selector, 0/1
         final byte[] data = new byte[131072]; // maximum of 128Kb per block
         double sample = 0;
+        if (saveInTzx) {
+            tzxWriter = new TzxWriter(os);
+            tzxWriter.writeHeader();
+        } else {
+            tzxWriter = null;
+        }
         while (!stop) {
             try {
                 sample = getSample();
@@ -195,7 +208,7 @@ public class Converter {
                                 pilotFreq = 0.5 * sampleRate / mean;
                                 if (endBlock != 0) {
                                     afterBlockPause = 1000.0 * (sampleIndex - endBlock) / sampleRate;
-                                    os.write(data, 0, globalBitCounter >> 3);
+                                    save(data, globalBitCounter >> 3, (int) Math.abs(afterBlockPause));
                                 }
                                 log.info(" {}: found PILOT f={} Hz", sampleIndex, pilotFreq);
                                 endBlock = 0;
@@ -297,9 +310,17 @@ public class Converter {
         }
         if (endBlock != 0) {
             afterBlockPause = 0;
-            os.write(data, 0, globalBitCounter >> 3);
+            save(data, globalBitCounter >> 3, (int) Math.abs(afterBlockPause));
         }
         log.info("{} samples read", sampleIndex);
         return result;
+    }
+
+    private void save(byte[] buf, int size, int pause) throws IOException {
+        if (saveInTzx) {
+            tzxWriter.writeID10(buf, size, pause);
+        } else {
+            os.write(buf, 0, size);
+        }
     }
 }
