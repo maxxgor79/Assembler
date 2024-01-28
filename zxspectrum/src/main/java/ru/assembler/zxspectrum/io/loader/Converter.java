@@ -153,13 +153,13 @@ public class Converter {
                 } else {
                     status = Status.Noise;
                 }
-                log.info("END of file\n");
+                log.info("END of file");
                 stop = true;
             }
             if (Math.abs(sample) > noiseThreshold) {
                 carrierCounter = CARRIER_COUNTER_PERIOD;
                 if (status == Status.Noise) { // found carrier
-                    log.info("{}: Found carrier\n", sampleIndex);
+                    log.info("{}: Found carrier", sampleIndex);
                     status = Signal;
                     edges[0] = edges[1] = edges[2] = 0;
                     edgeCounter = 0;
@@ -169,7 +169,7 @@ public class Converter {
             } else {
                 carrierCounter--;
                 if (carrierCounter == 0) { // lost carrier
-                    log.info("{}: Lost Carrier\n", sampleIndex);
+                    log.info("{}: Lost Carrier", sampleIndex);
                     status = (status == Status.Data) ? Status.Decode : Status.Noise;
                 }
             }
@@ -197,7 +197,7 @@ public class Converter {
                                     afterBlockPause = 1000.0 * (sampleIndex - endBlock) / sampleRate;
                                     os.write(data, 0, globalBitCounter >> 3);
                                 }
-                                log.info("\n\n {}: found PILOT f={} Hz\n", sampleIndex, pilotFreq);
+                                log.info(" {}: found PILOT f={} Hz", sampleIndex, pilotFreq);
                                 endBlock = 0;
                                 status = Status.Pilot;
                             }
@@ -210,7 +210,7 @@ public class Converter {
                         if (Math.abs(ratio) > pilotTolerance) {
                             pilotFreq = 0.5 * sampleRate / mean;
                             sync1Freq = 0.5 * sampleRate / (edges[0] - edges[1]);
-                            log.info(" {}: found SYNC1 f={} Hz\n", sampleIndex, sync1Freq);
+                            log.info(" {}: found SYNC1 f={} Hz", sampleIndex, sync1Freq);
                             status = Status.Sync1;
                             continue;
                         }
@@ -218,8 +218,8 @@ public class Converter {
                         continue;
                     case Sync1:
                         sync2Freq = 0.5 * sampleRate / (edges[0] - edges[1]);
-                        log.info(" {}: found SYNC2 f={} Hz\n", sampleIndex, sync2Freq);
-                        log.info(" getting data\n");
+                        log.info(" {}: found SYNC2 f={} Hz", sampleIndex, sync2Freq);
+                        log.info(" getting data");
                         status = Status.Data;
                         edgeCounter = 0;
                         globalBitCounter = 0;
@@ -238,20 +238,20 @@ public class Converter {
                                 tol = 1 - period / mean;
                                 if (Math.abs(tol) > bitTolerance) {
                                     if (globalBitCounter <= 7) {
-                                        log.info(" {}: ERROR: not uniform MARKER, tol={}\n",
+                                        log.info(" {}: ERROR: not uniform MARKER, tol={}",
                                                 sampleIndex, tol);
                                         status = Status.Noise;
                                         continue;
                                     }
                                     if (tol > maxTol) {
                                         maxTol = tol;
-                                        log.info("{}: max_tol = {}\n", sampleIndex, tol);
+                                        log.info("{}: max_tol = {}", sampleIndex, tol);
                                     }
                                     flipFlop = (flipFlop + 1) & 1; // bit change
                                     mean = bitAccum[flipFlop] / bitCounter[flipFlop];
                                     tol = 1 - period / mean;
                                     if (Math.abs(tol) > 0.8) {
-                                        log.info(" {}: warning: bit error, assuming end, tol={}\n",
+                                        log.info(" {}: warning: bit error, assuming end, tol={}",
                                                 sampleIndex, tol);
                                         status = Status.Decode;
                                     }
@@ -283,13 +283,13 @@ public class Converter {
                 flipFlop = reverse ? 1 : 0;
                 bitFreq[0] = 1.0 * sampleRate * bitCounter[flipFlop] / bitAccum[flipFlop];
                 bitFreq[1] = 1.0 * sampleRate * bitCounter[(flipFlop + 1) & 1] / bitAccum[(flipFlop + 1) & 1];
-                log.info("\n {} bytes read ({} bits) , f0={} Hz, f1={} Hz, checksum={} ",
+                log.info("{} bytes read ({} bits) , f0={} Hz, f1={} Hz, checksum={} ",
                         globalBitCounter >>> 3, globalBitCounter, bitFreq[0], bitFreq[1], checksum);
                 if (checksum == 0) {
-                    log.info("ok\n");
+                    log.info("ok");
                     result = true;
                 } else {
-                    log.info("fail!\n");
+                    log.info("fail!");
                     result = false;
                 }
                 status = Status.Noise;
@@ -299,7 +299,7 @@ public class Converter {
             afterBlockPause = 0;
             os.write(data, 0, globalBitCounter >> 3);
         }
-        log.info("{} samples read\n", sampleIndex);
+        log.info("{} samples read", sampleIndex);
         return result;
     }
 }
