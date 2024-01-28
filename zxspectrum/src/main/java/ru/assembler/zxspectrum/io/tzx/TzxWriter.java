@@ -1,4 +1,4 @@
-package ru.assembler.zxspectrum.io.loader;
+package ru.assembler.zxspectrum.io.tzx;
 
 import lombok.NonNull;
 

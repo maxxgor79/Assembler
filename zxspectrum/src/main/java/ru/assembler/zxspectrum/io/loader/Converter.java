@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.io.wav.WavInputStream;
+import ru.assembler.zxspectrum.io.tzx.TzxWriter;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.EOFException;
