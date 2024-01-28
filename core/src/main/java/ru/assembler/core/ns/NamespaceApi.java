@@ -17,6 +17,8 @@ public interface NamespaceApi {
 
     void putLabel(String name, BigInteger address);
 
+    String getLabel(BigInteger address);
+
     BigInteger getLabelCodeOffset(String labelName, boolean used);
 
     BigInteger getLabelCodeOffset(String labelName);

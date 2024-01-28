@@ -49,6 +49,11 @@ public class NamespaceApiFreezed implements NamespaceApi {
     }
 
     @Override
+    public String getLabel(@NonNull BigInteger address) {
+        return namespaceApi.getLabel(address);
+    }
+
+    @Override
     public BigInteger getLabelCodeOffset(@NonNull String labelName, boolean used) {
         return namespaceApi.getLabelCodeOffset(labelName, used);
     }

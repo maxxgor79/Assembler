@@ -3,6 +3,7 @@ package ru.assembler.core.ns;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.compiler.PostCommandCompiler;
 
 import java.io.File;
@@ -15,8 +16,11 @@ import java.util.Set;
 /**
  * @author Maxim Gorin
  */
+@Slf4j
 public abstract class AbstractNamespaceApi implements NamespaceApi {
     protected final Map<String, LabelInfo> labelMap = new HashMap<>();
+
+    protected final Map<BigInteger, String> addressMap = new HashMap<>();
 
     protected final Map<String, BigInteger> variableMap = new HashMap<>();
 
@@ -37,24 +41,26 @@ public abstract class AbstractNamespaceApi implements NamespaceApi {
     }
 
     @Override
-    public void putLabel(@NonNull String name) {
+    public void putLabel(@NonNull final String name) {
+        putLabel(name, currentCodeOffset);
+    }
+
+    public void putLabel(@NonNull final String name, @NonNull final BigInteger address) {
         if (name.trim().isEmpty()) {
             throw new IllegalArgumentException("name is empty");
         }
-        labelMap.put(name, new LabelInfo(currentCodeOffset));
+        labelMap.put(name, new LabelInfo(address));
+        addressMap.put(address, name);
     }
 
     @Override
-    public void putLabel(@NonNull String name, @NonNull BigInteger absAddress) {
-        if (name.trim().isEmpty()) {
-            throw new IllegalArgumentException("name is empty");
-        }
-        labelMap.put(name, new LabelInfo(absAddress.subtract(getAddress())));
+    public String getLabel(@NonNull BigInteger address) {
+        return addressMap.get(address);
     }
 
 
     @Override
-    public BigInteger getLabelCodeOffset(String labelName, boolean used) {
+    public BigInteger getLabelCodeOffset(final String labelName, final boolean used) {
         LabelInfo labelInfo = labelMap.get(labelName);
         if (labelInfo == null) {
             return BigInteger.valueOf(-1);

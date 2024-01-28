@@ -15,6 +15,8 @@ import ru.assembler.core.syntax.LexemSequence;
 import ru.assembler.core.util.RepeatableIterator;
 import ru.assembler.core.util.RepeatableIteratorImpl;
 
+import java.math.BigInteger;
+
 @Slf4j
 public class EquCommandCompiler implements CommandCompiler {
     public static final String NAME = "equ";
@@ -36,20 +38,6 @@ public class EquCommandCompiler implements CommandCompiler {
                 (NAME.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
             return null;
         }
-        if (!iterator.hasNext()) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.IDENTIFIER_EXPECTED));
-        }
-        nextLexem = iterator.next();
-        if (nextLexem.getType() != LexemType.IDENTIFIER) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
-        }
-        final String labelName = nextLexem.getValue();
-        if (namespaceApi.containsLabel(labelName)) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.LABEL_IS_ALREADY_DEFINED), nextLexem.getValue());
-        }
         if (iterator.hasNext()) {
             nextLexem = iterator.next();
         } else {
@@ -62,12 +50,18 @@ public class EquCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
                     , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
         }
+        final String labelName = namespaceApi.getLabel(namespaceApi.getCurrentCodeOffset());
+        if (labelName == null) {
+            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                    .getMessage(MessageList.LABEL_DECLARATION_REQUIRED));
+        }
+        //transform absolute address to relative
+        namespaceApi.putLabel(labelName, result.getValue().subtract(namespaceApi.getAddress()));
         nextLexem = expression.getLastLexem();
         if (nextLexem != null) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
-        namespaceApi.putLabel(labelName, result.getValue());
         return new byte[0];
     }
 }

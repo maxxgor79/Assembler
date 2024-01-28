@@ -117,6 +117,8 @@ public final class MessageList {
 
     public static final String EOL = "eol";
 
+    public static final String LABEL_DECLARATION_REQUIRED = "label_declaration_required";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
