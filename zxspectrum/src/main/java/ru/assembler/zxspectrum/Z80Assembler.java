@@ -40,11 +40,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Maxim Gorin
@@ -102,11 +98,24 @@ public class Z80Assembler extends AbstractNamespaceApi {
     protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
         if (compilerApi.hasOption(OptionTypes.PRODUCE_WAV)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
-            createWav(outputFile, new File(option.getContent().toString()), getAddress());
+            final Collection<String> paths = (Collection<String>) option.getContent();
+            for (String path : paths) {
+                createWav(outputFile, new File(path), getAddress());
+            }
         }
         if (compilerApi.hasOption(OptionTypes.PRODUCE_TAP)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_TAP);
-            createTap(outputFile, new File(option.getContent().toString()), getAddress());
+            final Collection<String> paths = (Collection<String>) option.getContent();
+            for (String path : paths) {
+                createTap(outputFile, new File(path), getAddress());
+            }
+        }
+        if (compilerApi.hasOption(OptionTypes.PRODUCE_TZX)) {
+            final Option option = compilerApi.getOption(OptionTypes.PRODUCE_TZX);
+            final Collection<String> paths = (Collection<String>) option.getContent();
+            for (String path : paths) {
+                log.info("Not implemented yet for path: " + path);
+            }
         }
     }
 

@@ -15,12 +15,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class WavCommandCompiler implements CommandCompiler {
-    public static final String NAME = "saveWav";
+public class TzxCommandCompiler implements CommandCompiler {
+    public static final String NAME = "saveTzx";
 
     private final CompilerApi compilerApi;
 
-    public WavCommandCompiler(@NonNull CompilerApi compilerApi) {
+    public TzxCommandCompiler(@NonNull CompilerApi compilerApi) {
         this.compilerApi = compilerApi;
     }
 
@@ -51,7 +51,7 @@ public class WavCommandCompiler implements CommandCompiler {
                 break;
             }
         }
-        compilerApi.addOption(new Option(OptionTypes.PRODUCE_WAV, paths));
+        compilerApi.addOption(new Option(OptionTypes.PRODUCE_TZX, paths));
         return new byte[0];
     }
 }

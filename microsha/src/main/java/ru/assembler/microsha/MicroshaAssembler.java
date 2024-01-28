@@ -41,11 +41,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Maxim Gorin
@@ -103,11 +99,17 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
         if (compilerApi.hasOption(OptionTypes.PRODUCE_WAV)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
-            createWav(outputFile, new File(option.getContent().toString()), getAddress());
+            final Collection<String> paths = (Collection<String>) option.getContent();
+            for (String path : paths) {
+                createWav(outputFile, new File(path), getAddress());
+            }
         }
         if (compilerApi.hasOption(OptionTypes.PRODUCE_RKM)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_RKM);
-            createRkm(outputFile, new File(option.getContent().toString()), getAddress());
+            final Collection<String> paths = (Collection<String>) option.getContent();
+            for (String path : paths) {
+                createRkm(outputFile, new File(path), getAddress());
+            }
         }
     }
 

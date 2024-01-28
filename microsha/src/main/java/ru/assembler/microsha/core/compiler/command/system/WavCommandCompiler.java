@@ -13,6 +13,8 @@ import ru.assembler.core.syntax.LexemSequence;
 import ru.assembler.microsha.core.compiler.option.OptionTypes;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class WavCommandCompiler implements CommandCompiler {
     public static final String NAME = "saveWav";
@@ -36,10 +38,11 @@ public class WavCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
                     .getMessage(MessageList.FILE_PATH_EXCEPTED));
         }
+        final List<String> paths = new LinkedList<>();
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
-                String path = nextLexem.getValue();
-                compilerApi.addOption(new Option(OptionTypes.PRODUCE_WAV, path));
+                final String path = nextLexem.getValue();
+                paths.add(path);
                 nextLexem = iterator.hasNext() ? iterator.next() : null;
             } else {
                 throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
@@ -49,6 +52,7 @@ public class WavCommandCompiler implements CommandCompiler {
                 break;
             }
         }
+        compilerApi.addOption(new Option(OptionTypes.PRODUCE_WAV, paths));
         return new byte[0];
     }
 }
