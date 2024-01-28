@@ -15,13 +15,13 @@ import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
-import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
+import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
 import ru.assembler.zxspectrum.text.Z80Messages;
 import ru.assembler.core.util.FileUtil;
@@ -100,12 +100,12 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
-        if (compilerApi.hasOption(OptionType.ProduceWav)) {
-            final Option option = compilerApi.getOption(OptionType.ProduceWav);
+        if (compilerApi.hasOption(OptionTypes.PRODUCE_WAV)) {
+            final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
             createWav(outputFile, new File(option.getContent().toString()), getAddress());
         }
-        if (compilerApi.hasOption(OptionType.ProduceFormat)) {
-            final Option option = compilerApi.getOption(OptionType.ProduceFormat);
+        if (compilerApi.hasOption(OptionTypes.PRODUCE_TAP)) {
+            final Option option = compilerApi.getOption(OptionTypes.PRODUCE_TAP);
             createTap(outputFile, new File(option.getContent().toString()), getAddress());
         }
     }
@@ -114,7 +114,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         if (settings.isProduceWav()) {
             createWav(outputFile, getAddress());
         }
-        if (settings.isProduceFormat()) {
+        if (settings.isProduceTap()) {
             createTap(outputFile, getAddress());
         }
     }
@@ -277,6 +277,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
                 .O_SOURCE_ENCODING));
         options.addOption("tap", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_TAP));
         options.addOption("wav", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_WAV));
+        options.addOption("tzx", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_TZX));
         options.addOption("cpu", true, Z80Messages.getMessage(Z80Messages.O_USE_SPECIAL_PROCESSOR));
         return options;
     }

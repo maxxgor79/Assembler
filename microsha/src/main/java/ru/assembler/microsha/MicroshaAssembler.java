@@ -23,6 +23,7 @@ import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.microsha.core.compiler.MicroshaCompiler;
+import ru.assembler.microsha.core.compiler.option.OptionTypes;
 import ru.assembler.microsha.core.settings.MicroshaAssemblerSettings;
 import ru.assembler.microsha.io.rkm.RkmData;
 import ru.assembler.microsha.text.MicroshaMessages;
@@ -100,12 +101,12 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
-        if (compilerApi.hasOption(OptionType.ProduceWav)) {
-            final Option option = compilerApi.getOption(OptionType.ProduceWav);
+        if (compilerApi.hasOption(OptionTypes.PRODUCE_WAV)) {
+            final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
             createWav(outputFile, new File(option.getContent().toString()), getAddress());
         }
-        if (compilerApi.hasOption(OptionType.ProduceFormat)) {
-            final Option option = compilerApi.getOption(OptionType.ProduceFormat);
+        if (compilerApi.hasOption(OptionTypes.PRODUCE_RKM)) {
+            final Option option = compilerApi.getOption(OptionTypes.PRODUCE_RKM);
             createRkm(outputFile, new File(option.getContent().toString()), getAddress());
         }
     }
@@ -114,7 +115,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         if (settings.isProduceWav()) {
             createWav(outputFile, getAddress());
         }
-        if (settings.isProduceFormat()) {
+        if (settings.isProduceRkm()) {
             createRkm(outputFile, getAddress());
         }
     }

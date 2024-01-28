@@ -10,6 +10,7 @@ import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.syntax.LexemSequence;
+import ru.assembler.microsha.core.compiler.option.OptionTypes;
 
 import java.util.Iterator;
 
@@ -38,7 +39,7 @@ public class RkmCommandCompiler implements CommandCompiler {
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
                 String path = nextLexem.getValue();
-                compilerApi.addOption(new Option(OptionType.ProduceFormat, path));
+                compilerApi.addOption(new Option(OptionTypes.PRODUCE_RKM, path));
                 nextLexem = iterator.hasNext() ? iterator.next() : null;
             } else {
                 throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList

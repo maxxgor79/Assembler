@@ -23,12 +23,6 @@ import java.math.BigInteger;
 @ToString
 @Getter
 public class AssemblerSettings extends BaseSettings {
-    @Setter(AccessLevel.PROTECTED)
-    private boolean produceFormat;
-
-    @Setter(AccessLevel.PROTECTED)
-    private boolean produceWav;
-
     public AssemblerSettings() {
     }
 
@@ -61,9 +55,6 @@ public class AssemblerSettings extends BaseSettings {
         }
         if (cli.hasOption("p")) {
             setPlatformEncoding(Encoding.valueByName(cli.getOptionValue("p")));
-        }
-        if (cli.hasOption("wav")) {
-            setProduceWav(true);
         }
         if (cli.hasOption("cpu")) {
             setCpuModels(cli.getOptionValue("cpu"));

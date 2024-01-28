@@ -13,6 +13,8 @@ public final class Z80Messages {
 
     public static final String O_PRODUCE_WAV = "produce_wav";
 
+    public static final String O_PRODUCE_TZX = "produce_tzx";
+
     public static final String O_USE_SPECIAL_PROCESSOR = "use_special_processor";
 
     public static final String O_PLATFORM_ENCODING = "platform_encoding";
