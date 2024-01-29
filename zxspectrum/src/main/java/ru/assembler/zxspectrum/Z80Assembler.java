@@ -23,6 +23,8 @@ import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
+import ru.assembler.zxspectrum.io.tzx.TzxUtils;
+import ru.assembler.zxspectrum.io.tzx.TzxWriter;
 import ru.assembler.zxspectrum.text.Z80Messages;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
@@ -114,7 +116,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_TZX);
             final Collection<String> paths = (Collection<String>) option.getContent();
             for (String path : paths) {
-                log.info("Not implemented yet for path: " + path);
+                createTzx(outputFile, new File(path), getAddress());
             }
         }
     }
@@ -126,31 +128,44 @@ public class Z80Assembler extends AbstractNamespaceApi {
         if (settings.isProduceTap()) {
             createTap(outputFile, getAddress());
         }
+        if (settings.isProduceTzx()) {
+            createTzx(outputFile, getAddress());
+        }
     }
 
-    protected void createWav(final File file, final BigInteger address) throws IOException {
-        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavFile.EXTENSION);
-        createWav(file, wavFile, address);
+    protected void createWav(final File srcFile, final BigInteger address) throws IOException {
+        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile, WavFile.EXTENSION);
+        createWav(srcFile, wavFile, address);
     }
 
-    protected void createWav(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
+    protected void createWav(@NonNull final File srcFile, @NonNull final File dstFile, @NonNull final BigInteger address)
             throws IOException {
-        final byte[] data = FileUtils.readFileToByteArray(src);
+        final byte[] data = FileUtils.readFileToByteArray(srcFile);
         final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
-        final SignalGenerator sg = new SignalGenerator(dst);
+        final SignalGenerator sg = new SignalGenerator(dstFile);
         sg.setSilenceBeforeBlock(true);
         sg.generateWav(tapData);
     }
 
-    private TapData createTap(final File file, @NonNull final BigInteger address) throws IOException {
-        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, TapUtil.EXTENSION);
-        return createTap(file, tapFile, address);
+    private TapData createTap(final File srcFile, final BigInteger address) throws IOException {
+        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile, TapUtil.EXTENSION);
+        return createTap(srcFile, tapFile, address);
     }
 
-    private TapData createTap(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
+    private TapData createTap(final File srcFile, final File dstFile, final BigInteger address)
             throws IOException {
-        final byte[] data = FileUtils.readFileToByteArray(src);
-        return TapUtil.createBinaryTap(dst, data, address.intValue());
+        final byte[] data = FileUtils.readFileToByteArray(srcFile);
+        return TapUtil.createBinaryTap(dstFile, data, address.intValue());
+    }
+
+    private void createTzx(File srcFile, final BigInteger address) throws IOException {
+        final File tzxFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile, TzxUtils.EXTENSION);
+        createTzx(srcFile, tzxFile, address);
+    }
+
+    private void createTzx(File srcFile, final File dstFile, final BigInteger address) throws IOException {
+        final byte[] data = FileUtils.readFileToByteArray(srcFile);
+        TzxUtils.createTzx(dstFile, data, address.intValue());
     }
 
     private File createOutputFile(final File file) {
