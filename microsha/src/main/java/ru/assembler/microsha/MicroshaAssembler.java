@@ -67,7 +67,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         postCommandCompilerMap.clear();
     }
 
-    protected void setSettings(@NonNull MicroshaAssemblerSettings settings) {
+    protected void setSettings(@NonNull final MicroshaAssemblerSettings settings) {
         this.settings = settings;
         setAddress(settings.getDefaultAddress());
     }
@@ -78,7 +78,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void run(File file) {
+    protected void run(@NonNull final File file) {
         OutputStream os;
         final File outputFile = createOutputFile(file);
         try {
@@ -96,7 +96,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
+    protected void runOptions(@NonNull final File outputFile, @NonNull final CompilerApi compilerApi) throws IOException {
         if (compilerApi.hasOption(OptionTypes.PRODUCE_WAV)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
             final Collection<String> paths = (Collection<String>) option.getContent();
@@ -113,7 +113,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void runSettings(File outputFile) throws IOException {
+    protected void runSettings(@NonNull final File outputFile) throws IOException {
         if (settings.isProduceWav()) {
             createWav(outputFile, getAddress());
         }
@@ -122,7 +122,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void createWav(final File file, final BigInteger address) throws IOException {
+    protected void createWav(@NonNull final File file, @NonNull final BigInteger address) throws IOException {
         final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavFile.EXTENSION);
         createWav(file, wavFile, address);
     }
@@ -157,13 +157,14 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         return FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, null);
     }
 
-    protected CompilerApi compile(final File file, final OutputStream os) throws IOException {
+    protected CompilerApi compile(@NonNull final File file, @NonNull final OutputStream os) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             return compile(file, fis, os);
         }
     }
 
-    protected CompilerApi compile(final File file, final InputStream is, final OutputStream os) throws IOException {
+    protected CompilerApi compile(@NonNull final File file, @NonNull final InputStream is
+            , @NonNull final OutputStream os) throws IOException {
         final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                         -> new MicroshaCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os)
                 , this, settings, file, is, os);
@@ -188,7 +189,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         return sb.toString();
     }
 
-    protected List<File> setCli(String[] args, final Options options) {
+    protected List<File> setCli(@NonNull final String[] args, @NonNull final Options options) {
         final CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
@@ -218,7 +219,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     @Override
-    public void addToQueue(@NonNull PostCommandCompiler postCommandCompiler) {
+    public void addToQueue(@NonNull final PostCommandCompiler postCommandCompiler) {
         postCommandCompilerMap.put(postCommandCompiler.getCommandOffset(), postCommandCompiler);
     }
 

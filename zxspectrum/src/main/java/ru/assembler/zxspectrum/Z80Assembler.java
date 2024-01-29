@@ -79,7 +79,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void run(File file) {
+    protected void run(@NonNull final File file) {
         OutputStream os;
         final File outputFile = createOutputFile(file);
         try {
@@ -97,7 +97,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void runOptions(File outputFile, CompilerApi compilerApi) throws IOException {
+    protected void runOptions(@NonNull final File outputFile, @NonNull final CompilerApi compilerApi) throws IOException {
         if (compilerApi.hasOption(OptionTypes.PRODUCE_WAV)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
             final Collection<String> paths = (Collection<String>) option.getContent();
@@ -121,7 +121,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void runSettings(File outputFile) throws IOException {
+    protected void runSettings(@NonNull final File outputFile) throws IOException {
         if (settings.isProduceWav()) {
             createWav(outputFile, getAddress());
         }
@@ -133,7 +133,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    protected void createWav(final File srcFile, final BigInteger address) throws IOException {
+    protected void createWav(@NonNull final File srcFile, @NonNull final BigInteger address) throws IOException {
         final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile, WavFile.EXTENSION);
         createWav(srcFile, wavFile, address);
     }
@@ -175,13 +175,14 @@ public class Z80Assembler extends AbstractNamespaceApi {
         return FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, null);
     }
 
-    protected CompilerApi compile(final File file, final OutputStream os) throws IOException {
+    protected CompilerApi compile(@NonNull final File file, @NonNull final OutputStream os) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             return compile(file, fis, os);
         }
     }
 
-    protected CompilerApi compile(final File file, final InputStream is, final OutputStream os) throws IOException {
+    protected CompilerApi compile(@NonNull final File file, @NonNull final InputStream is
+            , @NonNull final OutputStream os) throws IOException {
         final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                         -> new Z80Compiler(namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                 , this, settings, file, is, os);
@@ -206,7 +207,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         return sb.toString();
     }
 
-    protected List<File> setCli(String[] args, final Options options) {
+    protected List<File> setCli(@NonNull final String[] args, @NonNull final Options options) {
         final CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
@@ -236,7 +237,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     @Override
-    public void addToQueue(@NonNull PostCommandCompiler postCommandCompiler) {
+    public void addToQueue(@NonNull final PostCommandCompiler postCommandCompiler) {
         postCommandCompilerMap.put(postCommandCompiler.getCommandOffset(), postCommandCompiler);
     }
 
@@ -306,7 +307,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         return options;
     }
 
-    protected static void outputCompileResult(@NonNull CompilerApi compilerApi) {
+    protected static void outputCompileResult(@NonNull final CompilerApi compilerApi) {
         Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
         Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1)
                 , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
