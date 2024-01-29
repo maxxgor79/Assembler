@@ -22,18 +22,20 @@ ddw <dword expr0>,<dword expr1>...<dword exprN>
 defdw <dword expr0>,<dword expr1>...<dword exprN>
 end - force compiler to be stopped
 
-saveWav <text> save compiled data into wave format (for zxspectrum)
-.saveWav <text> save compiled data into wave format (for zxspectrum)
-saveTap <text> save compiled data into <tap> format (for zxspectrum)
-.saveTap <text> save compiled data into <tap> format (for zxspectrum)
+saveWav <text1>...<textN> save compiled data into wave format (for zxspectrum)
+.saveWav <text1>...<textN> save compiled data into wave format (for zxspectrum)
+saveTap <text1>...<textN> save compiled data into <tap> format (for zxspectrum)
+.saveTap <text1>...<textN> save compiled data into <tap> format (for zxspectrum)
+saveTzx <text1>...<textN> save compiled data into <tzx> format (for zxspectrum)
+.saveTzx <text1>...<textN> save compiled data into <tzx> format (for zxspectrum)
 
-saveWav <text> save compiled data into wave format (for microsha)
-.saveWav <text> save compiled data into wave format (for microsha)
-saveRkm <text> save compiled data into <rkm> format (for microsha)
-.saveRkm <text> save compiled data into <rkm> format (for microsha)
+saveWav <text1>...<textN> save compiled data into wave format (for microsha)
+.saveWav <text1>...<textN> save compiled data into wave format (for microsha)
+saveRkm <text1>...<textN> save compiled data into <rkm> format (for microsha)
+.saveRkm <text1>...<textN> save compiled data into <rkm> format (for microsha)
 
-.equ <label name> <address>
-equ <label name> <address>
+label: .equ <address>
+label: equ <address>
 
 
 Supports number formats:
