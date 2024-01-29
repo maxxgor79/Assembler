@@ -137,7 +137,7 @@ public class Compiler implements CompilerApi {
         commandCompilerMap.put(new LexemSequence(EndCommandCompiler.NAME), new EndCommandCompiler(namespaceApi
                 , this));
         commandCompilerMap.put(new LexemSequence(EquCommandCompiler.NAME), new EquCommandCompiler(namespaceApi
-                , this));
+                , settingsApi, this));
     }
 
     private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {

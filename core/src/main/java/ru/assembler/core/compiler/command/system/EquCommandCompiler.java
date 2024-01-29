@@ -14,6 +14,7 @@ import ru.assembler.core.syntax.Expression;
 import ru.assembler.core.syntax.LexemSequence;
 import ru.assembler.core.util.RepeatableIterator;
 import ru.assembler.core.util.RepeatableIteratorImpl;
+import ru.assembler.core.util.TypeUtil;
 
 import java.math.BigInteger;
 
@@ -23,10 +24,14 @@ public class EquCommandCompiler implements CommandCompiler {
 
     private final NamespaceApi namespaceApi;
 
+    private final SettingsApi settingsApi;
+
     private final CompilerApi compilerApi;
 
-    public EquCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull CompilerApi compilerApi) {
+    public EquCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull CompilerApi compilerApi) {
         this.namespaceApi = namespaceApi;
+        this.settingsApi = settingsApi;
         this.compilerApi = compilerApi;
     }
 
@@ -50,13 +55,18 @@ public class EquCommandCompiler implements CommandCompiler {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
                     , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
         }
+        final BigInteger equAddress = result.getValue();
+        if (!TypeUtil.isInRange(BigInteger.ZERO, settingsApi.getMaxAddress(), equAddress)) {
+            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                    .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
+        }
         final String labelName = namespaceApi.getLabel(namespaceApi.getCurrentCodeOffset());
         if (labelName == null) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.LABEL_DECLARATION_REQUIRED));
         }
         //transform absolute address to relative
-        namespaceApi.putLabel(labelName, result.getValue().subtract(namespaceApi.getAddress()));
+        namespaceApi.putLabel(labelName, equAddress.subtract(namespaceApi.getAddress()));
         nextLexem = expression.getLastLexem();
         if (nextLexem != null) {
             throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
