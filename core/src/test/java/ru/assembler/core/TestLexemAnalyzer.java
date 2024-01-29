@@ -20,6 +20,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestLexemAnalyzer {

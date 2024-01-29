@@ -10,6 +10,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public final class TzxUtils {
     public static final String EXTENSION = "tzx";
 

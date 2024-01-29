@@ -11,6 +11,10 @@ import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestIO {

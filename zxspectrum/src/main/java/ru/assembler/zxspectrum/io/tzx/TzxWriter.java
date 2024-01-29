@@ -5,6 +5,10 @@ import lombok.NonNull;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class TzxWriter {
     private OutputStream os;
 

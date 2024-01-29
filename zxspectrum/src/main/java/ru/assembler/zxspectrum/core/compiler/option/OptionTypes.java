@@ -1,5 +1,9 @@
 package ru.assembler.zxspectrum.core.compiler.option;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public final class OptionTypes {
     private OptionTypes() {
 

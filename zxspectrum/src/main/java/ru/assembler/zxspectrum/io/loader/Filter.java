@@ -2,6 +2,10 @@ package ru.assembler.zxspectrum.io.loader;
 
 import lombok.NonNull;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class Filter {
     private final double[] a;
 

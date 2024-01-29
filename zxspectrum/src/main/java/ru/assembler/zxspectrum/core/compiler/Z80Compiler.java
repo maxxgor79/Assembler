@@ -11,6 +11,10 @@ import ru.assembler.core.syntax.SyntaxAnalyzer;
 
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class Z80Compiler extends Compiler {
     public Z80Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
             , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {

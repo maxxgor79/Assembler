@@ -17,6 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCommandCB {

@@ -6,6 +6,10 @@ import ru.assembler.core.ns.AbstractNamespaceApi;
 
 import java.math.BigInteger;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class CompilerNamespace extends AbstractNamespaceApi {
     private final BigInteger address = new BigInteger("8000", 16);
 

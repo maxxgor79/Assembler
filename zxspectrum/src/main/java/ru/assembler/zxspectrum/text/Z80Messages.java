@@ -2,6 +2,10 @@ package ru.assembler.zxspectrum.text;
 
 import java.util.ResourceBundle;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public final class Z80Messages {
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Z80Messages");
 

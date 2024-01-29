@@ -9,13 +9,16 @@ import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
-import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+
+/**
+ * @author Maxim Gorin
+ */
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)

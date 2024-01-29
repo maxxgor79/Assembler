@@ -15,6 +15,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class WavCommandCompiler implements CommandCompiler {
     public static final String NAME = "saveWav";
 
