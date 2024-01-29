@@ -13,6 +13,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @Slf4j
 public class WavInputStream extends InputStream {
     public static final int PCM_FORMAT = 1;

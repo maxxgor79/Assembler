@@ -7,6 +7,10 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @ToString
 @EqualsAndHashCode
 @Getter

@@ -10,6 +10,7 @@ import java.util.Map;
 /**
  * @author Maxim Gorin
  */
+
 public final class TypeConverter {
     private TypeConverter() {
 

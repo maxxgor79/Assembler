@@ -11,6 +11,7 @@ import static ru.assembler.core.lang.Type.Unknown;
 /**
  * @author Maxim Gorin
  */
+
 @Slf4j
 public final class TypeUtil {
     public static final char NUMBER_SYMBOL = 'n';

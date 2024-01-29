@@ -7,6 +7,10 @@ import lombok.Setter;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @Setter
 @Getter
 public abstract class Generator {

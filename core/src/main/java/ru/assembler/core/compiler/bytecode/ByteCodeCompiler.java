@@ -9,7 +9,9 @@ import java.math.BigInteger;
 
 /**
  * @author Maxim Gorin
+ *
  */
+
 @Slf4j
 public class ByteCodeCompiler {
     private final PreTranslatedCommand preTranslatedCommand;

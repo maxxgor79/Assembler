@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
+
 @Slf4j
 public final class IOUtils {
     private IOUtils() {

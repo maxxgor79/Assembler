@@ -9,6 +9,7 @@ import java.math.BigInteger;
 /**
  * @author Maxim Gorin
  */
+
 public final class Variables {
     private Variables() {
 

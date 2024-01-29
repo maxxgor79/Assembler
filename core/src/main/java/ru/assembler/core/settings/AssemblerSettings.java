@@ -18,6 +18,7 @@ import java.math.BigInteger;
 /**
  * @author Maxim Gorin
  */
+
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 @ToString
