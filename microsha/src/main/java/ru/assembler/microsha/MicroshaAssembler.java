@@ -10,28 +10,26 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
-import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
-import ru.assembler.microsha.core.compiler.MicroshaCompiler;
-import ru.assembler.microsha.core.compiler.option.OptionTypes;
-import ru.assembler.microsha.core.settings.MicroshaAssemblerSettings;
-import ru.assembler.microsha.io.rkm.RkmData;
-import ru.assembler.microsha.text.MicroshaMessages;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
-import ru.assembler.microsha.io.generator.SoundGenerator;
 import ru.assembler.io.wav.WavFile;
+import ru.assembler.microsha.core.compiler.MicroshaCompiler;
+import ru.assembler.microsha.core.compiler.option.OptionTypes;
+import ru.assembler.microsha.core.settings.MicroshaAssemblerSettings;
+import ru.assembler.microsha.io.generator.SoundGenerator;
+import ru.assembler.microsha.io.rkm.RkmData;
+import ru.assembler.microsha.text.MicroshaMessages;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,11 +39,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Maxim Gorin
  */
+
 @Slf4j
 public class MicroshaAssembler extends AbstractNamespaceApi {
     private static final String SETTINGS_NAME = "settings.properties";

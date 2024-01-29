@@ -12,6 +12,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class RkmData {
     public static final String EXTENSION = "rkm";
 

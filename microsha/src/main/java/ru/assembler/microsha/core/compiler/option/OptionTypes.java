@@ -1,5 +1,9 @@
 package ru.assembler.microsha.core.compiler.option;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class OptionTypes {
     public static final ProduceWavOptionType PRODUCE_WAV = new ProduceWavOptionType();
 

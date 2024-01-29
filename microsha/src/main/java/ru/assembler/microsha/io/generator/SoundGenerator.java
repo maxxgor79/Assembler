@@ -18,8 +18,9 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Thanks to Alexander Alexeev
+ * @author Maxim Gorin
  */
+//Thanks to Alexander Alexeev
 @Slf4j
 public class SoundGenerator extends Generator {
     private static final int DEFAULT_SAMPLE_RATE = 44100;// in Hertz

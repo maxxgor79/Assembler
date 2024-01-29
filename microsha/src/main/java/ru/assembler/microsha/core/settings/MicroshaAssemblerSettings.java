@@ -7,6 +7,10 @@ import lombok.Setter;
 import org.apache.commons.cli.CommandLine;
 import ru.assembler.core.settings.AssemblerSettings;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class MicroshaAssemblerSettings extends AssemblerSettings {
     @Getter
     @Setter(AccessLevel.PROTECTED)

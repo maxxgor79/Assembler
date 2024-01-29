@@ -11,6 +11,10 @@ import ru.assembler.microsha.core.compiler.command.system.WavCommandCompiler;
 
 import java.io.OutputStream;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class MicroshaCompiler extends Compiler {
     public MicroshaCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi, @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
         super(namespaceApi, settingsApi, syntaxAnalyzer, os);

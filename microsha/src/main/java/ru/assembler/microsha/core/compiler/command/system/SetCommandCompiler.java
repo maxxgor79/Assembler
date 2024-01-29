@@ -5,6 +5,10 @@ import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.command.system.DefCommandCompiler;
 import ru.assembler.core.ns.NamespaceApi;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class SetCommandCompiler extends DefCommandCompiler {
     public static final String NAME = "set";
 

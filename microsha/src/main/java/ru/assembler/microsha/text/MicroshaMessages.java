@@ -2,6 +2,10 @@ package ru.assembler.microsha.text;
 
 import java.util.ResourceBundle;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public final class MicroshaMessages {
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.MicroshaMessages");
 

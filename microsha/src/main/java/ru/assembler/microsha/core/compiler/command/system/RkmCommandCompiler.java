@@ -16,6 +16,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Maxim Gorin
+ */
+
 public class RkmCommandCompiler implements CommandCompiler {
     public static final String NAME = "saveRkm";
 
