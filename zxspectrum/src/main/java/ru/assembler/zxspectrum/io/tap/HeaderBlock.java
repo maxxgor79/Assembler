@@ -120,7 +120,7 @@ public class HeaderBlock extends Block {
         os.write(flag.getCode());
         byte[] data = getBytes();
         os.write(data);
-        os.write(checkSum = TapUtil.calculateChecksum(data));
+        os.write(checkSum = TapUtils.calculateChecksum(data));
     }
 
 
@@ -177,7 +177,7 @@ public class HeaderBlock extends Block {
 
     @Override
     protected int calcCheckSum() {
-        return TapUtil.calculateChecksum(getBytes());
+        return TapUtils.calculateChecksum(getBytes());
     }
 
     @Override

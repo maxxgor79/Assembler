@@ -66,4 +66,12 @@ public final class IOUtils {
             case BigEndian -> (ch2 << 0) + (ch1 << 8);
         };
     }
+
+    public static int readByte(@NonNull InputStream is) throws IOException {
+        int ch = is.read();
+        if (ch == -1) {
+            throw new EOFException();
+        }
+        return ch;
+    }
 }

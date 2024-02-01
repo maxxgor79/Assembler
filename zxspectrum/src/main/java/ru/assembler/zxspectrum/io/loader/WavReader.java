@@ -5,13 +5,11 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.io.wav.WavInputStream;
-import ru.assembler.zxspectrum.io.tzx.TzxWriter;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import static ru.assembler.zxspectrum.io.loader.Status.Signal;
 
@@ -19,7 +17,7 @@ import static ru.assembler.zxspectrum.io.loader.Status.Signal;
  * Thanks to ibancg from github for source written on C++
  */
 @Slf4j
-public class Converter {
+public class WavReader {
     protected static final int CARRIER_COUNTER_PERIOD = 200;
 
     protected static final int EDGE_TRANSIT = 3;
@@ -31,8 +29,6 @@ public class Converter {
             5.466614810482302, -3.644409873654869,
             0.911102468413717};
     private InputStream is;
-
-    private OutputStream os;
 
     @Getter
     private Status status;
@@ -61,32 +57,30 @@ public class Converter {
 
     private int oldSampleIndex;
 
+    @Setter
+    @Getter
+    @NonNull
+    private Interceptor interceptor;
+
     private boolean edgeFound;
 
     private double edge;
 
-    @Getter
-    @Setter
-    private boolean saveInTzx;
-
-    private TzxWriter tzxWriter;
-
-    public Converter(final int sampleRate, final int bps, final int numChannels, @NonNull final InputStream is
-            , @NonNull final OutputStream os) throws UnsupportedAudioFileException {
+    public WavReader(final int sampleRate, final int bps, final int numChannels, @NonNull final InputStream is)
+            throws UnsupportedAudioFileException {
         if (numChannels != 1) {
             throw new UnsupportedAudioFileException("Only mono format supported");
         }
         this.sampleRate = sampleRate;
         this.bps = bps;
         this.is = is;
-        this.os = os;
         status = Status.Noise;
         sampleIndex = 0;
         filter = new Filter(FILTER_A, FILTER_B);
     }
 
-    public Converter(@NonNull WavInputStream wis, @NonNull final OutputStream os) throws UnsupportedAudioFileException {
-        this(wis.getSampleRate(), wis.getBps(), wis.getNumChannels(), wis, os);
+    public WavReader(@NonNull WavInputStream wis) throws UnsupportedAudioFileException {
+        this(wis.getSampleRate(), wis.getBps(), wis.getNumChannels(), wis);
     }
 
     private int readSample() throws IOException {
@@ -129,7 +123,7 @@ public class Converter {
         return sample;
     }
 
-    public boolean execute() throws IOException {
+    public boolean readAll() throws IOException {
         log.info("Decoding... (press CTRL-C to abort)");
         boolean result = false;
         double noiseThresholdDb = 37.0; // dB
@@ -152,12 +146,6 @@ public class Converter {
         int flipFlop = 0; // bit selector, 0/1
         final byte[] data = new byte[131072]; // maximum of 128Kb per block
         double sample = 0;
-        if (saveInTzx) {
-            tzxWriter = new TzxWriter(os);
-            tzxWriter.writeHeader();
-        } else {
-            tzxWriter = null;
-        }
         while (!stop) {
             try {
                 sample = getSample();
@@ -318,10 +306,8 @@ public class Converter {
     }
 
     private void save(byte[] buf, int size, int pause) throws IOException {
-        if (saveInTzx) {
-            tzxWriter.writeID10(buf, size, pause);
-        } else {
-            os.write(buf, 0, size);
+        if (interceptor != null) {
+            interceptor.save(buf, size, pause);
         }
     }
 }

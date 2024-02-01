@@ -24,13 +24,12 @@ import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
 import ru.assembler.zxspectrum.io.tzx.TzxUtils;
-import ru.assembler.zxspectrum.io.tzx.TzxWriter;
 import ru.assembler.zxspectrum.text.Z80Messages;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
 import ru.assembler.zxspectrum.io.tap.TapData;
-import ru.assembler.zxspectrum.io.tap.TapUtil;
+import ru.assembler.zxspectrum.io.tap.TapUtils;
 import ru.assembler.zxspectrum.io.generator.SignalGenerator;
 import ru.assembler.io.wav.WavFile;
 
@@ -141,21 +140,21 @@ public class Z80Assembler extends AbstractNamespaceApi {
     protected void createWav(@NonNull final File srcFile, @NonNull final File dstFile, @NonNull final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(srcFile);
-        final TapData tapData = TapUtil.createBinaryTap(data, address.intValue());
+        final TapData tapData = TapUtils.createBinaryTap(data, address.intValue());
         final SignalGenerator sg = new SignalGenerator(dstFile);
         sg.setSilenceBeforeBlock(true);
         sg.generateWav(tapData);
     }
 
     private TapData createTap(final File srcFile, final BigInteger address) throws IOException {
-        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile, TapUtil.EXTENSION);
+        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile, TapUtils.EXTENSION);
         return createTap(srcFile, tapFile, address);
     }
 
     private TapData createTap(final File srcFile, final File dstFile, final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(srcFile);
-        return TapUtil.createBinaryTap(dstFile, data, address.intValue());
+        return TapUtils.createBinaryTap(dstFile, data, address.intValue());
     }
 
     private void createTzx(File srcFile, final BigInteger address) throws IOException {
@@ -165,7 +164,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
 
     private void createTzx(File srcFile, final File dstFile, final BigInteger address) throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(srcFile);
-        TzxUtils.createTzx(dstFile, data, address.intValue());
+        TzxUtils.createTzxFromTap(dstFile, data, address.intValue());
     }
 
     private File createOutputFile(final File file) {

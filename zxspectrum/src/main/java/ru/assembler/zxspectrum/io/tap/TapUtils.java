@@ -12,12 +12,13 @@ import ru.assembler.io.LEDataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author Maxim Gorin
  */
 @Slf4j
-public final class TapUtil {
+public final class TapUtils {
 
     public static final String EXTENSION = "tap";
 
@@ -31,7 +32,7 @@ public final class TapUtil {
 
     private static final String VAR_RUN_ADDR = "runAddr";
 
-    private TapUtil() {
+    private TapUtils() {
 
     }
 
@@ -111,5 +112,11 @@ public final class TapUtil {
             value ^= data[i + offset];
         }
         return value & 0xFF;
+    }
+
+    public static void toBytes(@NonNull TapData tapData, @NonNull OutputStream os) throws IOException {
+        for (Block block : tapData.getBlockList()) {
+            block.write(os);
+        }
     }
 }

@@ -33,7 +33,7 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
       checkSum ^= flag.getCode();
     }
     if (content != null) {
-      checkSum ^= TapUtil.calculateChecksum(content);
+      checkSum ^= TapUtils.calculateChecksum(content);
     }
     return checkSum;
   }

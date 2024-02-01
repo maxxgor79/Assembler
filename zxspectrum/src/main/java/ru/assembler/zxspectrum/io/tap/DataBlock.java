@@ -80,7 +80,7 @@ public class DataBlock extends Block {
       checkSum ^= flag.getCode();
     }
     if (content != null) {
-      checkSum ^= TapUtil.calculateChecksum(content);
+      checkSum ^= TapUtils.calculateChecksum(content);
     }
     return checkSum;
   }
