@@ -3,6 +3,8 @@ package ru.assembler.zxspectrum.io.tzx;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.util.IOUtils;
 
 import java.io.IOException;
@@ -10,7 +12,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-public class HeaderBlock extends ReaderWriter {
+@Slf4j
+@ToString
+public class HeaderBlock extends Block {
 
     public static final String ID = "ZXTape!";
 
