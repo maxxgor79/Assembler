@@ -59,4 +59,9 @@ public class DataBlock extends Block {
         IOUtils.writeWord(os, (short) data.length, ByteOrder.LittleEndian);
         os.write(data);
     }
+
+    @Override
+    public void export(@NonNull OutputStream os) throws IOException {
+        os.write(getData());
+    }
 }
