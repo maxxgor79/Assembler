@@ -8,7 +8,6 @@ package ru.assembler.zxspectrum.io.tzx;
 
 import java.io.IOException;
 import java.io.InputStream;
-import lombok.NonNull;
 
 public interface TzxElementReader {
 
