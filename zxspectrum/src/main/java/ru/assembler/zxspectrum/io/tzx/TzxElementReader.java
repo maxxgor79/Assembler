@@ -1,0 +1,16 @@
+package ru.assembler.zxspectrum.io.tzx;
+
+/**
+ * TzxElementReader.
+ *
+ * @author Maxim Gorin
+ */
+
+import java.io.IOException;
+import java.io.InputStream;
+import lombok.NonNull;
+
+public interface TzxElementReader {
+
+  void read(InputStream is) throws IOException;
+}
