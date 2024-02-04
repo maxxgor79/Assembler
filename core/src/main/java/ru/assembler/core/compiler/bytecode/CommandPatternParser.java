@@ -38,7 +38,7 @@ public class CommandPatternParser implements Cloneable {
     }
 
     private int getNumber(PushbackInputStream pis, int ch) throws IOException {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
         ch = pis.read();
         if (!SymbolUtil.isHexDigit(ch)) {
@@ -49,7 +49,7 @@ public class CommandPatternParser implements Cloneable {
     }
 
     private String getVariable(PushbackInputStream pis, int ch) throws IOException {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         int firstCh = pis.read();
         if (TypeUtil.isPatternSymbol(firstCh)) {
             sb.append((char) firstCh);

@@ -27,6 +27,9 @@ public class Lexem {
     }
 
     public Lexem(int lineNumber, @NonNull LexemType type, String value) {
+        if (lineNumber < 0) {
+            throw new IllegalArgumentException("lineNumber is negative");
+        }
         this.lineNumber = lineNumber;
         this.type = type;
         this.value = value;
