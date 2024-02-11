@@ -8,6 +8,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FilenameUtils;
 import ru.zxspectrum.converter.core.Converter;
 import ru.zxspectrum.converter.core.Format;
 import ru.zxspectrum.converter.i18n.ConvMessages;
@@ -144,21 +145,34 @@ public class ZXConv {
         if (cli.hasOption("out")) {
             outputFile = new File(cli.getOptionValue("out"));
         }
+        String arg;
         if (cli.hasOption("if")) {
-            String arg = cli.getOptionValue("if");
-            inputFormat = Format.getByCode(arg);
-            if (inputFormat == null) {
-                throw new UnsupportedFormatException(Formatter.format(ConvMessages.getMessage(ConvMessages
-                        .UNKNOWN_INPUT_FORMAT), arg));
-            }
+            arg = cli.getOptionValue("if");
+        } else {
+            arg = FilenameUtils.getExtension(inputFile.getName());
+        }
+        inputFormat = Format.getByCode(arg);
+        if (inputFormat == null) {
+            throw new UnsupportedFormatException(Formatter.format(ConvMessages.getMessage(ConvMessages
+                    .UNKNOWN_INPUT_FORMAT), arg));
         }
         if (cli.hasOption("of")) {
-            String arg = cli.getOptionValue("of");
-            outputFormat = Format.getByCode(arg);
-            if (outputFormat == null) {
-                throw new UnsupportedFormatException(Formatter.format(ConvMessages.getMessage(ConvMessages
-                        .UNKNOWN_OUTPUT_FORMAT), arg));
+            arg = cli.getOptionValue("of");
+        } else {
+            if (outputFile != null) {
+                arg = FilenameUtils.getExtension(outputFile.getName());
+            } else {
+                arg = null;
             }
+        }
+        outputFormat = Format.getByCode(arg);
+        if (outputFormat == null) {
+            throw new UnsupportedFormatException(Formatter.format(ConvMessages.getMessage(ConvMessages
+                    .UNKNOWN_OUTPUT_FORMAT), arg));
+        }
+        if (outputFile == null) {
+            outputFile = new File (FilenameUtils.removeExtension(inputFile.getName()) + "."
+                    + outputFormat.toString());
         }
     }
 }
