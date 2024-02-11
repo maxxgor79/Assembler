@@ -27,7 +27,7 @@ public class BytesParams implements TapElementReader, TapElementWriter {
 
   @Override
   public void read(@NonNull InputStream is) throws IOException {
-    LEDataInputStream dis = new LEDataInputStream(is);
+    final LEDataInputStream dis = new LEDataInputStream(is);
     startAddress = dis.readUnsignedShort();
     reserved = dis.readUnsignedShort();
   }
@@ -39,15 +39,15 @@ public class BytesParams implements TapElementReader, TapElementWriter {
 
   @Override
   public void export(OutputStream os) throws IOException {
-    LEDataOutputStream dos = new LEDataOutputStream(os);
+    final LEDataOutputStream dos = new LEDataOutputStream(os);
     dos.writeShort(startAddress);
     dos.writeShort(reserved);
   }
 
   public byte[] getBytes() {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try {
-      LEDataOutputStream dos = new LEDataOutputStream(baos);
+      final LEDataOutputStream dos = new LEDataOutputStream(baos);
       dos.writeShort(startAddress);
       dos.writeShort(reserved);
       return baos.toByteArray();

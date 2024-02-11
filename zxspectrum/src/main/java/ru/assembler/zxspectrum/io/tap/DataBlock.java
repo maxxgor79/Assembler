@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.io.LEDataOutputStream;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,7 +41,10 @@ public class DataBlock extends Block {
   @Override
   public void read(@NonNull InputStream is) throws IOException {
     content = new byte[blockLength - 2];
-    is.read(content);
+    int readBytes = is.read(content);
+    if (readBytes != content.length) {
+      throw new EOFException();
+    }
     checkSum = is.read();
     int calculated = calcCheckSum();
     if (checkSum != calculated) {

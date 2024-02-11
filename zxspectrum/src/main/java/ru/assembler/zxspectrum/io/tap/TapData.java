@@ -72,7 +72,7 @@ public class TapData implements TapElementReader, TapElementWriter {
     }
 
     public List<Block> find(@NonNull Flag flag) {
-        List<Block> findList = new LinkedList<>();
+        final List<Block> findList = new LinkedList<>();
         for (Block block : blockList) {
             if (block.getFlag() == flag) {
                 findList.add(block);

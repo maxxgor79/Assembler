@@ -27,7 +27,7 @@ public class ProgramParams implements TapElementReader, TapElementWriter {
 
   @Override
   public void read(@NonNull InputStream is) throws IOException {
-    LEDataInputStream dis = new LEDataInputStream(is);
+    final LEDataInputStream dis = new LEDataInputStream(is);
     autostartLine = dis.readUnsignedShort();
     programSize = dis.readUnsignedShort();
   }
@@ -39,7 +39,7 @@ public class ProgramParams implements TapElementReader, TapElementWriter {
 
   @Override
   public void export(OutputStream os) throws IOException {
-    LEDataOutputStream dos = new LEDataOutputStream(os);
+    final LEDataOutputStream dos = new LEDataOutputStream(os);
     dos.writeShort(autostartLine);
     dos.writeShort(programSize);
   }
@@ -47,7 +47,7 @@ public class ProgramParams implements TapElementReader, TapElementWriter {
   public byte[] getBytes() {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try {
-      LEDataOutputStream dos = new LEDataOutputStream(baos);
+      final LEDataOutputStream dos = new LEDataOutputStream(baos);
       dos.writeShort(autostartLine);
       dos.writeShort(programSize);
     } catch (Exception e) {

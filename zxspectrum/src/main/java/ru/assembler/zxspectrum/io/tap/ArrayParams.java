@@ -35,7 +35,7 @@ public class ArrayParams implements TapElementReader, TapElementWriter {
     LEDataInputStream dis = new LEDataInputStream(is);
     reserved1 = dis.readUnsignedByte();
     varName = dis.readUnsignedByte();
-    dis.readFully(reserved2, 0, 2);
+    dis.readFully(reserved2, 0, reserved2.length);
     if (!Arrays.equals(reserved2, new byte[]{0, -128})) {
       throw new InvalidObjectException("Bad validation: " + Arrays.toString(reserved2));
     }

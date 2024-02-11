@@ -1,6 +1,7 @@
 package ru.assembler.zxspectrum.io.tap;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -76,8 +77,14 @@ public class HeaderBlock extends Block {
         if (headerType == null) {
             throw new IOException("Bad header type: " + b);
         }
-        is.read(filename);
+        final int readBytes = is.read(filename);
+        if (readBytes != filename.length) {
+            throw new EOFException();
+        }
         dataBlockLength = dis.readUnsignedShort();
+        if (dataBlockLength > 65535) {
+            throw new IOException("Bad block length: " + dataBlockLength);
+        }
         switch (headerType) {
             case Program -> {
                 programParams = new ProgramParams();
@@ -97,7 +104,7 @@ public class HeaderBlock extends Block {
             }
         }
         checkSum = dis.read();
-        int calculated = calcCheckSum();
+        final int calculated = calcCheckSum();
         if (checkSum != calculated) {
             throw new IllegalStateException(
                     "Bad checksum, loaded=" + checkSum + ", calculated=" + calculated);
@@ -110,7 +117,7 @@ public class HeaderBlock extends Block {
 
     @Override
     public void write(@NonNull final OutputStream os) throws IOException {
-        LEDataOutputStream dos = new LEDataOutputStream(os);
+        final LEDataOutputStream dos = new LEDataOutputStream(os);
         dos.writeShort(blockLength);
         export(os);
     }
@@ -118,16 +125,16 @@ public class HeaderBlock extends Block {
     @Override
     public void export(@NonNull OutputStream os) throws IOException {
         os.write(flag.getCode());
-        byte[] data = getBytes();
+        final byte[] data = getBytes();
         os.write(data);
         os.write(checkSum = TapUtils.calculateChecksum(data));
     }
 
 
     private byte[] getBytes() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            LEDataOutputStream dos = new LEDataOutputStream(baos);
+            final LEDataOutputStream dos = new LEDataOutputStream(baos);
             if (headerType != null) {
                 dos.write(headerType.getCode());
             }
@@ -169,7 +176,7 @@ public class HeaderBlock extends Block {
     }
 
     public void setFilename(@NonNull final String filename) {
-        byte[] src = filename.getBytes();
+        final byte[] src = filename.getBytes();
         Arrays.fill(this.filename, (byte) 32);
         System.arraycopy(src, 0, this.filename, 0, src.length > 10 ? 10 : src.length);
         checkSum = calcCheckSum();

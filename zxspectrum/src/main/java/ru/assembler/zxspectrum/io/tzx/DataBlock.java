@@ -42,9 +42,6 @@ public class DataBlock extends Block {
             throw new IOException("Bad pause value: " + pause);
         }
         final int size = IOUtils.readWord(is, ByteOrder.LittleEndian);
-        if (size < 0) {
-            throw new IOException("Bad size value: " + size);
-        }
         this.data = new byte[size];
         int readBytes = is.read(data);
         if (readBytes != size) {

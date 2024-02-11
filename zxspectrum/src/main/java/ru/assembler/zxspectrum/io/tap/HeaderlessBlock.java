@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.io.LEDataOutputStream;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,9 +47,12 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
   @Override
   public void read(@NonNull InputStream is) throws IOException {
     content = new byte[blockLength - 2];
-    is.read(content);
+    final int readBytes = is.read(content);
+    if (readBytes != content.length) {
+      throw new EOFException();
+    }
     checkSum = is.read();
-    int calculated = calcCheckSum();
+    final int calculated = calcCheckSum();
     if (checkSum != calculated) {
       throw new IllegalStateException(
           "Bad checksum, loaded=" + checkSum + ", calculated=" + calculated);
@@ -61,7 +65,7 @@ public class HeaderlessBlock extends Block implements TapElementReader, TapEleme
 
   @Override
   public void write(@NonNull OutputStream os) throws IOException {
-    LEDataOutputStream dos = new LEDataOutputStream(os);
+    final LEDataOutputStream dos = new LEDataOutputStream(os);
     dos.writeShort(blockLength);
     dos.write(flag.getCode());
     export(os);
