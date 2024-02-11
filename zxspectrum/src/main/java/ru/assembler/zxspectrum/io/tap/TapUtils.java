@@ -8,6 +8,7 @@ import ru.assembler.zxspectrum.basic.Lexem;
 import ru.assembler.zxspectrum.basic.ParserException;
 import ru.assembler.zxspectrum.basic.compile.Compiler;
 import ru.assembler.zxspectrum.basic.compile.Replacer;
+import ru.assembler.zxspectrum.io.tzx.TzxData;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -118,5 +119,9 @@ public final class TapUtils {
         for (Block block : tapData.getBlockList()) {
             block.write(os);
         }
+    }
+
+    public static void createTap(@NonNull final TzxData tzxData, @NonNull final OutputStream os) throws IOException {
+        throw new UnsupportedOperationException();
     }
 }

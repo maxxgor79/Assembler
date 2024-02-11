@@ -15,6 +15,8 @@ import ru.zxspectrum.converter.text.Formatter;
 import ru.zxspectrum.error.ConverterException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -83,7 +85,16 @@ public final class Converter {
     public static void wav2tap(@NonNull final File inputFile, @NonNull final File outputFile) throws ConverterException
             , IOException {
         checkExisting(inputFile);
-        throw new ConverterException(ConvMessages.getMessage(ConvMessages.UNSUPPORTED_CONVERSION));
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (FileInputStream fis = new FileInputStream(inputFile)) {
+            wav2tzx(fis, baos);
+        }
+        final byte[] data = baos.toByteArray();
+        final TzxData tzxData = new TzxData();
+        tzxData.read(new ByteArrayInputStream(data));
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+            tzx2Tap(tzxData, fos);
+        }
     }
 
     public static void wav2Raw(@NonNull final File inputFile, @NonNull final File outputFile) throws ConverterException
@@ -125,17 +136,27 @@ public final class Converter {
 
     public static void copy(@NonNull final File inputFile, @NonNull final File outputFile) throws IOException {
         checkExisting(inputFile);
-        try (FileInputStream fis = new FileInputStream(inputFile)) {
-            try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-                IOUtils.copy(fis, fos);
-            }
+        try (FileInputStream fis = new FileInputStream(inputFile);
+             FileOutputStream fos = new FileOutputStream(outputFile)) {
+            IOUtils.copy(fis, fos);
         }
     }
 
-    public static void tzx2tap(@NonNull final File inputFile, @NonNull final File outputFile) throws ConverterException
+    public static void tzx2Tap(@NonNull final File inputFile, @NonNull final File outputFile) throws ConverterException
             , IOException {
         checkExisting(inputFile);
-        throw new ConverterException(ConvMessages.getMessage(ConvMessages.UNSUPPORTED_CONVERSION));
+        final TzxData tzxData = new TzxData();
+        try (FileInputStream fis = new FileInputStream(inputFile)) {
+            tzxData.read(fis);
+        }
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+            tzx2Tap(tzxData, fos);
+        }
+    }
+
+    protected static void tzx2Tap(@NonNull final TzxData tzxData, @NonNull final OutputStream os) throws IOException
+            , ConverterException {
+        TapUtils.createTap(tzxData, os);
     }
 
     public static void tzx2Raw(@NonNull final File inputFile, @NonNull final File outputFile) throws IOException {
@@ -162,7 +183,7 @@ public final class Converter {
 
     public static void tap2tzx(@NonNull final File inputFile, @NonNull final File outputFile) throws IOException {
         checkExisting(inputFile);
-        TapData tapData = new TapData();
+        final TapData tapData = new TapData();
         try (FileInputStream fis = new FileInputStream(inputFile)) {
             tapData.read(fis);
         }

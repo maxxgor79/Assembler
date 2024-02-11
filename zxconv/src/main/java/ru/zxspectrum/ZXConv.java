@@ -51,7 +51,7 @@ public class ZXConv {
             case Tzx:
                 switch (outputFormat) {
                     case Tzx -> Converter.copy(inputFile, outputFile);
-                    case Tap -> Converter.tzx2tap(inputFile, inputFile);
+                    case Tap -> Converter.tzx2Tap(inputFile, inputFile);
                     case Wav -> Converter.tzx2wav(inputFile, outputFile);
                     case Raw -> Converter.tzx2Raw(inputFile, outputFile);
                 }
