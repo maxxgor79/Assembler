@@ -23,7 +23,7 @@ import java.io.IOException;
 
 @Slf4j
 public class ZXConv {
-    protected static final String SETTINGS_NAME = "settings.properties";
+    protected static final String SETTINGS_PATH = "/zxconv-settings.properties";
 
     private static ConvSettings settings;
 
@@ -40,7 +40,7 @@ public class ZXConv {
     private static ConvSettings loadSettings() {
         ConvSettings settings = new ConvSettings();
         try {
-            settings.load(ZXConv.class.getResourceAsStream("/" + SETTINGS_NAME));
+            settings.load(ZXConv.class.getResourceAsStream(SETTINGS_PATH));
         } catch (IOException e) {
             log.info(e.getMessage(), e);
         }
@@ -106,7 +106,7 @@ public class ZXConv {
         }
         instance = new ZXConv();
         try {
-            instance.setCli(parseCli(args, options));
+            instance.setCli(parseCli(args, options), args);
         } catch (ParseException | FileNotFoundException | UnsupportedFormatException e) {
             log.error(e.getMessage(), e);
             System.out.println(e.getMessage());
@@ -135,15 +135,20 @@ public class ZXConv {
         return options;
     }
 
-    protected void setCli(@NonNull CommandLine cli) throws FileNotFoundException, UnsupportedFormatException {
+    protected void setCli(@NonNull final CommandLine cli, @NonNull final String[] args) throws FileNotFoundException
+            , UnsupportedFormatException {
         if (cli.hasOption("in")) {
             inputFile = new File(cli.getOptionValue("in"));
+        } else {
+            inputFile = args[0] != null ? new File(args[0]) : null;
         }
         if (inputFile == null) {
             throw new FileNotFoundException(ConvMessages.getMessage(ConvMessages.INPUT_FILE_REQUIRED));
         }
         if (cli.hasOption("out")) {
             outputFile = new File(cli.getOptionValue("out"));
+        } else {
+            outputFile = args[1] != null ? new File(args[1]) : null;
         }
         String arg;
         if (cli.hasOption("if")) {
@@ -171,8 +176,8 @@ public class ZXConv {
                     .UNKNOWN_OUTPUT_FORMAT), arg));
         }
         if (outputFile == null) {
-            outputFile = new File (FilenameUtils.removeExtension(inputFile.getName()) + "."
-                    + outputFormat.toString());
+            outputFile = new File(FilenameUtils.removeExtension(inputFile.getName()) + "."
+                    + outputFormat);
         }
     }
 }
