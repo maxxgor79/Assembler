@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author Maxim Gorin
@@ -38,5 +39,11 @@ public final class TzxUtils {
     public static void createTzxFromTap(@NonNull File outputFile, @NonNull byte[] data, int address) throws IOException {
         final TapData tapData = TapUtils.createBinaryTap(data, address);
         createTzx(tapData, outputFile);
+    }
+
+    public static void toBytes(@NonNull TzxData tzxData, @NonNull OutputStream os) throws IOException {
+        for (ru.assembler.zxspectrum.io.tzx.Block block : tzxData.getBlocks(DataBlock.DEFAULT_ID)) {
+            block.write(os);
+        }
     }
 }

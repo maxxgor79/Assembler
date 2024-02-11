@@ -3,11 +3,11 @@ package ru.assembler.zxspectrum.io.tap;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.resource.Loader;
+import ru.assembler.io.LEDataOutputStream;
 import ru.assembler.zxspectrum.basic.Lexem;
 import ru.assembler.zxspectrum.basic.ParserException;
 import ru.assembler.zxspectrum.basic.compile.Compiler;
 import ru.assembler.zxspectrum.basic.compile.Replacer;
-import ru.assembler.io.LEDataOutputStream;
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -9,6 +9,8 @@ import ru.assembler.zxspectrum.io.tap.Block;
 import ru.assembler.zxspectrum.io.tap.Flag;
 import ru.assembler.zxspectrum.io.tap.TapData;
 import ru.assembler.io.wav.WavFile;
+import ru.assembler.zxspectrum.io.tzx.DataBlock;
+import ru.assembler.zxspectrum.io.tzx.TzxData;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,7 +28,7 @@ public class SignalGenerator extends Generator implements Signal {
     @NonNull
     private File file;
 
-    private boolean silenceBeforeBlock;
+    private boolean silenceBeforeBlock = true;
 
     private int silenceDuration = 1;// in seconds
 
@@ -39,7 +41,8 @@ public class SignalGenerator extends Generator implements Signal {
         setFile(file);
     }
 
-    protected void writeDataByte(OutputStream os, int b, int hi, int lo, int frequency) throws IOException {
+    protected void writeDataByte(@NonNull final OutputStream os, final int b, final int hi
+            , final int lo, final int frequency) throws IOException {
         int mask = 0x80;
         while (mask != 0) {
             int len = ((b & mask) == 0) ? PULSE_ZERO : PULSE_ONE;
@@ -49,7 +52,7 @@ public class SignalGenerator extends Generator implements Signal {
         }
     }
 
-    protected void writeSoundData(OutputStream os, Block block, int sampleRate, float volume) throws IOException {
+    protected int volumeToLevel(final float volume) {
         int volLevel = (int) ((1.00f - volume) * 0x40);
         if (volLevel < 0) {
             volLevel = 0;
@@ -57,20 +60,20 @@ public class SignalGenerator extends Generator implements Signal {
         if (volLevel > 0x40) {
             volLevel = 0x40;
         }
-        int hiLevel = 0xc0 - volLevel;
-        int loLevel = 0x40 + volLevel;
+        return volLevel;
+    }
 
-        byte[] data;
+    protected void writeSoundData(@NonNull final OutputStream os, @NonNull final byte[] data
+            , final int sampleRate, final float volume, final boolean isHeader) throws IOException {
+        final int volLevel = volumeToLevel(volume);
+        final int hiLevel = 0xc0 - volLevel;
+        final int loLevel = 0x40 + volLevel;
         int pilotImpulses;
-        if (block.getFlag() == Flag.Header) {
+        if (isHeader) {
             pilotImpulses = IMPULSE_NUMBER_PILOT_HEADER;
         } else {
             pilotImpulses = IMPULSE_NUMBER_PILOT_DATA;
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        block.export(baos);
-        data = baos.toByteArray();
-
         int signalLevel = hiLevel;
         for (int i = 0; i < pilotImpulses; i++) {
             writeSignal(os, signalLevel, PULSE_PILOT, sampleRate);
@@ -87,6 +90,7 @@ public class SignalGenerator extends Generator implements Signal {
         writeSignal(os, hiLevel, PULSE_SYNC3, sampleRate);
     }
 
+    @Override
     public void setVolume(float volume) {
         if (volume <= 0.0f) {
             volume = 0.0f;
@@ -97,29 +101,66 @@ public class SignalGenerator extends Generator implements Signal {
         this.volume = volume;
     }
 
-    protected void writeSilence(OutputStream os) throws IOException {
+    protected void writeSilence(@NonNull final OutputStream os) throws IOException {
         for (int i = 0; i < (silenceDuration * sampleRate); i++) {
             os.write(0x80);
         }
     }
 
     @Override
-    public void generateWav(@NonNull Object data) throws IOException {
-        if (!(data instanceof TapData)) {
+    public void generateWav(@NonNull final Object data) throws IOException {
+        if (data instanceof TapData) {
+            generateWavFromTap((TapData) data);
+        } else if (data instanceof TzxData) {
+            generateWavFromTzx((TzxData) data);
+        } else {
             throw new IllegalArgumentException("Unsupported argument type: " + data.getClass());
         }
-        final TapData tapData = (TapData) data;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        for (Block block : tapData.getBlockList()) {
+    }
+
+    protected void generateWavFromTzx(@NonNull final TzxData tzxData) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int i = 0;
+        for (final ru.assembler.zxspectrum.io.tzx.Block block : tzxData.getBlocks(DataBlock.DEFAULT_ID)) {
             if (silenceBeforeBlock) {
                 writeSilence(baos);
             }
-            writeSoundData(baos, block, sampleRate, volume);
+            final boolean isHeader = (i == 0) ? true : false;
+            writeSoundData(baos, toBytes((DataBlock) block), sampleRate, volume, isHeader);
+            i++;
         }
         writeSilence(baos);
-        WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);// 11025 Hz
+        final WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);// 11025 Hz
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }
+    }
+
+    protected void generateWavFromTap(@NonNull final TapData tapData) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (final Block block : tapData.getBlockList()) {
+            if (silenceBeforeBlock) {
+                writeSilence(baos);
+            }
+            final boolean isHeader = (block.getFlag() == Flag.Header) ? true : false;
+            writeSoundData(baos, toBytes(block), sampleRate, volume, isHeader);
+        }
+        writeSilence(baos);
+        final WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);// 11025 Hz
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            wavFile.write(fos);
+        }
+    }
+
+    protected static byte[] toBytes(@NonNull final Block block) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        block.export(baos);
+        return baos.toByteArray();
+    }
+
+    protected static byte[] toBytes(@NonNull final DataBlock block) throws IOException {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        block.export(baos);
+        return baos.toByteArray();
     }
 }
