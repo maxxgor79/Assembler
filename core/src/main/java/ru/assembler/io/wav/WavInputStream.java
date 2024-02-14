@@ -18,14 +18,14 @@ import java.io.InputStream;
  */
 
 @Slf4j
-public class WavInputStream extends InputStream {
+public class WavInputStream extends InputStream implements WavSampleReader {
     public static final int PCM_FORMAT = 1;
 
     @Getter
     protected short bps;
 
     @Getter
-    private int sampleRate;
+    protected int sampleRate;
 
     @Getter
     private int format;
@@ -37,7 +37,7 @@ public class WavInputStream extends InputStream {
     private short blockAlign;
 
     @Getter
-    private short numChannels;
+    protected short numChannels;
 
     @Getter
     private int dataSize;
@@ -47,17 +47,24 @@ public class WavInputStream extends InputStream {
 
     private LEDataInputStream leDis;
 
+    private int[] samples;
+
+    protected WavInputStream() {
+
+    }
+
     public WavInputStream(@NonNull InputStream is) throws IOException {
         this.leDis = new LEDataInputStream(is);
         readHeader();
     }
 
     public WavInputStream(@NonNull final File file) throws IOException {
+        byte[] data;
         try (FileInputStream fis = new FileInputStream(file)) {
-            final byte[] data = IOUtils.toByteArray(fis);
-            this.leDis = new LEDataInputStream(new ByteArrayInputStream(data));
-            readHeader();
+            data = IOUtils.toByteArray(fis);
         }
+        this.leDis = new LEDataInputStream(new ByteArrayInputStream(data));
+        readHeader();
     }
 
     public WavInputStream(@NonNull final String filename) throws IOException {
@@ -90,6 +97,7 @@ public class WavInputStream extends InputStream {
             throw new IOException("Unsupported format:" + format);
         }
         this.numChannels = leDis.readShort();
+        this.samples = new int[this.numChannels];
         this.sampleRate = leDis.readInt();
         this.byteRate = leDis.readInt();
         this.blockAlign = leDis.readShort();
@@ -111,11 +119,16 @@ public class WavInputStream extends InputStream {
         return -1;
     }
 
+    @Override
     public int readSample() throws IOException {
         int ch1, ch2;
         switch (bps) {
             case 8:
-                return read();
+                ch1 = read();
+                if (ch1 == -1) {
+                    throw new EOFException();
+                }
+                return ch1;
             case 16:
                 ch1 = read();
                 ch2 = read();
@@ -128,21 +141,19 @@ public class WavInputStream extends InputStream {
         }
     }
 
+    @Override
     public int[] readSamples() throws IOException {
-        int ch1, ch2;
         switch (numChannels) {
             case 1:
-                ch1 = readSample();
-                return ch1 == -1 ? null : new int[]{ch1};
+                samples[0] = readSample();
+                break;
             case 2:
-                ch1 = readSample();
-                ch2 = readSample();
-                if ((ch1 | ch2) < 0) {
-                    throw new EOFException();
-                }
-                return new int[]{ch1, ch2};
+                samples[0] = readSample();
+                samples[1] = readSample();
+                break;
             default:
                 throw new IOException("Unsupported channel number");
         }
+        return samples;
     }
 }

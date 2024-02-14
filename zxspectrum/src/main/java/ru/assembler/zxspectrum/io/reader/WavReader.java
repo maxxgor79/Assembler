@@ -1,4 +1,4 @@
-package ru.assembler.zxspectrum.io.loader;
+package ru.assembler.zxspectrum.io.reader;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,7 +11,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static ru.assembler.zxspectrum.io.loader.Status.Signal;
+import static ru.assembler.zxspectrum.io.reader.Status.Signal;
 
 /**
  * Thanks to ibancg from github for source written on C++
@@ -124,7 +124,6 @@ public class WavReader {
     }
 
     public boolean readAll() throws IOException {
-        log.info("Decoding... (press CTRL-C to abort)");
         boolean result = false;
         double noiseThresholdDb = 37.0; // dB
         double noiseThreshold = Math.pow(10.0, noiseThresholdDb / 10.0);
@@ -136,12 +135,12 @@ public class WavReader {
         edges[0] = edges[1] = edges[2] = 0;
         int carrierCounter = 0;
         int edgeCounter = 0;
-        final int bitCounter[] = new int[]{0, 0};
+        final int[] bitCounter = new int[]{0, 0};
         double edgeAccum = 0;
         double mean, ratio, period, tol;
         double pilotFreq, sync1Freq, sync2Freq;
-        final double bitFreq[] = new double[2];
-        final double bitAccum[] = new double[2];
+        final double[] bitFreq = new double[2];
+        final double[] bitAccum = new double[2];
         int endBlock = 0;
         int flipFlop = 0; // bit selector, 0/1
         final byte[] data = new byte[131072]; // maximum of 128Kb per block

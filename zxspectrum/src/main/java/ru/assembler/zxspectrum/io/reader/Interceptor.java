@@ -1,4 +1,4 @@
-package ru.assembler.zxspectrum.io.loader;
+package ru.assembler.zxspectrum.io.reader;
 
 import java.io.IOException;
 

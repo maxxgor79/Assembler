@@ -11,8 +11,10 @@ import java.io.OutputStream;
 /**
  * @author Maxim Gorin
  */
-public class WavFile {
+public class WavWriter {
     public static final String EXTENSION = "wav";
+
+    public static final int DEFAULT_RATE = 11025;
 
     protected static final int PCM_FORMAT = 1;
 
@@ -24,22 +26,22 @@ public class WavFile {
 
     @Getter
     @Setter
-    private int sampleRate = 11025;
+    private int sampleRate = DEFAULT_RATE;
 
     @Getter
     private int numChannels = 1;
 
-    public WavFile(@NonNull byte[] data) {
+    public WavWriter(@NonNull byte[] data) {
         this.data = data;
     }
 
-    public WavFile(@NonNull byte[] data, int sampleRate, int numChannels) {
+    public WavWriter(@NonNull byte[] data, int sampleRate, int numChannels) {
         this.data = data;
         this.sampleRate = sampleRate;
         this.numChannels = numChannels;
     }
 
-    public WavFile(@NonNull byte[] data, int sampleRate, int bps, int numChannels) {
+    public WavWriter(@NonNull byte[] data, int sampleRate, int bps, int numChannels) {
         this.data = data;
         this.sampleRate = sampleRate;
         this.bps = bps;
