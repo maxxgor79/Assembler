@@ -73,9 +73,9 @@
         </dependency>
 
         <dependency>
-            <groupId>ru.assembler</groupId>
-            <artifactId>z80asm</artifactId>
-            <version>1.2</version>
+            <groupId>ru.zxspectrum</groupId>
+            <artifactId>zxcommons</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>

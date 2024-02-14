@@ -23,7 +23,7 @@ import java.io.IOException;
 
 @Slf4j
 public class ZXConv {
-    protected static final String SETTINGS_PATH = "/zxconv-settings.properties";
+    protected static final String SETTINGS_PATH = "/settings.properties";
 
     private static ConvSettings settings;
 

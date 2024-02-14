@@ -24,14 +24,14 @@ import ru.assembler.io.audio.wav.WavWriter;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
-import ru.assembler.zxspectrum.io.tzx.TzxUtils;
+import ru.zxspectrum.io.tzx.TzxUtils;
 import ru.assembler.zxspectrum.text.Z80Messages;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
-import ru.assembler.zxspectrum.io.tap.TapData;
-import ru.assembler.zxspectrum.io.tap.TapUtils;
-import ru.assembler.zxspectrum.io.audio.generator.SignalGenerator;
+import ru.zxspectrum.io.tap.TapData;
+import ru.zxspectrum.io.tap.TapUtils;
+import ru.zxspectrum.io.audio.generator.SignalGenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
