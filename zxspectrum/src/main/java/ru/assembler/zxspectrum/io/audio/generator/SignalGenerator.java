@@ -1,11 +1,11 @@
-package ru.assembler.zxspectrum.io.generator;
+package ru.assembler.zxspectrum.io.audio.generator;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.assembler.io.generator.Generator;
-import ru.assembler.io.wav.WavWriter;
+import ru.assembler.io.audio.generator.Generator;
+import ru.assembler.io.audio.wav.WavWriter;
 import ru.assembler.zxspectrum.io.tap.Block;
 import ru.assembler.zxspectrum.io.tap.Flag;
 import ru.assembler.zxspectrum.io.tap.TapData;

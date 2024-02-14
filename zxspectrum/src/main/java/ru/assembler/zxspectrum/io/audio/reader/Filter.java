@@ -1,4 +1,4 @@
-package ru.assembler.zxspectrum.io.reader;
+package ru.assembler.zxspectrum.io.audio.reader;
 
 import lombok.NonNull;
 

@@ -1,4 +1,4 @@
-package ru.assembler.io.wav;
+package ru.assembler.io.audio.wav;
 
 import lombok.Getter;
 import lombok.NonNull;

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.assembler.io.wav.WavInputStream;
+import ru.assembler.io.audio.wav.WavInputStream;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -23,7 +23,7 @@ public class TestIO {
         try (FileInputStream fis = new FileInputStream("src/test/java/ru/assembler/core/8mono.wav")) {
             WavInputStream wis = new WavInputStream(fis);
             Assertions.assertEquals(wis.getBps(), 8);
-            Assertions.assertEquals(wis.getNumChannels(), 1);
+            Assertions.assertEquals(wis.getNumberChannels(), 1);
             Assertions.assertEquals(wis.getSampleRate(),8000);
             Assertions.assertEquals(wis.getDataSize(), 8000);
             int b, readBytes = 0;
@@ -39,7 +39,7 @@ public class TestIO {
         try (FileInputStream fis = new FileInputStream("src/test/java/ru/assembler/core/16mono.wav")) {
             WavInputStream wis = new WavInputStream(fis);
             Assertions.assertEquals(wis.getBps(), 16);
-            Assertions.assertEquals(wis.getNumChannels(), 1);
+            Assertions.assertEquals(wis.getNumberChannels(), 1);
             Assertions.assertEquals(wis.getSampleRate(),11025);
             Assertions.assertEquals(wis.getDataSize(), 22050);
             int b, readBytes = 0;
@@ -55,7 +55,7 @@ public class TestIO {
         try (FileInputStream fis = new FileInputStream("src/test/java/ru/assembler/core/8stereo.wav")) {
             WavInputStream wis = new WavInputStream(fis);
             Assertions.assertEquals(wis.getBps(), 8);
-            Assertions.assertEquals(wis.getNumChannels(), 2);
+            Assertions.assertEquals(wis.getNumberChannels(), 2);
             Assertions.assertEquals(wis.getSampleRate(),8000);
             Assertions.assertEquals(wis.getDataSize(), 16000);
             int []couple = null;

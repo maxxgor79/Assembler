@@ -1,10 +1,11 @@
-package ru.assembler.io.wav;
+package ru.assembler.io.audio.wav;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.assembler.io.LEDataInputStream;
+import ru.assembler.io.audio.SampleReader;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
@@ -18,7 +19,7 @@ import java.io.InputStream;
  */
 
 @Slf4j
-public class WavInputStream extends InputStream implements WavSampleReader {
+public class WavInputStream extends InputStream implements SampleReader {
     public static final int PCM_FORMAT = 1;
 
     @Getter
@@ -37,7 +38,7 @@ public class WavInputStream extends InputStream implements WavSampleReader {
     private short blockAlign;
 
     @Getter
-    protected short numChannels;
+    protected int numberChannels;
 
     @Getter
     private int dataSize;
@@ -96,8 +97,8 @@ public class WavInputStream extends InputStream implements WavSampleReader {
         if (format != PCM_FORMAT) {
             throw new IOException("Unsupported format:" + format);
         }
-        this.numChannels = leDis.readShort();
-        this.samples = new int[this.numChannels];
+        this.numberChannels = leDis.readShort();
+        this.samples = new int[this.numberChannels];
         this.sampleRate = leDis.readInt();
         this.byteRate = leDis.readInt();
         this.blockAlign = leDis.readShort();
@@ -117,6 +118,21 @@ public class WavInputStream extends InputStream implements WavSampleReader {
             return leDis.read();
         }
         return -1;
+    }
+
+    @Override
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    @Override
+    public int getBps() {
+        return bps;
+    }
+
+    @Override
+    public int getNumberChannels() {
+        return numberChannels;
     }
 
     @Override
@@ -143,7 +159,7 @@ public class WavInputStream extends InputStream implements WavSampleReader {
 
     @Override
     public int[] readSamples() throws IOException {
-        switch (numChannels) {
+        switch (numberChannels) {
             case 1:
                 samples[0] = readSample();
                 break;

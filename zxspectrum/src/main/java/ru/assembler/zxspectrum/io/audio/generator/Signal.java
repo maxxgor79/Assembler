@@ -1,4 +1,4 @@
-package ru.assembler.zxspectrum.io.generator;
+package ru.assembler.zxspectrum.io.audio.generator;
 
 import java.io.IOException;
 import java.io.OutputStream;

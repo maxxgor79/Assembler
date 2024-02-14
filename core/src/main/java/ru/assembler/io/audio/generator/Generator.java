@@ -1,4 +1,4 @@
-package ru.assembler.io.generator;
+package ru.assembler.io.audio.generator;
 
 import lombok.Getter;
 import lombok.NonNull;

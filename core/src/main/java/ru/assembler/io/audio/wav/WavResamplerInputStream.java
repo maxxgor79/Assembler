@@ -1,15 +1,16 @@
-package ru.assembler.io.wav;
+package ru.assembler.io.audio.wav;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.assembler.io.audio.SampleReader;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
-public class WavResamplerInputStream extends InputStream implements WavSampleReader {
+public class WavResamplerInputStream extends InputStream implements SampleReader {
     @Getter
     private int sampleRate;
 
@@ -36,7 +37,7 @@ public class WavResamplerInputStream extends InputStream implements WavSampleRea
 
     public WavResamplerInputStream(@NonNull WavInputStream wis, int newSampleRate, int newBps) throws
             UnsupportedAudioFileException {
-        if (wis.getNumChannels() != 1) {
+        if (wis.getNumberChannels() != 1) {
             throw new UnsupportedAudioFileException("Only mono format supported");
         }
         if ((wis.getBps() != 8 && wis.getBps() != 16) ||
@@ -68,6 +69,11 @@ public class WavResamplerInputStream extends InputStream implements WavSampleRea
             return (sample >> 8) & 0xff;
         }
         return ((sample + 0x80) & 0xff) << 8;
+    }
+
+    @Override
+    public int getNumberChannels() {
+        return 1;
     }
 
     @Override

@@ -1,26 +1,30 @@
-package ru.assembler.zxspectrum.io.reader;
+package ru.assembler.zxspectrum.io.audio.reader;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.assembler.io.wav.WavInputStream;
+import ru.assembler.io.audio.SampleReader;
+import ru.assembler.io.audio.wav.WavInputStream;
+import ru.assembler.io.audio.wav.WavResamplerInputStream;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static ru.assembler.zxspectrum.io.reader.Status.Signal;
-
 /**
  * Thanks to ibancg from github for source written on C++
  */
 @Slf4j
-public class WavReader {
+public class SignalReader {
     protected static final int CARRIER_COUNTER_PERIOD = 200;
 
     protected static final int EDGE_TRANSIT = 3;
+
+    protected static final int REQUIRED_SAMPLE_RATE = 22050;
+
+    protected static final int REQUIRED_BPS = 16;
 
     protected static final double[] FILTER_A = {1.000000000000000, -3.813865383597037,
             5.458723791505597, -3.474942611565117,
@@ -28,7 +32,6 @@ public class WavReader {
     protected static final double[] FILTER_B = {0.911102468413717, -3.644409873654869,
             5.466614810482302, -3.644409873654869,
             0.911102468413717};
-    private InputStream is;
 
     @Getter
     private Status status;
@@ -43,12 +46,6 @@ public class WavReader {
 
     private double afterBlockPause; // signal parameters.
 
-    @Getter
-    private int sampleRate;   // soundcard sample rate.
-
-    @Getter
-    private int bps;
-
     private int globalBitCounter;
 
     private double maxTol;
@@ -56,6 +53,10 @@ public class WavReader {
     private double oldSample;
 
     private int oldSampleIndex;
+
+    private final int sampleRate = REQUIRED_SAMPLE_RATE;
+
+    private final int bps = REQUIRED_BPS;
 
     @Setter
     @Getter
@@ -66,46 +67,24 @@ public class WavReader {
 
     private double edge;
 
-    public WavReader(final int sampleRate, final int bps, final int numChannels, @NonNull final InputStream is)
-            throws UnsupportedAudioFileException {
-        if (numChannels != 1) {
+    private final SampleReader reader;
+
+    public SignalReader(@NonNull WavInputStream wis) throws UnsupportedAudioFileException {
+        if (wis.getNumberChannels() != 1) {
             throw new UnsupportedAudioFileException("Only mono format supported");
         }
-        this.sampleRate = sampleRate;
-        this.bps = bps;
-        this.is = is;
+        if (sampleRate != wis.getSampleRate() || bps != wis.getBps()) {
+            reader = new WavResamplerInputStream(wis, sampleRate, bps);
+        } else {
+            reader = wis;
+        }
         status = Status.Noise;
         sampleIndex = 0;
         filter = new Filter(FILTER_A, FILTER_B);
     }
 
-    public WavReader(@NonNull WavInputStream wis) throws UnsupportedAudioFileException {
-        this(wis.getSampleRate(), wis.getBps(), wis.getNumChannels(), wis);
-    }
-
-    private int readSample() throws IOException {
-        int sample1 = is.read();
-        if (sample1 == -1) {
-            throw new EOFException();
-        }
-        int sample2;
-        switch (bps) {
-            case 8:
-                sample1 *= 256;
-                break;
-            case 16:
-                sample2 = is.read();
-                if ((sample1 | sample2) < 0) {
-                    throw new EOFException();
-                }
-                sample1 = (sample2 << 8) | sample1;
-                break;
-        }
-        return sample1;
-    }
-
     protected double getSample() throws IOException {
-        int newSample = readSample();
+        int newSample = reader.readSample();
         double sample = filter.filter(newSample);
         sampleIndex++;
         edge = -1;
@@ -161,7 +140,7 @@ public class WavReader {
                 carrierCounter = CARRIER_COUNTER_PERIOD;
                 if (status == Status.Noise) { // found carrier
                     log.info("{}: Found carrier", sampleIndex);
-                    status = Signal;
+                    status = Status.Signal;
                     edges[0] = edges[1] = edges[2] = 0;
                     edgeCounter = 0;
                     edgeAccum = 0;
