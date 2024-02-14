@@ -2,9 +2,10 @@ package ru.zxspectrum.converter.core;
 
 import lombok.NonNull;
 import org.apache.commons.io.IOUtils;
-import ru.assembler.io.wav.WavInputStream;
-import ru.assembler.zxspectrum.io.generator.SignalGenerator;
-import ru.assembler.zxspectrum.io.loader.WavReader;
+import ru.assembler.io.audio.wav.WavInputStream;
+import ru.assembler.io.audio.wav.WavWriter;
+import ru.assembler.zxspectrum.io.audio.generator.SignalGenerator;
+import ru.assembler.zxspectrum.io.audio.reader.SignalReader;
 import ru.assembler.zxspectrum.io.tap.TapData;
 import ru.assembler.zxspectrum.io.tap.TapUtils;
 import ru.assembler.zxspectrum.io.tzx.TzxData;
@@ -72,11 +73,11 @@ public final class Converter {
             , IOException {
         try {
             final WavInputStream wis = new WavInputStream(is);
-            final WavReader wavReader = new WavReader(wis);
+            final SignalReader signalReader = new SignalReader(wis);
             final TzxWriter writer = new TzxWriter(os);
             writer.writeHeader();
-            wavReader.setInterceptor((buf, size, pause) -> writer.writeID10(buf, size, pause));
-            wavReader.readAll();
+            signalReader.setInterceptor((buf, size, pause) -> writer.writeID10(buf, size, pause));
+            signalReader .readAll();
         } catch (UnsupportedAudioFileException e) {
             throw new ConverterException(e.getMessage(), e);
         }
@@ -102,9 +103,9 @@ public final class Converter {
         checkExisting(inputFile);
         final WavInputStream wis = new WavInputStream(inputFile);
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-            final WavReader wavReader = new WavReader(wis);
-            wavReader.setInterceptor((buf, size, pause) -> fos.write(buf, 0, size));
-            wavReader.readAll();
+            final SignalReader signalReader = new SignalReader(wis);
+            signalReader.setInterceptor((buf, size, pause) -> fos.write(buf, 0, size));
+            signalReader.readAll();
         } catch (UnsupportedAudioFileException e) {
             throw new ConverterException(e.getMessage(), e);
         }
