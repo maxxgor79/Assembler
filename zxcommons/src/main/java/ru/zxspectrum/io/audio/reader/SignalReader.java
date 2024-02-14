@@ -4,14 +4,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.assembler.io.audio.SampleReader;
-import ru.assembler.io.audio.wav.WavInputStream;
-import ru.assembler.io.audio.wav.WavResamplerInputStream;
+import ru.zxspectrum.io.audio.SampleReader;
+import ru.zxspectrum.io.audio.wav.WavInputStream;
+import ru.zxspectrum.io.audio.wav.WavResamplerInputStream;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Thanks to ibancg from github for source written on C++
