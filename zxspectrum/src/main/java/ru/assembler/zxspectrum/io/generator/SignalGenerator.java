@@ -5,10 +5,10 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.io.generator.Generator;
+import ru.assembler.io.wav.WavWriter;
 import ru.assembler.zxspectrum.io.tap.Block;
 import ru.assembler.zxspectrum.io.tap.Flag;
 import ru.assembler.zxspectrum.io.tap.TapData;
-import ru.assembler.io.wav.WavFile;
 import ru.assembler.zxspectrum.io.tzx.DataBlock;
 import ru.assembler.zxspectrum.io.tzx.TzxData;
 
@@ -130,7 +130,7 @@ public class SignalGenerator extends Generator implements Signal {
             i++;
         }
         writeSilence(baos);
-        final WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);// 11025 Hz
+        final WavWriter wavFile = new WavWriter(baos.toByteArray(), sampleRate, 1);// 11025 Hz
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }
@@ -146,7 +146,7 @@ public class SignalGenerator extends Generator implements Signal {
             writeSoundData(baos, toBytes(block), sampleRate, volume, isHeader);
         }
         writeSilence(baos);
-        final WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);// 11025 Hz
+        final WavWriter wavFile = new WavWriter(baos.toByteArray(), sampleRate, 1);// 11025 Hz
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }
