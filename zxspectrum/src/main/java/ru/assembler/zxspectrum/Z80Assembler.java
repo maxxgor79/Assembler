@@ -20,7 +20,6 @@ import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
-import ru.assembler.io.audio.wav.WavWriter;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
 import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
@@ -32,6 +31,7 @@ import ru.assembler.core.util.TypeUtil;
 import ru.zxspectrum.io.tap.TapData;
 import ru.zxspectrum.io.tap.TapUtils;
 import ru.zxspectrum.io.audio.generator.SignalGenerator;
+import ru.zxspectrum.io.audio.wav.WavWriter;
 
 import java.io.File;
 import java.io.FileInputStream;
