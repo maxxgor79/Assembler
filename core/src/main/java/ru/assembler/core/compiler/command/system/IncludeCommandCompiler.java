@@ -15,6 +15,7 @@ import ru.assembler.core.syntax.LexemSequence;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -59,6 +60,10 @@ public class IncludeCommandCompiler implements CommandCompiler {
                     if (!compilerApi.include(path)) {
                         log.info("{} is already included", path);
                     }
+                } catch (FileNotFoundException e) {
+                    log.error(e.getMessage(), e);
+                    throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+                            .getMessage(MessageList.FILE_NOT_FOUND), path);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
