@@ -117,7 +117,7 @@ public final class TapUtils {
 
     public static void toBytes(@NonNull TapData tapData, @NonNull OutputStream os) throws IOException {
         for (Block block : tapData.getBlockList()) {
-            block.write(os);
+            block.export(os);
         }
     }
 
