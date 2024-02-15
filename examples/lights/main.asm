@@ -12,7 +12,9 @@ vector_addr:
 
 ; interruption procedure
 interrupt:
+    di
     push af
+    push hl	
     push bc
     push de
     push ix
@@ -24,7 +26,9 @@ interrupt:
     pop ix
     pop de
     pop bc
+    pop hl
     pop af
+    ei
     reti
 
 ; read data from port and put the data into another one

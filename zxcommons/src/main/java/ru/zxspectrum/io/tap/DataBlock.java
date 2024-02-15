@@ -23,6 +23,7 @@ public class DataBlock extends Block {
   public static final int TYPE = 0xFF;
 
   @NonNull
+  @Getter
   private byte[] content;
 
   public DataBlock() {
