@@ -4,23 +4,43 @@
     .def TAPE_PORT 254
     .def OUTPUT_PORT 31
 
-    call cls
-    call read_port
-    call indicator
+    ld hl, f0ffh
+    ld bc, interrupt
+    ld (hl), bc
+    ld a, h
+    ld i, a
     ret
 
-read_port:
-    ld hl, read_port_value
+; interruption procedure
+interrupt:
+    di
+    push af
+    push bc
+    push de
+    call cls
+    call rw_port
+    call indicator
+    pop de
+    pop bc
+    pop af
+    ei
+    reti
+
+; read data from port and put the data into another one
+rw_port:
+    ld hl, rw_port_value
     ld c, (hl)
     rr c
     in a, (254)
     bit 6, a
-    jr z, read_port_zero
+    jr z, rw_port_zero
     set 7,c
-read_port_zero:
+rw_port_zero:
     ld (hl), c
     ld a, c
+    out (31), a
     ret
-read_port_value:
-     db 0
 
+; temporary data from port 254
+rw_port_value:
+     db 0
