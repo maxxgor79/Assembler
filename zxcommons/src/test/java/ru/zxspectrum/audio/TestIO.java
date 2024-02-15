@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.assembler.io.audio.wav.WavInputStream;
+import ru.zxspectrum.io.audio.wav.WavInputStream;
 
 import java.io.EOFException;
 import java.io.FileInputStream;

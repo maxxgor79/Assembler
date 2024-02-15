@@ -119,6 +119,8 @@ public final class MessageList {
 
     public static final String LABEL_DECLARATION_REQUIRED = "label_declaration_required";
 
+    public static final String FILE_IS_ALREADY_INCLUDED = "file_is_already_included";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {

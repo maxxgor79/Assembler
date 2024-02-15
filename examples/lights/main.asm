@@ -1,6 +1,8 @@
 ; main program
     org 32768
     .include "gfx.asm"
+    .include "test.asm"
+    .include "test.asm"
 vector_addr:
     equ f0ffh
     ld bc, interrupt

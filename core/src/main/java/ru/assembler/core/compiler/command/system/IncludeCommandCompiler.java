@@ -2,6 +2,7 @@ package ru.assembler.core.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
@@ -55,14 +56,14 @@ public class IncludeCommandCompiler implements CommandCompiler {
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
                 final String path = nextLexem.getValue();
-                nextLexem = iterator.hasNext() ? iterator.next() : null;
                 try {
                     if (!compilerApi.include(path)) {
-                        log.info("{} is already included", path);
+                        Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                                .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
                     }
                 } catch (FileNotFoundException e) {
                     log.error(e.getMessage(), e);
-                    throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_NOT_FOUND), path);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -73,33 +74,11 @@ public class IncludeCommandCompiler implements CommandCompiler {
                 throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
             }
+            nextLexem = iterator.hasNext() ? iterator.next() : null;
             if (nextLexem == null) {
                 break;
             }
         }
         return new byte[0];
-    }
-
-    private void compileFile(@NonNull Lexem nextLexem, @NonNull String path) throws IOException {
-        File file = new File(path);
-        if (!file.isAbsolute()) {
-            file = new File(compilerApi.getFile().getParentFile(), path);
-        }
-        if (!file.exists()) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.FILE_NOT_FOUND), file.getAbsolutePath());
-        }
-        if (namespaceApi.isCompiled(file)) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.CYCLIC_DEPENDENCIES_ERROR), file.getAbsolutePath());
-        }
-        try (FileInputStream fis = new FileInputStream(file)) {
-            CompilerApi compiler = CompilerFactory.create(namespaceApi, settingsApi, file, fis
-                    , compilerApi.getOutputStream());
-            namespaceApi.addCompiled(file);
-            compiler.compile();
-            compilerApi.addCompiledLineCount(compiler.getCompiledLineCount());
-            compilerApi.addCompiledSourceCount(compiler.getCompiledSourceCount());
-        }
     }
 }

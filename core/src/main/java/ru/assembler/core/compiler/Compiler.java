@@ -319,6 +319,7 @@ public class Compiler implements CompilerApi {
     if (includedSet.contains(file)) {
       return false;
     }
+    includedSet.add(file);
     byte[] data;
     try (FileInputStream fis = new FileInputStream(file)) {
       data = IOUtils.toByteArray(fis);
@@ -327,6 +328,7 @@ public class Compiler implements CompilerApi {
         , settingsApi.getPlatformEncoding(), settingsApi.getSourceEncoding());
     lexemAnalyzer.setTrimEof(false);
     syntaxAnalyzer.append(new RepeatableIteratorImpl<>(lexemAnalyzer.iterator()));
+    addCompiledSourceCount(1);
     return true;
   }
 
