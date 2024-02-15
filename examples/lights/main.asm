@@ -1,13 +1,11 @@
 ; main program
     org 32768
     .include "gfx.asm"
-    .def TAPE_PORT 254
-    .def OUTPUT_PORT 31
-
-    ld hl, f0ffh
+vector_addr:
+    equ f0ffh
     ld bc, interrupt
-    ld (hl), bc
-    ld a, h
+    ld (vector_addr), bc
+    ld a, vector_addr >> 8
     ld i, a
     ret
 
