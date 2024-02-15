@@ -7,21 +7,24 @@ vector_addr:
     ld (vector_addr), bc
     ld a, vector_addr >> 8
     ld i, a
+    im 2
     ret
 
 ; interruption procedure
 interrupt:
-    di
     push af
     push bc
     push de
+    push ix
+    push iy
     call cls
     call rw_port
     call indicator
+    pop iy
+    pop ix
     pop de
     pop bc
     pop af
-    ei
     reti
 
 ; read data from port and put the data into another one
