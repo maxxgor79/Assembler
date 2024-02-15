@@ -53,17 +53,19 @@ public class IncludeCommandCompiler implements CommandCompiler {
         }
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
-                String path = nextLexem.getValue();
+                final String path = nextLexem.getValue();
                 nextLexem = iterator.hasNext() ? iterator.next() : null;
                 try {
-                    compileFile(nextLexem, path);
+                    if (!compilerApi.include(path)) {
+                        log.info("{} is already included", path);
+                    }
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
-                    throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_READ_ERROR), path);
                 }
             } else {
-                throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
             }
             if (nextLexem == null) {
@@ -79,11 +81,11 @@ public class IncludeCommandCompiler implements CommandCompiler {
             file = new File(compilerApi.getFile().getParentFile(), path);
         }
         if (!file.exists()) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.FILE_NOT_FOUND), file.getAbsolutePath());
         }
         if (namespaceApi.isCompiled(file)) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.CYCLIC_DEPENDENCIES_ERROR), file.getAbsolutePath());
         }
         try (FileInputStream fis = new FileInputStream(file)) {

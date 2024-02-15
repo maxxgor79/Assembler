@@ -34,6 +34,7 @@ public final class CompilerFactory {
             , @NonNull OutputStream os) {
         LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(file, is, settingsApi.getPlatformEncoding()
                 , settingsApi.getSourceEncoding());
+        lexemAnalyzer.setTrimEof(false);
         SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(new RepeatableIteratorImpl(lexemAnalyzer.iterator()));
         Compiler compiler = factory.newCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os);
         compiler.setFile(file);

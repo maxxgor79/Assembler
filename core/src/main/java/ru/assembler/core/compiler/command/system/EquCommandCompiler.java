@@ -46,30 +46,30 @@ public class EquCommandCompiler implements CommandCompiler {
         if (iterator.hasNext()) {
             nextLexem = iterator.next();
         } else {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.ADDRESS_EXCEPTED));
         }
         final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
         final Expression.Result result = expression.evaluate(nextLexem);
         if (result.isUndefined()) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
                     , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
         }
         final BigInteger equAddress = result.getValue();
         if (!TypeUtil.isInRange(BigInteger.ZERO, settingsApi.getMaxAddress(), equAddress)) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
         }
         final String labelName = namespaceApi.getLabel(namespaceApi.getCurrentCodeOffset());
         if (labelName == null) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.LABEL_DECLARATION_REQUIRED));
         }
         //transform absolute address to relative
         namespaceApi.putLabel(labelName, equAddress.subtract(namespaceApi.getAddress()));
         nextLexem = expression.getLastLexem();
         if (nextLexem != null) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
         return new byte[0];

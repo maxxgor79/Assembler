@@ -14,19 +14,19 @@ import java.util.Map;
  * @author Maxim Gorin
  */
 public class CommandTree {
-    protected static final Lexem VAR_D = new Lexem(1, LexemType.VARIABLE, "d");
+    protected static final Lexem VAR_D = new Lexem(LexemType.VARIABLE, "d");
 
-    protected static final Lexem VAR_DD = new Lexem(1, LexemType.VARIABLE, "dd");
+    protected static final Lexem VAR_DD = new Lexem( LexemType.VARIABLE, "dd");
 
-    protected static final Lexem VAR_E = new Lexem(1, LexemType.VARIABLE, "e");
+    protected static final Lexem VAR_E = new Lexem( LexemType.VARIABLE, "e");
 
-    protected static final Lexem VAR_EE = new Lexem(1, LexemType.VARIABLE, "ee");
+    protected static final Lexem VAR_EE = new Lexem( LexemType.VARIABLE, "ee");
 
-    protected static final Lexem VAR_N = new Lexem(1, LexemType.VARIABLE, "n");
+    protected static final Lexem VAR_N = new Lexem( LexemType.VARIABLE, "n");
 
-    protected static final Lexem VAR_NN = new Lexem(1, LexemType.VARIABLE, "nn");
+    protected static final Lexem VAR_NN = new Lexem( LexemType.VARIABLE, "nn");
 
-    protected static final Lexem VAR_NNNN = new Lexem(1, LexemType.VARIABLE, "nnnn");
+    protected static final Lexem VAR_NNNN = new Lexem( LexemType.VARIABLE, "nnnn");
 
 
     private final BasicNode rootNode;

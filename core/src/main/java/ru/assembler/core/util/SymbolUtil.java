@@ -12,16 +12,13 @@ import java.util.Set;
 public final class SymbolUtil {
     private static final char EOL_SYMBOL = '\n';
 
-    private static final String IGNORED_SYMBOLS = "\r\t\b\f";
+    private static final String IGNORED_SYMBOLS = " \r\t\b\f";
 
     private SymbolUtil() {
 
     }
 
     public static boolean isSpace(int ch) {
-        if (ch == ' ') {
-            return true;
-        }
         return IGNORED_SYMBOLS.indexOf(ch) >= 0;
     }
 
@@ -60,7 +57,7 @@ public final class SymbolUtil {
         return ch == EOL_SYMBOL;
     }
 
-    public static boolean isEOS(int ch) {
+    public static boolean isEOF(int ch) {
         return ch == -1;
     }
 

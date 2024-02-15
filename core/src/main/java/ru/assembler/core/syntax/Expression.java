@@ -198,7 +198,8 @@ public class Expression {
     private Result evaluateExpression(Lexem lexem) {
         if (lexemIterator.hasNext() && lexem.getType() == LexemType.OPEN_BRACE) {
             lexem = lastLexem = lexemIterator.next();
-            if (lexem.getType() == LexemType.CLOSED_BRACE || lexem.getType() == LexemType.EOS || lexem.getType() == LexemType.EOL) {
+            if (lexem.getType() == LexemType.CLOSED_BRACE || lexem.getType() == LexemType.EOF
+                || lexem.getType() == LexemType.EOL) {
                 throw new ExpressionException(file, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
                         MessageList.getMessage(MessageList.EXPRESSION));
             }

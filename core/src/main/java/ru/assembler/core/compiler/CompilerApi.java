@@ -1,5 +1,6 @@
 package ru.assembler.core.compiler;
 
+import java.io.FileNotFoundException;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.compiler.option.OptionType;
 
@@ -11,33 +12,36 @@ import java.io.OutputStream;
  * @author Maxim Gorin
  */
 public interface CompilerApi {
-    int getLineNumber();
 
-    void compile() throws IOException;
+  int getLineNumber();
 
-    int getCompiledLineCount();
+  void compile() throws IOException;
 
-    int addCompiledLineCount(int lineCount);
+  int getCompiledLineCount();
 
-    int getCompiledSourceCount();
+  int addCompiledLineCount(int lineCount);
 
-    int addCompiledSourceCount(int sourceCount);
+  int getCompiledSourceCount();
 
-    String getFileName();
+  int addCompiledSourceCount(int sourceCount);
 
-    File getFile();
+  String getFileName();
 
-    OutputStream getOutputStream();
+  File getFile();
 
-    boolean hasOption(OptionType type);
+  OutputStream getOutputStream();
 
-    Option getOption(OptionType type);
+  boolean hasOption(OptionType type);
 
-    boolean addOption(Option option);
+  Option getOption(OptionType type);
 
-    boolean addCommand(String name, CommandCompiler commandCompiler);
+  boolean addOption(Option option);
 
-    void stop();
+  boolean addCommand(String name, CommandCompiler commandCompiler);
 
-    boolean isStopped();
+  void stop();
+
+  boolean isStopped();
+
+  boolean include(String path) throws IOException;
 }

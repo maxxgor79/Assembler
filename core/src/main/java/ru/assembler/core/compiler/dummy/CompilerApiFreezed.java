@@ -106,4 +106,9 @@ public class CompilerApiFreezed implements CompilerApi {
     public boolean isStopped() {
         return false;
     }
+
+    @Override
+    public boolean include(String path) throws IOException {
+        return false;
+    }
 }

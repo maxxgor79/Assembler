@@ -1,8 +1,14 @@
 package ru.assembler.core.compiler;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.io.IOUtils;
 import ru.assembler.core.compiler.command.nonparameterized.NonParametersCommandCompiler;
 import ru.assembler.core.compiler.command.parameterized.ParameterizedCommandCompiler;
 import ru.assembler.core.compiler.command.system.DbCommandCompiler;
@@ -21,6 +27,7 @@ import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.lexem.Lexem;
+import ru.assembler.core.lexem.LexemAnalyzer;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
@@ -37,261 +44,302 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import ru.assembler.core.util.RepeatableIteratorImpl;
 
 /**
  * @author Maxim Gorin
  */
 @Slf4j
 public class Compiler implements CompilerApi {
-    private static final String TEMPLATE_NAME = "template";
 
-    protected final NamespaceApi namespaceApi;
+  private static final String TEMPLATE_NAME = "template";
 
-    protected final SettingsApi settingsApi;
+  protected final NamespaceApi namespaceApi;
 
-    private int lineNumber;
+  protected final SettingsApi settingsApi;
 
-    private int compiledLineCount;
+  private int lineNumber;
 
-    private final SyntaxAnalyzer syntaxAnalyzer;
+  private int compiledLineCount;
 
-    private final OutputStream os;
+  private final SyntaxAnalyzer syntaxAnalyzer;
 
-    private File file;
+  private final OutputStream os;
 
-    private int sourceCount;
+  private File file;
 
-    private final CommandTree commandCompilerTree;
+  private int sourceCount;
 
-    private final Map<LexemSequence, CommandCompiler> commandCompilerMap = new HashMap<>();
+  private final CommandTree commandCompilerTree;
 
-    private final Map<OptionType, Option> optionsMap = new HashMap<>();
+  private final Map<LexemSequence, CommandCompiler> commandCompilerMap = new HashMap<>();
 
-    private boolean stopped;
+  private final Map<OptionType, Option> optionsMap = new HashMap<>();
 
-    public Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
-        this.namespaceApi = namespaceApi;
-        this.settingsApi = settingsApi;
-        this.syntaxAnalyzer = syntaxAnalyzer;
-        this.os = os;
-        this.commandCompilerTree = new CommandTree();
-        initDefaultValues();
+  private boolean stopped;
+
+  private final Set<File> includedSet = new HashSet<>();
+
+  public Compiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+      , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
+    this.namespaceApi = namespaceApi;
+    this.settingsApi = settingsApi;
+    this.syntaxAnalyzer = syntaxAnalyzer;
+    this.os = os;
+    this.commandCompilerTree = new CommandTree();
+    initDefaultValues();
+  }
+
+  private void initDefaultValues() {
+    namespaceApi.setAddress(Variables.getBigInteger(Variables.DEFAULT_ADDRESS
+        , BigInteger.valueOf(0x8000)));
+  }
+
+  private boolean processCommand(LexemSequence lexemSequence) throws IOException {
+    CommandCompiler compiler = commandCompilerMap.get(
+        new LexemSequence(lexemSequence.first()));//embedded instruction
+    if (compiler == null) {
+      compiler = commandCompilerTree.find(lexemSequence);//try to find by pattern from lexemSequence
+      if (compiler == null) {
+        return false;
+      }
     }
-
-    private void initDefaultValues() {
-        namespaceApi.setAddress(Variables.getBigInteger(Variables.DEFAULT_ADDRESS
-                , BigInteger.valueOf(0x8000)));
+    final byte[] commandData = compiler.compile(lexemSequence);
+    if (commandData == null) {
+      return false;
     }
+    namespaceApi.incCurrentCodeOffset(BigInteger.valueOf(commandData.length));
+    os.write(commandData);
+    return true;
+  }
 
-    private boolean processCommand(LexemSequence lexemSequence) throws IOException {
-        CommandCompiler compiler = commandCompilerMap.get(new LexemSequence(lexemSequence.first()));//embedded instruction
-        if (compiler == null) {
-            compiler = commandCompilerTree.find(lexemSequence);//try to find by pattern from lexemSequence
-            if (compiler == null) {
-                return false;
-            }
+  private void processLabel(Lexem lexem) {
+    if (namespaceApi.containsLabel(lexem.getValue())) {
+      throw new CompilerException(lexem.getFile(), lexem.getLineNumber(),
+          MessageList.getMessage(MessageList
+              .LABEL_IS_ALREADY_DEFINED), lexem.getValue());
+    }
+    namespaceApi.putLabel(lexem.getValue());
+  }
+
+  private void loadEmbeddedCommands(Map<LexemSequence, CommandCompiler> commandCompilerMap) {
+    commandCompilerMap.put(new LexemSequence(OrgCommandCompiler.NAME),
+        new OrgCommandCompiler(namespaceApi
+            , settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DbCommandCompiler.NAME),
+        new DbCommandCompiler(DbCommandCompiler.NAME
+            , namespaceApi, settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DbCommandCompiler.ALT_NAME),
+        new DbCommandCompiler(DbCommandCompiler
+            .ALT_NAME, namespaceApi, settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DwCommandCompiler.NAME),
+        new DwCommandCompiler(DwCommandCompiler.NAME
+            , namespaceApi, settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DwCommandCompiler.ALT_NAME),
+        new DwCommandCompiler(DwCommandCompiler
+            .ALT_NAME, namespaceApi, settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.NAME),
+        new DdwCommandCompiler(DdwCommandCompiler.NAME
+            , namespaceApi, settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.ALT_NAME),
+        new DdwCommandCompiler(DdwCommandCompiler
+            .ALT_NAME, namespaceApi, settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(IncludeCommandCompiler.NAME),
+        new IncludeCommandCompiler(namespaceApi
+            , settingsApi, this));
+    commandCompilerMap.put(new LexemSequence(DefCommandCompiler.NAME),
+        new DefCommandCompiler(DefCommandCompiler
+            .NAME, namespaceApi, this));
+    commandCompilerMap.put(new LexemSequence(DefCommandCompiler.ALT_NAME),
+        new DefCommandCompiler(DefCommandCompiler
+            .ALT_NAME, namespaceApi, this));
+    commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.NAME),
+        new UdefCommandCompiler(UdefCommandCompiler
+            .NAME, namespaceApi, this));
+    commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.ALT_NAME),
+        new UdefCommandCompiler(UdefCommandCompiler
+            .ALT_NAME, namespaceApi, this));
+    commandCompilerMap.put(new LexemSequence(EndCommandCompiler.NAME),
+        new EndCommandCompiler(namespaceApi
+            , this));
+    commandCompilerMap.put(new LexemSequence(EquCommandCompiler.NAME),
+        new EquCommandCompiler(namespaceApi
+            , settingsApi, this));
+  }
+
+  private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {
+    List<String> templatePath = new LinkedList<>();
+    int i = 0;
+    while (true) {
+      String path = Variables.getString(TEMPLATE_NAME + i, null);
+      if (path == null) {
+        break;
+      }
+      templatePath.add(path);
+      i++;
+    }
+    AssemblerCommandLoader assemblerCommandLoader = new AssemblerCommandLoader(settingsApi);
+    InputStream is;
+    for (String path : templatePath) {
+      is = Compiler.class.getResourceAsStream(path);
+      if (is != null) {
+        MultiValuedMap<String, LexemSequence> map = assemblerCommandLoader.load(is);
+        for (Map.Entry<String, LexemSequence> entry : map.entries()) {
+          if (entry.getValue().hasVariables()) {
+            commandCompilerTree.add(entry.getValue(), new ParameterizedCommandCompiler(namespaceApi
+                , settingsApi, this, entry.getKey(), entry.getValue()));
+          } else {
+            commandCompilerTree.add(entry.getValue(), new NonParametersCommandCompiler(this
+                , entry.getKey(), entry.getValue()));
+          }
         }
-        final byte[] commandData = compiler.compile(lexemSequence);
-        if (commandData == null) {
-            return false;
+
+      }
+    }
+  }
+
+  private void loadCommandTables() throws IOException {
+    loadEmbeddedCommands(commandCompilerMap);
+    loadCustomCommands(commandCompilerTree);
+    if (commandCompilerTree.isEmpty()) {
+      throw new CompilerException(MessageList.getMessage(MessageList.COMMAND_DATA_IS_NOT_LOADED));
+    }
+  }
+
+  @Override
+  public void compile() throws IOException {
+    loadCommandTables();
+    Output.println(
+        MessageList.getMessage(MessageList.COMPILING) + " " + getFile().getAbsolutePath());
+    for (LexemSequence lexemSequence : syntaxAnalyzer) {
+      Lexem lexem = lexemSequence.first();
+      setLineNumber(lexem.getLineNumber());
+      if (lexem.getType() == LexemType.LABEL) {
+        processLabel(lexem);
+      } else {
+        if (!processCommand(lexemSequence)) {
+          throw new CompilerException(lexemSequence.getFile(), lexemSequence.getLineNumber(), MessageList
+              .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
         }
-        namespaceApi.incCurrentCodeOffset(BigInteger.valueOf(commandData.length));
-        os.write(commandData);
-        return true;
+      }
+      if (isStopped()) {
+        break;
+      }
     }
+    sourceCount++;
+    compiledLineCount += syntaxAnalyzer.getLineCount();
+  }
 
-    private void processLabel(Lexem lexem) {
-        if (namespaceApi.containsLabel(lexem.getValue())) {
-            throw new CompilerException(getFile(), lexem.getLineNumber(), MessageList.getMessage(MessageList
-                    .LABEL_IS_ALREADY_DEFINED), lexem.getValue());
-        }
-        namespaceApi.putLabel(lexem.getValue());
+  @Override
+  public int getCompiledLineCount() {
+    return compiledLineCount;
+  }
+
+  @Override
+  public int addCompiledLineCount(int lineCount) {
+    if (lineCount < 0) {
+      throw new IllegalArgumentException("lineCount is negative");
     }
+    return compiledLineCount += lineCount;
+  }
 
-    private void loadEmbeddedCommands(Map<LexemSequence, CommandCompiler> commandCompilerMap) {
-        commandCompilerMap.put(new LexemSequence(OrgCommandCompiler.NAME), new OrgCommandCompiler(namespaceApi
-                , settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DbCommandCompiler.NAME), new DbCommandCompiler(DbCommandCompiler.NAME
-                , namespaceApi, settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DbCommandCompiler.ALT_NAME), new DbCommandCompiler(DbCommandCompiler
-                .ALT_NAME, namespaceApi, settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DwCommandCompiler.NAME), new DwCommandCompiler(DwCommandCompiler.NAME
-                , namespaceApi, settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DwCommandCompiler.ALT_NAME), new DwCommandCompiler(DwCommandCompiler
-                .ALT_NAME, namespaceApi, settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.NAME), new DdwCommandCompiler(DdwCommandCompiler.NAME
-                , namespaceApi, settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.ALT_NAME), new DdwCommandCompiler(DdwCommandCompiler
-                .ALT_NAME, namespaceApi, settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(IncludeCommandCompiler.NAME), new IncludeCommandCompiler(namespaceApi
-                , settingsApi, this));
-        commandCompilerMap.put(new LexemSequence(DefCommandCompiler.NAME), new DefCommandCompiler(DefCommandCompiler
-                .NAME, namespaceApi, this));
-        commandCompilerMap.put(new LexemSequence(DefCommandCompiler.ALT_NAME), new DefCommandCompiler(DefCommandCompiler
-                .ALT_NAME, namespaceApi, this));
-        commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.NAME), new UdefCommandCompiler(UdefCommandCompiler
-                .NAME, namespaceApi, this));
-        commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.ALT_NAME), new UdefCommandCompiler(UdefCommandCompiler
-                .ALT_NAME, namespaceApi, this));
-        commandCompilerMap.put(new LexemSequence(EndCommandCompiler.NAME), new EndCommandCompiler(namespaceApi
-                , this));
-        commandCompilerMap.put(new LexemSequence(EquCommandCompiler.NAME), new EquCommandCompiler(namespaceApi
-                , settingsApi, this));
+  @Override
+  public int getCompiledSourceCount() {
+    return sourceCount;
+  }
+
+  @Override
+  public int addCompiledSourceCount(int sourceCount) {
+    if (sourceCount < 0) {
+      throw new IllegalArgumentException("sourceCount is negative");
     }
+    return this.sourceCount += sourceCount;
+  }
 
-    private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {
-        List<String> templatePath = new LinkedList<>();
-        int i = 0;
-        while (true) {
-            String path = Variables.getString(TEMPLATE_NAME + i, null);
-            if (path == null) {
-                break;
-            }
-            templatePath.add(path);
-            i++;
-        }
-        AssemblerCommandLoader assemblerCommandLoader = new AssemblerCommandLoader(settingsApi);
-        InputStream is;
-        for (String path : templatePath) {
-            is = Compiler.class.getResourceAsStream(path);
-            if (is != null) {
-                MultiValuedMap<String, LexemSequence> map = assemblerCommandLoader.load(is);
-                for (Map.Entry<String, LexemSequence> entry : map.entries()) {
-                    if (entry.getValue().hasVariables()) {
-                        commandCompilerTree.add(entry.getValue(), new ParameterizedCommandCompiler(namespaceApi
-                                , settingsApi, this, entry.getKey(), entry.getValue()));
-                    } else {
-                        commandCompilerTree.add(entry.getValue(), new NonParametersCommandCompiler(this
-                                , entry.getKey(), entry.getValue()));
-                    }
-                }
-
-            }
-        }
+  @Override
+  public String getFileName() {
+    File file = getFile();
+    if (file == null) {
+      return null;
     }
+    return file.getName();
+  }
 
-    private void loadCommandTables() throws IOException {
-        loadEmbeddedCommands(commandCompilerMap);
-        loadCustomCommands(commandCompilerTree);
-        if (commandCompilerTree.isEmpty()) {
-            throw new CompilerException(MessageList.getMessage(MessageList.COMMAND_DATA_IS_NOT_LOADED));
-        }
-    }
+  @Override
+  public File getFile() {
+    return file;
+  }
 
-    @Override
-    public void compile() throws IOException {
-        loadCommandTables();
-        Output.println(MessageList.getMessage(MessageList.COMPILING) + " " + getFile().getAbsolutePath());
-        for (LexemSequence lexemSequence : syntaxAnalyzer) {
-            Lexem lexem = lexemSequence.first();
-            setLineNumber(lexem.getLineNumber());
-            if (lexem.getType() == LexemType.LABEL) {
-                processLabel(lexem);
-            } else {
-                if (!processCommand(lexemSequence)) {
-                    throw new CompilerException(getFile(), lexemSequence.getLineNumber(), MessageList
-                            .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
-                }
-            }
-            if (isStopped()) {
-                break;
-            }
-        }
-        sourceCount++;
-        compiledLineCount += syntaxAnalyzer.getLineCount();
-    }
+  @Override
+  public OutputStream getOutputStream() {
+    return os;
+  }
 
-    @Override
-    public int getCompiledLineCount() {
-        return compiledLineCount;
-    }
+  @Override
+  public boolean hasOption(@NonNull OptionType type) {
+    return optionsMap.containsKey(type);
+  }
 
-    @Override
-    public int addCompiledLineCount(int lineCount) {
-        if (lineCount < 0) {
-            throw new IllegalArgumentException("lineCount is negative");
-        }
-        return compiledLineCount += lineCount;
-    }
+  @Override
+  public Option getOption(@NonNull OptionType type) {
+    return optionsMap.get(type);
+  }
 
-    @Override
-    public int getCompiledSourceCount() {
-        return sourceCount;
-    }
+  @Override
+  public boolean addOption(@NonNull Option option) {
+    return optionsMap.put(option.getType(), option) != null;
+  }
 
-    @Override
-    public int addCompiledSourceCount(int sourceCount) {
-        if (sourceCount < 0) {
-            throw new IllegalArgumentException("sourceCount is negative");
-        }
-        return this.sourceCount += sourceCount;
+  @Override
+  public boolean addCommand(@NonNull String name, @NonNull CommandCompiler commandCompiler) {
+    final LexemSequence lexemSequence = new LexemSequence(name);
+    if (commandCompilerMap.containsKey(lexemSequence)) {
+      return false;
     }
+    commandCompilerMap.put(lexemSequence, commandCompiler);
+    return true;
+  }
 
-    @Override
-    public String getFileName() {
-        File file = getFile();
-        if (file == null) {
-            return null;
-        }
-        return file.getName();
-    }
+  @Override
+  public void stop() {
+    this.stopped = true;
+  }
 
-    @Override
-    public File getFile() {
-        return file;
-    }
+  @Override
+  public boolean isStopped() {
+    return stopped;
+  }
 
-    @Override
-    public OutputStream getOutputStream() {
-        return os;
+  @Override
+  public boolean include(@NonNull String path) throws IOException {
+    final File file = new File(path);
+    if (!file.exists()) {
+      throw new FileNotFoundException(file.getAbsolutePath());
     }
+    if (includedSet.contains(file)) {
+      return false;
+    }
+    byte[] data;
+    try (FileInputStream fis = new FileInputStream(file)) {
+      data = IOUtils.toByteArray(fis);
+    }
+    final LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(file, new ByteArrayInputStream(data)
+        , settingsApi.getPlatformEncoding(), settingsApi.getSourceEncoding());
+    lexemAnalyzer.setTrimEof(false);
+    syntaxAnalyzer.append(new RepeatableIteratorImpl<>(lexemAnalyzer.iterator()));
+    return true;
+  }
 
-    @Override
-    public boolean hasOption(@NonNull OptionType type) {
-        return optionsMap.containsKey(type);
-    }
+  public void setFile(@NonNull File file) {
+    this.file = file;
+  }
 
-    @Override
-    public Option getOption(@NonNull OptionType type) {
-        return optionsMap.get(type);
-    }
+  @Override
+  public int getLineNumber() {
+    return lineNumber;
+  }
 
-    @Override
-    public boolean addOption(@NonNull Option option) {
-        return optionsMap.put(option.getType(), option) != null;
-    }
-
-    @Override
-    public boolean addCommand(@NonNull String name, @NonNull CommandCompiler commandCompiler) {
-        final LexemSequence lexemSequence = new LexemSequence(name);
-        if (commandCompilerMap.containsKey(lexemSequence)) {
-            return false;
-        }
-        commandCompilerMap.put(lexemSequence, commandCompiler);
-        return true;
-    }
-
-    @Override
-    public void stop() {
-        this.stopped = true;
-    }
-
-    @Override
-    public boolean isStopped() {
-        return stopped;
-    }
-
-    public void setFile(@NonNull File file) {
-        this.file = file;
-    }
-
-    @Override
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
-    protected void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
+  protected void setLineNumber(int lineNumber) {
+    this.lineNumber = lineNumber;
+  }
 }

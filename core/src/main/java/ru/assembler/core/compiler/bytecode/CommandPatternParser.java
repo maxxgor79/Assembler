@@ -53,7 +53,7 @@ public class CommandPatternParser implements Cloneable {
         int firstCh = pis.read();
         if (TypeUtil.isPatternSymbol(firstCh)) {
             sb.append((char) firstCh);
-            while (!SymbolUtil.isEOS(ch = pis.read())) {
+            while (!SymbolUtil.isEOF(ch = pis.read())) {
                 if (firstCh == ch && TypeUtil.isPatternSymbol(ch)) {
                     sb.append((char) ch);
                 } else {
@@ -63,7 +63,7 @@ public class CommandPatternParser implements Cloneable {
         } else {
             throw new ParserException("Invalid variable name");
         }
-        if (!SymbolUtil.isEOS(ch)) {
+        if (!SymbolUtil.isEOF(ch)) {
             pis.unread(ch);
         }
         return sb.toString();

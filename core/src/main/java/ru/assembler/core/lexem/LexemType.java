@@ -23,7 +23,7 @@ public enum LexemType {
     OPEN_BRACE(MessageList.getMessage(MessageList.DELIMITER)),
     CLOSED_BRACE(MessageList.getMessage(MessageList.DELIMITER)),
     EOL(MessageList.getMessage(MessageList.EOL)),
-    EOS("EOS"),
+    EOF("EOF"),
     LABEL(MessageList.getMessage(MessageList.LABEL)),
     CHAR(MessageList.getMessage(MessageList.CHAR)),
     STRING(MessageList.getMessage(MessageList.STRING)),

@@ -79,10 +79,10 @@ public class DbCommandCompiler implements CommandCompiler {
                 } else {
                     if (nextLexem.getType() == LexemType.CHAR || nextLexem.getType() == LexemType.DECIMAL ||
                             nextLexem.getType() == LexemType.OCTAL || nextLexem.getType() == LexemType.HEXADECIMAL) {
-                        final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+                        final Expression expression = new Expression(nextLexem.getFile(), iterator, namespaceApi);
                         final Expression.Result result = expression.evaluate(nextLexem);
                         if (result.isUndefined()) {
-                            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber()
+                            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
                                     , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
                         }
                         if (expression.getLastLexem() != null) {
@@ -94,18 +94,18 @@ public class DbCommandCompiler implements CommandCompiler {
                             value = TypeConverter.convert(srcType, value, Type.UInt8, settingsApi.isStrictConversion());
                         } catch (ConversationException e) {
                             log.error(e.getMessage(), e);
-                            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                                     .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
                         }
                         if (!result.getValue().equals(value)) {
-                            Output.throwWarning(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                            Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                                             .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
                                     , value.toString());
                         }
                         IOUtils.writeByte(baos, value.byteValue());
                         nextLexem = expression.getLastLexem();
                     } else {
-                        throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                        throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                                 .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
                     }
                 }
@@ -115,7 +115,7 @@ public class DbCommandCompiler implements CommandCompiler {
                 if (nextLexem.getType() == LexemType.COMMA) {
                     nextLexem = iterator.hasNext() ? iterator.next() : null;
                 } else {
-                    throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.EXPECTED_SYMBOL), ",");
                 }
             }

@@ -50,19 +50,19 @@ public class UdefCommandCompiler implements CommandCompiler {
             return null;
         }
         if (!iterator.hasNext()) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.IDENTIFIER_EXPECTED));
         }
         nextLexem = iterator.next();
         if (nextLexem.getType() != LexemType.IDENTIFIER) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
         }
         final String name = nextLexem.getValue();
         namespaceApi.removeVariable(name);
         nextLexem = iterator.next();
         if (nextLexem != null) {
-            throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
         return new byte[0];

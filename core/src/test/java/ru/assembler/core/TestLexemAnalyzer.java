@@ -38,14 +38,23 @@ public class TestLexemAnalyzer {
             lexem = iter.next();
             lexemList.add(lexem);
         }
-        Assertions.assertEquals(lexemList.get(0), new Lexem(1, LexemType.DECIMAL, "1234"));
-        Assertions.assertEquals(lexemList.get(1), new Lexem(1, LexemType.HEXADECIMAL, "0"));
-        Assertions.assertEquals(lexemList.get(2), new Lexem(1, LexemType.OCTAL, "123"));
-        Assertions.assertEquals(lexemList.get(3), new Lexem(1, LexemType.HEXADECIMAL, "123"));
-        Assertions.assertEquals(lexemList.get(4), new Lexem(1, LexemType.BINARY, "111"));
-        Assertions.assertEquals(lexemList.get(5), new Lexem(1, LexemType.HEXADECIMAL, "123"));
-        Assertions.assertEquals(lexemList.get(6), new Lexem(1, LexemType.BINARY, "1001"));
-        Assertions.assertEquals(lexemList.get(7), new Lexem(1, LexemType.OCTAL, "77"));
-        Assertions.assertEquals(lexemList.get(8), new Lexem(1, LexemType.OCTAL, "0"));
+        Assertions.assertEquals(lexemList.get(0), new Lexem( LexemType.DECIMAL, "1234"));
+        Assertions.assertEquals(lexemList.get(1), new Lexem( LexemType.HEXADECIMAL, "0"));
+        Assertions.assertEquals(lexemList.get(2), new Lexem( LexemType.OCTAL, "123"));
+        Assertions.assertEquals(lexemList.get(3), new Lexem( LexemType.HEXADECIMAL, "123"));
+        Assertions.assertEquals(lexemList.get(4), new Lexem( LexemType.BINARY, "111"));
+        Assertions.assertEquals(lexemList.get(5), new Lexem( LexemType.HEXADECIMAL, "123"));
+        Assertions.assertEquals(lexemList.get(6), new Lexem( LexemType.BINARY, "1001"));
+        Assertions.assertEquals(lexemList.get(7), new Lexem( LexemType.OCTAL, "77"));
+        Assertions.assertEquals(lexemList.get(8), new Lexem( LexemType.OCTAL, "0"));
+    }
+
+    @Test
+    public void testLexemAnalyzer() {
+        String asm = "ret";
+        LexemAnalyzer analyzer = new LexemAnalyzer(new ByteArrayInputStream(asm.getBytes()));
+        for (Lexem lexem : analyzer) {
+            System.out.println("Lexem: " + lexem);
+        }
     }
 }
