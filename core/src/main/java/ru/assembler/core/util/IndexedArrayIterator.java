@@ -5,6 +5,7 @@ import lombok.NonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * @author Maxim Gorin
@@ -31,7 +32,7 @@ public class IndexedArrayIterator<E> implements Iterator {
     @Override
     public E next() {
         if (!hasNext()) {
-            return null;
+            throw new NoSuchElementException();
         }
         return list.get(index++);
     }

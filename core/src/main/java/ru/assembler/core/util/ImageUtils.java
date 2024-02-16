@@ -6,11 +6,11 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.awt.image.RescaleOp;
 import java.io.IOException;
 
 public final class ImageUtils {
+    private static final String OUTPUT_FORMAT = "bmp";
     private ImageUtils() {
 
     }
@@ -39,7 +39,7 @@ public final class ImageUtils {
 
     public static byte[] toBytes(@NonNull final BufferedImage image) throws IOException {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, "bmp", baos);
+        ImageIO.write(image, OUTPUT_FORMAT, baos);
         return baos.toByteArray();
     }
 }

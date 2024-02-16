@@ -12,8 +12,8 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.io.LEDataInputStream;
-import ru.zxspectrum.io.LEDataOutputStream;
+import ru.assembler.core.io.LEDataInputStream;
+import ru.assembler.core.io.LEDataOutputStream;
 
 /**
  * @author Maxim Gorin

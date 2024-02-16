@@ -20,6 +20,7 @@ import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.LimitedOutputStream;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.core.util.FileUtil;
@@ -207,9 +208,11 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
 
     protected CompilerApi compile(@NonNull final File file, @NonNull final InputStream is
             , @NonNull final OutputStream os) throws IOException {
+        final int limitation = settings.getMaxAddress().subtract(settings.getMinAddress()).intValue();
+        final LimitedOutputStream los = new LimitedOutputStream(os, limitation);
         final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                         -> new MicroshaCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os)
-                , this, settings, file, is, os);
+                , this, settings, file, is, los);
         compilerApi.compile();
         return compilerApi;
     }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.io.LEDataOutputStream;
+import ru.assembler.core.io.LEDataOutputStream;
 
 import java.io.EOFException;
 import java.io.IOException;

@@ -3,7 +3,7 @@ package ru.zxspectrum.io.audio.wav;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import ru.zxspectrum.io.LEDataOutputStream;
+import ru.assembler.core.io.LEDataOutputStream;
 
 import java.io.IOException;
 import java.io.OutputStream;

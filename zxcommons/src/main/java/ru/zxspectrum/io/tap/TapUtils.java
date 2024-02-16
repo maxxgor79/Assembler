@@ -2,8 +2,8 @@ package ru.zxspectrum.io.tap;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.assembler.core.io.LEDataOutputStream;
 import ru.assembler.core.resource.Loader;
-import ru.zxspectrum.io.LEDataOutputStream;
 import ru.zxspectrum.basic.Lexem;
 import ru.zxspectrum.basic.ParserException;
 import ru.zxspectrum.basic.compile.Compiler;

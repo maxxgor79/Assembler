@@ -1,4 +1,4 @@
-package ru.zxspectrum.io;
+package ru.assembler.core.io;
 
 import java.io.DataInput;
 import java.io.EOFException;
