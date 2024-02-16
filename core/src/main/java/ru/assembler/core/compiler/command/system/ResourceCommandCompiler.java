@@ -2,42 +2,29 @@ package ru.assembler.core.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.assembler.core.error.text.Output;
-import ru.assembler.core.ns.NamespaceApi;
+import org.apache.commons.io.IOUtils;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
-import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
-import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.syntax.LexemSequence;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 
-/**
- * @author Maxim Gorin
- */
 @Slf4j
-public class IncludeCommandCompiler implements CommandCompiler {
+public class ResourceCommandCompiler implements CommandCompiler {
+    protected static final String[] NAMES = {"resource", "defres"};
 
-    protected static final String[] NAMES = {"include"};
+    protected CompilerApi compilerApi;
 
-    private final NamespaceApi namespaceApi;
-
-    private final SettingsApi settingsApi;
-
-    private final CompilerApi compilerApi;
-
-    public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull CompilerApi compilerApi) {
-        this.namespaceApi = namespaceApi;
-        this.settingsApi = settingsApi;
+    public ResourceCommandCompiler(@NonNull final CompilerApi compilerApi) {
         this.compilerApi = compilerApi;
     }
 
@@ -47,10 +34,11 @@ public class IncludeCommandCompiler implements CommandCompiler {
     }
 
     @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence) {
-        Iterator<Lexem> iterator = lexemSequence.get().iterator();
+    public byte[] compile(@NonNull final LexemSequence lexemSequence) {
         Lexem nextLexem;
-        if (!iterator.hasNext() || !contains(NAMES, (nextLexem = iterator.next()).getValue())) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Iterator<Lexem> iterator = lexemSequence.get().iterator();
+        if (!iterator.hasNext() || !contains(NAMES, ((iterator.next()).getValue()))) {
             return null;
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
@@ -62,10 +50,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
             if (nextLexem.getType() == LexemType.STRING) {
                 final String path = nextLexem.getValue();
                 try {
-                    if (!compilerApi.include(path)) {
-                        Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                                .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
-                    }
+                    baos.write(loadResource(path));
                 } catch (FileNotFoundException e) {
                     throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_NOT_FOUND), path);
@@ -82,6 +67,16 @@ public class IncludeCommandCompiler implements CommandCompiler {
                 break;
             }
         }
-        return new byte[0];
+        return baos.toByteArray();
+    }
+
+    private byte[] loadResource(String path) throws IOException {
+        File file = new File(path);
+        if (!file.exists()) {
+            throw new FileNotFoundException(file.getAbsolutePath());
+        }
+        try (FileInputStream fis = new FileInputStream(file)) {
+            return IOUtils.toByteArray(fis);
+        }
     }
 }
