@@ -67,11 +67,9 @@ public class IncludeCommandCompiler implements CommandCompiler {
                 .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
           }
         } catch (FileNotFoundException e) {
-          log.error(e.getMessage(), e);
-          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+A          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
               .getMessage(MessageList.FILE_NOT_FOUND), path);
         } catch (IOException e) {
-          log.error(e.getMessage(), e);
           throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
               .getMessage(MessageList.FILE_READ_ERROR), path);
         }
