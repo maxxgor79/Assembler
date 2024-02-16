@@ -1,7 +1,9 @@
 package ru.assembler.microsha;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,17 +17,18 @@ import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
+import ru.assembler.core.error.SettingsException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
-import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
-import ru.assembler.io.wav.WavFile;
+import ru.assembler.io.audio.wav.WavWriter;
 import ru.assembler.microsha.core.compiler.MicroshaCompiler;
 import ru.assembler.microsha.core.compiler.option.OptionTypes;
+import ru.assembler.microsha.core.settings.DefaultSettings;
 import ru.assembler.microsha.core.settings.MicroshaAssemblerSettings;
 import ru.assembler.microsha.io.generator.SoundGenerator;
 import ru.assembler.microsha.io.rkm.RkmData;
@@ -59,7 +62,17 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     protected final Map<BigInteger, PostCommandCompiler> postCommandCompilerMap = new LinkedHashMap<>();
 
     @Getter
-    protected BigInteger address = new BigInteger("0000", 16);
+    protected BigInteger address = BigInteger.valueOf(0);
+
+    @Setter(AccessLevel.PROTECTED)
+    @Getter
+    @NonNull
+    protected BigInteger minAddress = BigInteger.valueOf(0);
+
+    @Setter(AccessLevel.PROTECTED)
+    @Getter
+    @NonNull
+    protected BigInteger maxAddress = BigInteger.valueOf(32767);
 
     public MicroshaAssembler() {
         reset();
@@ -71,9 +84,34 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         postCommandCompilerMap.clear();
     }
 
-    protected void setSettings(@NonNull final MicroshaAssemblerSettings settings) {
+    protected void applySettings(@NonNull final MicroshaAssemblerSettings settings) throws SettingsException {
+        if (settings.getMinAddress() != null) {
+            if (!TypeUtil.isInRange(BigInteger.ZERO, BigInteger.valueOf(0xffff),
+                    settings.getMinAddress())) {
+                throw new SettingsException(
+                        String.format(MicroshaMessages.getMessage(MicroshaMessages.MIN_ADDRESS_OUT_OF_RANGE)
+                                , settings.getMinAddress()));
+            }
+            setMinAddress(settings.getMinAddress());
+        }
+        if (settings.getMaxAddress() != null) {
+            if (!TypeUtil.isInRange(BigInteger.ZERO, BigInteger.valueOf(0xffff),
+                    settings.getMaxAddress())) {
+                throw new SettingsException(
+                        String.format(MicroshaMessages.getMessage(MicroshaMessages.MAX_ADDRESS_OUT_OF_RANGE)
+                                , settings.getMaxAddress()));
+            }
+            setMaxAddress(settings.getMaxAddress());
+        }
+        if (settings.getMinAddress().compareTo(settings.getMaxAddress()) >= 0) {
+            throw new SettingsException(
+                    String.format(MicroshaMessages.getMessage(MicroshaMessages.MIN_ADDRESS_GREATER_OR_EQUAL)
+                            , settings.getMinAddress(), settings.getMaxAddress()));
+        }
+        if (settings.getDefaultAddress() != null) {
+            setAddress(settings.getDefaultAddress());
+        }
         this.settings = settings;
-        setAddress(settings.getDefaultAddress());
     }
 
     public void run(@NonNull final File... files) {
@@ -127,7 +165,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected void createWav(@NonNull final File file, @NonNull final BigInteger address) throws IOException {
-        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavFile.EXTENSION);
+        final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavWriter.EXTENSION);
         createWav(file, wavFile, address);
     }
 
@@ -193,7 +231,8 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         return sb.toString();
     }
 
-    protected List<File> setCli(@NonNull final String[] args, @NonNull final Options options) {
+    protected static List<File> setCli(@NonNull MicroshaAssemblerSettings settings, @NonNull final String[] args
+            , @NonNull final Options options) {
         final CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
@@ -251,8 +290,13 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
             return;
         }
         final MicroshaAssembler asm = new MicroshaAssembler();
-        asm.setSettings(settings);
-        final List<File> fileList = asm.setCli(args, options);
+        final List<File> fileList = setCli(settings, args, options);
+        try {
+            asm.applySettings(settings);
+        } catch (SettingsException e) {
+            Output.println(e.getMessage());
+            return;
+        }
         if (!fileList.isEmpty()) {
             Output.println(asm.createWelcome());
             asm.run(fileList.toArray(new File[fileList.size()]));
@@ -262,7 +306,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected static MicroshaAssemblerSettings loadSettings() {
-        MicroshaAssemblerSettings settings = new MicroshaAssemblerSettings();
+        final MicroshaAssemblerSettings settings = new MicroshaAssemblerSettings();
         settings.merge(new DefaultSettings());
         try {
             final ResourceSettings resourceSettings = new ResourceSettings();

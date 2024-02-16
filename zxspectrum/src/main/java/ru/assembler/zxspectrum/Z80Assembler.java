@@ -1,8 +1,9 @@
 package ru.assembler.zxspectrum;
 
-import java.io.BufferedOutputStream;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -20,21 +21,21 @@ import ru.assembler.core.error.SettingsException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
-import ru.assembler.core.settings.DefaultSettings;
 import ru.assembler.core.settings.ResourceSettings;
-import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
-import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
-import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
-import ru.zxspectrum.io.LimitedOutputStream;
-import ru.zxspectrum.io.tzx.TzxUtils;
-import ru.assembler.zxspectrum.text.Z80Messages;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
-import ru.zxspectrum.io.tap.TapData;
-import ru.zxspectrum.io.tap.TapUtils;
+import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
+import ru.assembler.zxspectrum.core.compiler.option.OptionTypes;
+import ru.assembler.zxspectrum.core.settings.DefaultSettings;
+import ru.assembler.zxspectrum.core.settings.Z80AssemblerSettings;
+import ru.assembler.zxspectrum.text.Z80Messages;
+import ru.zxspectrum.io.LimitedOutputStream;
 import ru.zxspectrum.io.audio.generator.SignalGenerator;
 import ru.zxspectrum.io.audio.wav.WavWriter;
+import ru.zxspectrum.io.tap.TapData;
+import ru.zxspectrum.io.tap.TapUtils;
+import ru.zxspectrum.io.tzx.TzxUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +45,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Maxim Gorin
@@ -59,12 +65,17 @@ public class Z80Assembler extends AbstractNamespaceApi {
   protected final Map<BigInteger, PostCommandCompiler> postCommandCompilerMap = new LinkedHashMap<>();
 
   @Getter
+  @NonNull
   protected BigInteger address = BigInteger.valueOf(0x8000);
 
+  @Setter(AccessLevel.PROTECTED)
   @Getter
+  @NonNull
   protected BigInteger minAddress = BigInteger.valueOf(0x4000);
 
+  @Setter(AccessLevel.PROTECTED)
   @Getter
+  @NonNull
   protected BigInteger maxAddress = BigInteger.valueOf(0xffff);
 
   public Z80Assembler() {
@@ -106,14 +117,6 @@ public class Z80Assembler extends AbstractNamespaceApi {
       setAddress(settings.getDefaultAddress());
     }
     this.settings = settings;
-  }
-
-  protected void setMinAddress(@NonNull final BigInteger address) {
-    minAddress = address;
-  }
-
-  protected void setMaxAddress(@NonNull final BigInteger address) {
-    maxAddress = address;
   }
 
   public void run(@NonNull final File... files) {

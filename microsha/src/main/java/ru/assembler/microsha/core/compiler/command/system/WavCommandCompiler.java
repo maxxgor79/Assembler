@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class WavCommandCompiler implements CommandCompiler {
-    public static final String NAME = "saveWav";
+    protected static final String[] NAMES = {"saveWav"};
 
     private final CompilerApi compilerApi;
 
@@ -30,11 +30,15 @@ public class WavCommandCompiler implements CommandCompiler {
     }
 
     @Override
+    public String[] names() {
+        return NAMES;
+    }
+
+    @Override
     public byte[] compile(@NonNull LexemSequence lexemSequence) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
-        if (!iterator.hasNext() ||
-                (NAME.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
+        if (!iterator.hasNext() || !contains(names(), (nextLexem = iterator.next()).getValue())) {
             return null;
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;

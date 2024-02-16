@@ -1,6 +1,7 @@
 package ru.assembler.microsha.core.compiler;
 
 import lombok.NonNull;
+import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.Compiler;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
@@ -16,15 +17,21 @@ import java.io.OutputStream;
  */
 
 public class MicroshaCompiler extends Compiler {
-    public MicroshaCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi, @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
+    public MicroshaCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull SyntaxAnalyzer syntaxAnalyzer, @NonNull OutputStream os) {
         super(namespaceApi, settingsApi, syntaxAnalyzer, os);
         addCommands();
     }
 
+    private void addCommand(CommandCompiler cc) {
+        for (String name : cc.names()) {
+            addCommand(name, cc);
+        }
+    }
+
     private void addCommands() {
-        addCommand(WavCommandCompiler.NAME, new WavCommandCompiler(this));
-        addCommand(RkmCommandCompiler.NAME, new RkmCommandCompiler(this));
-        addCommand(SetCommandCompiler.NAME, new SetCommandCompiler(SetCommandCompiler.NAME, namespaceApi
-                , this));
+        addCommand(new WavCommandCompiler(this));
+        addCommand(new RkmCommandCompiler(this));
+        addCommand(new SetCommandCompiler(namespaceApi, this));
     }
 }

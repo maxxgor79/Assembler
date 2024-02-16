@@ -62,7 +62,7 @@
         <maven.compiler.target>14</maven.compiler.target>
         <exec.name>z80asm</exec.name>
         <major.version>1</major.version>
-        <minor.version>2</minor.version>
+        <minor.version>3</minor.version>
     </properties>
 
     <dependencies>

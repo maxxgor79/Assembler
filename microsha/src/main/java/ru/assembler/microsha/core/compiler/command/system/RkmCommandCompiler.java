@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class RkmCommandCompiler implements CommandCompiler {
-    public static final String NAME = "saveRkm";
+    protected static final String[] NAMES = {"saveRkm"};
 
     private final CompilerApi compilerApi;
 
@@ -30,11 +30,15 @@ public class RkmCommandCompiler implements CommandCompiler {
     }
 
     @Override
+    public String[] names() {
+        return NAMES;
+    }
+
+    @Override
     public byte[] compile(@NonNull LexemSequence lexemSequence) {
         Iterator<Lexem> iterator = lexemSequence.get().iterator();
         Lexem nextLexem;
-        if (!iterator.hasNext() ||
-                (NAME.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
+        if (!iterator.hasNext() || !contains(names(), (nextLexem = iterator.next()).getValue())) {
             return null;
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
@@ -47,11 +51,11 @@ public class RkmCommandCompiler implements CommandCompiler {
             if (nextLexem.getType() == LexemType.STRING) {
                 final String path = nextLexem.getValue();
                 paths.add(path);
-                nextLexem = iterator.hasNext() ? iterator.next() : null;
             } else {
                 throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
             }
+            nextLexem = iterator.hasNext() ? iterator.next() : null;
             if (nextLexem == null) {
                 break;
             }

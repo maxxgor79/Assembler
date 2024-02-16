@@ -10,13 +10,14 @@ import ru.assembler.core.ns.NamespaceApi;
  */
 
 public class SetCommandCompiler extends DefCommandCompiler {
-    public static final String NAME = "set";
+    protected static final String[] NAMES = {"set"};
 
-    public SetCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi, @NonNull CompilerApi compilerApi) {
-        super(name, namespaceApi, compilerApi);
+    public SetCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull CompilerApi compilerApi) {
+        super(namespaceApi, compilerApi);
     }
 
-    public SetCommandCompiler(NamespaceApi namespaceApi, CompilerApi compilerApi) {
-        super(namespaceApi, compilerApi);
+    @Override
+    public String[] names() {
+        return NAMES;
     }
 }

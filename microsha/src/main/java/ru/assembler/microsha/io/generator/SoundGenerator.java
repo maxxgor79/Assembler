@@ -5,9 +5,9 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import ru.assembler.io.generator.Generator;
+import ru.zxspectrum.io.audio.generator.Generator;
 import ru.assembler.microsha.io.rkm.RkmData;
-import ru.assembler.io.wav.WavFile;
+import ru.zxspectrum.io.audio.wav.WavWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -92,7 +92,7 @@ public class SoundGenerator extends Generator {
         Arrays.fill(buf, 0, FIR_WEIGHTS.length - 1, (byte) 0x80);
         // some intermediate values in the end, for the FIR filter
         write(baos, Arrays.copyOf(buf, FIR_WEIGHTS.length));
-        WavFile wavFile = new WavFile(baos.toByteArray(), sampleRate, 1);
+        WavWriter wavFile = new WavWriter(baos.toByteArray(), sampleRate, 1);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             wavFile.write(fos);
         }

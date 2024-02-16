@@ -1,8 +1,9 @@
-package ru.assembler.core.settings;
+package ru.assembler.zxspectrum.core.settings;
 
 import lombok.NonNull;
 import ru.assembler.core.compiler.bytecode.ByteOrder;
 import ru.assembler.core.lang.Encoding;
+import ru.assembler.core.settings.SettingsApi;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,9 +20,11 @@ public class DefaultSettings implements SettingsApi {
 
     protected static final Encoding PLATFORM_ENCODING = Encoding.ASCII;
 
+    protected static final BigInteger DEFAULT_ADDRESS = BigInteger.valueOf(0x8000L);
+
     protected static final BigInteger MIN_ADDRESS = BigInteger.ZERO;
 
-    protected static final BigInteger MAX_ADDRESS = new BigInteger("ffff", 16);
+    protected static final BigInteger MAX_ADDRESS = BigInteger.valueOf(0xffff);
 
     protected static final File OUTPUT_DIRECTORY = new File("output");
 
@@ -40,7 +43,7 @@ public class DefaultSettings implements SettingsApi {
 
     @Override
     public BigInteger getDefaultAddress() {
-        return BigInteger.valueOf(0x4000L);
+        return DEFAULT_ADDRESS;
     }
 
     @Override

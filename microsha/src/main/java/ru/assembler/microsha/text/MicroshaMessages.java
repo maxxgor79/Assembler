@@ -39,6 +39,14 @@ public final class MicroshaMessages {
 
     public static final String WRITTEN_BY = "writtenBy";
 
+    public static final String MAX_ADDRESS_OUT_OF_RANGE = "max_address_out_of_range";
+
+    public static final String MIN_ADDRESS_OUT_OF_RANGE = "min_address_out_of_range";
+
+    public static final String MIN_ADDRESS_GREATER_OR_EQUAL = "min_address_greater_or_equal";
+
+    public static final String ADDRESS_IS_OUT_RANGE = "address_is_out_of_range";
+
     private MicroshaMessages() {
 
     }
