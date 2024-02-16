@@ -67,6 +67,11 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
   }
 
   @Override
+  public String[] names() {
+    return null;
+  }
+
+  @Override
   public byte[] compile(@NonNull LexemSequence command) {
     final CommandMatcher matcher = new CommandMatcher(commandPattern);
     if (!matcher.match(command)) {

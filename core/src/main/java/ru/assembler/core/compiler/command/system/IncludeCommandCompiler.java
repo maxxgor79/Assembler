@@ -25,60 +25,65 @@ import java.util.Iterator;
  */
 @Slf4j
 public class IncludeCommandCompiler implements CommandCompiler {
-    public static final String NAME = "include";
 
-    private final NamespaceApi namespaceApi;
+  protected static final String[] NAMES = {"include"};
 
-    private final SettingsApi settingsApi;
+  private final NamespaceApi namespaceApi;
 
-    private final CompilerApi compilerApi;
+  private final SettingsApi settingsApi;
 
-    public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull CompilerApi compilerApi) {
-        this.namespaceApi = namespaceApi;
-        this.settingsApi = settingsApi;
-        this.compilerApi = compilerApi;
+  private final CompilerApi compilerApi;
+
+  public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+      , @NonNull CompilerApi compilerApi) {
+    this.namespaceApi = namespaceApi;
+    this.settingsApi = settingsApi;
+    this.compilerApi = compilerApi;
+  }
+
+  @Override
+  public String[] names() {
+    return NAMES;
+  }
+
+  @Override
+  public byte[] compile(@NonNull LexemSequence lexemSequence) {
+    Iterator<Lexem> iterator = lexemSequence.get().iterator();
+    Lexem nextLexem;
+    if (!iterator.hasNext() || !contains(NAMES, (nextLexem = iterator.next()).getValue())) {
+      return null;
     }
-
-    @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence) {
-        Iterator<Lexem> iterator = lexemSequence.get().iterator();
-        Lexem nextLexem;
-        if (!iterator.hasNext() ||
-                (NAME.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
-            return null;
-        }
-        nextLexem = iterator.hasNext() ? iterator.next() : null;
-        if (nextLexem == null) {
-            throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
-                    .getMessage(MessageList.FILE_PATH_EXCEPTED));
-        }
-        while (true) {
-            if (nextLexem.getType() == LexemType.STRING) {
-                final String path = nextLexem.getValue();
-                try {
-                    if (!compilerApi.include(path)) {
-                        Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                                .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
-                    }
-                } catch (FileNotFoundException e) {
-                    log.error(e.getMessage(), e);
-                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                            .getMessage(MessageList.FILE_NOT_FOUND), path);
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                            .getMessage(MessageList.FILE_READ_ERROR), path);
-                }
-            } else {
-                throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                        .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
-            }
-            nextLexem = iterator.hasNext() ? iterator.next() : null;
-            if (nextLexem == null) {
-                break;
-            }
-        }
-        return new byte[0];
+    nextLexem = iterator.hasNext() ? iterator.next() : null;
+    if (nextLexem == null) {
+      throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+          .getMessage(MessageList.FILE_PATH_EXCEPTED));
     }
+    while (true) {
+      if (nextLexem.getType() == LexemType.STRING) {
+        final String path = nextLexem.getValue();
+        try {
+          if (!compilerApi.include(path)) {
+            Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
+          }
+        } catch (FileNotFoundException e) {
+          log.error(e.getMessage(), e);
+          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+              .getMessage(MessageList.FILE_NOT_FOUND), path);
+        } catch (IOException e) {
+          log.error(e.getMessage(), e);
+          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+              .getMessage(MessageList.FILE_READ_ERROR), path);
+        }
+      } else {
+        throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+            .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+      }
+      nextLexem = iterator.hasNext() ? iterator.next() : null;
+      if (nextLexem == null) {
+        break;
+      }
+    }
+    return new byte[0];
+  }
 }

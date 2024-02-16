@@ -33,6 +33,11 @@ public class NonParametersCommandCompiler implements CommandCompiler {
   }
 
   @Override
+  public String[] names() {
+    return null;
+  }
+
+  @Override
   public byte[] compile(@NonNull LexemSequence lexemSequence) {
     if (originalLexemSequence.equals(lexemSequence)) {
       return commandCode;

@@ -38,13 +38,6 @@ public class AssemblerSettings extends BaseSettings {
       setStrictConversion(true);
     }
     try {
-      if (cli.hasOption("a")) {
-        setDefaultAddress(Converter.numberToInteger(cli.getOptionValue("a")));
-      }
-    } catch (NumberFormatException e) {
-      log.error(e.getMessage(), e);
-    }
-    try {
       if (cli.hasOption("min")) {
         setMinAddress(Converter.numberToInteger(cli.getOptionValue("min")));
       }
@@ -54,6 +47,13 @@ public class AssemblerSettings extends BaseSettings {
     try {
       if (cli.hasOption("max")) {
         setMaxAddress(Converter.numberToInteger(cli.getOptionValue("max")));
+      }
+    } catch (NumberFormatException e) {
+      log.error(e.getMessage(), e);
+    }
+    try {
+      if (cli.hasOption("a")) {
+        setDefaultAddress(Converter.numberToInteger(cli.getOptionValue("a")));
       }
     } catch (NumberFormatException e) {
       log.error(e.getMessage(), e);

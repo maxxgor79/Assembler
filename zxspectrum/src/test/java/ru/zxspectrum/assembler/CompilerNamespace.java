@@ -29,6 +29,16 @@ public class CompilerNamespace extends AbstractNamespaceApi {
     }
 
     @Override
+    public BigInteger getMinAddress() {
+        return address;
+    }
+
+    @Override
+    public BigInteger getMaxAddress() {
+        return address;
+    }
+
+    @Override
     public void addToQueue(@NonNull PostCommandCompiler commandCompiler) {
 
     }

@@ -7,20 +7,21 @@ import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
 
 public class DdwCommandCompiler extends DwCommandCompiler {
-    public static final String NAME = "ddw";
 
-    public static final String ALT_NAME = "defdw";
+  protected static final String[] NAMES = {"ddw", "defdw"};
 
-    public DdwCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi, @NonNull CompilerApi compilerApi) {
-        super(name, namespaceApi, settingsApi, compilerApi);
-    }
+  public DdwCommandCompiler(@NonNull NamespaceApi namespaceApi,
+      @NonNull SettingsApi settingsApi, @NonNull CompilerApi compilerApi) {
+    super(namespaceApi, settingsApi, compilerApi);
+  }
 
-    public DdwCommandCompiler(NamespaceApi namespaceApi, SettingsApi settingsApi, CompilerApi compilerApi) {
-        super(NAME, namespaceApi, settingsApi, compilerApi);
-    }
+  @NonNull
+  public String[] getNames() {
+    return NAMES;
+  }
 
-    @Override
-    protected Type getDestType() {
-        return Type.UInt32;
-    }
+  @Override
+  protected Type getDestType() {
+    return Type.UInt32;
+  }
 }

@@ -20,50 +20,56 @@ import java.util.Iterator;
  */
 @Slf4j
 public class OrgCommandCompiler implements CommandCompiler {
-    public static final String NAME = "org";
 
-    private final NamespaceApi namespaceApi;
+  protected static final String[] NAMES = {"org"};
 
-    private final SettingsApi settingsApi;
+  private final NamespaceApi namespaceApi;
 
-    private final CompilerApi compilerApi;
+  private final SettingsApi settingsApi;
 
-    public OrgCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-            , @NonNull CompilerApi compilerApi) {
-        this.namespaceApi = namespaceApi;
-        this.settingsApi = settingsApi;
-        this.compilerApi = compilerApi;
+  private final CompilerApi compilerApi;
+
+  public OrgCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+      , @NonNull CompilerApi compilerApi) {
+    this.namespaceApi = namespaceApi;
+    this.settingsApi = settingsApi;
+    this.compilerApi = compilerApi;
+  }
+
+  @Override
+  public String[] names() {
+    return NAMES;
+  }
+
+  @Override
+  public byte[] compile(@NonNull LexemSequence lexemSequence) {
+    final Iterator<Lexem> iterator = lexemSequence.get().iterator();
+    Lexem nextLexem;
+    if (!iterator.hasNext() || !contains(NAMES, (nextLexem = iterator.next()).getValue())) {
+      return null;
     }
-
-    @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence) {
-        Iterator<Lexem> iterator = lexemSequence.get().iterator();
-        Lexem nextLexem;
-        if (!iterator.hasNext() ||
-                (NAME.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
-            return null;
-        }
-        if (!iterator.hasNext()) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.ADDRESS_EXCEPTED));
-        }
-        nextLexem = iterator.next();
-        Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
-        Expression.Result result = expression.evaluate(nextLexem);
-        if (result.isUndefined()) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
-                    , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
-        }
-        if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(), result.getValue())) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
-        }
-        nextLexem = expression.getLastLexem();
-        if (nextLexem != null) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
-        }
-        namespaceApi.setAddress(result.getValue());
-        return new byte[0];
+    if (!iterator.hasNext()) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.ADDRESS_EXCEPTED));
     }
+    nextLexem = iterator.next();
+    Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+    Expression.Result result = expression.evaluate(nextLexem);
+    if (result.isUndefined()) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
+          , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+    }
+    if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(),
+        result.getValue())) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
+    }
+    nextLexem = expression.getLastLexem();
+    if (nextLexem != null) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+    }
+    namespaceApi.setAddress(result.getValue());
+    return new byte[0];
+  }
 }

@@ -84,6 +84,16 @@ public class NamespaceApiFreezed implements NamespaceApi {
     }
 
     @Override
+    public BigInteger getMinAddress() {
+        return BigInteger.ZERO;
+    }
+
+    @Override
+    public BigInteger getMaxAddress() {
+        return BigInteger.valueOf(65535);
+    }
+
+    @Override
     public void addToQueue(@NonNull PostCommandCompiler commandCompiler) {
         namespaceApi.addToQueue(commandCompiler);
     }

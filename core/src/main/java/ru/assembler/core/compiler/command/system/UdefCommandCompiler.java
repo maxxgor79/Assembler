@@ -16,55 +16,48 @@ import ru.assembler.core.util.RepeatableIteratorImpl;
  * @author Maxim Gorin
  */
 public class UdefCommandCompiler implements CommandCompiler {
-    public static final String NAME = "udef";
 
-    public static final String ALT_NAME = "undefine";
+  protected static final String[] NAMES = {"udef", "undefine"};
 
-    private final String name;
+  private final NamespaceApi namespaceApi;
 
-    private final NamespaceApi namespaceApi;
+  private final CompilerApi compilerApi;
 
-    private final CompilerApi compilerApi;
+  public UdefCommandCompiler(@NonNull NamespaceApi namespaceApi
+      , @NonNull CompilerApi compilerApi) {
+    this.namespaceApi = namespaceApi;
+    this.compilerApi = compilerApi;
+  }
 
-    public UdefCommandCompiler(@NonNull String name, @NonNull NamespaceApi namespaceApi
-            , @NonNull CompilerApi compilerApi) {
-        if (name.trim().isEmpty()) {
-            throw new IllegalArgumentException("name is empty");
-        }
-        this.name = name;
-        this.namespaceApi = namespaceApi;
-        this.compilerApi = compilerApi;
+  @Override
+  public String[] names() {
+    return NAMES;
+  }
+
+  @Override
+  public byte[] compile(LexemSequence lexemSequence) {
+    RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(
+        lexemSequence.get().iterator());
+    Lexem nextLexem;
+    if (!iterator.hasNext() || !contains(NAMES, (nextLexem = iterator.next()).getValue())) {
+      return null;
     }
-
-    public UdefCommandCompiler(@NonNull NamespaceApi namespaceApi
-            , @NonNull CompilerApi compilerApi) {
-        this(NAME, namespaceApi, compilerApi);
+    if (!iterator.hasNext()) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.IDENTIFIER_EXPECTED));
     }
-
-    @Override
-    public byte[] compile(LexemSequence lexemSequence) {
-        RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(lexemSequence.get().iterator());
-        Lexem nextLexem;
-        if (!iterator.hasNext() ||
-                (name.compareToIgnoreCase((nextLexem = iterator.next()).getValue()) != 0)) {
-            return null;
-        }
-        if (!iterator.hasNext()) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.IDENTIFIER_EXPECTED));
-        }
-        nextLexem = iterator.next();
-        if (nextLexem.getType() != LexemType.IDENTIFIER) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
-        }
-        final String name = nextLexem.getValue();
-        namespaceApi.removeVariable(name);
-        nextLexem = iterator.next();
-        if (nextLexem != null) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
-        }
-        return new byte[0];
+    nextLexem = iterator.next();
+    if (nextLexem.getType() != LexemType.IDENTIFIER) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
     }
+    final String name = nextLexem.getValue();
+    namespaceApi.removeVariable(name);
+    nextLexem = iterator.next();
+    if (nextLexem != null) {
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+    }
+    return new byte[0];
+  }
 }

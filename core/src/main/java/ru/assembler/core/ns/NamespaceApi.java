@@ -31,6 +31,10 @@ public interface NamespaceApi {
 
     BigInteger getAddress();
 
+    BigInteger getMinAddress();
+
+    BigInteger getMaxAddress();
+
     void addToQueue(PostCommandCompiler commandCompiler);
 
     boolean isCompiled(File file);

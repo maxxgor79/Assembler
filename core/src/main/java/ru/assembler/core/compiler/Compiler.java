@@ -91,8 +91,6 @@ public class Compiler implements CompilerApi {
   }
 
   private void initDefaultValues() {
-    namespaceApi.setAddress(Variables.getBigInteger(Variables.DEFAULT_ADDRESS
-        , BigInteger.valueOf(0x8000)));
   }
 
   private boolean processCommand(LexemSequence lexemSequence) throws IOException {
@@ -122,49 +120,32 @@ public class Compiler implements CompilerApi {
     namespaceApi.putLabel(lexem.getValue());
   }
 
+  private static void putCommandCompiler(final CommandCompiler cc, final Map<LexemSequence
+      , CommandCompiler> commandCompilerMap) {
+    for (String name : cc.names()) {
+      commandCompilerMap.put(new LexemSequence(name), cc);
+    }
+  }
+
   private void loadEmbeddedCommands(Map<LexemSequence, CommandCompiler> commandCompilerMap) {
-    commandCompilerMap.put(new LexemSequence(OrgCommandCompiler.NAME),
-        new OrgCommandCompiler(namespaceApi
-            , settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DbCommandCompiler.NAME),
-        new DbCommandCompiler(DbCommandCompiler.NAME
-            , namespaceApi, settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DbCommandCompiler.ALT_NAME),
-        new DbCommandCompiler(DbCommandCompiler
-            .ALT_NAME, namespaceApi, settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DwCommandCompiler.NAME),
-        new DwCommandCompiler(DwCommandCompiler.NAME
-            , namespaceApi, settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DwCommandCompiler.ALT_NAME),
-        new DwCommandCompiler(DwCommandCompiler
-            .ALT_NAME, namespaceApi, settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.NAME),
-        new DdwCommandCompiler(DdwCommandCompiler.NAME
-            , namespaceApi, settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DdwCommandCompiler.ALT_NAME),
-        new DdwCommandCompiler(DdwCommandCompiler
-            .ALT_NAME, namespaceApi, settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(IncludeCommandCompiler.NAME),
-        new IncludeCommandCompiler(namespaceApi
-            , settingsApi, this));
-    commandCompilerMap.put(new LexemSequence(DefCommandCompiler.NAME),
-        new DefCommandCompiler(DefCommandCompiler
-            .NAME, namespaceApi, this));
-    commandCompilerMap.put(new LexemSequence(DefCommandCompiler.ALT_NAME),
-        new DefCommandCompiler(DefCommandCompiler
-            .ALT_NAME, namespaceApi, this));
-    commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.NAME),
-        new UdefCommandCompiler(UdefCommandCompiler
-            .NAME, namespaceApi, this));
-    commandCompilerMap.put(new LexemSequence(UdefCommandCompiler.ALT_NAME),
-        new UdefCommandCompiler(UdefCommandCompiler
-            .ALT_NAME, namespaceApi, this));
-    commandCompilerMap.put(new LexemSequence(EndCommandCompiler.NAME),
-        new EndCommandCompiler(namespaceApi
-            , this));
-    commandCompilerMap.put(new LexemSequence(EquCommandCompiler.NAME),
-        new EquCommandCompiler(namespaceApi
-            , settingsApi, this));
+    putCommandCompiler(new OrgCommandCompiler(namespaceApi, settingsApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new DbCommandCompiler(namespaceApi, settingsApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new DwCommandCompiler(namespaceApi, settingsApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new DdwCommandCompiler(namespaceApi, settingsApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new IncludeCommandCompiler(namespaceApi, settingsApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new DefCommandCompiler(namespaceApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new UdefCommandCompiler(namespaceApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new EndCommandCompiler(namespaceApi, this)
+        , commandCompilerMap);
+    putCommandCompiler(new EquCommandCompiler(namespaceApi, settingsApi, this)
+        , commandCompilerMap);
   }
 
   private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {
@@ -218,8 +199,9 @@ public class Compiler implements CompilerApi {
         processLabel(lexem);
       } else {
         if (!processCommand(lexemSequence)) {
-          throw new CompilerException(lexemSequence.getFile(), lexemSequence.getLineNumber(), MessageList
-              .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
+          throw new CompilerException(lexemSequence.getFile(), lexemSequence.getLineNumber(),
+              MessageList
+                  .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
         }
       }
       if (isStopped()) {

@@ -12,32 +12,37 @@ import ru.assembler.core.syntax.LexemSequence;
 import java.util.Iterator;
 
 public class EndCommandCompiler implements CommandCompiler {
-    public static final String NAME = "end";
 
-    private final NamespaceApi namespaceApi;
+  protected static final String[] NAMES = {"end"};
 
-    private final CompilerApi compilerApi;
+  private final NamespaceApi namespaceApi;
 
-    public EndCommandCompiler(@NonNull NamespaceApi namespaceApi
-            , @NonNull CompilerApi compilerApi) {
-        this.namespaceApi = namespaceApi;
-        this.compilerApi = compilerApi;
+  private final CompilerApi compilerApi;
+
+  public EndCommandCompiler(@NonNull NamespaceApi namespaceApi
+      , @NonNull CompilerApi compilerApi) {
+    this.namespaceApi = namespaceApi;
+    this.compilerApi = compilerApi;
+  }
+
+  @Override
+  public String[] names() {
+    return NAMES;
+  }
+
+  @Override
+  public byte[] compile(@NonNull LexemSequence lexemSequence) {
+    Iterator<Lexem> iterator = lexemSequence.get().iterator();
+    Lexem nextLexem;
+    if (!iterator.hasNext() || !contains(NAMES, ((iterator.next()).getValue()))) {
+      return null;
     }
-
-    @Override
-    public byte[] compile(@NonNull LexemSequence lexemSequence) {
-        Iterator<Lexem> iterator = lexemSequence.get().iterator();
-        Lexem nextLexem;
-        if (!iterator.hasNext() ||
-                (NAME.compareToIgnoreCase((iterator.next()).getValue()) != 0)) {
-            return null;
-        }
-        if (iterator.hasNext()) {
-            nextLexem = iterator.next();
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
-        }
-        compilerApi.stop();
-        return new byte[0];
+    if (iterator.hasNext()) {
+      nextLexem = iterator.next();
+      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
+    compilerApi.stop();
+    return new byte[0];
+  }
 }
