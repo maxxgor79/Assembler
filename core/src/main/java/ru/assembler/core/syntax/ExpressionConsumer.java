@@ -120,7 +120,7 @@ public class ExpressionConsumer {
     private Lexem evaluateValue(Lexem lexem) {
         if (!isNull(lexem)) {
             switch (lexem.getType()) {
-                case CHAR, BINARY, OCTAL, DECIMAL, HEXADECIMAL, IDENTIFIER -> {
+                case CHAR, BINARY, OCTAL, DECIMAL, HEXADECIMAL, IDENTIFIER, VARIABLE -> {
                     lexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
                 }
                 default -> {

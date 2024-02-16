@@ -13,17 +13,12 @@ import java.util.Objects;
  */
 @Getter
 public class Lexem {
-
-  @Getter
   private File file;
 
-  @Getter
   private int lineNumber;
 
-  @Getter
   private LexemType type;
 
-  @Getter
   private String value;
 
   private Lexem() {

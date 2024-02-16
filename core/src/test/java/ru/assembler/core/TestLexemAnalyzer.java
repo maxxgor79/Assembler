@@ -51,7 +51,7 @@ public class TestLexemAnalyzer {
 
     @Test
     public void testLexemAnalyzer() {
-        String asm = "ret";
+        String asm = "out($PORT), a\nret";
         LexemAnalyzer analyzer = new LexemAnalyzer(new ByteArrayInputStream(asm.getBytes()));
         for (Lexem lexem : analyzer) {
             System.out.println("Lexem: " + lexem);

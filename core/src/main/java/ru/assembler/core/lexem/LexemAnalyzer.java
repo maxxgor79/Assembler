@@ -54,6 +54,9 @@ public class LexemAnalyzer implements Iterable<Lexem> {
   @Setter
   private boolean trimEof = true;
 
+  @Getter
+  private int maxIdentifierLength = 31;
+
   private LexemAnalyzer() {
 
   }
@@ -141,9 +144,13 @@ public class LexemAnalyzer implements Iterable<Lexem> {
   private Lexem getIdentifier(int ch) throws IOException {
     final StringBuilder sb = new StringBuilder();
     sb.append((char) ch);
+    int count = 1;
     while (!SymbolUtil.isEOF(ch = pbReader.read())) {
       if (SymbolUtil.isLetter(ch) || SymbolUtil.isDecDigit(ch) || SymbolUtil.isUnderline(ch)) {
-        sb.append((char) ch);
+        if (count < maxIdentifierLength) {
+          sb.append((char) ch);
+        }
+        count++;
       } else {
         break;
       }
@@ -328,9 +335,13 @@ public class LexemAnalyzer implements Iterable<Lexem> {
   private Lexem getVariable(int ch) throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append((char) ch);
+    int count = 1;
     while (!SymbolUtil.isEOF(ch = pbReader.read())) {
       if (SymbolUtil.isUnderline(ch) || SymbolUtil.isLetter(ch) || SymbolUtil.isDecDigit(ch)) {
-        sb.append((char) ch);
+        if (count < maxIdentifierLength) {
+          sb.append((char) ch);
+        }
+        count++;
       } else {
         if (!SymbolUtil.isEOF(ch)) {
           pbReader.unread(ch);
@@ -526,6 +537,13 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
     throw new LexemException(file, lineNumber, MessageList.getMessage(MessageList.UNEXPECTED_SYMBOL)
         , String.valueOf((char) ch));
+  }
+
+  public void setMaxIdentifierLength(int length) {
+    if (length < 0) {
+      throw new IllegalArgumentException("Length is zero or negative");
+    }
+    this.maxIdentifierLength = length;
   }
 
   @Override
