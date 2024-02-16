@@ -1,8 +1,8 @@
 ; main program
     org 32768
     .include "gfx.asm"
-    .include "test.asm"
-    .include "test.asm"
+    .def LPT_PORT 0x1f
+    .def TAPE_PORT 0xfe	
 vector_addr:
     equ f0ffh
     ld bc, interrupt
@@ -38,14 +38,14 @@ rw_port:
     ld hl, rw_port_value
     ld c, (hl)
     rr c
-    in a, (254)
+    in a, ($TAPE_PORT)
     bit 6, a
     jr z, rw_port_zero
     set 7,c
 rw_port_zero:
     ld (hl), c
     ld a, c
-    out (31), a
+    out ($LPT_PORT), a
     ret
 
 ; temporary data from port 254
