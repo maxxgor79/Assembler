@@ -25,7 +25,7 @@ import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
-import ru.assembler.io.audio.wav.WavWriter;
+import ru.zxspectrum.io.audio.wav.WavWriter;
 import ru.assembler.microsha.core.compiler.MicroshaCompiler;
 import ru.assembler.microsha.core.compiler.option.OptionTypes;
 import ru.assembler.microsha.core.settings.DefaultSettings;
