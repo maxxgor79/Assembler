@@ -18,6 +18,7 @@ import ru.assembler.core.compiler.command.system.DefCommandCompiler;
 import ru.assembler.core.compiler.command.system.DwCommandCompiler;
 import ru.assembler.core.compiler.command.system.EndCommandCompiler;
 import ru.assembler.core.compiler.command.system.EquCommandCompiler;
+import ru.assembler.core.compiler.command.system.ImageCommandCompiler;
 import ru.assembler.core.compiler.command.system.IncludeCommandCompiler;
 import ru.assembler.core.compiler.command.system.OrgCommandCompiler;
 import ru.assembler.core.compiler.command.system.ResourceCommandCompiler;
@@ -150,6 +151,7 @@ public class Compiler implements CompilerApi {
         putCommandCompiler(new EquCommandCompiler(namespaceApi, settingsApi, this)
                 , commandCompilerMap);
         putCommandCompiler(new ResourceCommandCompiler(this), commandCompilerMap);
+        putCommandCompiler(new ImageCommandCompiler(settingsApi, this), commandCompilerMap);
     }
 
     private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {

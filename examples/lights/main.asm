@@ -2,7 +2,7 @@
     org 32768
     .include "gfx.asm"
     .def LPT_PORT 0x1f
-    .def TAPE_PORT 0xfe	
+    .def TAPE_PORT 0xfe 
 vector_addr:
     equ f0ffh
     ld bc, interrupt
@@ -51,3 +51,5 @@ rw_port_zero:
 ; temporary data from port 254
 rw_port_value:
      db 0
+;    .defres "test1.txt" "test2.txt"
+    .img "img.png"

@@ -45,7 +45,7 @@ public class OrgCommandCompiler implements CommandCompiler {
   public byte[] compile(@NonNull LexemSequence lexemSequence) {
     final Iterator<Lexem> iterator = lexemSequence.get().iterator();
     Lexem nextLexem;
-    if (!iterator.hasNext() || !contains(NAMES, (nextLexem = iterator.next()).getValue())) {
+    if (!iterator.hasNext() || !contains(names(), (nextLexem = iterator.next()).getValue())) {
       return null;
     }
     if (!iterator.hasNext()) {

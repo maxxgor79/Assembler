@@ -46,7 +46,7 @@ public class EquCommandCompiler implements CommandCompiler {
     final RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(
         lexemSequence.get().iterator());
     Lexem nextLexem;
-    if (!iterator.hasNext() || !contains(NAMES, (nextLexem = iterator.next()).getValue())) {
+    if (!iterator.hasNext() || !contains(names(), (nextLexem = iterator.next()).getValue())) {
       return null;
     }
     if (iterator.hasNext()) {

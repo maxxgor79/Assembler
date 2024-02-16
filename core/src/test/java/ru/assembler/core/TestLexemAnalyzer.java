@@ -51,7 +51,7 @@ public class TestLexemAnalyzer {
 
     @Test
     public void testLexemAnalyzer() {
-        String asm = "out($PORT), a\nret";
+        String asm = ".img \"test.png\"\n";
         LexemAnalyzer analyzer = new LexemAnalyzer(new ByteArrayInputStream(asm.getBytes()));
         for (Lexem lexem : analyzer) {
             System.out.println("Lexem: " + lexem);

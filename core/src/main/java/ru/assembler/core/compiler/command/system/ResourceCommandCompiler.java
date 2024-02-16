@@ -38,7 +38,7 @@ public class ResourceCommandCompiler implements CommandCompiler {
         Lexem nextLexem;
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Iterator<Lexem> iterator = lexemSequence.get().iterator();
-        if (!iterator.hasNext() || !contains(NAMES, ((iterator.next()).getValue()))) {
+        if (!iterator.hasNext() || !contains(names(), ((iterator.next()).getValue()))) {
             return null;
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
@@ -70,7 +70,7 @@ public class ResourceCommandCompiler implements CommandCompiler {
         return baos.toByteArray();
     }
 
-    private byte[] loadResource(String path) throws IOException {
+    protected byte[] loadResource(@NonNull String path) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
             throw new FileNotFoundException(file.getAbsolutePath());
