@@ -58,7 +58,7 @@ public class DbCommandCompiler implements CommandCompiler {
       final RepeatableIterator<Lexem> iterator = new RepeatableIteratorImpl<>(
           lexemSequence.get().iterator());
       Lexem nextLexem;
-      if (!iterator.hasNext() || !contains(names(), (iterator.next()).getValue())) {
+      if (!iterator.hasNext() || !contains(names(), iterator.next().getValue())) {
         return null;
       }
       nextLexem = iterator.hasNext() ? iterator.next() : null;

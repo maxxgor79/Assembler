@@ -11,7 +11,8 @@ vector_addr:
     ld i, a
     im 2
     ret
-
+    .println "New string"
+    .print "Hello world!\n" "LPT PORT=" $LPT_PORT
 ; interruption procedure
 interrupt:
     di

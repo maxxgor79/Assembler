@@ -21,6 +21,8 @@ import ru.assembler.core.compiler.command.system.EquCommandCompiler;
 import ru.assembler.core.compiler.command.system.ImageCommandCompiler;
 import ru.assembler.core.compiler.command.system.IncludeCommandCompiler;
 import ru.assembler.core.compiler.command.system.OrgCommandCompiler;
+import ru.assembler.core.compiler.command.system.PrintCommandCompiler;
+import ru.assembler.core.compiler.command.system.PrintlnCommandCompiler;
 import ru.assembler.core.compiler.command.system.ResourceCommandCompiler;
 import ru.assembler.core.compiler.command.system.UdefCommandCompiler;
 import ru.assembler.core.compiler.command.tree.CommandTree;
@@ -152,6 +154,8 @@ public class Compiler implements CompilerApi {
                 , commandCompilerMap);
         putCommandCompiler(new ResourceCommandCompiler(this), commandCompilerMap);
         putCommandCompiler(new ImageCommandCompiler(settingsApi, this), commandCompilerMap);
+        putCommandCompiler(new PrintCommandCompiler(namespaceApi, this), commandCompilerMap);
+        putCommandCompiler(new PrintlnCommandCompiler(namespaceApi, this), commandCompilerMap);
     }
 
     private void loadCustomCommands(CommandTree commandCompilerTree) throws IOException {

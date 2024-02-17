@@ -38,7 +38,7 @@ public class ResourceCommandCompiler implements CommandCompiler {
         Lexem nextLexem;
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final Iterator<Lexem> iterator = lexemSequence.get().iterator();
-        if (!iterator.hasNext() || !contains(names(), ((iterator.next()).getValue()))) {
+        if (!iterator.hasNext() || !contains(names(), iterator.next().getValue())) {
             return null;
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;

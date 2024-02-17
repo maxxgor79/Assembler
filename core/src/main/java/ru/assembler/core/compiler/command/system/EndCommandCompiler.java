@@ -34,7 +34,7 @@ public class EndCommandCompiler implements CommandCompiler {
   public byte[] compile(@NonNull LexemSequence lexemSequence) {
     Iterator<Lexem> iterator = lexemSequence.get().iterator();
     Lexem nextLexem;
-    if (!iterator.hasNext() || !contains(names(), ((iterator.next()).getValue()))) {
+    if (!iterator.hasNext() || !contains(names(), iterator.next().getValue())) {
       return null;
     }
     if (iterator.hasNext()) {
