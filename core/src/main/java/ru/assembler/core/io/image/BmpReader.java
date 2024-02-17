@@ -176,8 +176,11 @@ public class BmpReader {
 
     //needs to remove paddings
     protected byte[] normalize(byte[] data) throws IOException {
-        final int realBytesPerRow = (getBps() < 8) ? getWidth() / (8 / getBps()) : getWidth() * getBps();
+        final int realBytesPerRow = (getBps() < 8) ? getWidth() / (8 / getBps()) : getWidth() * (getBps() / 8);
         final int bytesPerRow = data.length / getHeight();
+        if (realBytesPerRow == bytesPerRow) {
+            return data;
+        }
         final byte[] buf = new byte[realBytesPerRow];
         final ByteArrayInputStream bais = new ByteArrayInputStream(data);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();

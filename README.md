@@ -34,8 +34,14 @@ saveWav <text1>...<textN> save compiled data into wave format (for microsha)
 saveRkm <text1>...<textN> save compiled data into <rkm> format (for microsha)
 .saveRkm <text1>...<textN> save compiled data into <rkm> format (for microsha)
 
+resource <path1>...<pathN> insert binary data from a file into compiled file
+defres <path1>...<pathN> insert binary data from a file into compiled file
+
 label: .equ <address>
 label: equ <address>
+
+image <path1>...<pathN> insert a image data from a file into the compiled file, if it is nesessary, converts to monochrome format
+img <path1>...<pathN> insert a image data from a file into the compiled file, if it is nesessary, converts to monochrome format
 
 
 Supports number formats:
