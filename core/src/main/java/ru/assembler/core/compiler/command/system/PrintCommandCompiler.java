@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 public class PrintCommandCompiler implements CommandCompiler {
-    protected static final String[] NAMES = {"print", "message"};
+    protected static final String[] NAMES = {"print", "message", "echo"};
 
     @Override
     public String[] names() {

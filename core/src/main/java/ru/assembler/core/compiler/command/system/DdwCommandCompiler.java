@@ -8,7 +8,7 @@ import ru.assembler.core.settings.SettingsApi;
 
 public class DdwCommandCompiler extends DwCommandCompiler {
 
-  protected static final String[] NAMES = {"ddw", "defdw"};
+  protected static final String[] NAMES = {"ddw", "defdw", "dd"};
 
   public DdwCommandCompiler(@NonNull NamespaceApi namespaceApi,
       @NonNull SettingsApi settingsApi, @NonNull CompilerApi compilerApi) {
