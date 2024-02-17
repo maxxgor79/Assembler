@@ -169,7 +169,9 @@ public class BmpReader {
     protected void readContent(@NonNull final LEDataInputStream ledism, int size) throws IOException {
         content = new byte[size];
         ledism.read(content);
-        content = normalize(content);
+        if (getCompression() == BI_RGB) {
+            content = normalize(content);
+        }
     }
 
     //needs to remove paddings
