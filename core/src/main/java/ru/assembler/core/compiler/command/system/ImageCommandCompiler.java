@@ -57,7 +57,7 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
     }
 
     protected void saveImage(final String prefix, @NonNull final String name
-            , @NonNull final BufferedImage image) throws IOException {
+            , @NonNull final BufferedImage image) {
         final File dir = new File(settingsApi.getOutputDirectory(), RESOURCES_DIRECTORY);
         dir.mkdirs();
         final File file = new File(dir, prefix + name);

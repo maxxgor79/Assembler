@@ -2,12 +2,16 @@ package ru.assembler.core.io.image;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.io.LEDataInputStream;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+@Slf4j
 public class BmpReader {
     public static final int BI_RGB = 0;
 
@@ -30,10 +34,6 @@ public class BmpReader {
     public static final int BI_CMYKRLE4 = 13;
 
     @Getter
-    @NonNull
-    protected byte[] content;
-
-    @Getter
     private Header header;
 
     @Getter
@@ -43,7 +43,12 @@ public class BmpReader {
     private BitmapInfoHeader bitmapInfoHeader;
 
     @Getter
+    @NonNull
     private byte[] palette;
+
+    @Getter
+    @NonNull
+    protected byte[] content;
 
     public BmpReader(@NonNull final InputStream is) throws IOException {
         read(is);
@@ -76,7 +81,7 @@ public class BmpReader {
 
     public int getBps() {
         if (bitmapCoreHeader != null) {
-            return BI_RGB;
+            return bitmapCoreHeader.getBps();
         }
         if (bitmapInfoHeader != null) {
             return bitmapInfoHeader.getBps();
@@ -86,7 +91,7 @@ public class BmpReader {
 
     public int getCompression() {
         if (bitmapCoreHeader != null) {
-            return bitmapCoreHeader.getBps();
+            return BI_RGB;
         }
         if (bitmapInfoHeader != null) {
             return bitmapInfoHeader.getCompression();
@@ -102,10 +107,11 @@ public class BmpReader {
             case 12:
                 bitmapCoreHeader = new BitmapCoreHeader(size);
                 bitmapCoreHeader.read(ledis);// read dib header
+                int paletteSize = 0;
                 if (bitmapInfoHeader.getBps() == 4 || bitmapInfoHeader.getBps() == 8) {
-                    readPalette(ledis);
+                    paletteSize = readPalette(ledis);
                 }
-                readContent(ledis, header.getFileSize() - header.getOffset());
+                readContent(ledis, header.getFileSize() - header.getOffset() - paletteSize);
                 break;
             case 40:
                 bitmapInfoHeader = new BitmapInfoHeader(size);
@@ -120,10 +126,11 @@ public class BmpReader {
         }
     }
 
-    protected void readPalette(@NonNull final LEDataInputStream ledis) throws IOException {
+    protected int readPalette(@NonNull final LEDataInputStream ledis) throws IOException {
         int paletteSize = (1 << bitmapInfoHeader.getBps()) * 4;
         palette = new byte[paletteSize];
         ledis.read(palette);
+        return paletteSize;
     }
 
     protected void readContent(@NonNull final LEDataInputStream ledism, int size) throws IOException {
@@ -133,9 +140,18 @@ public class BmpReader {
     }
 
     //needs to remove paddings
-    protected byte[] normalize(byte[] data) {
-        //int bytesPerRow = (getBps() < 8) ? getWidth() / getBps() : getWidth() * getBps();
-        return data;
+    protected byte[] normalize(byte[] data) throws IOException {
+        final int realBytesPerRow = (getBps() < 8) ? getWidth() / (8 / getBps()) : getWidth() * getBps();
+        final int bytesPerRow = data.length / getHeight();
+        final byte[] buf = new byte[realBytesPerRow];
+        final ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (int i = 0; i < getHeight(); i++) {
+            bais.read(buf);
+            baos.write(buf);
+            bais.skip(bytesPerRow - realBytesPerRow);
+        }
+        return baos.toByteArray();
     }
 
     public static class Header {
