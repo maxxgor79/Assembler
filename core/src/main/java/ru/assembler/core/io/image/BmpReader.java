@@ -33,8 +33,6 @@ public class BmpReader {
     @NonNull
     protected byte[] content;
 
-    protected int padding;
-
     @Getter
     private Header header;
 
@@ -43,6 +41,9 @@ public class BmpReader {
 
     @Getter
     private BitmapInfoHeader bitmapInfoHeader;
+
+    @Getter
+    private byte[] palette;
 
     public BmpReader(@NonNull final InputStream is) throws IOException {
         read(is);
@@ -101,13 +102,17 @@ public class BmpReader {
             case 12:
                 bitmapCoreHeader = new BitmapCoreHeader(size);
                 bitmapCoreHeader.read(ledis);// read dib header
-                final int bitmapDataSize = (int) (bitmapCoreHeader.getWidth() * bitmapCoreHeader.getHeight()
-                        * bitmapCoreHeader.getBps() / 8.0);
-                readContent(ledis, header.getFileSize() - bitmapDataSize);
+                if (bitmapInfoHeader.getBps() == 4 || bitmapInfoHeader.getBps() == 8) {
+                    readPalette(ledis);
+                }
+                readContent(ledis, header.getFileSize() - header.getOffset());
                 break;
             case 40:
                 bitmapInfoHeader = new BitmapInfoHeader(size);
                 bitmapInfoHeader.read(ledis);// read dib header
+                if (bitmapInfoHeader.getBps() == 4 || bitmapInfoHeader.getBps() == 8) {
+                    readPalette(ledis);
+                }
                 readContent(ledis, bitmapInfoHeader.getImageSize());
                 break;
             default:
@@ -115,9 +120,22 @@ public class BmpReader {
         }
     }
 
+    protected void readPalette(@NonNull final LEDataInputStream ledis) throws IOException {
+        int paletteSize = (1 << bitmapInfoHeader.getBps()) * 4;
+        palette = new byte[paletteSize];
+        ledis.read(palette);
+    }
+
     protected void readContent(@NonNull final LEDataInputStream ledism, int size) throws IOException {
         content = new byte[size];
         ledism.read(content);
+        content = normalize(content);
+    }
+
+    //needs to remove paddings
+    protected byte[] normalize(byte[] data) {
+        //int bytesPerRow = (getBps() < 8) ? getWidth() / getBps() : getWidth() * getBps();
+        return data;
     }
 
     public static class Header {
@@ -228,6 +246,9 @@ public class BmpReader {
             width = ledis.readInt();
             height = ledis.readInt();
             colorPlanes = ledis.readShort();
+            if (colorPlanes != 1) {
+                throw new IOException("colorsPlanes != 1");
+            }
             bps = ledis.readShort();
             compression = ledis.readInt();
             imageSize = ledis.readInt();

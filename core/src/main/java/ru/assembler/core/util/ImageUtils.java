@@ -23,17 +23,20 @@ public final class ImageUtils {
                 image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
         float[] scales = {level, level, level};
         float[] offsets = new float[4];
-        RescaleOp rop = new RescaleOp(scales, offsets, null);
-
-        Graphics2D g = dst.createGraphics();
+        final RescaleOp rop = new RescaleOp(scales, offsets, null);
+        final Graphics2D g = dst.createGraphics();
         g.drawImage(image, rop, 0, 0);
         g.dispose();
         return dst;
     }
 
     public static BufferedImage toMonocrome(@NonNull final BufferedImage image) {
+        if (image.getColorModel().getPixelSize() == 1) {
+            return image;
+        }
         final BufferedImage blackWhite = new BufferedImage(image.getWidth(), image.getHeight()
                 , BufferedImage.TYPE_BYTE_BINARY);
+
         final Graphics2D g2d = blackWhite.createGraphics();
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();

@@ -1,6 +1,7 @@
 package ru.assembler.core;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +23,7 @@ public class TestImage {
         BufferedImage img = ImageIO.read(new File("src/test/java/ru/assembler/core/res/img.png"));
         img = ImageUtils.toMonocrome(img);
         byte[] data = ImageUtils.toBytes(img);
-
+        Assertions.assertNotNull(data);
+        Assertions.assertNotEquals(data.length, 0);
     }
 }
