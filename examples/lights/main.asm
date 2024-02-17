@@ -2,7 +2,8 @@
     org 32768
     .include "gfx.asm"
     .def LPT_PORT 0x1f
-    .def TAPE_PORT 0xfe 
+    .def TAPE_PORT 0xfe
+    .message "This is test\n"
 vector_addr:
     equ f0ffh
     ld bc, interrupt
@@ -11,8 +12,6 @@ vector_addr:
     ld i, a
     im 2
     ret
-    .println "New string"
-    .print "Hello world!\n" "LPT PORT=" $LPT_PORT
 ; interruption procedure
 interrupt:
     di
@@ -20,13 +19,9 @@ interrupt:
     push hl	
     push bc
     push de
-    push ix
-    push iy
     call cls
     call rw_port
     call indicator
-    pop iy
-    pop ix
     pop de
     pop bc
     pop hl

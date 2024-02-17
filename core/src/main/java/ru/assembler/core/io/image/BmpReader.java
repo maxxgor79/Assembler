@@ -43,12 +43,22 @@ public class BmpReader {
     private BitmapInfoHeader bitmapInfoHeader;
 
     @Getter
-    @NonNull
+    private int[] extraBitMasks;
+
+    @Getter
     private byte[] palette;
 
     @Getter
-    @NonNull
     protected byte[] content;
+
+    protected void reset() {
+        header = null;
+        bitmapCoreHeader = null;
+        bitmapInfoHeader = null;
+        extraBitMasks = null;
+        palette = null;
+        content = null;
+    }
 
     public BmpReader(@NonNull final InputStream is) throws IOException {
         read(is);
@@ -56,6 +66,7 @@ public class BmpReader {
 
     public void read(@NonNull final InputStream is) throws IOException {
         LEDataInputStream ledis = new LEDataInputStream(is);
+        reset();
         readBitmap(ledis);
     }
 
@@ -66,7 +77,7 @@ public class BmpReader {
         if (bitmapInfoHeader != null) {
             return bitmapInfoHeader.getWidth();
         }
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     public int getHeight() {
@@ -76,7 +87,7 @@ public class BmpReader {
         if (bitmapInfoHeader != null) {
             return bitmapInfoHeader.getHeight();
         }
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     public int getBps() {
@@ -86,7 +97,7 @@ public class BmpReader {
         if (bitmapInfoHeader != null) {
             return bitmapInfoHeader.getBps();
         }
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     public int getCompression() {
@@ -96,7 +107,7 @@ public class BmpReader {
         if (bitmapInfoHeader != null) {
             return bitmapInfoHeader.getCompression();
         }
-        throw new UnsupportedOperationException();
+        return 0;
     }
 
     protected void readBitmap(@NonNull final LEDataInputStream ledis) throws IOException {
@@ -116,6 +127,10 @@ public class BmpReader {
             case 40:
                 bitmapInfoHeader = new BitmapInfoHeader(size);
                 bitmapInfoHeader.read(ledis);// read dib header
+                if (bitmapInfoHeader.getCompression() == BI_BITFIELDS || bitmapInfoHeader.getCompression()
+                        == BI_ALPHABITFIELDS) {
+                    readExtraBitMasks(ledis);
+                }
                 if (bitmapInfoHeader.getBps() == 4 || bitmapInfoHeader.getBps() == 8) {
                     readPalette(ledis);
                 }
@@ -123,6 +138,24 @@ public class BmpReader {
                 break;
             default:
                 throw new UnsupportedEncodingException();
+        }
+    }
+
+    private void readExtraBitMasks(@NonNull final LEDataInputStream ledis) throws IOException {
+        switch (getCompression()) {
+            case BI_BITFIELDS:
+                extraBitMasks = new int[3];
+                extraBitMasks[0] = ledis.readInt();
+                extraBitMasks[1] = ledis.readInt();
+                extraBitMasks[2] = ledis.readInt();
+                break;
+            case BI_ALPHABITFIELDS:
+                extraBitMasks = new int[4];
+                extraBitMasks[0] = ledis.readInt();
+                extraBitMasks[1] = ledis.readInt();
+                extraBitMasks[2] = ledis.readInt();
+                extraBitMasks[3] = ledis.readInt();
+                break;
         }
     }
 
@@ -147,7 +180,10 @@ public class BmpReader {
         final ByteArrayInputStream bais = new ByteArrayInputStream(data);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         for (int i = 0; i < getHeight(); i++) {
-            bais.read(buf);
+            int readBytes = bais.read(buf);
+            if (readBytes != buf.length) {
+                throw new IOException("Invalid read size: " + readBytes);
+            }
             baos.write(buf);
             bais.skip(bytesPerRow - realBytesPerRow);
         }

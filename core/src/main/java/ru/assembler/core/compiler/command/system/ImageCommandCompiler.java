@@ -28,7 +28,7 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
 
     protected static final String DEFAULT_FORMAT = "png";
 
-    protected static final String BIN_EXTENSION = "bin";
+    protected static final String BIN_EXTENSION = "raw";
 
     protected SettingsApi settingsApi;
 
@@ -76,7 +76,7 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
             throws IOException {
         final File dir = new File(settingsApi.getOutputDirectory(), RESOURCES_DIRECTORY);
         dir.mkdirs();
-        final File file = new File(dir, prefix + FilenameUtils.getName(name) + "." + BIN_EXTENSION);
+        final File file = new File(dir, prefix + FilenameUtils.removeExtension(name) + "." + BIN_EXTENSION);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             IOUtils.write(bitmap, fos);
         } catch (IOException e) {

@@ -36,7 +36,6 @@ public final class ImageUtils {
         }
         final BufferedImage blackWhite = new BufferedImage(image.getWidth(), image.getHeight()
                 , BufferedImage.TYPE_BYTE_BINARY);
-
         final Graphics2D g2d = blackWhite.createGraphics();
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
@@ -54,7 +53,7 @@ public final class ImageUtils {
         if (reader.getCompression() != BmpReader.BI_RGB) {
             throw new UnsupportedOperationException("Compression is not supported");
         }
-        final byte [] bitmap = reader.getContent();
+        final byte[] bitmap = reader.getContent();
         return bitmap;
     }
 }
