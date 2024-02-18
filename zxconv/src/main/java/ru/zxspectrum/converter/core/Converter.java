@@ -2,7 +2,7 @@ package ru.zxspectrum.converter.core;
 
 import lombok.NonNull;
 import org.apache.commons.io.IOUtils;
-import ru.assembler.io.audio.wav.WavInputStream;
+import ru.zxspectrum.io.audio.wav.WavInputStream;
 import ru.zxspectrum.converter.i18n.ConvMessages;
 import ru.zxspectrum.converter.text.Formatter;
 import ru.zxspectrum.error.ConverterException;
