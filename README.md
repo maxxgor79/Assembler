@@ -43,13 +43,18 @@ label: equ <address>
 image <path1>...<pathN> insert a image data from a file into the compiled file, if it is nesessary, converts to monochrome format
 img <path1>...<pathN> insert a image data from a file into the compiled file, if it is nesessary, converts to monochrome format
 
+echo,print,message <text1>...<text1> - print messages in console
+println <text1>..<text2> - the same as print but a new message begins with a new line
+
 
 Supports number formats:
-00-9  - octal number (C-style)
-0x0-F - hexadecimal (C-style)
-#0-F  - hexadecimal
-$0-F  - hexadecimal (ZX-style)
-0-Fh  - hexdecimal (Old-style)
-0b0-1 - binary (Java-style)
-0-1b  - binary (Old-style)
-0-9   - decimal
+0[0..7]  - octal number (C-style)
+[0..7][gG] - ocatl number (Old-style)
+0x[0..F] - hexadecimal (C-style)
+#[0..F]  - hexadecimal
+$[0..F]  - hexadecimal (ZX-style)
+[0..F][Hh]  - hexdecimal (Old-style)
+0b[0..1] - binary (Java-style)
+[0..1][Bb]  - binary (Old-style)
+[0..9] - decimal
+∂
