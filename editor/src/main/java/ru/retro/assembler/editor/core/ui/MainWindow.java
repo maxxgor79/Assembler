@@ -52,6 +52,14 @@ public class MainWindow extends JFrame {
     @Getter
     private ToolsMenuItems toolsMenuItems;
 
+    @Getter
+    private JSplitPane splitPane;
+
+    @Getter
+    private ConsolePanel console;
+
+    private JTabbedPane tabbedPane;
+
     public MainWindow() {
         init();
     }
@@ -66,14 +74,29 @@ public class MainWindow extends JFrame {
 
     protected void initComponents() {
         try {
-            final Image image = ResourceUtils.loadImage("/icon16x16/chip.png");
-            setIconImage(image);
+            setIconImage(ResourceUtils.loadImage("/icon16x16/chip.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
         setLayout(new BorderLayout());
         setJMenuBar(createMenuBar());
-        add(createToolBar(), BorderLayout.PAGE_START);
+        add(createToolBar(), BorderLayout.NORTH);
+        console = createConsole();
+        tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Test", new EditorPanel());
+        splitPane = createSplitPane(tabbedPane, console);
+        add(splitPane, BorderLayout.CENTER);
+    }
+
+    private JSplitPane createSplitPane(JComponent component1, JComponent component2) {
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, component1, component2);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setDividerLocation(0.1);
+        return splitPane;
+    }
+
+    private ConsolePanel createConsole() {
+        return new ConsolePanel();
     }
 
     protected JMenuBar createMenuBar() {
@@ -148,13 +171,13 @@ public class MainWindow extends JFrame {
 
     protected JButton createBtnRefresh() {
         JButton btn = createToolButton("/icon32x32/refresh.png");
-        btn.setToolTipText("Refresh all files");
+        btn.setToolTipText("Reload all from disk");
         return btn;
     }
 
     protected JButton createBtnCompile() {
         JButton btn = createToolButton("/icon32x32/compile.png");
-        btn.setToolTipText("Compile project");
+        btn.setToolTipText("Compile file");
         return btn;
     }
 

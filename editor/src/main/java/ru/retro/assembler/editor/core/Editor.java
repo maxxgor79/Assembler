@@ -13,6 +13,7 @@ public class Editor {
 
     public static void main(String []args) {
         MainWindow windows = new MainWindow();
+        windows.setLocationRelativeTo(null);
         SwingUtilities.invokeLater(() -> {
             windows.setVisible(true);
         });

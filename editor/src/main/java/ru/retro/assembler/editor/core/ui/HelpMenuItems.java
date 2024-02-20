@@ -35,7 +35,7 @@ public class HelpMenuItems {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miAbout = new JMenuItem("About");
+        miAbout = new JMenuItem("About...");
         miAbout.setMnemonic('A');
         try {
             miAbout.setIcon(ResourceUtils.loadIcon("/icon16x16/about.png"));
