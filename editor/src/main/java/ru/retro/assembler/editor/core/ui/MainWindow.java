@@ -3,14 +3,11 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.util.ResourceUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
@@ -40,6 +37,21 @@ public class MainWindow extends JFrame {
     @Getter
     private JButton btnCompile;
 
+    @Getter
+    private FileMenuItems fileMenuItems;
+
+    @Getter
+    private EditMenuItems editMenuItems;
+
+    @Getter
+    private HelpMenuItems helpMenuItems;
+
+    @Getter
+    private BuildMenuItems buildMenuItems;
+
+    @Getter
+    private ToolsMenuItems toolsMenuItems;
+
     public MainWindow() {
         init();
     }
@@ -53,6 +65,12 @@ public class MainWindow extends JFrame {
     }
 
     protected void initComponents() {
+        try {
+            final Image image = ResourceUtils.loadImage("/icon16x16/chip.png");
+            setIconImage(image);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         setLayout(new BorderLayout());
         setJMenuBar(createMenuBar());
         add(createToolBar(), BorderLayout.PAGE_START);
@@ -60,11 +78,17 @@ public class MainWindow extends JFrame {
 
     protected JMenuBar createMenuBar() {
         JMenuBar bar = new JMenuBar();
-        bar.add(createMenuFile());
-        bar.add(createMenuEdit());
-        bar.add(createMenuBuild());
-        bar.add(createMenuTools());
-        bar.add(createMenuHelp());
+        JMenu menu;
+        bar.add(menu = createMenuFile());
+        fileMenuItems = new FileMenuItems(menu);
+        bar.add(menu = createMenuEdit());
+        editMenuItems = new EditMenuItems(menu);
+        bar.add(menu = createMenuBuild());
+        buildMenuItems = new BuildMenuItems(menu);
+        bar.add(menu = createMenuTools());
+        toolsMenuItems = new ToolsMenuItems(menu);
+        bar.add(menu = createMenuHelp());
+        helpMenuItems = new HelpMenuItems(menu);
         return bar;
     }
 
@@ -111,31 +135,31 @@ public class MainWindow extends JFrame {
     }
 
     protected JButton createBtnNew() {
-        JButton btn = createToolButton("/icons/new.png");
+        JButton btn = createToolButton("/icon32x32/new.png");
         btn.setToolTipText("New file");
         return btn;
     }
 
     protected JButton createBtnSave() {
-        JButton btn = createToolButton("/icons/save.png");
+        JButton btn = createToolButton("/icon32x32/save.png");
         btn.setToolTipText("Save file");
         return btn;
     }
 
     protected JButton createBtnRefresh() {
-        JButton btn = createToolButton("/icons/refresh.png");
+        JButton btn = createToolButton("/icon32x32/refresh.png");
         btn.setToolTipText("Refresh all files");
         return btn;
     }
 
     protected JButton createBtnCompile() {
-        JButton btn = createToolButton("/icons/compile.png");
+        JButton btn = createToolButton("/icon32x32/compile.png");
         btn.setToolTipText("Compile project");
         return btn;
     }
 
     protected JButton createBtnOpen() {
-        JButton btn = createToolButton("/icons/open.png");
+        JButton btn = createToolButton("/icon32x32/open.png");
         btn.setToolTipText("Open file");
         return btn;
     }
@@ -144,12 +168,9 @@ public class MainWindow extends JFrame {
         final JButton btn = new JButton();
         btn.setMinimumSize(new Dimension(ICON_WIDTH, ICON_HEIGHT));
         btn.setSize(new Dimension(ICON_WIDTH, ICON_HEIGHT));
-        BufferedImage icon = null;
         if (path != null) {
             try {
-                byte[] iconData = IOUtils.toByteArray(this.getClass().getResourceAsStream(path));
-                icon = ImageIO.read(new ByteArrayInputStream(iconData));
-                btn.setIcon(new ImageIcon(icon));
+                btn.setIcon(ResourceUtils.loadIcon(path));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }
