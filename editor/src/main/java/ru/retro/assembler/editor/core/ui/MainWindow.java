@@ -11,206 +11,211 @@ import java.awt.*;
 import java.io.IOException;
 
 /**
- * @Author: Maxim Gorin
- * Date: 19.02.2024
+ * @Author: Maxim Gorin Date: 19.02.2024
  */
 @Slf4j
 public class MainWindow extends JFrame {
-    protected static final String TITLE = "Retro IDE";
 
-    protected static final int ICON_WIDTH = 32;
+  protected static final String TITLE = "Retro IDE";
 
-    protected static final int ICON_HEIGHT = 32;
+  protected static final int ICON_WIDTH = 32;
 
-    @Getter
-    private JButton btnNew;
+  protected static final int ICON_HEIGHT = 32;
 
-    @Getter
-    private JButton btnOpen;
+  @Getter
+  private JButton btnNew;
 
-    @Getter
-    private JButton btnSave;
+  @Getter
+  private JButton btnOpen;
 
-    @Getter
-    private JButton btnRefresh;
+  @Getter
+  private JButton btnSave;
 
-    @Getter
-    private JButton btnCompile;
+  @Getter
+  private JButton btnRefresh;
 
-    @Getter
-    private FileMenuItems fileMenuItems;
+  @Getter
+  private JButton btnCompile;
 
-    @Getter
-    private EditMenuItems editMenuItems;
+  @Getter
+  private FileMenuItems fileMenuItems;
 
-    @Getter
-    private HelpMenuItems helpMenuItems;
+  @Getter
+  private EditMenuItems editMenuItems;
 
-    @Getter
-    private BuildMenuItems buildMenuItems;
+  @Getter
+  private HelpMenuItems helpMenuItems;
 
-    @Getter
-    private ToolsMenuItems toolsMenuItems;
+  @Getter
+  private BuildMenuItems buildMenuItems;
 
-    @Getter
-    private JSplitPane splitPane;
+  @Getter
+  private ToolsMenuItems toolsMenuItems;
 
-    @Getter
-    private ConsolePanel console;
+  @Getter
+  private JSplitPane splitPane;
 
-    private JTabbedPane tabbedPane;
+  @Getter
+  private ConsolePanel console;
 
-    public MainWindow() {
-        init();
+  @Getter
+  private JTabbedPane tabbedPane;
+
+  private StatusPanel statusPanel;
+
+  public MainWindow() {
+    init();
+  }
+
+  protected void init() {
+    setTitle(TITLE);
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    setSize(new Dimension((int) (screenSize.width * 0.75), (int) (screenSize.height * 0.75)));
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    initComponents();
+  }
+
+  protected void initComponents() {
+    try {
+      setIconImage(ResourceUtils.loadImage("/icon16x16/chip.png"));
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
     }
+    setLayout(new BorderLayout());
+    setJMenuBar(createMenuBar());
+    add(createToolBar(), BorderLayout.NORTH);
+    console = createConsole();
+    tabbedPane = new JTabbedPane();
+    tabbedPane.addTab("Test", new EditorPanel());
+    splitPane = createSplitPane(tabbedPane, console);
+    add(splitPane, BorderLayout.CENTER);
+    statusPanel = new StatusPanel();
+    add(statusPanel, BorderLayout.SOUTH);
+  }
 
-    protected void init() {
-        setTitle(TITLE);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(new Dimension((int) (screenSize.width * 0.75), (int) (screenSize.height * 0.75)));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        initComponents();
+  private JSplitPane createSplitPane(JComponent component1, JComponent component2) {
+    final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, component1, component2);
+    splitPane.setOneTouchExpandable(true);
+    splitPane.setDividerLocation(0.1);
+    return splitPane;
+  }
+
+  private ConsolePanel createConsole() {
+    return new ConsolePanel();
+  }
+
+  protected JMenuBar createMenuBar() {
+    JMenuBar bar = new JMenuBar();
+    JMenu menu;
+    bar.add(menu = createMenuFile());
+    fileMenuItems = new FileMenuItems(menu);
+    bar.add(menu = createMenuEdit());
+    editMenuItems = new EditMenuItems(menu);
+    bar.add(menu = createMenuBuild());
+    buildMenuItems = new BuildMenuItems(menu);
+    bar.add(menu = createMenuTools());
+    toolsMenuItems = new ToolsMenuItems(menu);
+    bar.add(menu = createMenuHelp());
+    helpMenuItems = new HelpMenuItems(menu);
+    return bar;
+  }
+
+  protected JMenu createMenuFile() {
+    JMenu file = new JMenu("File");
+    file.setMnemonic('F');
+    return file;
+  }
+
+  protected JMenu createMenuEdit() {
+    JMenu edit = new JMenu("Edit");
+    edit.setMnemonic('E');
+    return edit;
+  }
+
+  protected JMenu createMenuBuild() {
+    JMenu edit = new JMenu("Build");
+    edit.setMnemonic('B');
+    return edit;
+  }
+
+  protected JMenu createMenuTools() {
+    JMenu tools = new JMenu("Tools");
+    tools.setMnemonic('T');
+    return tools;
+  }
+
+  protected JMenu createMenuHelp() {
+    JMenu help = new JMenu("Help");
+    help.setMnemonic('H');
+    return help;
+  }
+
+  protected JToolBar createToolBar() {
+    JToolBar toolBar = new JToolBar();
+    toolBar.add(btnNew = createBtnNew());
+    toolBar.addSeparator();
+    toolBar.add(btnOpen = createBtnOpen());
+    toolBar.add(btnSave = createBtnSave());
+    toolBar.add(btnRefresh = createBtnRefresh());
+    toolBar.addSeparator();
+    toolBar.add(btnCompile = createBtnCompile());
+    return toolBar;
+  }
+
+  protected JButton createBtnNew() {
+    JButton btn = createToolButton("/icon32x32/new.png");
+    btn.setToolTipText("New file");
+    return btn;
+  }
+
+  protected JButton createBtnSave() {
+    JButton btn = createToolButton("/icon32x32/save.png");
+    btn.setToolTipText("Save file");
+    return btn;
+  }
+
+  protected JButton createBtnRefresh() {
+    JButton btn = createToolButton("/icon32x32/refresh.png");
+    btn.setToolTipText("Reload all from disk");
+    return btn;
+  }
+
+  protected JButton createBtnCompile() {
+    JButton btn = createToolButton("/icon32x32/compile.png");
+    btn.setToolTipText("Compile file");
+    return btn;
+  }
+
+  protected JButton createBtnOpen() {
+    JButton btn = createToolButton("/icon32x32/open.png");
+    btn.setToolTipText("Open file");
+    return btn;
+  }
+
+  protected JButton createToolButton(@NonNull String path) {
+    final JButton btn = new JButton();
+    btn.setMinimumSize(new Dimension(ICON_WIDTH, ICON_HEIGHT));
+    btn.setSize(new Dimension(ICON_WIDTH, ICON_HEIGHT));
+    if (path != null) {
+      try {
+        btn.setIcon(ResourceUtils.loadIcon(path));
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+      }
     }
-
-    protected void initComponents() {
-        try {
-            setIconImage(ResourceUtils.loadImage("/icon16x16/chip.png"));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        setLayout(new BorderLayout());
-        setJMenuBar(createMenuBar());
-        add(createToolBar(), BorderLayout.NORTH);
-        console = createConsole();
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Test", new EditorPanel());
-        splitPane = createSplitPane(tabbedPane, console);
-        add(splitPane, BorderLayout.CENTER);
-    }
-
-    private JSplitPane createSplitPane(JComponent component1, JComponent component2) {
-        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, component1, component2);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation(0.1);
-        return splitPane;
-    }
-
-    private ConsolePanel createConsole() {
-        return new ConsolePanel();
-    }
-
-    protected JMenuBar createMenuBar() {
-        JMenuBar bar = new JMenuBar();
-        JMenu menu;
-        bar.add(menu = createMenuFile());
-        fileMenuItems = new FileMenuItems(menu);
-        bar.add(menu = createMenuEdit());
-        editMenuItems = new EditMenuItems(menu);
-        bar.add(menu = createMenuBuild());
-        buildMenuItems = new BuildMenuItems(menu);
-        bar.add(menu = createMenuTools());
-        toolsMenuItems = new ToolsMenuItems(menu);
-        bar.add(menu = createMenuHelp());
-        helpMenuItems = new HelpMenuItems(menu);
-        return bar;
-    }
-
-    protected JMenu createMenuFile() {
-        JMenu file = new JMenu("File");
-        file.setMnemonic('F');
-        return file;
-    }
-
-    protected JMenu createMenuEdit() {
-        JMenu edit = new JMenu("Edit");
-        edit.setMnemonic('E');
-        return edit;
-    }
-
-    protected JMenu createMenuBuild() {
-        JMenu edit = new JMenu("Build");
-        edit.setMnemonic('B');
-        return edit;
-    }
-
-    protected JMenu createMenuTools() {
-        JMenu tools = new JMenu("Tools");
-        tools.setMnemonic('T');
-        return tools;
-    }
-
-    protected JMenu createMenuHelp() {
-        JMenu help = new JMenu("Help");
-        help.setMnemonic('H');
-        return help;
-    }
-
-    protected JToolBar createToolBar() {
-        JToolBar toolBar = new JToolBar();
-        toolBar.add(btnNew = createBtnNew());
-        toolBar.addSeparator();
-        toolBar.add(btnOpen = createBtnOpen());
-        toolBar.add(btnSave = createBtnSave());
-        toolBar.add(btnRefresh = createBtnRefresh());
-        toolBar.addSeparator();
-        toolBar.add(btnCompile = createBtnCompile());
-        return toolBar;
-    }
-
-    protected JButton createBtnNew() {
-        JButton btn = createToolButton("/icon32x32/new.png");
-        btn.setToolTipText("New file");
-        return btn;
-    }
-
-    protected JButton createBtnSave() {
-        JButton btn = createToolButton("/icon32x32/save.png");
-        btn.setToolTipText("Save file");
-        return btn;
-    }
-
-    protected JButton createBtnRefresh() {
-        JButton btn = createToolButton("/icon32x32/refresh.png");
-        btn.setToolTipText("Reload all from disk");
-        return btn;
-    }
-
-    protected JButton createBtnCompile() {
-        JButton btn = createToolButton("/icon32x32/compile.png");
-        btn.setToolTipText("Compile file");
-        return btn;
-    }
-
-    protected JButton createBtnOpen() {
-        JButton btn = createToolButton("/icon32x32/open.png");
-        btn.setToolTipText("Open file");
-        return btn;
-    }
-
-    protected JButton createToolButton(@NonNull String path) {
-        final JButton btn = new JButton();
-        btn.setMinimumSize(new Dimension(ICON_WIDTH, ICON_HEIGHT));
-        btn.setSize(new Dimension(ICON_WIDTH, ICON_HEIGHT));
-        if (path != null) {
-            try {
-                btn.setIcon(ResourceUtils.loadIcon(path));
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        return btn;
-    }
+    return btn;
+  }
 
 
-    public void set(@NonNull AppSettings settings) {
-        setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
-        setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
-    }
+  public void set(@NonNull AppSettings settings) {
+    setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
+    setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
+  }
 
-    public void get(@NonNull AppSettings settings) {
-        settings.setMainFramePosX(getLocation().x);
-        settings.setMainFramePosY(getLocation().y);
-        settings.setMainFrameWidth(getWidth());
-        settings.setMainFrameHeight(getHeight());
-    }
+  public void get(@NonNull AppSettings settings) {
+    settings.setMainFramePosX(getLocation().x);
+    settings.setMainFramePosY(getLocation().y);
+    settings.setMainFrameWidth(getWidth());
+    settings.setMainFrameHeight(getHeight());
+  }
 }
