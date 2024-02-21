@@ -2,6 +2,8 @@ package ru.retro.assembler.editor.core.ui;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.message.Message;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
@@ -21,7 +23,7 @@ public class BuildMenuItems {
     }
 
     private void initComponents() {
-        miCompile = new JMenuItem("Compile");
+        miCompile = new JMenuItem(Messages.get(Messages.COMPILE));
         miCompile.setMnemonic('C');
         try {
             miCompile.setIcon(ResourceUtils.loadIcon("/icon16x16/equipment.png"));

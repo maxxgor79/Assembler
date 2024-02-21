@@ -3,6 +3,7 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
@@ -45,41 +46,41 @@ public class EditMenuItems {
     }
 
     private void initComponents() {
-        miUndo = new JMenuItem("Undo");
+        miUndo = new JMenuItem(Messages.get(Messages.UNDO));
         miUndo.setMnemonic('U');
         try {
             miUndo.setIcon(ResourceUtils.loadIcon("/icon16x16/undo.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miCut = new JMenuItem("Cut");
+        miCut = new JMenuItem(Messages.get(Messages.CUT));
         miCut.setMnemonic('T');
         try {
             miCut.setIcon(ResourceUtils.loadIcon("/icon16x16/cut.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miCopy = new JMenuItem("Copy");
+        miCopy = new JMenuItem(Messages.get(Messages.COPY));
         miCopy.setMnemonic('C');
         try {
             miCopy.setIcon(ResourceUtils.loadIcon("/icon16x16/copy.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miPaste = new JMenuItem("Paste");
+        miPaste = new JMenuItem(Messages.get(Messages.PASTE));
         try {
             miPaste.setIcon(ResourceUtils.loadIcon("/icon16x16/paste.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miDelete = new JMenuItem("Delete");
+        miDelete = new JMenuItem(Messages.get(Messages.DELETE));
         miDelete.setMnemonic('D');
         try {
             miDelete.setIcon(ResourceUtils.loadIcon("/icon16x16/delete.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miFind = new JMenuItem("Find");
+        miFind = new JMenuItem(Messages.get(Messages.FIND));
         miFind.setMnemonic('F');
         try {
             miFind.setIcon(ResourceUtils.loadIcon("/icon16x16/find.png"));

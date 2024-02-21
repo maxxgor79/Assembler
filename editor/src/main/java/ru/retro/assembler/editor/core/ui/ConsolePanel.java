@@ -1,6 +1,7 @@
 package ru.retro.assembler.editor.core.ui;
 
 import lombok.Getter;
+import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,7 +19,7 @@ public class ConsolePanel extends JPanel {
     }
 
     private void initComponents() {
-        final Border border = BorderFactory.createTitledBorder("Output:");
+        final Border border = BorderFactory.createTitledBorder(Messages.get(Messages.OUTPUT) + ":");
         setBorder(border);
         setLayout(new BorderLayout());
         final JScrollPane pane = new JScrollPane(area = createTextArea());

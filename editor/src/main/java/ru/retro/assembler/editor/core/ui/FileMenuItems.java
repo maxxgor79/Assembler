@@ -3,6 +3,7 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
@@ -54,42 +55,42 @@ public class FileMenuItems {
     }
 
     private void initComponents() {
-        miNew = new JMenuItem("New");
+        miNew = new JMenuItem(Messages.get(Messages.NEW));
         miNew.setMnemonic('N');
         try {
             miNew.setIcon(ResourceUtils.loadIcon("/icon16x16/new.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miOpen = new JMenuItem("Open...");
+        miOpen = new JMenuItem(Messages.get(Messages.OPEN));
         miOpen.setMnemonic('O');
         try {
             miOpen.setIcon(ResourceUtils.loadIcon("/icon16x16/open.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miSave = new JMenuItem("Save");
+        miSave = new JMenuItem(Messages.get(Messages.SAVE));
         miSave.setMnemonic('S');
         try {
             miSave.setIcon(ResourceUtils.loadIcon("/icon16x16/save.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miSaveAs = new JMenuItem("Save as...");
+        miSaveAs = new JMenuItem(Messages.get(Messages.SAVE_AS));
         miSaveAll = new JMenuItem("Save all");
-        miReloadAllFromDisk = new JMenuItem("Reload All from Disk");
+        miReloadAllFromDisk = new JMenuItem(Messages.get(Messages.RELOAD_ALL_FILES));
         try {
             miReloadAllFromDisk.setIcon(ResourceUtils.loadIcon("/icon16x16/refresh.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miClose = new JMenuItem("Close");
+        miClose = new JMenuItem(Messages.get(Messages.CLOSE));
         try {
             miClose.setIcon(ResourceUtils.loadIcon("/icon16x16/close.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miExit = new JMenuItem("Exit");
+        miExit = new JMenuItem(Messages.get(Messages.EXIT));
         miExit.setMnemonic('E');
         try {
             miExit.setIcon(ResourceUtils.loadIcon("/icon16x16/exit.png"));

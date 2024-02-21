@@ -3,12 +3,14 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * @Author: Maxim Gorin Date: 19.02.2024
@@ -64,6 +66,7 @@ public class MainWindow extends JFrame {
   private StatusPanel statusPanel;
 
   public MainWindow() {
+    Locale.setDefault(new Locale("ru"));
     init();
   }
 
@@ -73,6 +76,7 @@ public class MainWindow extends JFrame {
     setSize(new Dimension((int) (screenSize.width * 0.75), (int) (screenSize.height * 0.75)));
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     initComponents();
+    initListeners();
   }
 
   protected void initComponents() {
@@ -121,31 +125,31 @@ public class MainWindow extends JFrame {
   }
 
   protected JMenu createMenuFile() {
-    JMenu file = new JMenu("File");
+    JMenu file = new JMenu(Messages.get(Messages.FILE));
     file.setMnemonic('F');
     return file;
   }
 
   protected JMenu createMenuEdit() {
-    JMenu edit = new JMenu("Edit");
+    JMenu edit = new JMenu(Messages.get(Messages.EDIT));
     edit.setMnemonic('E');
     return edit;
   }
 
   protected JMenu createMenuBuild() {
-    JMenu edit = new JMenu("Build");
+    JMenu edit = new JMenu(Messages.get(Messages.BUILD));
     edit.setMnemonic('B');
     return edit;
   }
 
   protected JMenu createMenuTools() {
-    JMenu tools = new JMenu("Tools");
+    JMenu tools = new JMenu(Messages.get(Messages.TOOLS));
     tools.setMnemonic('T');
     return tools;
   }
 
   protected JMenu createMenuHelp() {
-    JMenu help = new JMenu("Help");
+    JMenu help = new JMenu(Messages.get(Messages.HELP));
     help.setMnemonic('H');
     return help;
   }
@@ -164,31 +168,31 @@ public class MainWindow extends JFrame {
 
   protected JButton createBtnNew() {
     JButton btn = createToolButton("/icon32x32/new.png");
-    btn.setToolTipText("New file");
+    btn.setToolTipText(Messages.get(Messages.NEW_FILE));
     return btn;
   }
 
   protected JButton createBtnSave() {
     JButton btn = createToolButton("/icon32x32/save.png");
-    btn.setToolTipText("Save file");
+    btn.setToolTipText(Messages.get(Messages.SAVE_FILE));
     return btn;
   }
 
   protected JButton createBtnRefresh() {
     JButton btn = createToolButton("/icon32x32/refresh.png");
-    btn.setToolTipText("Reload all from disk");
+    btn.setToolTipText(Messages.get(Messages.RELOAD_ALL_FILES));
     return btn;
   }
 
   protected JButton createBtnCompile() {
     JButton btn = createToolButton("/icon32x32/compile.png");
-    btn.setToolTipText("Compile file");
+    btn.setToolTipText(Messages.get(Messages.COMPILE_FILE));
     return btn;
   }
 
   protected JButton createBtnOpen() {
     JButton btn = createToolButton("/icon32x32/open.png");
-    btn.setToolTipText("Open file");
+    btn.setToolTipText(Messages.get(Messages.OPEN_FILE));
     return btn;
   }
 
@@ -217,5 +221,12 @@ public class MainWindow extends JFrame {
     settings.setMainFramePosY(getLocation().y);
     settings.setMainFrameWidth(getWidth());
     settings.setMainFrameHeight(getHeight());
+  }
+
+  private void initListeners() {
+    btnOpen.addActionListener(l -> {
+      OpenFileChooser chooser = new OpenFileChooser();
+      chooser.showOpenDialog(MainWindow.this);
+    });
   }
 }

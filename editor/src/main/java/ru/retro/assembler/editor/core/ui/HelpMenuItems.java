@@ -3,6 +3,7 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
@@ -28,14 +29,14 @@ public class HelpMenuItems {
     }
 
     private void initComponents() {
-        miHelp = new JMenuItem("Help");
+        miHelp = new JMenuItem(Messages.get(Messages.HELP));
         miHelp.setMnemonic('H');
         try {
             miHelp.setIcon(ResourceUtils.loadIcon("/icon16x16/help.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miAbout = new JMenuItem("About...");
+        miAbout = new JMenuItem(Messages.get(Messages.ABOUT));
         miAbout.setMnemonic('A');
         try {
             miAbout.setIcon(ResourceUtils.loadIcon("/icon16x16/about.png"));

@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.ui;
 
 import lombok.Getter;
 import lombok.NonNull;
+import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
 
@@ -19,7 +20,7 @@ public class ToolsMenuItems {
     }
 
     private void initComponents() {
-        miPreferences = new JMenuItem("Preferences");
+        miPreferences = new JMenuItem(Messages.get(Messages.PREFERENCES));
         miPreferences.setMnemonic('P');
 
     }
