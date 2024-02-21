@@ -1,4 +1,4 @@
-package ru.retro.assembler.editor.core.ui;
+package ru.retro.assembler.editor.core.ui.console;
 
 import lombok.Getter;
 import ru.retro.assembler.editor.core.i18n.Messages;
@@ -14,6 +14,9 @@ import java.awt.*;
 public class ConsolePanel extends JPanel {
     @Getter
     private JTextArea area;
+
+    @Getter
+    private ConsolePopup consolePopup;
     public ConsolePanel() {
         initComponents();
     }
@@ -24,6 +27,8 @@ public class ConsolePanel extends JPanel {
         setLayout(new BorderLayout());
         final JScrollPane pane = new JScrollPane(area = createTextArea());
         add(pane, BorderLayout.CENTER);
+        consolePopup = new ConsolePopup();
+        area.setComponentPopupMenu(consolePopup);
     }
 
     private JTextArea createTextArea() {

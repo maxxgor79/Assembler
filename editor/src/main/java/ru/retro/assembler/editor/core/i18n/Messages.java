@@ -75,6 +75,14 @@ public final class Messages {
 
     public static final String PREFERENCES = "preferences";
 
+    public static final String CLOSE_ALL = "close_all";
+
+    public static final String CAPTION = "caption";
+
+    public static final String CLEAN = "clean";
+
+    public static final String COPY_TEXT = "copy_text";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

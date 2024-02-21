@@ -37,6 +37,9 @@ public class FileMenuItems {
     private JMenuItem miClose;
 
     @Getter
+    private JMenuItem miCloseAll;
+
+    @Getter
     private JMenuItem miExit;
 
     public FileMenuItems(@NonNull JMenu menu) {
@@ -50,6 +53,7 @@ public class FileMenuItems {
         menu.add(miReloadAllFromDisk);
         menu.addSeparator();
         menu.add(miClose);
+        menu.add(miCloseAll);
         menu.addSeparator();
         menu.add(miExit);
     }
@@ -77,7 +81,7 @@ public class FileMenuItems {
             log.error(e.getMessage(), e);
         }
         miSaveAs = new JMenuItem(Messages.get(Messages.SAVE_AS));
-        miSaveAll = new JMenuItem("Save all");
+        miSaveAll = new JMenuItem(Messages.get(Messages.SAVE_ALL));
         miReloadAllFromDisk = new JMenuItem(Messages.get(Messages.RELOAD_ALL_FILES));
         try {
             miReloadAllFromDisk.setIcon(ResourceUtils.loadIcon("/icon16x16/refresh.png"));
@@ -90,6 +94,7 @@ public class FileMenuItems {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        miCloseAll = new JMenuItem(Messages.get(Messages.CLOSE_ALL));
         miExit = new JMenuItem(Messages.get(Messages.EXIT));
         miExit.setMnemonic('E');
         try {

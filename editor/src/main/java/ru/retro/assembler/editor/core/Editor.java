@@ -2,6 +2,8 @@ package ru.retro.assembler.editor.core;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.Locale;
+
 import ru.retro.assembler.editor.core.ui.MainWindow;
 
 import javax.swing.*;
@@ -14,6 +16,7 @@ public class Editor implements MouseWheelListener {
     private static final String SETTINGS_FILENAME = "setting.properties";
 
     public static void main(String []args) {
+        Locale.setDefault(new Locale("ru"));
         MainWindow windows = new MainWindow();
         windows.setLocationRelativeTo(null);
         SwingUtilities.invokeLater(() -> {

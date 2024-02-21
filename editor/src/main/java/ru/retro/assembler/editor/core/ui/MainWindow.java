@@ -5,12 +5,12 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.ui.console.ConsolePanel;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * @Author: Maxim Gorin Date: 19.02.2024
@@ -18,7 +18,7 @@ import java.util.Locale;
 @Slf4j
 public class MainWindow extends JFrame {
 
-  protected static final String TITLE = "Retro IDE";
+  protected static final String TITLE = Messages.get(Messages.CAPTION);
 
   protected static final int ICON_WIDTH = 32;
 
@@ -66,7 +66,6 @@ public class MainWindow extends JFrame {
   private StatusPanel statusPanel;
 
   public MainWindow() {
-    Locale.setDefault(new Locale("ru"));
     init();
   }
 
