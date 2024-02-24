@@ -83,6 +83,30 @@ public final class Messages {
 
     public static final String COPY_TEXT = "copy_text";
 
+    public static final String OPEN2 = "open2";
+
+    public static final String CANCEL = "cancel";
+
+    public static final String FILE_NAME = "file_name";
+
+    public static final String FILES_OF_TYPE = "files_of_type";
+
+    public static final String LOOK_IN = "look_in";
+
+    public static final String LIST = "list";
+
+    public static final String DETAILS = "details";
+
+    public static final String HOME = "home";
+
+    public static final String  UP_FOLDER = "up_folder";
+
+    public static final String NEW_FOLDER = "new_folder";
+
+    public static final String SAVE2 = "save2";
+
+    public static final String SAVE_IN = "save_in";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

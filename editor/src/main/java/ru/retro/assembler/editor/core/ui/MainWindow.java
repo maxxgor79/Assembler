@@ -224,8 +224,8 @@ public class MainWindow extends JFrame {
 
   private void initListeners() {
     btnOpen.addActionListener(l -> {
-      OpenFileChooser chooser = new OpenFileChooser();
-      chooser.showOpenDialog(MainWindow.this);
+      SaveAsChooser chooser = new SaveAsChooser();
+      chooser.showSaveDialog(MainWindow.this);
     });
   }
 }

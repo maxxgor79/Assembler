@@ -11,6 +11,22 @@ import java.io.File;
  * Date: 21.02.2024
  */
 public class SaveAsChooser extends JFileChooser {
+    static {
+        UIManager.put("FileChooser.cancelButtonText", Messages.get(Messages.CANCEL));
+        UIManager.put("FileChooser.saveButtonText", Messages.get(Messages.SAVE2));
+        UIManager.put("FileChooser.fileNameLabelText", Messages.get(Messages.FILE_NAME));
+        UIManager.put("FileChooser.filesOfTypeLabelText", Messages.get(Messages.FILES_OF_TYPE));
+        UIManager.put("FileChooser.saveInLabelText", Messages.get(Messages.SAVE_IN));
+        UIManager.put("FileChooser.listViewButtonToolTipText", Messages.get(Messages.LIST));
+        UIManager.put("FileChooser.listViewButtonAccessibleName", Messages.get(Messages.LIST));
+        UIManager.put("FileChooser.detailsViewButtonToolTipText", Messages.get(Messages.DETAILS));
+        UIManager.put("FileChooser.detailsViewButtonAccessibleName", Messages.get(Messages.DETAILS));
+        UIManager.put("FileChooser.homeFolderToolTipText", Messages.get(Messages.HOME));
+        UIManager.put("FileChooser.homeFolderAccessibleName", Messages.get(Messages.HOME));
+        UIManager.put("FileChooser.upFolderToolTipText", Messages.get(Messages.UP_FOLDER));
+        UIManager.put("FileChooser.upFolderAccessibleName", Messages.get(Messages.UP_FOLDER));
+        UIManager.put("FileChooser.newFolderToolTipText", Messages.get(Messages.NEW_FOLDER));
+    }
     public SaveAsChooser() {
         initComponent();
     }
