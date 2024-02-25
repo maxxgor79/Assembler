@@ -26,6 +26,8 @@ public class PreferencesDialog extends JDialog {
 
     private DefaultOpenChooser openFileChooser;
 
+    private String[] storedFields = new String[2];
+
     public PreferencesDialog(Frame owner) {
         super(owner);
         initComponents();
@@ -55,17 +57,18 @@ public class PreferencesDialog extends JDialog {
             dispose();
         });
         buttonPanel.getBtnCancel().addActionListener(l -> {
-            result = OPTION_CANCEL;
+            restore();
             dispose();
         });
         preferencesTabbedPane.getPreferencesPanel().getBtnCompilerPath().addActionListener(l -> {
+            store();
             if (openFileChooser.showDialog(this, null) == JFileChooser.APPROVE_OPTION) {
                 preferencesTabbedPane.getPreferencesPanel().getCompilerPathField().setText(openFileChooser
                         .getSelectedFile().getAbsolutePath());
             }
         });
-
         preferencesTabbedPane.getPreferencesPanel().getBtnOutputDirectory().addActionListener(l -> {
+            store();
             if (openFileChooser.showDialog(this, null) == JFileChooser.APPROVE_OPTION) {
                 preferencesTabbedPane.getPreferencesPanel().getOutputPathField().setText(openFileChooser
                         .getSelectedFile().getAbsolutePath());
@@ -73,7 +76,22 @@ public class PreferencesDialog extends JDialog {
         });
     }
 
+    private void store() {
+        storedFields[0] = preferencesTabbedPane.getPreferencesPanel().getCompilerPathField().getText();
+        storedFields[1] = preferencesTabbedPane.getPreferencesPanel().getOutputPathField().getText();
+    }
+
+    private void restore() {
+        if (storedFields[0] != null) {
+            preferencesTabbedPane.getPreferencesPanel().getCompilerPathField().setText(storedFields[0]);
+        }
+        if (storedFields[1] != null) {
+            preferencesTabbedPane.getPreferencesPanel().getOutputPathField().setText(storedFields[1]);
+        }
+    }
+
     public int showModal() {
+        result = OPTION_CANCEL;
         setLocationRelativeTo(getOwner());
         setVisible(true);
         return result;

@@ -32,5 +32,35 @@ public class AppSettings extends Settings {
     @Getter
     @Setter
     @Setting
-    protected boolean maximized;
+    protected  int state;
+
+    @Getter
+    @Setter
+    @Setting
+    protected  int dividerLocation;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String helpUri;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String compilerPath;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String outputDirectory;
+
+    @Getter
+    @Setter
+    @Setting
+    protected int majorVersion;
+
+    @Getter
+    @Setter
+    @Setting
+    protected int minorVersion;
 }

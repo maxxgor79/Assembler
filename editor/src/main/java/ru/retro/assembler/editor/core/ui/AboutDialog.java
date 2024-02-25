@@ -36,6 +36,8 @@ public class AboutDialog extends JDialog {
 
     private JButton btnClose;
 
+    private JLabel textLabel;
+
     public AboutDialog(Frame owner) {
         super(owner);
         initComponents();
@@ -82,14 +84,19 @@ public class AboutDialog extends JDialog {
 
     private JPanel createMainPanel() {
         final JPanel panel = new JPanel();
-        final JLabel text = new JLabel(String.format(TEXT, Messages.get(Messages.CAPTION), majorVersion, minorVersion
-                ,Messages.get(Messages.BUILD), buildVersion, Messages.get(Messages.BUILT_ON), buildOn
-                , Messages.get(Messages.WRITTEN_BY)));
-        panel.add(text);
+        textLabel = new JLabel(renderText());
+        panel.add(textLabel);
         return panel;
     }
 
+    private String renderText() {
+        return String.format(TEXT, Messages.get(Messages.CAPTION), majorVersion, minorVersion
+                ,Messages.get(Messages.BUILD), buildVersion, Messages.get(Messages.BUILT_ON), buildOn
+                , Messages.get(Messages.WRITTEN_BY));
+    }
+
     public void showModal() {
+        textLabel.setText(renderText());
         setLocationRelativeTo(getOwner());
         setVisible(true);
     }

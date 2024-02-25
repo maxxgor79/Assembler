@@ -13,7 +13,7 @@ import java.io.IOException;
  * Date: 21.02.2024
  */
 @Slf4j
-public class ConsolePopup extends JPopupMenu {
+public class ConsolePopupMenu extends JPopupMenu {
     @Getter
     private JMenuItem miClean;
 
@@ -21,7 +21,7 @@ public class ConsolePopup extends JPopupMenu {
     private JMenuItem miCopyText;
 
 
-    public ConsolePopup() {
+    public ConsolePopupMenu() {
         initComponents();
         add(miClean);
         addSeparator();

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.console.ConsolePanel;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
@@ -11,7 +12,10 @@ import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @Author: Maxim Gorin Date: 19.02.2024
@@ -62,13 +66,15 @@ public class MainWindow extends JFrame {
     private ConsolePanel console;
 
     @Getter
-    private JTabbedPane tabbedPane;
+    private SourceTabbedPane sourceTabbedPane;
 
     private StatusPanel statusPanel;
 
     private AboutDialog aboutDialog;
 
     private PreferencesDialog preferencesDialog;
+
+    private URI helpUri;
 
     public MainWindow() {
         init();
@@ -93,9 +99,11 @@ public class MainWindow extends JFrame {
         setJMenuBar(createMenuBar());
         add(createToolBar(), BorderLayout.NORTH);
         console = createConsole();
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Test", new EditorPanel());
-        splitPane = createSplitPane(tabbedPane, console);
+        sourceTabbedPane = new SourceTabbedPane();
+        sourceTabbedPane.add(new Source(new File("noname1.asm"), "mov eax,ebx"));
+        sourceTabbedPane.add(new Source(new File("noname2.asm"), "daa"));
+        //tabbedPane.addTab("Test", new EditorPanel());
+        splitPane = createSplitPane(sourceTabbedPane, console);
         add(splitPane, BorderLayout.CENTER);
         statusPanel = new StatusPanel();
         add(statusPanel, BorderLayout.SOUTH);
@@ -214,31 +222,71 @@ public class MainWindow extends JFrame {
         return btn;
     }
 
-
-    public void set(@NonNull AppSettings settings) {
-        setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
-        setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
-    }
-
-    public void get(@NonNull AppSettings settings) {
-        settings.setMainFramePosX(getLocation().x);
-        settings.setMainFramePosY(getLocation().y);
-        settings.setMainFrameWidth(getWidth());
-        settings.setMainFrameHeight(getHeight());
-    }
-
     private void initListeners() {
         toolsMenuItems.getMiPreferences().addActionListener(l -> {
-            if (preferencesDialog == null) {
-                preferencesDialog = new PreferencesDialog(this);
-            }
+            preferencesDialog = getPreferencesDialogInstance();
             preferencesDialog.showModal();
         });
         helpMenuItems.getMiAbout().addActionListener(l -> {
-            if (aboutDialog == null) {
-                aboutDialog = new AboutDialog(this);
-            }
+            aboutDialog = getAboutDialogInstance();
             aboutDialog.showModal();
         });
+        helpMenuItems.getMiHelp().addActionListener(l -> {
+            try {
+                Desktop.getDesktop().browse(helpUri);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        });
+    }
+
+    protected PreferencesDialog getPreferencesDialogInstance() {
+        if (preferencesDialog == null) {
+            preferencesDialog = new PreferencesDialog(this);
+        }
+        return preferencesDialog;
+    }
+
+    protected AboutDialog getAboutDialogInstance() {
+        if (aboutDialog == null) {
+            aboutDialog = new AboutDialog(this);
+        }
+        return aboutDialog;
+    }
+
+    public void apply(@NonNull final AppSettings settings) {
+        setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
+        setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
+        setExtendedState(settings.getState());
+        splitPane.setDividerLocation(settings.getDividerLocation());
+        try {
+            helpUri = new URI(settings.getHelpUri());
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage(), e);
+        }
+        if (settings.getCompilerPath() != null) {
+            getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel().getCompilerPathField()
+                    .setText(settings.getCompilerPath());
+        }
+        if (settings.getOutputDirectory() != null) {
+            getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel().getOutputPathField()
+                    .setText(settings.getOutputDirectory());
+        }
+        getAboutDialogInstance().setMajorVersion(settings.getMajorVersion());
+        getAboutDialogInstance().setMinorVersion(settings.getMinorVersion());
+    }
+
+    public void store(@NonNull final AppSettings settings) {
+        final Point pt = this.getLocation();
+        settings.setMainFramePosX(pt.x);
+        settings.setMainFramePosY(pt.y);
+        settings.setMainFrameWidth(getWidth());
+        settings.setMainFrameHeight(getHeight());
+        settings.setState(getExtendedState());
+        settings.setDividerLocation(splitPane.getDividerLocation());
+        settings.setCompilerPath(getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel()
+                .getCompilerPathField().getText());
+        settings.setOutputDirectory(getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel()
+                .getOutputPathField().getText());
     }
 }

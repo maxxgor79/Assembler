@@ -45,27 +45,28 @@ public abstract class Settings extends AnnotationProcessor {
         configs.save(new OutputStreamWriter(os));
     }
 
-    protected void init() throws IllegalAccessException {
-        configs.clear();
+    protected void apply() throws IllegalAccessException {
         for (Property p : getProperties(this)) {
-            if (configs.containsKey(p.getName())) {
+            final String name = p.getName();
+            if (configs.containsKey(name)) {
                 if (p.isBoolean()) {
-                    p.set(configs.getBoolean(p.getName()));
+                    p.set(configs.getBoolean(name));
                 } else if (p.isInt()) {
-                    p.set(configs.getInt(p.getName()));
+                    p.set(configs.getInt(name));
                 } else if (p.isReal()) {
-                    p.set(configs.getDouble(p.getName()));
+                    p.set(configs.getDouble(name));
                 } else if (p.isText()) {
-                    p.set(configs.getString(p.getName()));
+                    p.set(configs.getString(name));
                 }
             }
         }
     }
 
     public void load(@NonNull InputStream is) throws ConfigurationException {
+        configs.clear();
         configs.load(new InputStreamReader(is));
         try {
-            init();
+            apply();
         } catch (IllegalAccessException e) {
             log.error(e.getMessage(), e);
             throw new ConfigurationException(e);

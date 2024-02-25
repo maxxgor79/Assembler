@@ -16,7 +16,7 @@ public class ConsolePanel extends JPanel {
     private JTextArea area;
 
     @Getter
-    private ConsolePopup consolePopup;
+    private ConsolePopupMenu consolePopupMenu;
     public ConsolePanel() {
         initComponents();
     }
@@ -27,8 +27,8 @@ public class ConsolePanel extends JPanel {
         setLayout(new BorderLayout());
         final JScrollPane pane = new JScrollPane(area = createTextArea());
         add(pane, BorderLayout.CENTER);
-        consolePopup = new ConsolePopup();
-        area.setComponentPopupMenu(consolePopup);
+        consolePopupMenu = new ConsolePopupMenu();
+        area.setComponentPopupMenu(consolePopupMenu);
     }
 
     private JTextArea createTextArea() {
