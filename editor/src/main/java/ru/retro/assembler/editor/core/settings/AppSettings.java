@@ -22,12 +22,12 @@ public class AppSettings extends Settings {
     @Getter
     @Setter
     @Setting
-    protected int mainFrameWidth;
+    protected int mainFrameWidth = 1024;
 
     @Getter
     @Setter
     @Setting
-    protected int mainFrameHeight;
+    protected int mainFrameHeight = 768;
 
     @Getter
     @Setter
@@ -37,27 +37,27 @@ public class AppSettings extends Settings {
     @Getter
     @Setter
     @Setting
-    protected  int dividerLocation;
+    protected  int dividerLocation = 496;
 
     @Getter
     @Setter
     @Setting
-    protected String helpUri;
+    protected String helpUri = "http://something.ru";
 
     @Getter
     @Setter
     @Setting
-    protected String compilerPath;
+    protected String compilerPath = "asm";
 
     @Getter
     @Setter
     @Setting
-    protected String outputDirectory;
+    protected String outputDirectory = "output";
 
     @Getter
     @Setter
     @Setting
-    protected int majorVersion;
+    protected int majorVersion = 1;
 
     @Getter
     @Setter

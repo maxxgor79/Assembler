@@ -37,6 +37,7 @@ public class Editor {
     }
 
     private static void setDefaultSettings() {
+        window.apply(SETTINGS);
         window.setLocationRelativeTo(null);
     }
 
