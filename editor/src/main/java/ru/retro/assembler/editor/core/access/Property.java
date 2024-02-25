@@ -39,7 +39,8 @@ public class Property {
     }
 
     public String getText() throws IllegalAccessException {
-        return field.get(obj).toString();
+        Object o = field.get(obj);
+        return o == null ? null : o.toString();
     }
 
     public boolean isBoolean() {
