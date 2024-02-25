@@ -159,6 +159,11 @@
             <artifactId>commons-configuration</artifactId>
             <version>1.10</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.16.1</version>
+        </dependency>
     </dependencies>
     <version>${major.version}.${minor.version}</version>
     <repositories>

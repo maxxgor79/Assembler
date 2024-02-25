@@ -107,6 +107,10 @@ public final class Messages {
 
     public static final String SAVE_IN = "save_in";
 
+    public static final String BUILT_ON = "built_on";
+
+    public static final String WRITTEN_BY = "written_by";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }
