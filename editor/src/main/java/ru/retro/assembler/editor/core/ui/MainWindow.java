@@ -100,7 +100,14 @@ public class MainWindow extends JFrame {
         add(createToolBar(), BorderLayout.NORTH);
         console = createConsole();
         sourceTabbedPane = new SourceTabbedPane();
-        sourceTabbedPane.add(new Source(new File("noname1.asm"), "mov eax,ebx"));
+        Source src1 = new Source(new File("./simple-monitor.asm"));
+        try {
+            src1.load();
+            sourceTabbedPane.add(src1);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+
         sourceTabbedPane.add(new Source(new File("noname2.asm"), "daa"));
         //tabbedPane.addTab("Test", new EditorPanel());
         splitPane = createSplitPane(sourceTabbedPane, console);
@@ -261,7 +268,7 @@ public class MainWindow extends JFrame {
         splitPane.setDividerLocation(settings.getDividerLocation());
         try {
             helpUri = new URI(settings.getHelpUri());
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | NullPointerException e) {
             log.error(e.getMessage(), e);
         }
         if (settings.getCompilerPath() != null) {

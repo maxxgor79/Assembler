@@ -29,6 +29,7 @@ class DefaultTokenMakerFactory extends AbstractTokenMakerFactory
 		putMapping(SYNTAX_STYLE_NONE,			pkg + "PlainTextTokenMaker");
 		putMapping(SYNTAX_STYLE_ACTIONSCRIPT,	pkg + "ActionScriptTokenMaker");
 		putMapping(SYNTAX_STYLE_ASSEMBLER_X86,	pkg + "AssemblerX86TokenMaker");
+		putMapping(SYNTAX_STYLE_ASSEMBLER_Z80,	pkg + "AssemblerZ80TokenMaker");
 		putMapping(SYNTAX_STYLE_ASSEMBLER_6502,	pkg + "Assembler6502TokenMaker");
 		putMapping(SYNTAX_STYLE_BBCODE,			pkg + "BBCodeTokenMaker");
 		putMapping(SYNTAX_STYLE_C,				pkg + "CTokenMaker");

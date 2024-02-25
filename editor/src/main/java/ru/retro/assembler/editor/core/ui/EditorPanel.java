@@ -33,16 +33,11 @@ public class EditorPanel extends JPanel {
         textArea = createTextArea();
         final RTextScrollPane scrollPane = new RTextScrollPane(textArea);
         add(scrollPane, BorderLayout.CENTER);
-        try (FileInputStream fis = new FileInputStream("simple-monitor.asm")) {
-            textArea.setText(new String(IOUtils.toByteArray(fis)));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
     }
 
     private RSyntaxTextArea createTextArea() {
         final RSyntaxTextArea textArea = new RSyntaxTextArea(40, 80);
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_X86);
+        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
         textArea.setCodeFoldingEnabled(true);
         return textArea;
     }
