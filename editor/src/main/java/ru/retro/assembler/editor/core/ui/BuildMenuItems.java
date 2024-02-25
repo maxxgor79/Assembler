@@ -1,5 +1,6 @@
 package ru.retro.assembler.editor.core.ui;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.message.Message;
@@ -15,11 +16,26 @@ import java.io.IOException;
  */
 @Slf4j
 public class BuildMenuItems {
+    @Getter
     private JMenuItem miCompile;
 
-    public BuildMenuItems(@NonNull JMenuItem menu) {
+    @Getter
+    private JMenuItem miCompileTap;
+
+    @Getter
+    private JMenuItem miCompileWav;
+
+    @Getter
+    private JMenuItem miCompileTzx;
+
+
+    public BuildMenuItems(@NonNull JMenu menu) {
         initComponents();
         menu.add(miCompile);
+        menu.addSeparator();
+        menu.add(miCompileTap);
+        menu.add(miCompileTzx);
+        menu.add(miCompileWav);
     }
 
     private void initComponents() {
@@ -30,5 +46,8 @@ public class BuildMenuItems {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        miCompileTap = new JMenuItem(Messages.get(Messages.COMPILE_TAP));
+        miCompileTzx = new JMenuItem(Messages.get(Messages.COMPILE_TZX));
+        miCompileWav = new JMenuItem(Messages.get(Messages.COMPILE_WAV));
     }
 }

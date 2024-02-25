@@ -90,6 +90,6 @@ public class AboutDialog extends JDialog {
     }
 
     private void initListeners() {
-        btnClose.addActionListener(l -> AboutDialog.this.setVisible(false));
+        btnClose.addActionListener(l -> AboutDialog.this.dispose());
     }
 }

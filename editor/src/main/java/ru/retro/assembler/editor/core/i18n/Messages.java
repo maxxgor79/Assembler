@@ -111,6 +111,12 @@ public final class Messages {
 
     public static final String WRITTEN_BY = "written_by";
 
+    public static final String COMPILE_TAP = "compile_tap";
+
+    public static final String COMPILE_TZX = "compile_tzx";
+
+    public static final String COMPILE_WAV = "compile_wav";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }
