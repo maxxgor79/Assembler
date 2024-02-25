@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.console.ConsolePanel;
+import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
@@ -66,6 +67,8 @@ public class MainWindow extends JFrame {
     private StatusPanel statusPanel;
 
     private AboutDialog aboutDialog;
+
+    private PreferencesDialog preferencesDialog;
 
     public MainWindow() {
         init();
@@ -225,12 +228,17 @@ public class MainWindow extends JFrame {
     }
 
     private void initListeners() {
+        toolsMenuItems.getMiPreferences().addActionListener(l -> {
+            if (preferencesDialog == null) {
+                preferencesDialog = new PreferencesDialog(this);
+            }
+            preferencesDialog.showModal();
+        });
         helpMenuItems.getMiAbout().addActionListener(l -> {
             if (aboutDialog == null) {
-                aboutDialog = new AboutDialog(MainWindow.this);
+                aboutDialog = new AboutDialog(this);
             }
-            aboutDialog.setLocationRelativeTo(this);
-            aboutDialog.setVisible(true);
+            aboutDialog.showModal();
         });
     }
 }

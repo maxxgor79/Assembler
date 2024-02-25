@@ -4,6 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.retro.assembler</groupId>
     <artifactId>editor</artifactId>
+    <properties>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+        <exec.name>retroide</exec.name>
+        <major.version>1</major.version>
+        <minor.version>0</minor.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -48,29 +56,20 @@
                 <directory>src/resources</directory>
                 <includes>
                     <include>**/*.properties</include>
-		    <include>**/*.png</include>
+                    <include>**/*.png</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>
         </resources>
     </build>
 
-    <properties>
-        <java.version>14</java.version>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-        <exec.name>retroide</exec.name>
-        <major.version>1</major.version>
-        <minor.version>0</minor.version>
-    </properties>
-
     <dependencies>
-	<dependency>
+        <dependency>
             <groupId>ru.retro.ui</groupId>
             <artifactId>rsyntaxtextarea</artifactId>
             <version>1.0</version>
         </dependency>
-	
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>

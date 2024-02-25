@@ -117,6 +117,14 @@ public final class Messages {
 
     public static final String COMPILE_WAV = "compile_wav";
 
+    public static final String COMPILER = "compiler";
+
+    public static final String COMPILE_PATH = "compiler_path";
+
+    public static final String OUTPUT_DIRECTORY = "output_directory";
+
+    public static final String CHOOSE_DIRECTORY = "choose_directory";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

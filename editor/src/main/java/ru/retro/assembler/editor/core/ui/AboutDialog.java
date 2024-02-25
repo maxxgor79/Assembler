@@ -89,6 +89,11 @@ public class AboutDialog extends JDialog {
         return panel;
     }
 
+    public void showModal() {
+        setLocationRelativeTo(getOwner());
+        setVisible(true);
+    }
+
     private void initListeners() {
         btnClose.addActionListener(l -> AboutDialog.this.dispose());
     }
