@@ -55,12 +55,6 @@ public class PreferencesDialog extends JDialog {
     }
 
     private void initListeners() {
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                store();
-            }
-        });
         buttonPanel.getBtnSave().addActionListener(l -> {
             result = OPTION_SAVE;
             dispose();
@@ -102,6 +96,7 @@ public class PreferencesDialog extends JDialog {
 
     public int showModal() {
         result = OPTION_CANCEL;
+        store();
         setLocationRelativeTo(getOwner());
         setVisible(true);
         if (result == OPTION_CANCEL) {
