@@ -240,6 +240,8 @@ Operator				= ("+"|"-"|"*"|"/"|"%"|"^"|"|"|"&"|"~"|"!"|"="|"<"|">")
 	"PRINTLN" |
 	"ECHO" |
 	"ORG" |
+	"END" |
+	"EQU" |
 	".INCLUDE" |
 	".DEF" |
 	".DEFINE" |
@@ -250,6 +252,8 @@ Operator				= ("+"|"-"|"*"|"/"|"%"|"^"|"|"|"&"|"~"|"!"|"="|"<"|">")
 	".MESSAGE" |
 	".PRINTLN" |
 	".ORG" |
+	".END" |
+	".EQU" |
 	".ECHO?"		{ addToken(Token.PREPROCESSOR); }
 
 	"DB" |
@@ -262,7 +266,6 @@ Operator				= ("+"|"-"|"*"|"/"|"%"|"^"|"|"|"&"|"~"|"!"|"="|"<"|">")
 	"DEFRES" |
 	"IMAGE" |
 	"IMG" |
-	"EQU" |
 	".DB" |
 	".DW" |
 	".DD" |
@@ -272,8 +275,7 @@ Operator				= ("+"|"-"|"*"|"/"|"%"|"^"|"|"|"&"|"~"|"!"|"="|"<"|">")
 	".RESOURCE" |
 	".DEFRES" |
 	".IMAGE" |
-	".IMG" |
-	".EQU"		{ addToken(Token.FUNCTION); }
+	".IMG"			{ addToken(Token.FUNCTION); }
 
 	/* Registers */
 	"A" |
