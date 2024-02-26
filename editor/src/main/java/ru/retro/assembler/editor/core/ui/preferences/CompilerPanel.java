@@ -10,7 +10,7 @@ import java.awt.*;
  * @Author: Maxim Gorin
  * Date: 25.02.2024
  */
-public class PreferencesPanel extends JPanel {
+public class CompilerPanel extends JPanel {
     @Getter
     private TextField compilerPathField;
 
@@ -23,7 +23,7 @@ public class PreferencesPanel extends JPanel {
     @Getter
     private JButton btnOutputDirectory;
 
-    public PreferencesPanel() {
+    public CompilerPanel() {
         initComponents();
     }
 

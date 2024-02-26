@@ -1,7 +1,8 @@
 package ru.retro.assembler.editor.core.ui;
 
-import lombok.NonNull;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
@@ -18,12 +19,13 @@ import java.util.Map;
  */
 @Slf4j
 public class SourceTabbedPane extends JTabbedPane {
-    private final Map<Source, Integer> sourceMap = new HashMap<>();
+    private final Map<Source, Link> sourceLinkMap = new HashMap<>();
 
     private Icon icon;
 
-    private final Map<Integer, EditorPanel> editorPanelMap = new HashMap<>();
+    private final Map<Integer, Source> indexSourceMap = new HashMap<>();
 
+    @Getter
     private SourcePopupMenu sourcePopupMenu;
 
     public SourceTabbedPane() {
@@ -32,7 +34,7 @@ public class SourceTabbedPane extends JTabbedPane {
 
     private void initComponents() {
         if (icon == null) {
-            try  {
+            try {
                 icon = ResourceUtils.loadIcon("/icon16x16/text.png");
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
@@ -59,14 +61,14 @@ public class SourceTabbedPane extends JTabbedPane {
     }
 
     public boolean add(@NonNull final Source src) {
-        if (sourceMap.containsKey(src)) {
+        if (sourceLinkMap.containsKey(src)) {
             return false;
         }
         final EditorPanel editorPanel = new EditorPanel();
-        int index = getTabCount();
+        final int index = getTabCount();
         insertTab(src.getName(), icon, editorPanel, src.getName(), index);
-        sourceMap.put(src, index);
-        editorPanelMap.put(index, editorPanel);
+        sourceLinkMap.put(src, new Link(index, editorPanel.getTextArea()));
+        indexSourceMap.put(index, src);
         if (src.getContent() != null) {
             editorPanel.getTextArea().setText(src.getContent());
         }
@@ -74,20 +76,47 @@ public class SourceTabbedPane extends JTabbedPane {
     }
 
     public boolean setSelected(@NonNull final Source src) {
-        if (!sourceMap.containsKey(src)) {
+        if (!sourceLinkMap.containsKey(src)) {
             return false;
         }
-        this.setSelectedIndex(sourceMap.get(src));
+        this.setSelectedIndex(sourceLinkMap.get(src).getIndex());
         return true;
     }
 
     public boolean close(@NonNull final Source src) {
-        if (!sourceMap.containsKey(src)) {
+        if (!sourceLinkMap.containsKey(src)) {
             return false;
         }
-        removeTabAt(sourceMap.get(src));
-        editorPanelMap.remove(sourceMap.get(src));
-        sourceMap.remove(src);
+        final int index = sourceLinkMap.get(src).getIndex();
+        removeTabAt(index);
+        indexSourceMap.remove(index);
+        sourceLinkMap.remove(src);
         return true;
+    }
+
+    public Source getSelected() {
+        final int selectedIndex = getSelectedIndex();
+        return indexSourceMap.get(selectedIndex);
+    }
+
+    public RSyntaxTextArea getTextArea(int index) {
+        final Source src = indexSourceMap.get(index);
+        if (src == null) {
+            return null;
+        }
+        return sourceLinkMap.get(src).getTextArea();
+    }
+
+    @EqualsAndHashCode
+    @AllArgsConstructor
+    protected static class Link {
+        @Getter
+        @Setter
+        private int index;
+
+        @Getter
+        @Setter
+        @NonNull
+        private RSyntaxTextArea textArea;
     }
 }

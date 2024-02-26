@@ -272,15 +272,19 @@ public class MainWindow extends JFrame {
             log.error(e.getMessage(), e);
         }
         if (settings.getCompilerPath() != null) {
-            getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel().getCompilerPathField()
+            getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel().getCompilerPathField()
                     .setText(settings.getCompilerPath());
         }
         if (settings.getOutputDirectory() != null) {
-            getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel().getOutputPathField()
+            getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel().getOutputPathField()
                     .setText(settings.getOutputDirectory());
         }
         getAboutDialogInstance().setMajorVersion(settings.getMajorVersion());
         getAboutDialogInstance().setMinorVersion(settings.getMinorVersion());
+        if (settings.getEncoding() != null) {
+            getPreferencesDialogInstance().getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
+                    .setSelectedItem(settings.getEncoding().toUpperCase());
+        }
     }
 
     public void store(@NonNull final AppSettings settings) {
@@ -291,9 +295,11 @@ public class MainWindow extends JFrame {
         settings.setMainFrameHeight(getHeight());
         settings.setState(getExtendedState());
         settings.setDividerLocation(splitPane.getDividerLocation());
-        settings.setCompilerPath(getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel()
+        settings.setCompilerPath(getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel()
                 .getCompilerPathField().getText());
-        settings.setOutputDirectory(getPreferencesDialogInstance().getPreferencesTabbedPane().getPreferencesPanel()
+        settings.setOutputDirectory(getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel()
                 .getOutputPathField().getText());
+        settings.setEncoding(getPreferencesDialogInstance().getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
+                .getSelectedItem().toString());
     }
 }

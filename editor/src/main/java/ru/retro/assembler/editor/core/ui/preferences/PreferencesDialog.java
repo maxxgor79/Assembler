@@ -6,6 +6,9 @@ import ru.retro.assembler.editor.core.ui.DefaultOpenChooser;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  * @Author: Maxim Gorin
@@ -26,7 +29,7 @@ public class PreferencesDialog extends JDialog {
 
     private DefaultOpenChooser openFileChooser;
 
-    private String[] storedFields = new String[2];
+    private final String[] storedFields = new String[3];
 
     public PreferencesDialog(Frame owner) {
         super(owner);
@@ -52,6 +55,12 @@ public class PreferencesDialog extends JDialog {
     }
 
     private void initListeners() {
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                store();
+            }
+        });
         buttonPanel.getBtnSave().addActionListener(l -> {
             result = OPTION_SAVE;
             dispose();
@@ -60,33 +69,35 @@ public class PreferencesDialog extends JDialog {
             restore();
             dispose();
         });
-        preferencesTabbedPane.getPreferencesPanel().getBtnCompilerPath().addActionListener(l -> {
-            store();
+        preferencesTabbedPane.getCompilerPanel().getBtnCompilerPath().addActionListener(l -> {
             if (openFileChooser.showDialog(this, null) == JFileChooser.APPROVE_OPTION) {
-                preferencesTabbedPane.getPreferencesPanel().getCompilerPathField().setText(openFileChooser
+                preferencesTabbedPane.getCompilerPanel().getCompilerPathField().setText(openFileChooser
                         .getSelectedFile().getAbsolutePath());
             }
         });
-        preferencesTabbedPane.getPreferencesPanel().getBtnOutputDirectory().addActionListener(l -> {
-            store();
+        preferencesTabbedPane.getCompilerPanel().getBtnOutputDirectory().addActionListener(l -> {
             if (openFileChooser.showDialog(this, null) == JFileChooser.APPROVE_OPTION) {
-                preferencesTabbedPane.getPreferencesPanel().getOutputPathField().setText(openFileChooser
+                preferencesTabbedPane.getCompilerPanel().getOutputPathField().setText(openFileChooser
                         .getSelectedFile().getAbsolutePath());
             }
         });
     }
 
     private void store() {
-        storedFields[0] = preferencesTabbedPane.getPreferencesPanel().getCompilerPathField().getText();
-        storedFields[1] = preferencesTabbedPane.getPreferencesPanel().getOutputPathField().getText();
+        storedFields[0] = preferencesTabbedPane.getCompilerPanel().getCompilerPathField().getText();
+        storedFields[1] = preferencesTabbedPane.getCompilerPanel().getOutputPathField().getText();
+        storedFields[2] = (String) preferencesTabbedPane.getOtherPanel().getCbEncoding().getSelectedItem();
     }
 
     private void restore() {
         if (storedFields[0] != null) {
-            preferencesTabbedPane.getPreferencesPanel().getCompilerPathField().setText(storedFields[0]);
+            preferencesTabbedPane.getCompilerPanel().getCompilerPathField().setText(storedFields[0]);
         }
         if (storedFields[1] != null) {
-            preferencesTabbedPane.getPreferencesPanel().getOutputPathField().setText(storedFields[1]);
+            preferencesTabbedPane.getCompilerPanel().getOutputPathField().setText(storedFields[1]);
+        }
+        if (storedFields[2] != null) {
+            preferencesTabbedPane.getOtherPanel().getCbEncoding().setSelectedItem(storedFields[2]);
         }
     }
 

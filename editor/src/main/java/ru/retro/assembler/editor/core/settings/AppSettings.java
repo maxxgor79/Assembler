@@ -63,4 +63,9 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     protected int minorVersion;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String encoding = "UTF-8";
 }

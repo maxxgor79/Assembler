@@ -11,14 +11,19 @@ import javax.swing.*;
  */
 public class PreferencesTabbedPane extends JTabbedPane {
     @Getter
-    private PreferencesPanel preferencesPanel;
+    private CompilerPanel compilerPanel;
+
+    @Getter
+    private OtherPanel otherPanel;
 
     public PreferencesTabbedPane() {
         initComponents();
     }
 
     private void initComponents() {
-        preferencesPanel = new PreferencesPanel();
-        addTab(Messages.get(Messages.COMPILER), preferencesPanel);
+        compilerPanel = new CompilerPanel();
+        addTab(Messages.get(Messages.COMPILER), compilerPanel);
+        otherPanel = new OtherPanel();
+        addTab(Messages.get(Messages.OTHER), otherPanel);
     }
 }

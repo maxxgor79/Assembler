@@ -125,6 +125,10 @@ public final class Messages {
 
     public static final String CHOOSE_DIRECTORY = "choose_directory";
 
+    public static final String OTHER = "other";
+
+    public static final String ENCODING = "encoding";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }
