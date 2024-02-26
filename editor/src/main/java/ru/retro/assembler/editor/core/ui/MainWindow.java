@@ -4,18 +4,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
-import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.console.ConsolePanel;
-import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * @Author: Maxim Gorin Date: 19.02.2024
@@ -68,13 +63,8 @@ public class MainWindow extends JFrame {
     @Getter
     private SourceTabbedPane sourceTabbedPane;
 
+    @Getter
     private StatusPanel statusPanel;
-
-    private AboutDialog aboutDialog;
-
-    private PreferencesDialog preferencesDialog;
-
-    private URI helpUri;
 
     public MainWindow() {
         init();
@@ -82,11 +72,10 @@ public class MainWindow extends JFrame {
 
     protected void init() {
         setTitle(TITLE);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(new Dimension((int) (screenSize.width * 0.75), (int) (screenSize.height * 0.75)));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initComponents();
-        initListeners();
     }
 
     protected void initComponents() {
@@ -100,16 +89,6 @@ public class MainWindow extends JFrame {
         add(createToolBar(), BorderLayout.NORTH);
         console = createConsole();
         sourceTabbedPane = new SourceTabbedPane();
-        Source src1 = new Source(new File("./simple-monitor.asm"));
-        try {
-            src1.load();
-            sourceTabbedPane.add(src1);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-
-        sourceTabbedPane.add(new Source(new File("noname2.asm"), "daa"));
-        //tabbedPane.addTab("Test", new EditorPanel());
         splitPane = createSplitPane(sourceTabbedPane, console);
         add(splitPane, BorderLayout.CENTER);
         statusPanel = new StatusPanel();
@@ -229,62 +208,11 @@ public class MainWindow extends JFrame {
         return btn;
     }
 
-    private void initListeners() {
-        toolsMenuItems.getMiPreferences().addActionListener(l -> {
-            preferencesDialog = getPreferencesDialogInstance();
-            preferencesDialog.showModal();
-        });
-        helpMenuItems.getMiAbout().addActionListener(l -> {
-            aboutDialog = getAboutDialogInstance();
-            aboutDialog.showModal();
-        });
-        helpMenuItems.getMiHelp().addActionListener(l -> {
-            try {
-                Desktop.getDesktop().browse(helpUri);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-        });
-    }
-
-    protected PreferencesDialog getPreferencesDialogInstance() {
-        if (preferencesDialog == null) {
-            preferencesDialog = new PreferencesDialog(this);
-        }
-        return preferencesDialog;
-    }
-
-    protected AboutDialog getAboutDialogInstance() {
-        if (aboutDialog == null) {
-            aboutDialog = new AboutDialog(this);
-        }
-        return aboutDialog;
-    }
-
     public void apply(@NonNull final AppSettings settings) {
         setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
         setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
         setExtendedState(settings.getState());
         splitPane.setDividerLocation(settings.getDividerLocation());
-        try {
-            helpUri = new URI(settings.getHelpUri());
-        } catch (URISyntaxException | NullPointerException e) {
-            log.error(e.getMessage(), e);
-        }
-        if (settings.getCompilerPath() != null) {
-            getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel().getCompilerPathField()
-                    .setText(settings.getCompilerPath());
-        }
-        if (settings.getOutputDirectory() != null) {
-            getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel().getOutputPathField()
-                    .setText(settings.getOutputDirectory());
-        }
-        getAboutDialogInstance().setMajorVersion(settings.getMajorVersion());
-        getAboutDialogInstance().setMinorVersion(settings.getMinorVersion());
-        if (settings.getEncoding() != null) {
-            getPreferencesDialogInstance().getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
-                    .setSelectedItem(settings.getEncoding().toUpperCase());
-        }
     }
 
     public void store(@NonNull final AppSettings settings) {
@@ -295,11 +223,5 @@ public class MainWindow extends JFrame {
         settings.setMainFrameHeight(getHeight());
         settings.setState(getExtendedState());
         settings.setDividerLocation(splitPane.getDividerLocation());
-        settings.setCompilerPath(getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel()
-                .getCompilerPathField().getText());
-        settings.setOutputDirectory(getPreferencesDialogInstance().getPreferencesTabbedPane().getCompilerPanel()
-                .getOutputPathField().getText());
-        settings.setEncoding(getPreferencesDialogInstance().getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
-                .getSelectedItem().toString());
     }
 }

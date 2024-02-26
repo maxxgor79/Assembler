@@ -46,11 +46,6 @@ public class SourceTabbedPane extends JTabbedPane {
 
     private void initListeners() {
         addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                // Определяем индекс выделенной мышкой вкладки
-                sourcePopupMenu.setLocation(e.getX(), e.getY());
-            }
-
             @Override
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
@@ -60,9 +55,9 @@ public class SourceTabbedPane extends JTabbedPane {
         });
     }
 
-    public boolean add(@NonNull final Source src) {
+    public RSyntaxTextArea add(@NonNull final Source src) {
         if (sourceLinkMap.containsKey(src)) {
-            return false;
+            return null;
         }
         final EditorPanel editorPanel = new EditorPanel();
         final int index = getTabCount();
@@ -72,7 +67,7 @@ public class SourceTabbedPane extends JTabbedPane {
         if (src.getContent() != null) {
             editorPanel.getTextArea().setText(src.getContent());
         }
-        return true;
+        return editorPanel.getTextArea();
     }
 
     public boolean setSelected(@NonNull final Source src) {
@@ -94,9 +89,16 @@ public class SourceTabbedPane extends JTabbedPane {
         return true;
     }
 
-    public Source getSelected() {
-        final int selectedIndex = getSelectedIndex();
-        return indexSourceMap.get(selectedIndex);
+    public Source getSourceSelected() {
+        return getSourceSelected(getSelectedIndex());
+    }
+
+    public Source getSourceSelected(int index) {
+        return indexSourceMap.get(index);
+    }
+
+    public RSyntaxTextArea getSelectedTextArea() {
+        return getTextArea(getSelectedIndex());
     }
 
     public RSyntaxTextArea getTextArea(int index) {

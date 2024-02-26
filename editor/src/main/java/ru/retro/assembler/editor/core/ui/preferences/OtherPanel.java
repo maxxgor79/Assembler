@@ -13,7 +13,8 @@ import java.awt.*;
 public class OtherPanel extends JPanel {
     private static final String[] ITEMS = {
             "ASCII",
-            "Win1251",
+            "Windows-1251",
+            "ISO-8859-1",
             "UTF-8",
             "UTF-16"
     };
