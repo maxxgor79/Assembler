@@ -47,4 +47,12 @@ public class SourcePopupMenu extends JPopupMenu {
         }
         miSaveAs = new JMenuItem(Messages.get(Messages.SAVE_AS));
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        miClose.setEnabled(enabled);
+        miSave.setEnabled(enabled);
+        miSaveAs.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
 }

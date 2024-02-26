@@ -66,7 +66,6 @@ public class PreferencesDialog extends JDialog {
             dispose();
         });
         buttonPanel.getBtnCancel().addActionListener(l -> {
-            restore();
             dispose();
         });
         preferencesTabbedPane.getCompilerPanel().getBtnCompilerPath().addActionListener(l -> {
@@ -105,6 +104,9 @@ public class PreferencesDialog extends JDialog {
         result = OPTION_CANCEL;
         setLocationRelativeTo(getOwner());
         setVisible(true);
+        if (result == OPTION_CANCEL) {
+            restore();
+        }
         return result;
     }
 }
