@@ -30,6 +30,8 @@ public class DefaultOpenChooser extends JFileChooser {
     public DefaultOpenChooser() {
     }
 
+
+
     public DefaultOpenChooser(String currentDirectoryPath) {
         super(currentDirectoryPath);
     }

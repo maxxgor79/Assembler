@@ -3,25 +3,25 @@ package ru.retro.assembler.editor.core.io;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.PureJavaCrc32;
 import org.apache.commons.io.IOUtils;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import ru.retro.assembler.editor.core.ui.UIUtils;
 
 import java.io.*;
 
 /**
- * @Author: Maxim Gorin
+ * Author: Maxim Gorin
  * Date: 21.02.2024
  */
 @Slf4j
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "textArea")
 public class Source {
     private final PureJavaCrc32 crc32Calculator = new PureJavaCrc32();
-    @Setter
+
     @Getter
-    @NonNull
-    private String content;
+    private RSyntaxTextArea textArea;
 
     @Getter
     @NonNull
@@ -30,19 +30,18 @@ public class Source {
     @Getter
     private long crc32;
 
-    public Source() {
+    private Source() {
         this.file = null;
-        this.content = null;
+        this.textArea = null;
     }
 
-    public Source(@NonNull File file) {
-        this.file = file;
-        this.content = null;
+    public Source(final File file) {
+        this(file, null);
     }
 
-    public Source(@NonNull File file, @NonNull String content) {
+    public Source(@NonNull final File file, final String content) {
         this.file = file;
-        this.content = content;
+        setContent(content);
     }
 
     public String getName() {
@@ -54,26 +53,26 @@ public class Source {
     }
 
     public boolean hasChanges() {
-        if (content == null) {
+        if (textArea == null) {
             return false;
         }
-        final byte[] data = content.getBytes();//TODO add charset
+        final byte[] data = getContent().getBytes();//TODO add charset
         crc32Calculator.reset();
         crc32Calculator.update(data, 0, data.length);
         return crc32 != crc32Calculator.getValue();
     }
 
     public void load() throws IOException {
-        load(file);
+        load(file, null);
     }
 
-    public void load(@NonNull File file) throws IOException {
+    public void load(@NonNull final File file, String encoding) throws IOException {
         if (!file.exists()) {
             throw new FileNotFoundException(file.getAbsolutePath());
         }
         try (FileInputStream fis = new FileInputStream(file)) {
             final byte[] data = IOUtils.toByteArray(fis);
-            content = new String(data);//TODO add charset
+            setContent(encoding == null ? new String(data) : new String(data, encoding));
             this.file = file;
             crc32Calculator.reset();
             crc32Calculator.update(data, 0, data.length);
@@ -85,17 +84,35 @@ public class Source {
         save(file);
     }
 
-    public void save(@NonNull File file) throws IOException {
-        if (content == null) {
+    public void save(@NonNull final File file) throws IOException {
+        save(file, null);
+    }
+
+    public void save(@NonNull final File file, String encoding) throws IOException {
+        if (textArea == null) {
             return;
         }
         try (FileOutputStream fos = new FileOutputStream(file)) {
-            final byte[] data = content.getBytes();//TODO add character set
+            final byte[] data = encoding == null ? getContent().getBytes() : getContent().getBytes(encoding);
             fos.write(data);
             this.file = file;
             crc32Calculator.reset();
             crc32Calculator.update(data, 0, data.length);
             this.crc32 = crc32Calculator.getValue();
         }
+    }
+
+    public String getContent() {
+        if (textArea == null) {
+            return null;
+        }
+        return textArea.getText();
+    }
+
+    public void setContent(final String text) {
+        if (textArea == null) {
+            textArea = UIUtils.createTextArea();
+        }
+        textArea.setText(text == null ? "" : text);
     }
 }

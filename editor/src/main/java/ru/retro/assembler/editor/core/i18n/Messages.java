@@ -129,6 +129,16 @@ public final class Messages {
 
     public static final String ENCODING = "encoding";
 
+    public static final String ERROR = "error";
+
+    public static final String IO_ERROR = "io_error";
+
+    public static final String ENCODING_ERROR = "encoding_error";
+
+    public static final String SOURCE_CONTAINS_CHANGES = "source_contains_changes";
+
+    public static final String SOURCE_IS_UNSAVED = "source_is_unsaved";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

@@ -34,7 +34,7 @@ public class MainWindow extends JFrame {
     private JButton btnSave;
 
     @Getter
-    private JButton btnRefresh;
+    private JButton btnReload;
 
     @Getter
     private JButton btnCompile;
@@ -158,7 +158,7 @@ public class MainWindow extends JFrame {
         toolBar.addSeparator();
         toolBar.add(btnOpen = createBtnOpen());
         toolBar.add(btnSave = createBtnSave());
-        toolBar.add(btnRefresh = createBtnRefresh());
+        toolBar.add(btnReload = createBtnRefresh());
         toolBar.addSeparator();
         toolBar.add(btnCompile = createBtnCompile());
         return toolBar;

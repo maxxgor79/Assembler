@@ -1,6 +1,7 @@
 package ru.retro.assembler.editor.core.settings;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import ru.retro.assembler.editor.core.access.Setting;
 
@@ -68,4 +69,16 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     protected String encoding = "UTF-8";
+
+    @Getter
+    @Setter
+    @Setting
+    @NonNull
+    protected String openDialogCurrentDirectory;
+
+    @Getter
+    @Setter
+    @Setting
+    @NonNull
+    protected String saveDialogCurrentDirectory;
 }

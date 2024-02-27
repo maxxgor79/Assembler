@@ -1,6 +1,8 @@
 package ru.retro.assembler.editor.core.ui;
 
 import lombok.NonNull;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -20,5 +22,12 @@ public final class UIUtils {
 
     public static int getColumn(@NonNull JTextArea textArea, int line) throws BadLocationException {
         return textArea.getCaretPosition() - textArea.getLineStartOffset(line);
+    }
+
+    public static RSyntaxTextArea createTextArea() {
+        final RSyntaxTextArea textArea = new RSyntaxTextArea(40, 80);
+        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
+        textArea.setCodeFoldingEnabled(true);
+        return textArea;
     }
 }

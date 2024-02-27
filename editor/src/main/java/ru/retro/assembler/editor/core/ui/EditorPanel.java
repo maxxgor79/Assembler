@@ -1,6 +1,7 @@
 package ru.retro.assembler.editor.core.ui;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -22,7 +23,8 @@ public class EditorPanel extends JPanel {
     @Getter
     private RSyntaxTextArea textArea;
 
-    public EditorPanel() {
+    public EditorPanel(@NonNull final RSyntaxTextArea textArea) {
+        this.textArea = textArea;
         initComponents();
     }
 
@@ -30,15 +32,7 @@ public class EditorPanel extends JPanel {
         final Border border = BorderFactory.createLoweredBevelBorder();
         setBorder(border);
         setLayout(new BorderLayout());
-        textArea = createTextArea();
         final RTextScrollPane scrollPane = new RTextScrollPane(textArea);
         add(scrollPane, BorderLayout.CENTER);
-    }
-
-    private RSyntaxTextArea createTextArea() {
-        final RSyntaxTextArea textArea = new RSyntaxTextArea(40, 80);
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
-        textArea.setCodeFoldingEnabled(true);
-        return textArea;
     }
 }
