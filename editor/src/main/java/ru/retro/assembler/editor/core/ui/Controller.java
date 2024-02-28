@@ -4,12 +4,15 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration.ConfigurationException;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.io.ConsoleWriter;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
+import ru.retro.assembler.editor.core.util.CLIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -152,6 +155,8 @@ public final class Controller implements Runnable {
         mainWindow.getBuildMenuItems().getMiCompileTap().addActionListener(compileTapListener);
         mainWindow.getBuildMenuItems().getMiCompileTzx().addActionListener(compileTzxListener);
         mainWindow.getBuildMenuItems().getMiCompileWav().addActionListener(compileWavListener);
+        //--------------------------------------------------------------------------------------------------------------
+        mainWindow.getConsole().getConsolePopupMenu().getMiClean().addActionListener(cleanConsoleListener);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -323,6 +328,70 @@ public final class Controller implements Runnable {
             saveSettings();
         }
     }
+
+    private void compile() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        compile(selectedSource);
+    }
+
+    private void compileTap() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        compile(selectedSource, CLIUtils.ARG_TAP);
+    }
+
+    private void compileTzx() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        compile(selectedSource, CLIUtils.ARG_TZX);
+    }
+
+    private void compileWav() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        compile(selectedSource, CLIUtils.ARG_WAV);
+    }
+
+
+    private void compile(@NonNull final Source src, String... args) {
+        final String asmDir = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getCompilerPathField()
+                .getText();
+        final String outputDir = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getOutputPathField()
+                .getText();
+        final File pathToAsm = new File(asmDir, CLIUtils.ASM_FILENAME);
+        try {
+            if (!pathToAsm.exists()) {
+                throw new FileNotFoundException(pathToAsm.getAbsolutePath());
+            }
+            final java.util.List<String> argList = CLIUtils.toList(pathToAsm.getAbsolutePath(), CLIUtils.ARG_OUTPUT
+                    , outputDir, src.getFile().getAbsolutePath(), args);
+            final Process p = new ProcessBuilder(argList).start();
+            final ConsoleWriter consoleWriter = new ConsoleWriter(p, mainWindow.getConsole().getArea());
+            SwingUtilities.invokeLater(consoleWriter);
+        } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.FILE_NOT_FOUND)
+                    , pathToAsm.getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
+                    , JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void cleanConsole() {
+        mainWindow.getConsole().getArea().setText(null);
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
@@ -423,17 +492,26 @@ public final class Controller implements Runnable {
 
     private final ActionListener compileListener = e -> {
         log.info("Compile action");
+        compile();
     };
 
     private final ActionListener compileTapListener = e -> {
         log.info("Compile tap action");
+        compileTap();
     };
 
     private final ActionListener compileTzxListener = e -> {
         log.info("Compile tzx action");
+        compileTzx();
     };
 
     private final ActionListener compileWavListener = e -> {
         log.info("Compile wav action");
+        compileWav();
+    };
+
+    private final ActionListener cleanConsoleListener = e -> {
+      log.info("Clean console");
+      cleanConsole();
     };
 }

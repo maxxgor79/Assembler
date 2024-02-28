@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.PureJavaCrc32;
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import ru.retro.assembler.editor.core.ui.UIUtils;
+import ru.retro.assembler.editor.core.util.UIUtils;
 
 import java.io.*;
 

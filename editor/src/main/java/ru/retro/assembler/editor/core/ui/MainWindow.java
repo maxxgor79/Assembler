@@ -184,7 +184,7 @@ public class MainWindow extends JFrame {
 
     protected JButton createBtnCompile() {
         JButton btn = createToolButton("/icon32x32/compile.png");
-        btn.setToolTipText(Messages.get(Messages.COMPILE_FILE));
+        btn.setToolTipText(Messages.get(Messages.COMPILE));
         return btn;
     }
 

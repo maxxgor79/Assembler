@@ -39,8 +39,6 @@ public final class Messages {
 
     public static final String SAVE_FILE = "save_file";
 
-    public static final String COMPILE_FILE = "compile_file";
-
     public static final String RELOAD_ALL_FILES = "reload_all_files";
 
     public static final String ABOUT = "about";
@@ -99,7 +97,7 @@ public final class Messages {
 
     public static final String HOME = "home";
 
-    public static final String  UP_FOLDER = "up_folder";
+    public static final String UP_FOLDER = "up_folder";
 
     public static final String NEW_FOLDER = "new_folder";
 
@@ -140,6 +138,8 @@ public final class Messages {
     public static final String SOURCE_IS_UNSAVED = "source_is_unsaved";
 
     public static final String CLOSE_APPLICATION = "close_application";
+
+    public static final String FILE_NOT_FOUND = "file_not_found";
 
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);

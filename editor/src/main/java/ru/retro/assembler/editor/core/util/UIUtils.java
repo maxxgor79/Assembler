@@ -1,4 +1,4 @@
-package ru.retro.assembler.editor.core.ui;
+package ru.retro.assembler.editor.core.util;
 
 import lombok.NonNull;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
