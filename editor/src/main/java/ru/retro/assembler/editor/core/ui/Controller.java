@@ -12,7 +12,6 @@ import ru.retro.assembler.editor.core.util.CLIUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -174,17 +173,18 @@ public final class Controller implements Runnable {
         }
         if (openFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setOpenDialogCurrentDirectory(openFileChooser.getCurrentDirectory().getAbsolutePath());
-            final File file = openFileChooser.getSelectedFile();
             try {
-                final Source src = new Source(file);
-                src.load(file, settings.getEncoding());
-                int tabIndex = mainWindow.getSourceTabbedPane().indexOf(src);
-                if (tabIndex == -1) {
-                    mainWindow.getSourceTabbedPane().add(src);
-                } else {
-                    final Source existedSource = mainWindow.getSourceTabbedPane().getSource(tabIndex);
-                    existedSource.setContent(src.getContent());
-                    mainWindow.getSourceTabbedPane().setSelected(existedSource);
+                for (File file : openFileChooser.getSelectedFiles()) {
+                    final Source src = new Source(file);
+                    src.load(file, settings.getEncoding());
+                    int tabIndex = mainWindow.getSourceTabbedPane().indexOf(src);
+                    if (tabIndex == -1) {
+                        mainWindow.getSourceTabbedPane().add(src);
+                    } else {
+                        final Source existedSource = mainWindow.getSourceTabbedPane().getSource(tabIndex);
+                        existedSource.setContent(src.getContent());
+                        mainWindow.getSourceTabbedPane().setSelected(existedSource);
+                    }
                 }
             } catch (UnsupportedEncodingException e) {
                 log.error(e.getMessage(), e);
@@ -511,7 +511,7 @@ public final class Controller implements Runnable {
     };
 
     private final ActionListener cleanConsoleListener = e -> {
-      log.info("Clean console");
-      cleanConsole();
+        log.info("Clean console");
+        cleanConsole();
     };
 }

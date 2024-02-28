@@ -6,6 +6,9 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.TextAction;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 /**
@@ -19,7 +22,6 @@ public class ConsolePopupMenu extends JPopupMenu {
 
     @Getter
     private JMenuItem miCopyText;
-
 
     public ConsolePopupMenu() {
         initComponents();
@@ -38,10 +40,33 @@ public class ConsolePopupMenu extends JPopupMenu {
         }
         miCopyText = new JMenuItem(Messages.get(Messages.COPY_TEXT));
         miCopyText.setMnemonic('C');
+        miCopyText.setAction(new CopyAction(Messages.get(Messages.COPY_TEXT)));
         try {
             miCopyText.setIcon(ResourceUtils.loadIcon("/icon16x16/copy.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
+        }
+    }
+
+    protected static class CopyAction extends TextAction {
+
+        /**
+         * Create this object with the appropriate identifier.
+         */
+        public CopyAction(String caption) {
+            super(caption);
+        }
+
+        /**
+         * The operation to perform when this action is triggered.
+         *
+         * @param e the action event
+         */
+        public void actionPerformed(ActionEvent e) {
+            JTextComponent target = getTextComponent(e);
+            if (target != null) {
+                target.copy();
+            }
         }
     }
 }
