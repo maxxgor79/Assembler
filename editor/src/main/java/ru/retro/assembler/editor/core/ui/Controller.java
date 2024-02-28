@@ -154,118 +154,6 @@ public final class Controller implements Runnable {
         mainWindow.getBuildMenuItems().getMiCompileWav().addActionListener(compileWavListener);
     }
 
-    private final ActionListener preferencesListener = e -> {
-        if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
-            final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel()
-                    .getCbEncoding().getSelectedItem();
-            mainWindow.getStatusPanel().setEncoding(encoding);
-            settings.setEncoding(encoding);
-        }
-    };
-
-    private final WindowAdapter windowAdapter = new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent e) {
-            saveSettings();
-        }
-    };
-
-    private final ActionListener helpListener = e -> {
-        try {
-            Desktop.getDesktop().browse(helpUri);
-        } catch (IOException ex) {
-            log.error(ex.getMessage(), ex);
-        }
-    };
-
-    private final ActionListener aboutListener = e -> {
-        aboutDialog.showModal();
-    };
-
-    private final ActionListener newListener = e -> {
-        log.info("New action");
-        newSource();
-    };
-
-    private final ActionListener openListener = e -> {
-        log.info("Open action");
-        openSource();
-    };
-
-    private final ActionListener saveListener = e -> {
-        log.info("Save action");
-        saveSource();
-    };
-
-    private final ActionListener reloadAllListener = e -> {
-        log.info("Reload all action");
-        reloadAll();
-    };
-
-    private final ActionListener saveAsListener = e -> {
-        log.info("Save as action");
-        saveSourceAs(mainWindow.getSourceTabbedPane().getSourceSelected());
-    };
-
-    private final ActionListener saveAllListener = e -> {
-        log.info("Save all action");
-        saveAllSources();
-    };
-
-    private final ActionListener closeListener = e -> {
-        log.info("Close action");
-        closeSource();
-    };
-
-    private final ActionListener closeAllListener = e -> {
-        log.info("Close all action");
-        closeAll();
-    };
-
-    private final ActionListener exitListener = e -> {
-        log.info("Exit action");
-    };
-
-    private final ActionListener undoListener = e -> {
-        log.info("Undo action");
-    };
-
-    private final ActionListener copyListener = e -> {
-        log.info("Copy action");
-    };
-
-    private final ActionListener cutListener = e -> {
-        log.info("Cut action");
-    };
-
-    private final ActionListener pasteListener = e -> {
-        log.info("Paste action");
-    };
-
-    private final ActionListener deleteListener = e -> {
-        log.info("Delete action");
-    };
-
-    private final ActionListener findListener = e -> {
-        log.info("Find action");
-    };
-
-    private final ActionListener compileListener = e -> {
-        log.info("Compile action");
-    };
-
-    private final ActionListener compileTapListener = e -> {
-        log.info("Compile tap action");
-    };
-
-    private final ActionListener compileTzxListener = e -> {
-        log.info("Compile tzx action");
-    };
-
-    private final ActionListener compileWavListener = e -> {
-        log.info("Compile wav action");
-    };
-
     //------------------------------------------------------------------------------------------------------------------
     private void newSource() {
         Source newSrc = new Source(new File(NEW_SOURCE_NAME));
@@ -425,4 +313,127 @@ public final class Controller implements Runnable {
             closeSource(src);
         }
     }
+
+    private void closeWindow() {
+        int option = JOptionPane.showConfirmDialog(mainWindow, Messages.get(Messages.CLOSE_APPLICATION)
+                , Messages.get(Messages.CLOSE), JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            closeAll();
+            mainWindow.dispose();
+            saveSettings();
+        }
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    private final ActionListener preferencesListener = e -> {
+        if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
+            final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel()
+                    .getCbEncoding().getSelectedItem();
+            mainWindow.getStatusPanel().setEncoding(encoding);
+            settings.setEncoding(encoding);
+        }
+    };
+
+    private final WindowAdapter windowAdapter = new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            closeWindow();
+        }
+    };
+
+    private final ActionListener helpListener = e -> {
+        try {
+            Desktop.getDesktop().browse(helpUri);
+        } catch (IOException ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    };
+
+    private final ActionListener aboutListener = e -> {
+        aboutDialog.showModal();
+    };
+
+    private final ActionListener newListener = e -> {
+        log.info("New action");
+        newSource();
+    };
+
+    private final ActionListener openListener = e -> {
+        log.info("Open action");
+        openSource();
+    };
+
+    private final ActionListener saveListener = e -> {
+        log.info("Save action");
+        saveSource();
+    };
+
+    private final ActionListener reloadAllListener = e -> {
+        log.info("Reload all action");
+        reloadAll();
+    };
+
+    private final ActionListener saveAsListener = e -> {
+        log.info("Save as action");
+        saveSourceAs(mainWindow.getSourceTabbedPane().getSourceSelected());
+    };
+
+    private final ActionListener saveAllListener = e -> {
+        log.info("Save all action");
+        saveAllSources();
+    };
+
+    private final ActionListener closeListener = e -> {
+        log.info("Close action");
+        closeSource();
+    };
+
+    private final ActionListener closeAllListener = e -> {
+        log.info("Close all action");
+        closeAll();
+    };
+
+    private final ActionListener exitListener = e -> {
+        log.info("Exit action");
+        closeWindow();
+    };
+
+    private final ActionListener undoListener = e -> {
+        log.info("Undo action");
+    };
+
+    private final ActionListener copyListener = e -> {
+        log.info("Copy action");
+    };
+
+    private final ActionListener cutListener = e -> {
+        log.info("Cut action");
+    };
+
+    private final ActionListener pasteListener = e -> {
+        log.info("Paste action");
+    };
+
+    private final ActionListener deleteListener = e -> {
+        log.info("Delete action");
+    };
+
+    private final ActionListener findListener = e -> {
+        log.info("Find action");
+    };
+
+    private final ActionListener compileListener = e -> {
+        log.info("Compile action");
+    };
+
+    private final ActionListener compileTapListener = e -> {
+        log.info("Compile tap action");
+    };
+
+    private final ActionListener compileTzxListener = e -> {
+        log.info("Compile tzx action");
+    };
+
+    private final ActionListener compileWavListener = e -> {
+        log.info("Compile wav action");
+    };
 }

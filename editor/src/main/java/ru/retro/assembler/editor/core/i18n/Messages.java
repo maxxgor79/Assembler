@@ -139,6 +139,8 @@ public final class Messages {
 
     public static final String SOURCE_IS_UNSAVED = "source_is_unsaved";
 
+    public static final String CLOSE_APPLICATION = "close_application";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }
