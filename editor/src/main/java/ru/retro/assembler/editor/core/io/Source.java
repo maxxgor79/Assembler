@@ -119,7 +119,7 @@ public class Source {
 
     public void setContent(final String text) {
         if (textArea == null) {
-            textArea = UIUtils.createTextArea();
+            textArea = UIUtils.createTextArea(file);
         }
         textArea.setText(text == null ? "" : text);
     }
