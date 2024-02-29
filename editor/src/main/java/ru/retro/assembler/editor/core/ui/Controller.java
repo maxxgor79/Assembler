@@ -9,8 +9,13 @@ import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
 import ru.retro.assembler.editor.core.util.CLIUtils;
+import ru.retro.assembler.editor.core.util.UIUtils;
 
 import javax.swing.*;
+import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -25,6 +30,8 @@ import java.net.URISyntaxException;
  */
 @Slf4j
 public final class Controller implements Runnable {
+    protected static final int TIMER_DELAY = 250;
+
     protected static final String NEW_SOURCE_NAME = "noname.asm";
 
     protected static final String SETTINGS_FILENAME = "editor.properties";
@@ -38,6 +45,10 @@ public final class Controller implements Runnable {
     private PreferencesDialog preferencesDialog;
 
     private URI helpUri;
+
+    private Timer timer;
+
+    private int index = -1;
 
     /*
        private final CaretListener caretListener = e -> {
@@ -128,6 +139,7 @@ public final class Controller implements Runnable {
         mainWindow.getBtnOpen().addActionListener(openListener);
         mainWindow.getBtnSave().addActionListener(saveListener);
         mainWindow.getBtnReload().addActionListener(reloadAllListener);
+        mainWindow.getBtnCompile().addActionListener(compileListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getFileMenuItems().getMiNew().addActionListener(newListener);
         mainWindow.getFileMenuItems().getMiOpen().addActionListener(openListener);
@@ -154,7 +166,11 @@ public final class Controller implements Runnable {
         mainWindow.getBuildMenuItems().getMiCompileTzx().addActionListener(compileTzxListener);
         mainWindow.getBuildMenuItems().getMiCompileWav().addActionListener(compileWavListener);
         //--------------------------------------------------------------------------------------------------------------
+        mainWindow.getSourceTabbedPane().addChangeListener(tabbedPaneChangedListener);
+        //--------------------------------------------------------------------------------------------------------------
         mainWindow.getConsole().getConsolePopupMenu().getMiClean().addActionListener(cleanConsoleListener);
+        timer = new Timer(TIMER_DELAY, new Activator(mainWindow));
+        timer.start();
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -223,6 +239,17 @@ public final class Controller implements Runnable {
         }
     }
 
+    private void overwriteSave(@NonNull File file, @NonNull Source src) throws IOException {
+        if (file.exists()) {
+            int option = JOptionPane.showConfirmDialog(mainWindow, Messages.get(Messages.OVERWRITE_FILE)
+                    , Messages.get(Messages.SAVE), JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
+        src.save(file, settings.getEncoding());
+    }
+
     private void saveSourceAs(@NonNull Source src) {
         SaveAsChooser saveAsChooser;
         if (settings.getSaveDialogCurrentDirectory() == null) {
@@ -235,7 +262,8 @@ public final class Controller implements Runnable {
             final File file = saveAsChooser.getSelectedFile();
             settings.setSaveDialogCurrentDirectory(saveAsChooser.getCurrentDirectory().getAbsolutePath());
             try {
-                src.save(file, settings.getEncoding());
+                overwriteSave(file, src);
+                src.rename(file);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
@@ -264,7 +292,7 @@ public final class Controller implements Runnable {
                     final int option = JOptionPane.showConfirmDialog(mainWindow, message, Messages.get(Messages.SAVE)
                             , JOptionPane.YES_NO_OPTION);
                     if (option == JOptionPane.YES_OPTION) {
-                        src.save();
+                        src.save(settings.getEncoding());
                         continue;
                     }
                 }
@@ -299,7 +327,7 @@ public final class Controller implements Runnable {
                     , JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 try {
-                    src.save();
+                    src.save(settings.getEncoding());
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
@@ -307,6 +335,7 @@ public final class Controller implements Runnable {
                 }
             }
         }
+        src.getTextArea().removeCaretListener(caretListener);
         mainWindow.getSourceTabbedPane().close(src);
     }
 
@@ -324,6 +353,7 @@ public final class Controller implements Runnable {
         if (option == JOptionPane.YES_OPTION) {
             closeAll();
             mainWindow.dispose();
+            timer.stop();
             saveSettings();
         }
     }
@@ -423,6 +453,16 @@ public final class Controller implements Runnable {
         selectedSource.getTextArea().paste();
     }
 
+    private void setPosition(@NonNull JTextArea textArea) {
+        try {
+            int line = UIUtils.getLine(textArea);
+            int col = UIUtils.getColumn(textArea, line);
+            mainWindow.getStatusPanel().setPosition(line + 1, col + 1);
+        } catch (BadLocationException ex) {
+            log.error(ex.getMessage(), ex);
+        }
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
@@ -474,7 +514,9 @@ public final class Controller implements Runnable {
 
     private final ActionListener saveAsListener = e -> {
         log.info("Save as action");
-        saveSourceAs(mainWindow.getSourceTabbedPane().getSourceSelected());
+        Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
+        saveSourceAs(src);
+        mainWindow.getSourceTabbedPane().update(src);
     };
 
     private final ActionListener saveAllListener = e -> {
@@ -544,5 +586,31 @@ public final class Controller implements Runnable {
     private final ActionListener cleanConsoleListener = e -> {
         log.info("Clean console");
         cleanConsole();
+    };
+
+    private final ChangeListener tabbedPaneChangedListener = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (e.getSource() instanceof JTabbedPane) {
+                JTabbedPane pane = (JTabbedPane) e.getSource();
+                if (index != -1) {
+                    final Source oldSrc = mainWindow.getSourceTabbedPane().getSource(index);
+                    oldSrc.getTextArea().removeCaretListener(caretListener);
+                }
+                index = pane.getSelectedIndex();
+                if (index != -1) {
+                    final Source newSrc = mainWindow.getSourceTabbedPane().getSource(index);
+                    newSrc.getTextArea().addCaretListener(caretListener);
+                    setPosition(newSrc.getTextArea());
+                } else {
+                    mainWindow.getStatusPanel().setPosition(0, 0);
+                }
+            }
+        }
+    };
+
+    private final CaretListener caretListener = e -> {
+        JTextArea textArea = (JTextArea) e.getSource();
+        setPosition(textArea);
     };
 }

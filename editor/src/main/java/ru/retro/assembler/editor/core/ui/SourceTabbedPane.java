@@ -70,10 +70,10 @@ public class SourceTabbedPane extends JTabbedPane {
         if (sourceList.contains(src)) {
             return false;
         }
+        sourceList.add(src);
         final EditorPanel editorPanel = new EditorPanel(src.getTextArea());
         final int index = getTabCount();
         insertTab(src.getName(), icon, editorPanel, src.getName(), index);
-        sourceList.add(src);
         setSelectedIndex(index);
         return true;
     }
@@ -94,6 +94,17 @@ public class SourceTabbedPane extends JTabbedPane {
         removeTabAt(index);
         sourceList.remove(index);
         return true;
+    }
+
+    public void updateSelected() {
+        Source src = getSourceSelected();
+        update(src);
+    }
+
+    public void update(@NonNull final Source src) {
+        final int index = sourceList.indexOf(src);
+        this.setTitleAt(index, src.getName());
+        this.setToolTipTextAt(index, src.getName());
     }
 
     public Source getSourceSelected() {

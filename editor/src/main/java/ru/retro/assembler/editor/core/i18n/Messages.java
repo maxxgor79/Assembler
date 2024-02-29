@@ -141,6 +141,8 @@ public final class Messages {
 
     public static final String FILE_NOT_FOUND = "file_not_found";
 
+    public static final String OVERWRITE_FILE = "overwrite_file";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

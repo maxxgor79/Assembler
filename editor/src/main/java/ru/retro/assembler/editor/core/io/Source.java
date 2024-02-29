@@ -44,6 +44,10 @@ public class Source {
         setContent(content);
     }
 
+    public void rename(@NonNull final File file) {
+        this.file = file;
+    }
+
     public String getName() {
         return file == null ? null : file.getName();
     }
@@ -82,6 +86,10 @@ public class Source {
 
     public void save() throws IOException {
         save(file);
+    }
+
+    public void save(@NonNull String encoding) throws IOException {
+        save(file, encoding);
     }
 
     public void save(@NonNull final File file) throws IOException {
