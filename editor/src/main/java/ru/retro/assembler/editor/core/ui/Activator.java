@@ -6,7 +6,9 @@ import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.io.Source;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -59,8 +61,11 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(Environment.getInstance().getNextOccurrenceIndex()
                     != -1);
             try {
-                mainWindow.getEditMenuItems().getMiPaste().setEnabled(Toolkit.getDefaultToolkit().getSystemClipboard()
-                        .getData(DataFlavor.stringFlavor) != null);
+                final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                final Transferable contents = clipboard.getContents(null);
+                final boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor
+                        .stringFlavor);
+                mainWindow.getEditMenuItems().getMiPaste().setEnabled(hasTransferableText);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
