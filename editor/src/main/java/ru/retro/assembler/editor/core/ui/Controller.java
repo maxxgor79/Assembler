@@ -53,19 +53,6 @@ public final class Controller implements Runnable {
 
     private int index = -1;
 
-    /*
-       private final CaretListener caretListener = e -> {
-       JTextArea textArea = (JTextArea) e.getSource();
-       try {
-           int line = UIUtils.getLine(textArea);
-           int col = UIUtils.getColumn(textArea, line);
-           statusPanel.setPosition(line + 1, col + 1);
-       } catch (BadLocationException ex) {
-           log.error(ex.getMessage(), ex);
-       }
-   };
-
-     */
     public Controller() {
         this.mainWindow = new MainWindow();
         this.preferencesDialog = new PreferencesDialog(mainWindow);

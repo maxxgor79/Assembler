@@ -8,8 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
-import javax.xml.stream.events.Characters;
-import lombok.NonNull;
 
 /**
  * StatusPanel.
@@ -49,12 +47,12 @@ public class StatusPanel extends JPanel {
   }
 
   private JLabel createPosLabel() {
-    final JLabel label = new JLabel("103:239");
+    final JLabel label = new JLabel("");
     return label;
   }
 
   private JLabel createEncodingLabel() {
-    final JLabel label = new JLabel("UTF-8");
+    final JLabel label = new JLabel("");
     return label;
   }
 
