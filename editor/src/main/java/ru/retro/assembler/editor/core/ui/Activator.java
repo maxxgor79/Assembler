@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.ui;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.io.Source;
 
 import java.awt.*;
@@ -41,6 +42,7 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiCut().setEnabled(false);
             mainWindow.getEditMenuItems().getMiPaste().setEnabled(false);
             mainWindow.getEditMenuItems().getMiFind().setEnabled(false);
+            mainWindow.getEditMenuItems().getMiFindNext().setEnabled(false);
             mainWindow.getConsole().getConsolePopupMenu().getMiCopyText().setEnabled(false);
         }
         mainWindow.getBuildMenuItems().getMiCompile().setEnabled(!noSources);
@@ -54,6 +56,8 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiCut().setEnabled(selectedText != null);
             mainWindow.getEditMenuItems().getMiCopy().setEnabled(selectedText != null);
             mainWindow.getEditMenuItems().getMiFind().setEnabled(!src.getTextArea().getText().isEmpty());
+            mainWindow.getEditMenuItems().getMiFindNext().setEnabled(Environment.getInstance().getNextOccurrenceIndex()
+                    != -1);
             try {
                 mainWindow.getEditMenuItems().getMiPaste().setEnabled(Toolkit.getDefaultToolkit().getSystemClipboard()
                         .getData(DataFlavor.getTextPlainUnicodeFlavor()) != null);

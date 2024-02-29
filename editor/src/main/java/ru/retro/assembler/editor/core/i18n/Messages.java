@@ -145,6 +145,10 @@ public final class Messages {
 
     public static final String ENTER_TEXT_TO_FIND = "enter_text_to_find";
 
+    public static final String FIND_NEXT = "find_next";
+
+    public static final String OCCURRENCE_NOT_FOUND = "occurrence_not_found";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

@@ -3,6 +3,8 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration.ConfigurationException;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.ConsoleWriter;
 import ru.retro.assembler.editor.core.io.Source;
@@ -18,9 +20,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -160,6 +160,7 @@ public final class Controller implements Runnable {
         mainWindow.getEditMenuItems().getMiCut().addActionListener(cutListener);
         mainWindow.getEditMenuItems().getMiPaste().addActionListener(pasteListener);
         mainWindow.getEditMenuItems().getMiFind().addActionListener(findListener);
+        mainWindow.getEditMenuItems().getMiFindNext().addActionListener(findNextListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiClose().addActionListener(closeListener);
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiSave().addActionListener(saveListener);
@@ -467,6 +468,60 @@ public final class Controller implements Runnable {
         }
     }
 
+    private void find() {
+        final Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (src == null) {
+            return;
+        }
+        findDialog.setLocationRelativeTo(mainWindow);
+        int option = findDialog.showModal();
+        if (option == FindDialog.OPTION_FIND) {
+            final RSyntaxTextArea textArea = src.getTextArea();
+            int startIndex = textArea.getLineStartOffsetOfCurrentLine() + textArea.getCaretPosition();
+            final String text = textArea.getText();
+            final String occurrence = findDialog.getTextFieldPanel().getTfText().getText().trim();
+            final int index = text.indexOf(occurrence, startIndex);
+            if (index != -1) {
+                textArea.requestFocus();
+                final int lastIndex = index + occurrence.length();
+                textArea.select(index, lastIndex);
+                Environment.getInstance().setNextOccurrenceIndex(lastIndex);
+                Environment.getInstance().setOccurrence(occurrence);
+            } else {
+                Environment.getInstance().setNextOccurrenceIndex(-1);
+                Environment.getInstance().setOccurrence(null);
+                JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.OCCURRENCE_NOT_FOUND)
+                        , occurrence));
+            }
+        }
+    }
+
+    private void findNext() {
+        final String occurrence = Environment.getInstance().getOccurrence();
+        final int occurrenceIndex = Environment.getInstance().getNextOccurrenceIndex();
+        if (occurrenceIndex == -1 || occurrence == null) {
+            return;
+        }
+        final Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (src == null) {
+            return;
+        }
+        final RSyntaxTextArea textArea = src.getTextArea();
+        final String text = src.getTextArea().getText();
+        final int index = text.indexOf(occurrence, occurrenceIndex);
+        if (index != -1) {
+            textArea.requestFocus();
+            final int lastIndex = index + occurrence.length();
+            textArea.select(index, lastIndex);
+            Environment.getInstance().setNextOccurrenceIndex(lastIndex);
+        } else {
+            Environment.getInstance().setNextOccurrenceIndex(-1);
+            Environment.getInstance().setOccurrence(null);
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.OCCURRENCE_NOT_FOUND)
+                    , occurrence));
+        }
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
@@ -565,8 +620,12 @@ public final class Controller implements Runnable {
 
     private final ActionListener findListener = e -> {
         log.info("Find action");
-        findDialog.setLocationRelativeTo(mainWindow);
-        findDialog.showModal();
+        find();
+    };
+
+    private final ActionListener findNextListener = e -> {
+        log.info("Find next occurrence");
+        findNext();
     };
 
     private final ActionListener compileListener = e -> {
@@ -602,11 +661,13 @@ public final class Controller implements Runnable {
                 if (index != -1) {
                     final Source oldSrc = mainWindow.getSourceTabbedPane().getSource(index);
                     oldSrc.getTextArea().removeCaretListener(caretListener);
+                    oldSrc.getTextArea().removeKeyListener(textAreaKeyListener);
                 }
                 index = pane.getSelectedIndex();
                 if (index != -1) {
                     final Source newSrc = mainWindow.getSourceTabbedPane().getSource(index);
                     newSrc.getTextArea().addCaretListener(caretListener);
+                    newSrc.getTextArea().addKeyListener(textAreaKeyListener);
                     setPosition(newSrc.getTextArea());
                 } else {
                     mainWindow.getStatusPanel().setPosition(0, 0);
@@ -618,5 +679,14 @@ public final class Controller implements Runnable {
     private final CaretListener caretListener = e -> {
         JTextArea textArea = (JTextArea) e.getSource();
         setPosition(textArea);
+    };
+
+    private final KeyListener textAreaKeyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_L) {
+                findNext();
+            }
+        }
     };
 }

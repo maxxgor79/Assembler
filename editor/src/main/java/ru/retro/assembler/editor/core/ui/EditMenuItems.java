@@ -34,6 +34,9 @@ public class EditMenuItems {
     @Getter
     private JMenuItem miFind;
 
+    @Getter
+    private JMenuItem miFindNext;
+
     public EditMenuItems(@NonNull JMenu menu) {
         initComponents();
         menu.add(miUndo);
@@ -43,6 +46,7 @@ public class EditMenuItems {
         menu.add(miPaste);
         menu.addSeparator();
         menu.add(miFind);
+        menu.add(miFindNext);
     }
 
     private void initComponents() {
@@ -80,5 +84,7 @@ public class EditMenuItems {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        miFindNext = new JMenuItem(Messages.get(Messages.FIND_NEXT));
+        miFindNext.setMnemonic('E');
     }
 }

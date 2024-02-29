@@ -25,19 +25,13 @@ public class Environment {
 
     @Getter
     @Setter
-    @NonNull
-    private String encoding = Charset.defaultCharset().name();
+    private int nextOccurrenceIndex = -1;
 
     @Getter
     @Setter
-    @NonNull
-    private AppSettings settings;
+    private String occurrence;
 
     private Environment() {
 
-    }
-
-    public File getCurrentDirectory() {
-        return null;
     }
 }

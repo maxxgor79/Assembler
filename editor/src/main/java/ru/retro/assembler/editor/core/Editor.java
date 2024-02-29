@@ -5,6 +5,7 @@ import ru.retro.assembler.editor.core.ui.Controller;
 import ru.retro.assembler.editor.core.ui.MainWindow;
 
 import javax.swing.*;
+import java.util.Locale;
 
 /**
  * @Author: Maxim Gorin
@@ -16,7 +17,7 @@ public class Editor {
     private static Controller controller;
 
     public static void main(String[] args) {
-        //Locale.setDefault(new Locale("ru"));
+        Locale.setDefault(new Locale("ru"));
         controller = new Controller();
         SwingUtilities.invokeLater(controller);
     }

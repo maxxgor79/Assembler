@@ -3,6 +3,7 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
@@ -71,7 +72,9 @@ public class SourceTabbedPane extends JTabbedPane {
             return false;
         }
         sourceList.add(src);
-        final EditorPanel editorPanel = new EditorPanel(src.getTextArea());
+        final RSyntaxTextArea area = src.getTextArea();
+        area.setCaretPosition(0);
+        final EditorPanel editorPanel = new EditorPanel(area);
         final int index = getTabCount();
         insertTab(src.getName(), icon, editorPanel, src.getName(), index);
         setSelectedIndex(index);
