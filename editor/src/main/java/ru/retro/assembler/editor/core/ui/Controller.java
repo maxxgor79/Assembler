@@ -7,6 +7,7 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.ConsoleWriter;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.ui.find.FindDialog;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
 import ru.retro.assembler.editor.core.util.CLIUtils;
 import ru.retro.assembler.editor.core.util.UIUtils;
@@ -44,6 +45,8 @@ public final class Controller implements Runnable {
 
     private PreferencesDialog preferencesDialog;
 
+    private FindDialog findDialog;
+
     private URI helpUri;
 
     private Timer timer;
@@ -67,6 +70,7 @@ public final class Controller implements Runnable {
         this.mainWindow = new MainWindow();
         this.preferencesDialog = new PreferencesDialog(mainWindow);
         this.aboutDialog = new AboutDialog(mainWindow);
+        this.findDialog = new FindDialog(mainWindow);
         loadSettings();
         initListeners();
     }
@@ -561,6 +565,8 @@ public final class Controller implements Runnable {
 
     private final ActionListener findListener = e -> {
         log.info("Find action");
+        findDialog.setLocationRelativeTo(mainWindow);
+        findDialog.showModal();
     };
 
     private final ActionListener compileListener = e -> {

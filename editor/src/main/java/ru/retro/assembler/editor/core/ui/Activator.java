@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * @Author: Maxim Gorin
+ * Author: Maxim Gorin
  * Date: 29.02.2024
  */
 @Slf4j

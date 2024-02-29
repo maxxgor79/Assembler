@@ -143,6 +143,8 @@ public final class Messages {
 
     public static final String OVERWRITE_FILE = "overwrite_file";
 
+    public static final String ENTER_TEXT_TO_FIND = "enter_text_to_find";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }
