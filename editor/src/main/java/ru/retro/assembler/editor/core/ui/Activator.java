@@ -60,7 +60,7 @@ public class Activator implements ActionListener {
                     != -1);
             try {
                 mainWindow.getEditMenuItems().getMiPaste().setEnabled(Toolkit.getDefaultToolkit().getSystemClipboard()
-                        .getData(DataFlavor.getTextPlainUnicodeFlavor()) != null);
+                        .getData(DataFlavor.stringFlavor) != null);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

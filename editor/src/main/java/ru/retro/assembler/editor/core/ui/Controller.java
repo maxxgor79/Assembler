@@ -478,7 +478,7 @@ public final class Controller implements Runnable {
                 Environment.getInstance().setNextOccurrenceIndex(-1);
                 Environment.getInstance().setOccurrence(null);
                 JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.OCCURRENCE_NOT_FOUND)
-                        , occurrence));
+                        , occurrence, JOptionPane.INFORMATION_MESSAGE));
             }
         }
     }
@@ -505,7 +505,7 @@ public final class Controller implements Runnable {
             Environment.getInstance().setNextOccurrenceIndex(-1);
             Environment.getInstance().setOccurrence(null);
             JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.OCCURRENCE_NOT_FOUND)
-                    , occurrence));
+                    , occurrence, JOptionPane.INFORMATION_MESSAGE));
         }
     }
 
