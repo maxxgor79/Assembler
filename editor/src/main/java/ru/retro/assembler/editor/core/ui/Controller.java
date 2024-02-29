@@ -143,7 +143,6 @@ public final class Controller implements Runnable {
         mainWindow.getEditMenuItems().getMiCopy().addActionListener(copyListener);
         mainWindow.getEditMenuItems().getMiCut().addActionListener(cutListener);
         mainWindow.getEditMenuItems().getMiPaste().addActionListener(pasteListener);
-        mainWindow.getEditMenuItems().getMiDelete().addActionListener(deleteListener);
         mainWindow.getEditMenuItems().getMiFind().addActionListener(findListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiClose().addActionListener(closeListener);
@@ -392,6 +391,38 @@ public final class Controller implements Runnable {
         mainWindow.getConsole().getArea().setText(null);
     }
 
+    private void undo() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        selectedSource.getTextArea().undoLastAction();
+    }
+
+    private void copyText() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        selectedSource.getTextArea().copy();
+    }
+
+    private void cutText() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        selectedSource.getTextArea().cut();
+    }
+
+    private void pasteText() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        selectedSource.getTextArea().paste();
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
@@ -468,22 +499,22 @@ public final class Controller implements Runnable {
 
     private final ActionListener undoListener = e -> {
         log.info("Undo action");
+        undo();
     };
 
     private final ActionListener copyListener = e -> {
         log.info("Copy action");
+        copyText();
     };
 
     private final ActionListener cutListener = e -> {
         log.info("Cut action");
+        cutText();
     };
 
     private final ActionListener pasteListener = e -> {
         log.info("Paste action");
-    };
-
-    private final ActionListener deleteListener = e -> {
-        log.info("Delete action");
+        pasteText();
     };
 
     private final ActionListener findListener = e -> {

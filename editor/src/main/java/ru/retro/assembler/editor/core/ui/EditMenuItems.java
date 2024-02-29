@@ -7,6 +7,10 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.TextAction;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 /**
@@ -28,9 +32,6 @@ public class EditMenuItems {
     private JMenuItem miPaste;
 
     @Getter
-    private JMenuItem miDelete;
-
-    @Getter
     private JMenuItem miFind;
 
     public EditMenuItems(@NonNull JMenu menu) {
@@ -40,7 +41,6 @@ public class EditMenuItems {
         menu.add(miCut);
         menu.add(miCopy);
         menu.add(miPaste);
-        menu.add(miDelete);
         menu.addSeparator();
         menu.add(miFind);
     }
@@ -70,13 +70,6 @@ public class EditMenuItems {
         miPaste = new JMenuItem(Messages.get(Messages.PASTE));
         try {
             miPaste.setIcon(ResourceUtils.loadIcon("/icon16x16/paste.png"));
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        miDelete = new JMenuItem(Messages.get(Messages.DELETE));
-        miDelete.setMnemonic('D');
-        try {
-            miDelete.setIcon(ResourceUtils.loadIcon("/icon16x16/delete.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

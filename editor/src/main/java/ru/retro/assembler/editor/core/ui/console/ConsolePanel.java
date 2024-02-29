@@ -27,7 +27,7 @@ public class ConsolePanel extends JPanel {
         setLayout(new BorderLayout());
         final JScrollPane pane = new JScrollPane(area = createTextArea());
         add(pane, BorderLayout.CENTER);
-        consolePopupMenu = new ConsolePopupMenu();
+        consolePopupMenu = createConsolePopupMenu();
         area.setComponentPopupMenu(consolePopupMenu);
     }
 
@@ -35,5 +35,13 @@ public class ConsolePanel extends JPanel {
         final JTextArea area = new JTextArea();
         area.setEditable(false);
         return area;
+    }
+
+    private ConsolePopupMenu createConsolePopupMenu() {
+        ConsolePopupMenu instance = new ConsolePopupMenu();
+        instance.getMiCopyText().addActionListener(e -> {
+            area.copy();
+        });
+        return instance;
     }
 }
