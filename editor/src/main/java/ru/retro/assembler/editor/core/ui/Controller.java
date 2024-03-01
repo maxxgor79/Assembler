@@ -108,6 +108,30 @@ public final class Controller implements Runnable {
             preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
                     .setSelectedItem(settings.getEncoding().toUpperCase());
         }
+
+        if (settings.getConsoleFontName() != null) {
+            preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel()
+                    .getFontPanel().setSelectedFontName(settings.getConsoleFontName());
+        }
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel()
+                .getFontSizePanel().setValue(settings.getConsoleFontSize());
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel().getBkColorPanel()
+                .setColor(new Color(settings.getConsoleBkColor()));
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel().getFontColorPanel()
+                .setColor(new Color(settings.getConsoleFontColor()));
+        if (settings.getEditorFontName() != null) {
+            preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getEditorAppearancePanel().getFontPanel()
+                    .setSelectedFontName(settings.getEditorFontName());
+        }
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getEditorAppearancePanel().getFontSizePanel()
+                .setValue(settings.getEditorFontSize());
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getEditorAppearancePanel().getBkColorPanel()
+                .setColor(new Color(settings.getEditorBkColor()));
+        if (settings.getEditorFontName() != null) {
+            Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
+                    , settings.getConsoleFontSize()));
+        }
+        Environment.getInstance().setEditorBkColor(new Color(settings.getEditorBkColor()));
     }
 
     protected void store(@NonNull final AppSettings settings) {
@@ -166,8 +190,17 @@ public final class Controller implements Runnable {
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    protected static Source createSource(@NonNull File file) {
+        Source src = new Source(file);
+        if (Environment.getInstance().getEditorFont() != null) {
+            src.getTextArea().setFont(Environment.getInstance().getEditorFont());
+        }
+        src.getTextArea().setBackground(Environment.getInstance().getEditorBkColor());
+        return src;
+    }
+
     private void newSource() {
-        Source newSrc = new Source(new File(NEW_SOURCE_NAME));
+        Source newSrc = createSource(new File(NEW_SOURCE_NAME));
         mainWindow.getSourceTabbedPane().add(newSrc);
     }
 
@@ -182,7 +215,7 @@ public final class Controller implements Runnable {
             settings.setOpenDialogCurrentDirectory(openFileChooser.getCurrentDirectory().getAbsolutePath());
             try {
                 for (File file : openFileChooser.getSelectedFiles()) {
-                    final Source src = new Source(file);
+                    final Source src = createSource(file);
                     src.load(file, settings.getEncoding());
                     int tabIndex = mainWindow.getSourceTabbedPane().indexOf(src);
                     if (tabIndex == -1) {
@@ -243,16 +276,16 @@ public final class Controller implements Runnable {
     }
 
     private void saveSourceAs(@NonNull Source src) {
-        SaveAsChooser saveAsChooser;
+        LocalizedSaveAsChooser localizedSaveAsChooser;
         if (settings.getSaveDialogCurrentDirectory() == null) {
-            saveAsChooser = new SaveAsChooser();
+            localizedSaveAsChooser = new LocalizedSaveAsChooser();
         } else {
-            saveAsChooser = new SaveAsChooser(settings.getSaveDialogCurrentDirectory());
+            localizedSaveAsChooser = new LocalizedSaveAsChooser(settings.getSaveDialogCurrentDirectory());
         }
-        saveAsChooser.setSelectedFile(src.getFile());
-        if (saveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
-            final File file = saveAsChooser.getSelectedFile();
-            settings.setSaveDialogCurrentDirectory(saveAsChooser.getCurrentDirectory().getAbsolutePath());
+        localizedSaveAsChooser.setSelectedFile(src.getFile());
+        if (localizedSaveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
+            final File file = localizedSaveAsChooser.getSelectedFile();
+            settings.setSaveDialogCurrentDirectory(localizedSaveAsChooser.getCurrentDirectory().getAbsolutePath());
             try {
                 overwriteSave(file, src);
                 src.rename(file);
@@ -384,10 +417,8 @@ public final class Controller implements Runnable {
 
 
     private void compile(@NonNull final Source src, String... args) {
-        final String asmDir = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getCompilerPathField()
-                .getText();
-        final String outputDir = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getOutputPathField()
-                .getText();
+        final String asmDir = settings.getCompilerPath();
+        final String outputDir = settings.getOutputDirectory();
         final File pathToAsm = new File(asmDir, CLIUtils.ASM_FILENAME);
         try {
             if (!pathToAsm.exists()) {
@@ -511,11 +542,36 @@ public final class Controller implements Runnable {
 
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
-        if (preferencesDialog.showModal() == PreferencesDialog.OPTION_SAVE) {
+        log.info("Preferences");
+        if (preferencesDialog.showModal() == PreferencesDialog.OPTION_OK) {
             final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel()
                     .getCbEncoding().getSelectedItem();
             mainWindow.getStatusPanel().setEncoding(encoding);
             settings.setEncoding(encoding);
+            final String compilerPath = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
+                    .getCompilerPathField().getText();
+            settings.setCompilerPath(compilerPath);
+            final String outputDir = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
+                    .getOutputPathField().getText();
+            settings.setOutputDirectory(outputDir);
+            settings.setConsoleFontName(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getConsoleAppearancePanel().getFontPanel().getSelectedFontName());
+            settings.setConsoleFontSize(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getConsoleAppearancePanel().getFontSizePanel().getValue());
+            settings.setConsoleBkColor(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getConsoleAppearancePanel().getBkColorPanel().getColor().getRGB());
+            settings.setConsoleFontColor(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getConsoleAppearancePanel().getFontColorPanel().getColor().getRGB());
+            settings.setEditorFontName(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getEditorAppearancePanel().getFontPanel().getSelectedFontName());
+            settings.setEditorFontSize(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getEditorAppearancePanel().getFontSizePanel().getValue());
+            settings.setEditorBkColor(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
+                    .getEditorAppearancePanel().getBkColorPanel().getColor().getRGB());
+            Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
+                    , settings.getEditorFontSize()));
+            Environment.getInstance().setEditorBkColor(new Color(settings.getEditorBkColor()));
+            mainWindow.applyFontAndColor(settings);
         }
     };
 

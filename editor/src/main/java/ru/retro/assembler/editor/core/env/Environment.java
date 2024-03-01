@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashSet;
@@ -30,6 +31,16 @@ public class Environment {
     @Getter
     @Setter
     private String occurrence;
+
+    @Getter
+    @Setter
+    @NonNull
+    private Font editorFont;
+
+    @Getter
+    @Setter
+    @NonNull
+    private Color editorBkColor;
 
     private Environment() {
 

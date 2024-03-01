@@ -26,17 +26,10 @@ public class OtherPanel extends JPanel {
     }
 
     private void initComponents() {
-        setLayout(new GridBagLayout());
-        final GridBagConstraints c = new GridBagConstraints();
-        JLabel label1 = new JLabel(Messages.get(Messages.ENCODING));
-        c.gridx = 0;
-        c.gridy = 0;
-        c.insets = new Insets(0, 4, 0, 4);
-        add(label1, c);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+        final JLabel label1 = new JLabel(Messages.get(Messages.ENCODING));
+        add(label1);
         cbEncoding = new JComboBox<>(ITEMS);
-        c.gridx = 1;
-        c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(cbEncoding, c);
+        add(cbEncoding);
     }
 }

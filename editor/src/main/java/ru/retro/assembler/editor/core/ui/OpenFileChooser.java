@@ -2,7 +2,6 @@ package ru.retro.assembler.editor.core.ui;
 
 import ru.retro.assembler.editor.core.i18n.Messages;
 
-import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
@@ -10,7 +9,7 @@ import java.io.File;
  * @Author: Maxim Gorin
  * Date: 21.02.2024
  */
-public class OpenFileChooser extends DefaultOpenChooser {
+public class OpenFileChooser extends LocalizedOpenChooser {
 
     public OpenFileChooser() {
         initComponent();

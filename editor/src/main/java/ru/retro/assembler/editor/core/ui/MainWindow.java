@@ -3,10 +3,13 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.console.ConsolePanel;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
+import ru.retro.assembler.editor.core.util.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -213,6 +216,22 @@ public class MainWindow extends JFrame {
         setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
         setExtendedState(settings.getState());
         splitPane.setDividerLocation(settings.getDividerLocation());
+        applyFontAndColor(settings);
+    }
+
+    public void applyFontAndColor(@NonNull final AppSettings settings) {
+        console.getArea().setForeground(new Color(settings.getConsoleFontColor()));
+        console.getArea().setBackground(new Color(settings.getConsoleBkColor()));
+        if (settings.getConsoleFontName() != null) {
+            console.getArea().setFont(UIUtils.createFont(settings.getConsoleFontName(), settings.getConsoleFontSize()));
+        }
+        for (int i = 0; i < getSourceTabbedPane().getTabCount(); i++) {
+            final Source src = getSourceTabbedPane().getSource(i);
+            if (settings.getEditorFontName() != null) {
+                src.getTextArea().setFont(UIUtils.createFont(settings.getEditorFontName(), settings.getConsoleFontSize()));
+            }
+            src.getTextArea().setBackground(Environment.getInstance().getEditorBkColor());
+        }
     }
 
     public void store(@NonNull final AppSettings settings) {

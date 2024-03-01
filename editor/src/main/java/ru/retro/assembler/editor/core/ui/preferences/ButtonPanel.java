@@ -11,19 +11,19 @@ import javax.swing.*;
  */
 public class ButtonPanel extends JPanel {
     @Getter
-    private JButton btnSave;
+    private JButton btnOk;
 
     @Getter
     private JButton btnCancel;
 
     public ButtonPanel() {
         initComponents();
-        add(btnSave);
+        add(btnOk);
         add(btnCancel);
     }
 
     private void initComponents() {
-        btnSave = new JButton(Messages.get(Messages.SAVE));
+        btnOk = new JButton(Messages.get(Messages.OK));
         btnCancel = new JButton(Messages.get(Messages.CANCEL));
     }
 }

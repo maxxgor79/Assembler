@@ -33,12 +33,12 @@ public class AppSettings extends Settings {
     @Getter
     @Setter
     @Setting
-    protected  int state;
+    protected int state;
 
     @Getter
     @Setter
     @Setting
-    protected  int dividerLocation = 496;
+    protected int dividerLocation = 496;
 
     @Getter
     @Setter
@@ -81,4 +81,39 @@ public class AppSettings extends Settings {
     @Setting
     @NonNull
     protected String saveDialogCurrentDirectory;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String editorFontName = "Arial";
+
+    @Getter
+    @Setter
+    @Setting
+    protected int editorFontSize = 11;
+
+    @Getter
+    @Setter
+    @Setting
+    protected int editorBkColor = 0xffffff;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String consoleFontName = "Arial";
+
+    @Getter
+    @Setter
+    @Setting
+    protected int consoleFontSize = 11;
+
+    @Getter
+    @Setter
+    @Setting
+    protected int consoleBkColor = 0xffffff;
+
+    @Getter
+    @Setter
+    @Setting
+    protected int consoleFontColor;
 }

@@ -5,12 +5,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import java.awt.*;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: Maxim Gorin
@@ -18,6 +18,7 @@ import java.io.File;
  */
 public final class UIUtils {
     private static final Map<String, String> ext2ConstMap = new HashMap<>();
+
     static {
         ext2ConstMap.put("asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
         ext2ConstMap.put("z80", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
@@ -74,5 +75,9 @@ public final class UIUtils {
         textArea.setSyntaxEditingStyle(syntaxConst);
         textArea.setCodeFoldingEnabled(true);
         return textArea;
+    }
+
+    public static Font createFont(@NonNull String fontName, int size) {
+        return new Font(fontName, Font.PLAIN, size);
     }
 }

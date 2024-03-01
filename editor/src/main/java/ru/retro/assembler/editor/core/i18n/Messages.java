@@ -149,6 +149,24 @@ public final class Messages {
 
     public static final String OCCURRENCE_NOT_FOUND = "occurrence_not_found";
 
+    public static final String OK = "ok";
+
+    public static final String APPEARANCE = "appearance";
+
+    public static final String EDITOR = "editor";
+
+    public static final String CONSOLE = "console";
+
+    public static final String COLOR_CHOICE = "color_choice";
+
+    public static final String FONT = "font";
+
+    public static final String FONT_SIZE = "font_size";
+
+    public static final String FONT_COLOR = "font_color";
+
+    public static final String BACKGROUND_COLOR = "background_color";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }
