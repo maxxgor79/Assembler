@@ -46,6 +46,7 @@ public class CompilerPanel extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         add(compilerPathField, c);
         btnCompilerPath = new JButton("...");
+        btnCompilerPath.setToolTipText(Messages.get(Messages.CHOOSE_DIRECTORY));
         c.gridx = 2;
         c.gridy = 0;
         c.gridwidth = 1;
@@ -68,6 +69,7 @@ public class CompilerPanel extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         add(outputPathField, c);
         btnOutputDirectory = new JButton("...");
+        btnOutputDirectory.setToolTipText(Messages.get(Messages.CHOOSE_DIRECTORY));
         c.gridx = 2;
         c.gridy = 1;
         c.gridwidth = 1;

@@ -76,7 +76,7 @@ public class SourceTabbedPane extends JTabbedPane {
         area.setCaretPosition(0);
         final EditorPanel editorPanel = new EditorPanel(area);
         final int index = getTabCount();
-        insertTab(src.getName(), icon, editorPanel, src.getName(), index);
+        insertTab(src.getName(), icon, editorPanel, src.getFile().getAbsolutePath(), index);
         setSelectedIndex(index);
         return true;
     }
