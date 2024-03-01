@@ -167,6 +167,8 @@ public final class Messages {
 
     public static final String BACKGROUND_COLOR = "background_color";
 
+    public static final String COLOR = "color";
+
     public static String get(@NonNull String s) {
         return BUNDLE.getString(s);
     }

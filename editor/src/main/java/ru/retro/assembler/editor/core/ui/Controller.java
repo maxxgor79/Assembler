@@ -10,6 +10,7 @@ import ru.retro.assembler.editor.core.io.ConsoleWriter;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.find.FindDialog;
+import ru.retro.assembler.editor.core.ui.preferences.ColorPanel;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
 import ru.retro.assembler.editor.core.util.CLIUtils;
 import ru.retro.assembler.editor.core.util.UIUtils;
@@ -64,6 +65,7 @@ public final class Controller implements Runnable {
 
     @Override
     public void run() {
+        Environment.getInstance().setMainWindow(mainWindow);
         mainWindow.setVisible(true);
     }
 
@@ -183,6 +185,13 @@ public final class Controller implements Runnable {
         mainWindow.getBuildMenuItems().getMiCompileWav().addActionListener(compileWavListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getSourceTabbedPane().addChangeListener(tabbedPaneChangedListener);
+        //--------------------------------------------------------------------------------------------------------------
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getEditorAppearancePanel().getBkColorPanel()
+                .addActionListener(chooseColorActionListener);
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel().getFontColorPanel()
+                .addActionListener(chooseColorActionListener);
+        preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel().getBkColorPanel()
+                .addActionListener(chooseColorActionListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getConsole().getConsolePopupMenu().getMiClean().addActionListener(cleanConsoleListener);
         timer = new Timer(TIMER_DELAY, new Activator(mainWindow));
@@ -730,6 +739,14 @@ public final class Controller implements Runnable {
             if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_L) {
                 findNext();
             }
+        }
+    };
+
+    private final ActionListener chooseColorActionListener = e -> {
+        final ColorPanel colorPanel = (ColorPanel) e.getSource();
+        final Color c = JColorChooser.showDialog(mainWindow, Messages.get(Messages.COLOR_CHOICE), colorPanel.getColor());
+        if (c != null) {
+            colorPanel.setColor(c);
         }
     };
 }

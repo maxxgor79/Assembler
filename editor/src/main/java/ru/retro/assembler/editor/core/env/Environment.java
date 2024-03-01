@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.ui.MainWindow;
 
 import java.awt.*;
 import java.io.*;
@@ -41,6 +42,11 @@ public class Environment {
     @Setter
     @NonNull
     private Color editorBkColor;
+
+    @Getter
+    @Setter
+    @NonNull
+    private MainWindow mainWindow;
 
     private Environment() {
 
