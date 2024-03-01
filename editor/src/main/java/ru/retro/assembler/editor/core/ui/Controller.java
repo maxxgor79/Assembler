@@ -129,7 +129,7 @@ public final class Controller implements Runnable {
                 .setColor(new Color(settings.getEditorBkColor()));
         if (settings.getEditorFontName() != null) {
             Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
-                    , settings.getConsoleFontSize()));
+                    , settings.getEditorFontSize()));
         }
         Environment.getInstance().setEditorBkColor(new Color(settings.getEditorBkColor()));
     }

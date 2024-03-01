@@ -228,7 +228,7 @@ public class MainWindow extends JFrame {
         for (int i = 0; i < getSourceTabbedPane().getTabCount(); i++) {
             final Source src = getSourceTabbedPane().getSource(i);
             if (settings.getEditorFontName() != null) {
-                src.getTextArea().setFont(UIUtils.createFont(settings.getEditorFontName(), settings.getConsoleFontSize()));
+                src.getTextArea().setFont(UIUtils.createFont(settings.getEditorFontName(), settings.getEditorFontSize()));
             }
             src.getTextArea().setBackground(Environment.getInstance().getEditorBkColor());
         }
