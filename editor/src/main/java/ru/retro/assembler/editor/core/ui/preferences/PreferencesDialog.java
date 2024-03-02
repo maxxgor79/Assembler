@@ -1,7 +1,12 @@
 package ru.retro.assembler.editor.core.ui.preferences;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.io.Store;
+import ru.retro.assembler.editor.core.io.StoreException;
+import ru.retro.assembler.editor.core.io.StoreFactory;
+import ru.retro.assembler.editor.core.io.StoreType;
 import ru.retro.assembler.editor.core.ui.LocalizedOpenChooser;
 
 import javax.swing.*;
@@ -11,6 +16,7 @@ import java.awt.*;
  * @Author: Maxim Gorin
  * Date: 25.02.2024
  */
+@Slf4j
 public class PreferencesDialog extends JDialog {
     private static final int C_PATH = 0;
 
@@ -32,6 +38,7 @@ public class PreferencesDialog extends JDialog {
 
     private static final int CONSOLE_FONT_COLOR = 9;
 
+    private static final int LANGUAGE = 10;
 
     public static int OPTION_OK = 1;
 
@@ -47,7 +54,7 @@ public class PreferencesDialog extends JDialog {
 
     private LocalizedOpenChooser openFileChooser;
 
-    private final String[] storedFields = new String[10];
+    private final Store store = StoreFactory.getInstance(StoreType.MEMORY);
 
     public PreferencesDialog(Frame owner) {
         super(owner);
@@ -95,73 +102,116 @@ public class PreferencesDialog extends JDialog {
     }
 
     protected void store() {
-        storedFields[C_PATH] = preferencesTabbedPane.getCompilerPanel().getCompilerPathField().getText();
-        storedFields[C_OUTPUT] = preferencesTabbedPane.getCompilerPanel().getOutputPathField().getText();
-        storedFields[ENCODING] = (String) preferencesTabbedPane.getOtherPanel().getCbEncoding().getSelectedItem();
-        storedFields[EDITOR_FONT] = preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel()
-                .getFontPanel().getSelectedFontName();
-        storedFields[EDITOR_FONT_SIZE] = String.valueOf(preferencesTabbedPane.getAppearancePanel()
-                .getEditorAppearancePanel().getFontSizePanel().getValue());
-        storedFields[EDITOR_BK_COLOR] = String.valueOf(preferencesTabbedPane.getAppearancePanel()
-                .getEditorAppearancePanel().getBkColorPanel().getColor().getRGB());
-        storedFields[CONSOLE_FONT] = preferencesTabbedPane.getAppearancePanel()
-                .getConsoleAppearancePanel().getFontPanel().getSelectedFontName();
-        storedFields[CONSOLE_FONT_SIZE] = String.valueOf(preferencesTabbedPane.getAppearancePanel()
-                .getConsoleAppearancePanel().getFontSizePanel().getValue());
-        storedFields[CONSOLE_BK_COLOR] = String.valueOf(preferencesTabbedPane.getAppearancePanel()
-                .getConsoleAppearancePanel().getBkColorPanel().getColor().getRGB());
-        storedFields[CONSOLE_FONT_COLOR] = String.valueOf(preferencesTabbedPane.getAppearancePanel()
-                .getConsoleAppearancePanel().getFontColorPanel().getColor().getRGB());
+        store.putString(C_PATH, preferencesTabbedPane.getCompilerPanel().getCompilerPathField().getText());
+        store.putString(C_OUTPUT, preferencesTabbedPane.getCompilerPanel().getOutputPathField().getText());
+        store.putObject(ENCODING, preferencesTabbedPane.getOtherPanel().getCharsetPanel().getCbEncoding()
+                .getSelectedItem());
+        store.putString(EDITOR_FONT, preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel()
+                .getFontPanel().getSelectedFontName());
+        store.putInt(EDITOR_FONT_SIZE, preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel()
+                .getFontSizePanel().getValue());
+        store.putObject(EDITOR_BK_COLOR, preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel()
+                .getBkColorPanel().getColor());
+        store.putString(CONSOLE_FONT, preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel()
+                .getFontPanel().getSelectedFontName());
+        store.putInt(CONSOLE_FONT_SIZE, preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel()
+                .getFontSizePanel().getValue());
+        store.putObject(CONSOLE_BK_COLOR, preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel()
+                .getBkColorPanel().getColor());
+        store.putObject(CONSOLE_FONT_COLOR, preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel()
+                .getFontColorPanel().getColor());
+        store.putObject(LANGUAGE, preferencesTabbedPane.getOtherPanel().getLanguagePanel().getCbLanguages()
+                .getSelectedItem());
     }
 
     protected void restore() {
-        if (storedFields[C_PATH] != null) {
-            preferencesTabbedPane.getCompilerPanel().getCompilerPathField().setText(storedFields[C_PATH]);
-            storedFields[C_PATH] = null;
+        if (store.contains(C_PATH)) {
+            try {
+                preferencesTabbedPane.getCompilerPanel().getCompilerPathField().setText(store.getString(C_PATH));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[C_OUTPUT] != null) {
-            preferencesTabbedPane.getCompilerPanel().getOutputPathField().setText(storedFields[C_OUTPUT]);
-            storedFields[C_OUTPUT] = null;
+        if (store.contains(C_OUTPUT)) {
+            try {
+                preferencesTabbedPane.getCompilerPanel().getOutputPathField().setText(store.getString(C_OUTPUT));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[ENCODING] != null) {
-            preferencesTabbedPane.getOtherPanel().getCbEncoding().setSelectedItem(storedFields[ENCODING]);
-            storedFields[ENCODING] = null;
+        if (store.contains(ENCODING)) {
+            try {
+                preferencesTabbedPane.getOtherPanel().getCharsetPanel().getCbEncoding()
+                        .setSelectedItem(store.getObject(ENCODING));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[EDITOR_FONT] != null) {
-            preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel().getFontPanel()
-                    .setSelectedFontName(storedFields[EDITOR_FONT]);
-            storedFields[EDITOR_FONT] = null;
+        if (store.contains(EDITOR_FONT)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel().getFontPanel()
+                        .setSelectedFontName(store.getString(EDITOR_FONT));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[EDITOR_FONT_SIZE] != null) {
-            preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel().getFontSizePanel()
-                    .setValue(Integer.parseInt(storedFields[EDITOR_FONT_SIZE]));
-            storedFields[EDITOR_FONT_SIZE] = null;
+        if (store.contains(EDITOR_FONT_SIZE)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel().getFontSizePanel()
+                        .setValue(store.getInt(EDITOR_FONT_SIZE));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[EDITOR_BK_COLOR] != null) {
-            preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel().getBkColorPanel()
-                    .setColor(new Color(Integer.parseInt(storedFields[EDITOR_BK_COLOR])));
-            storedFields[EDITOR_BK_COLOR] = null;
+        if (store.contains(EDITOR_BK_COLOR)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel().getBkColorPanel()
+                        .setColor((Color) store.getObject(EDITOR_BK_COLOR));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[CONSOLE_FONT] != null) {
-            preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getFontPanel()
-                    .setSelectedFontName(storedFields[CONSOLE_FONT]);
-            storedFields[CONSOLE_FONT] = null;
+        if (store.contains(CONSOLE_FONT)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getFontPanel()
+                        .setSelectedFontName(store.getString(CONSOLE_FONT));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[CONSOLE_FONT_SIZE] != null) {
-            preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getFontSizePanel()
-                    .setValue(Integer.parseInt(storedFields[CONSOLE_FONT_SIZE]));
-            storedFields[CONSOLE_FONT_SIZE] = null;
+        if (store.contains(CONSOLE_FONT_SIZE)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getFontSizePanel()
+                        .setValue(store.getInt(CONSOLE_FONT_SIZE));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[CONSOLE_BK_COLOR] != null) {
-            preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getBkColorPanel()
-                    .setColor(new Color(Integer.parseInt(storedFields[CONSOLE_BK_COLOR])));
-            storedFields[CONSOLE_BK_COLOR] = null;
+        if (store.contains(CONSOLE_BK_COLOR)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getBkColorPanel()
+                        .setColor((Color) store.getObject(CONSOLE_BK_COLOR));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        if (storedFields[CONSOLE_FONT_COLOR] != null) {
-            preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getFontColorPanel()
-                    .setColor(new Color(Integer.parseInt(storedFields[CONSOLE_FONT_COLOR])));
-            storedFields[CONSOLE_FONT_COLOR] = null;
+        if (store.contains(CONSOLE_FONT_COLOR)) {
+            try {
+                preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel().getFontColorPanel()
+                        .setColor((Color) store.getObject(CONSOLE_FONT_COLOR));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
         }
+        if (store.contains(LANGUAGE)) {
+            try {
+                preferencesTabbedPane.getOtherPanel().getLanguagePanel().getCbLanguages().setSelectedItem
+                        (store.getObject(LANGUAGE));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        store.clear();
     }
 
     public int showModal() {

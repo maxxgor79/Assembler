@@ -1,8 +1,11 @@
 package ru.retro.assembler.editor.core;
 
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.ui.Controller;
 import ru.retro.assembler.editor.core.ui.MainWindow;
+import ru.retro.assembler.editor.core.util.UIUtils;
 
 import javax.swing.*;
 import java.util.List;

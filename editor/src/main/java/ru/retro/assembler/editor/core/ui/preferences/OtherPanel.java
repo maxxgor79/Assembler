@@ -1,7 +1,6 @@
 package ru.retro.assembler.editor.core.ui.preferences;
 
 import lombok.Getter;
-import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,25 +10,20 @@ import java.awt.*;
  * Date: 26.02.2024
  */
 public class OtherPanel extends JPanel {
-    private static final String[] ITEMS = {
-            "ASCII",
-            "Windows-1251",
-            "ISO-8859-1",
-            "UTF-8",
-            "UTF-16"
-    };
     @Getter
-    private JComboBox<String> cbEncoding;
+    private CharsetPanel charsetPanel;
+
+    @Getter
+    private LanguagePanel languagePanel;
+
 
     public OtherPanel() {
         initComponents();
     }
 
     private void initComponents() {
-        setLayout(new FlowLayout(FlowLayout.LEFT));
-        final JLabel label1 = new JLabel(Messages.get(Messages.ENCODING));
-        add(label1);
-        cbEncoding = new JComboBox<>(ITEMS);
-        add(cbEncoding);
+        setLayout(new GridLayout(2, 1));
+        add(charsetPanel = new CharsetPanel());
+        add(languagePanel = new LanguagePanel());
     }
 }

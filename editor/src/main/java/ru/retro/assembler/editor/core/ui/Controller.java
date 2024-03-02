@@ -27,8 +27,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Author: Maxim Gorin
@@ -68,12 +68,12 @@ public final class Controller implements Runnable {
     private final BuildVersionReader buildVersionReader = new BuildVersionReader();
 
     public Controller(Collection<String> args) {
+        loadSettings();
         this.args = args;
         this.mainWindow = new MainWindow();
         this.preferencesDialog = new PreferencesDialog(mainWindow);
         this.aboutDialog = new AboutDialog(mainWindow);
         this.findDialog = new FindDialog(mainWindow);
-        loadSettings();
         initListeners();
     }
 
@@ -106,6 +106,7 @@ public final class Controller implements Runnable {
                 openSource(new File(fileName));
             }
         }
+        apply(settings, buildVersionReader);
         mainWindow.setVisible(true);
     }
 
@@ -117,8 +118,10 @@ public final class Controller implements Runnable {
             log.error(e.getMessage(), e);
         }
         buildVersionReader.loadFromResource("/build.version");
+        if (settings.getLanguage() != null) {
+            setLocale(UIUtils.toLocale(settings.getLanguage()));
+        }
         log.info("Build successfully");
-        apply(settings, buildVersionReader);
     }
 
     private void saveSettings() {
@@ -151,7 +154,7 @@ public final class Controller implements Runnable {
         aboutDialog.setBuildVersion(buildVersionReader.getBuildVersion());
         aboutDialog.setBuildDate(buildVersionReader.getBuildDate());
         if (settings.getEncoding() != null) {
-            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
+            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCharsetPanel().getCbEncoding()
                     .setSelectedItem(settings.getEncoding().toUpperCase());
         }
 
@@ -173,6 +176,13 @@ public final class Controller implements Runnable {
                 .setValue(settings.getEditorFontSize());
         preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getEditorAppearancePanel().getBkColorPanel()
                 .setColor(new Color(settings.getEditorBkColor()));
+        if (settings.getLanguage() != null) {
+            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getLanguagePanel().getCbLanguages()
+                    .setSelectedItem(settings.getLanguage());
+        } else {
+            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getLanguagePanel().getCbLanguages()
+                    .setSelectedItem(UIUtils.toLanguage(Messages.getLocale()));
+        }
         if (settings.getEditorFontName() != null) {
             Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
                     , settings.getEditorFontSize()));
@@ -186,8 +196,8 @@ public final class Controller implements Runnable {
                 .getCompilerPathField().getText());
         settings.setOutputDirectory(preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
                 .getOutputPathField().getText());
-        settings.setEncoding((String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
-                .getSelectedItem());
+        settings.setEncoding((String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCharsetPanel()
+                .getCbEncoding().getSelectedItem());
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -243,6 +253,11 @@ public final class Controller implements Runnable {
     }
 
     //------------------------------------------------------------------------------------------------------------------
+    protected void setLocale(@NonNull Locale locale) {
+        Locale.setDefault(locale);
+        Messages.setLocale(locale);
+    }
+
     protected static Source createSource(@NonNull File file) {
         Source src = new Source(file);
         if (Environment.getInstance().getEditorFont() != null) {
@@ -594,7 +609,7 @@ public final class Controller implements Runnable {
         log.info("Preferences");
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_OK) {
             final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel()
-                    .getCbEncoding().getSelectedItem();
+                    .getCharsetPanel().getCbEncoding().getSelectedItem();
             mainWindow.getStatusPanel().setEncoding(encoding);
             settings.setEncoding(encoding);
             final String compilerPath = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
@@ -617,10 +632,16 @@ public final class Controller implements Runnable {
                     .getEditorAppearancePanel().getFontSizePanel().getValue());
             settings.setEditorBkColor(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
                     .getEditorAppearancePanel().getBkColorPanel().getColor().getRGB());
+            settings.setLanguage(preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getLanguagePanel()
+                    .getCbLanguages().getSelectedItem().toString());
             Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
                     , settings.getEditorFontSize()));
             Environment.getInstance().setEditorBkColor(new Color(settings.getEditorBkColor()));
             mainWindow.applyFontAndColor(settings);
+            if (!UIUtils.equals(UIUtils.toLocale(settings.getLanguage()), Messages.getLocale())) {
+                JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.RESTART_TO_CHANGE_LANG), Messages
+                        .get(Messages.WARNING), JOptionPane.WARNING_MESSAGE);
+            }
         }
     };
 

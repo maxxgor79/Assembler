@@ -116,4 +116,9 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     protected int consoleFontColor;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String language = "English";
 }

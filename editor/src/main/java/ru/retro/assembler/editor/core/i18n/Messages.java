@@ -1,7 +1,9 @@
 package ru.retro.assembler.editor.core.i18n;
 
 import lombok.NonNull;
+import ru.retro.assembler.editor.core.util.UIUtils;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -9,7 +11,7 @@ import java.util.ResourceBundle;
  * Date: 19.02.2024
  */
 public final class Messages {
-    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("i18n.Messages");
+    private static ResourceBundle bundle = ResourceBundle.getBundle("i18n.Messages", Locale.getDefault());
 
     private Messages() {
 
@@ -169,7 +171,31 @@ public final class Messages {
 
     public static final String COLOR = "color";
 
+    public static final String LANGUAGE = "language";
+
+    public static final String WARNING = "warning";
+
+    public static final String RESTART_TO_CHANGE_LANG = "restart_to_change_lang";
+
+    public static final String ENGLISH = "english";
+
+    public static final String RUSSIAN = "russian";
+
+
     public static String get(@NonNull String s) {
-        return BUNDLE.getString(s);
+        return bundle.getString(s);
+    }
+
+    public static void setLocale(Locale locale) {
+        if (locale == null) {
+            locale = bundle.getLocale();
+        }
+        if (!UIUtils.equals(bundle.getLocale(), locale)) {
+            bundle = ResourceBundle.getBundle("i18n.Messages", locale);
+        }
+    }
+
+    public static Locale getLocale() {
+        return bundle.getLocale();
     }
 }

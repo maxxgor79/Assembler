@@ -4,12 +4,14 @@ import lombok.NonNull;
 import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -40,6 +42,20 @@ public final class UIUtils {
         ext2ConstMap.put("kt", SyntaxConstants.SYNTAX_STYLE_KOTLIN);
         ext2ConstMap.put("py", SyntaxConstants.SYNTAX_STYLE_PYTHON);
         ext2ConstMap.put("properties", SyntaxConstants.SYNTAX_STYLE_PROPERTIES_FILE);
+    }
+
+    private static Map<String, Locale> localeMap = new HashMap<>();
+
+    static {
+        localeMap.put(Messages.get(Messages.ENGLISH), Locale.ENGLISH);
+        localeMap.put(Messages.get(Messages.RUSSIAN), Locale.forLanguageTag("ru-RU"));
+    }
+
+    private static Map<String, String> languageMap = new HashMap<>();
+
+    static {
+        languageMap.put(Locale.ENGLISH.getLanguage(), Messages.get(Messages.ENGLISH));
+        languageMap.put(Locale.forLanguageTag("ru-RU").getLanguage(), Messages.get(Messages.RUSSIAN));
     }
 
     private UIUtils() {
@@ -79,5 +95,17 @@ public final class UIUtils {
 
     public static Font createFont(@NonNull String fontName, int size) {
         return new Font(fontName, Font.PLAIN, size);
+    }
+
+    public static Locale toLocale(@NonNull final String language) {
+        return localeMap.get(language);
+    }
+
+    public static String toLanguage(@NonNull Locale locale) {
+        return languageMap.get(locale.getLanguage());
+    }
+
+    public static boolean equals(@NonNull Locale locale1, @NonNull Locale locale2) {
+        return locale1.getLanguage().equals(locale2.getLanguage());
     }
 }
