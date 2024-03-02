@@ -3,6 +3,7 @@ package ru.assembler.core.error.text;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -121,12 +122,19 @@ public final class MessageList {
 
     public static final String FILE_IS_ALREADY_INCLUDED = "file_is_already_included";
 
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
     }
 
     public static String getMessage(@NonNull String s) {
         return resourceBundle.getString(s);
+    }
+
+    public static void setLocale(Locale locale) {
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
+        resourceBundle = ResourceBundle.getBundle("i18n.Messages", locale);
     }
 }

@@ -1,5 +1,6 @@
 package ru.assembler.zxspectrum.text;
 
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -7,7 +8,7 @@ import java.util.ResourceBundle;
  */
 
 public final class Z80Messages {
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Z80Messages");
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Z80Messages");
 
     public static final String FILE_ENUM = "file_enum";
 
@@ -49,11 +50,20 @@ public final class Z80Messages {
 
     public static final String ADDRESS_IS_OUT_RANGE = "address_is_out_of_range";
 
+    public static final String SETUP_LOCALE = "setup_locale";
+
     private Z80Messages() {
 
     }
 
     public static String getMessage(String s) {
         return resourceBundle.getString(s);
+    }
+
+    public static void setLocale(Locale locale) {
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
+        resourceBundle = ResourceBundle.getBundle("i18n.Z80Messages", locale);
     }
 }
