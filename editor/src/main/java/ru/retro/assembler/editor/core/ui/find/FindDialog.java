@@ -5,6 +5,7 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 /**
  * @Author: Maxim Gorin
@@ -38,7 +39,7 @@ public class FindDialog extends JDialog {
         add(textFieldPanel, BorderLayout.CENTER);
         buttonPanel = new ButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
-        getRootPane().setDefaultButton(buttonPanel.getBtnCancel());
+        getRootPane().setDefaultButton(buttonPanel.getBtnFind());
         buttonPanel.getBtnCancel().requestFocus();
         pack();
     }
@@ -50,6 +51,9 @@ public class FindDialog extends JDialog {
 
         buttonPanel.getBtnFind().addActionListener(e -> {
             result = OPTION_FIND;
+            if (textFieldPanel.getTfText().getText().trim().isEmpty()) {
+                return;
+            }
             dispose();
         });
     }
