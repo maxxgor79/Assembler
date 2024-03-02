@@ -21,7 +21,7 @@ public class FontSizePanel extends JPanel {
         final JLabel label = new JLabel(Messages.get(Messages.FONT_SIZE) + ": ");
         add(label);
         cbFontSize = new JComboBox<>();
-        for (int i = 6; i < 40; i++) {
+        for (int i = 6; i <= 96; i++) {
             cbFontSize.addItem(i);
         }
         add(cbFontSize);
