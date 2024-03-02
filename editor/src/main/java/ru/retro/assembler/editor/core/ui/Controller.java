@@ -267,8 +267,8 @@ public final class Controller implements Runnable {
                     .ERROR), JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                    , JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.IO_ERROR), file.getAbsolutePath())
+                    , Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -303,8 +303,8 @@ public final class Controller implements Runnable {
             src.save(file, settings.getEncoding());
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                    , JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.IO_ERROR)
+                    , file.getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -330,8 +330,8 @@ public final class Controller implements Runnable {
                 src.rename(file);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-                JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                        , JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.IO_ERROR)
+                        , file.getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -345,7 +345,7 @@ public final class Controller implements Runnable {
 
     private void reloadAll() {
         for (int i = 0; i < mainWindow.getSourceTabbedPane().getTabCount(); i++) {
-            Source src = mainWindow.getSourceTabbedPane().getSource(i);
+            final Source src = mainWindow.getSourceTabbedPane().getSource(i);
             if (src.isNew()) {
                 continue;
             }
@@ -363,8 +363,9 @@ public final class Controller implements Runnable {
                 src.load();
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-                JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                        , JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.IO_ERROR)
+                        , src.getFile().getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane
+                        .ERROR_MESSAGE);
             }
         }
     }
@@ -394,8 +395,9 @@ public final class Controller implements Runnable {
                     src.save(settings.getEncoding());
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
-                    JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                            , JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.IO_ERROR), src
+                            .getFile().getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane
+                            .ERROR_MESSAGE);
                 }
             }
         }
@@ -474,8 +476,8 @@ public final class Controller implements Runnable {
                     , pathToAsm.getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                    , JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.IO_ERROR), src.getFile()
+                    .getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
         }
     }
 
