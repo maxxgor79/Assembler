@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @Author: Maxim Gorin
@@ -17,7 +18,7 @@ import java.io.IOException;
  */
 @Slf4j
 public class AboutDialog extends JDialog {
-    private static final String TEXT = "<html><b><h2>%s %d.%d</h2></b><br>%s %s, %s %s<br>%s</html>";
+    private static final String TEXT = "<html><b><h2>%s %d.%d</h2></b><br>%s %04d, %s %tY-%tm-%td<br>%s</html>";
     @Setter
     @Getter
     private int majorVersion = 1;
@@ -28,11 +29,11 @@ public class AboutDialog extends JDialog {
 
     @Getter
     @Setter
-    private String buildVersion = "0001";
+    private long buildVersion;
 
     @Getter
     @Setter
-    private String buildOn = "13/02/2004";
+    private Date buildDate;
 
     private JButton btnClose;
 
@@ -90,9 +91,10 @@ public class AboutDialog extends JDialog {
     }
 
     private String renderText() {
+        buildDate = buildDate != null ? buildDate : new Date();
         return String.format(TEXT, Messages.get(Messages.CAPTION), majorVersion, minorVersion
-                ,Messages.get(Messages.BUILD), buildVersion, Messages.get(Messages.BUILT_ON), buildOn
-                , Messages.get(Messages.WRITTEN_BY));
+                , Messages.get(Messages.BUILD), buildVersion, Messages.get(Messages.BUILT_DATE), buildDate, buildDate
+                , buildDate, Messages.get(Messages.WRITTEN_BY));
     }
 
     public void showModal() {

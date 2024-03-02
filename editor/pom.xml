@@ -15,6 +15,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>run-java</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>BuildVersion</mainClass>
+                    <arguments>
+                        <argument>src/resources</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -55,8 +75,7 @@
             <resource>
                 <directory>src/resources</directory>
                 <includes>
-                    <include>**/*.properties</include>
-                    <include>**/*.png</include>
+                    <include>**/*</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>

@@ -7,6 +7,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.io.ConsoleWriter;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
@@ -26,6 +27,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collection;
 
 /**
@@ -62,6 +64,8 @@ public final class Controller implements Runnable {
 
     @Getter
     private Collection<String> args;
+
+    private final BuildVersionReader buildVersionReader = new BuildVersionReader();
 
     public Controller(Collection<String> args) {
         this.args = args;
@@ -112,7 +116,9 @@ public final class Controller implements Runnable {
         } catch (ConfigurationException | IOException e) {
             log.error(e.getMessage(), e);
         }
-        apply(settings);
+        buildVersionReader.loadFromResource("/build.version");
+        log.info("Build successfully");
+        apply(settings, buildVersionReader);
     }
 
     private void saveSettings() {
@@ -125,7 +131,7 @@ public final class Controller implements Runnable {
         }
     }
 
-    protected void apply(@NonNull final AppSettings settings) {
+    protected void apply(@NonNull final AppSettings settings, @NonNull BuildVersionReader buildVersionReader) {
         mainWindow.apply(settings);
         try {
             helpUri = new URI(settings.getHelpUri());
@@ -142,6 +148,8 @@ public final class Controller implements Runnable {
         }
         aboutDialog.setMajorVersion(settings.getMajorVersion());
         aboutDialog.setMinorVersion(settings.getMinorVersion());
+        aboutDialog.setBuildVersion(buildVersionReader.getBuildVersion());
+        aboutDialog.setBuildDate(buildVersionReader.getBuildDate());
         if (settings.getEncoding() != null) {
             preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCbEncoding()
                     .setSelectedItem(settings.getEncoding().toUpperCase());
