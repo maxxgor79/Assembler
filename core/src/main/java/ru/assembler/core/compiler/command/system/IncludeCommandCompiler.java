@@ -2,20 +2,18 @@ package ru.assembler.core.compiler.command.system;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.assembler.core.error.text.Output;
-import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
-import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Output;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
+import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.syntax.LexemSequence;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -26,62 +24,73 @@ import java.util.Iterator;
 @Slf4j
 public class IncludeCommandCompiler implements CommandCompiler {
 
-  protected static final String[] NAMES = {"include"};
+    protected static final String[] NAMES = {"include"};
 
-  private final NamespaceApi namespaceApi;
+    private final NamespaceApi namespaceApi;
 
-  private final SettingsApi settingsApi;
+    private final SettingsApi settingsApi;
 
-  private final CompilerApi compilerApi;
+    private final CompilerApi compilerApi;
 
-  public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
-      , @NonNull CompilerApi compilerApi) {
-    this.namespaceApi = namespaceApi;
-    this.settingsApi = settingsApi;
-    this.compilerApi = compilerApi;
-  }
-
-  @Override
-  public String[] names() {
-    return NAMES;
-  }
-
-  @Override
-  public byte[] compile(@NonNull LexemSequence lexemSequence) {
-    Iterator<Lexem> iterator = lexemSequence.get().iterator();
-    Lexem nextLexem;
-    if (!iterator.hasNext() || !contains(names(), (nextLexem = iterator.next()).getValue())) {
-      return null;
+    public IncludeCommandCompiler(@NonNull NamespaceApi namespaceApi, @NonNull SettingsApi settingsApi
+            , @NonNull CompilerApi compilerApi) {
+        this.namespaceApi = namespaceApi;
+        this.settingsApi = settingsApi;
+        this.compilerApi = compilerApi;
     }
-    nextLexem = iterator.hasNext() ? iterator.next() : null;
-    if (nextLexem == null) {
-      throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
-          .getMessage(MessageList.FILE_PATH_EXCEPTED));
+
+    @Override
+    public String[] names() {
+        return NAMES;
     }
-    while (true) {
-      if (nextLexem.getType() == LexemType.STRING) {
-        final String path = nextLexem.getValue();
-        try {
-          if (!compilerApi.include(path)) {
-            Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-                .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
-          }
-        } catch (FileNotFoundException e) {
-          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-              .getMessage(MessageList.FILE_NOT_FOUND), path);
-        } catch (IOException e) {
-          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-              .getMessage(MessageList.FILE_READ_ERROR), path);
+
+    @Override
+    public byte[] compile(@NonNull LexemSequence lexemSequence) {
+        Iterator<Lexem> iterator = lexemSequence.get().iterator();
+        Lexem nextLexem;
+        if (!iterator.hasNext() || !contains(names(), (nextLexem = iterator.next()).getValue())) {
+            return null;
         }
-      } else {
-        throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
-            .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
-      }
-      nextLexem = iterator.hasNext() ? iterator.next() : null;
-      if (nextLexem == null) {
-        break;
-      }
+        nextLexem = iterator.hasNext() ? iterator.next() : null;
+        if (nextLexem == null) {
+            throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+                    .getMessage(MessageList.FILE_PATH_EXCEPTED));
+        }
+        while (true) {
+            if (nextLexem.getType() == LexemType.STRING) {
+                final String path = nextLexem.getValue();
+                try {
+
+                    if (!compilerApi.include(toAbsolutePath(path))) {
+                        Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                                .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
+                    }
+                } catch (FileNotFoundException e) {
+                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                            .getMessage(MessageList.FILE_NOT_FOUND), path);
+                } catch (IOException e) {
+                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                            .getMessage(MessageList.FILE_READ_ERROR), path);
+                }
+            } else {
+                throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                        .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+            }
+            nextLexem = iterator.hasNext() ? iterator.next() : null;
+            if (nextLexem == null) {
+                break;
+            }
+        }
+        return new byte[0];
     }
-    return new byte[0];
-  }
+
+    private String toAbsolutePath(String path) {
+        File includeFile = new File(path);
+        if (includeFile.isAbsolute()) {
+            return path;
+        }
+        includeFile = new File(compilerApi.getFile().getParentFile(), path);
+        return includeFile.getAbsolutePath();
+    }
+
 }
