@@ -1,5 +1,6 @@
 package ru.retro.assembler.editor.core.ui;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration.ConfigurationException;
@@ -25,6 +26,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 
 /**
  * Author: Maxim Gorin
@@ -54,7 +56,15 @@ public final class Controller implements Runnable {
 
     private int index = -1;
 
-    public Controller() {
+    private LocalizedSaveAsChooser saveAsFileChooser;
+
+    private LocalizedOpenChooser openFileChooser;
+
+    @Getter
+    private Collection<String> args;
+
+    public Controller(Collection<String> args) {
+        this.args = args;
         this.mainWindow = new MainWindow();
         this.preferencesDialog = new PreferencesDialog(mainWindow);
         this.aboutDialog = new AboutDialog(mainWindow);
@@ -63,9 +73,35 @@ public final class Controller implements Runnable {
         initListeners();
     }
 
+    private LocalizedSaveAsChooser getSaveAsFileChooser() {
+        if (saveAsFileChooser == null) {
+            if (settings.getSaveDialogCurrentDirectory() == null) {
+                saveAsFileChooser = new LocalizedSaveAsChooser();
+            } else {
+                saveAsFileChooser = new LocalizedSaveAsChooser(settings.getSaveDialogCurrentDirectory());
+            }
+        }
+        return saveAsFileChooser;
+    }
+
+    private LocalizedOpenChooser getOpenFileChooser() {
+        if (settings.getOpenDialogCurrentDirectory() == null) {
+            openFileChooser = new OpenFileChooser();
+        } else {
+            openFileChooser = new OpenFileChooser(settings.getOpenDialogCurrentDirectory());
+        }
+        return openFileChooser;
+    }
+
+
     @Override
     public void run() {
         Environment.getInstance().setMainWindow(mainWindow);
+        if (args != null && !args.isEmpty()) {
+            for (String fileName : args) {
+                openSource(new File(fileName));
+            }
+        }
         mainWindow.setVisible(true);
     }
 
@@ -213,36 +249,35 @@ public final class Controller implements Runnable {
         mainWindow.getSourceTabbedPane().add(newSrc);
     }
 
-    private void openSource() {
-        OpenFileChooser openFileChooser;
-        if (settings.getOpenDialogCurrentDirectory() == null) {
-            openFileChooser = new OpenFileChooser();
-        } else {
-            openFileChooser = new OpenFileChooser(settings.getOpenDialogCurrentDirectory());
+    private void openSource(@NonNull File file) {
+        try {
+            final Source src = createSource(file);
+            src.load(file, settings.getEncoding());
+            int tabIndex = mainWindow.getSourceTabbedPane().indexOf(src);
+            if (tabIndex == -1) {
+                mainWindow.getSourceTabbedPane().add(src);
+            } else {
+                final Source existedSource = mainWindow.getSourceTabbedPane().getSource(tabIndex);
+                existedSource.setContent(src.getContent());
+                mainWindow.getSourceTabbedPane().setSelected(existedSource);
+            }
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage(), e);
+            JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.ENCODING_ERROR), Messages.get(Messages
+                    .ERROR), JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
+                    , JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void openSource() {
+        final LocalizedOpenChooser openFileChooser = getOpenFileChooser();
         if (openFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setOpenDialogCurrentDirectory(openFileChooser.getCurrentDirectory().getAbsolutePath());
-            try {
-                for (File file : openFileChooser.getSelectedFiles()) {
-                    final Source src = createSource(file);
-                    src.load(file, settings.getEncoding());
-                    int tabIndex = mainWindow.getSourceTabbedPane().indexOf(src);
-                    if (tabIndex == -1) {
-                        mainWindow.getSourceTabbedPane().add(src);
-                    } else {
-                        final Source existedSource = mainWindow.getSourceTabbedPane().getSource(tabIndex);
-                        existedSource.setContent(src.getContent());
-                        mainWindow.getSourceTabbedPane().setSelected(existedSource);
-                    }
-                }
-            } catch (UnsupportedEncodingException e) {
-                log.error(e.getMessage(), e);
-                JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.ENCODING_ERROR), Messages.get(Messages
-                        .ERROR), JOptionPane.ERROR_MESSAGE);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                JOptionPane.showMessageDialog(mainWindow, Messages.get(Messages.IO_ERROR), Messages.get(Messages.ERROR)
-                        , JOptionPane.ERROR_MESSAGE);
+            for (File file : openFileChooser.getSelectedFiles()) {
+                openSource(file);
             }
         }
     }
@@ -285,12 +320,7 @@ public final class Controller implements Runnable {
     }
 
     private void saveSourceAs(@NonNull Source src) {
-        LocalizedSaveAsChooser localizedSaveAsChooser;
-        if (settings.getSaveDialogCurrentDirectory() == null) {
-            localizedSaveAsChooser = new LocalizedSaveAsChooser();
-        } else {
-            localizedSaveAsChooser = new LocalizedSaveAsChooser(settings.getSaveDialogCurrentDirectory());
-        }
+        final LocalizedSaveAsChooser localizedSaveAsChooser = getSaveAsFileChooser();
         localizedSaveAsChooser.setSelectedFile(src.getFile());
         if (localizedSaveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             final File file = localizedSaveAsChooser.getSelectedFile();
