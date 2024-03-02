@@ -10,6 +10,7 @@ import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.syntax.LexemSequence;
+import ru.assembler.core.util.FileUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,7 +51,7 @@ public class ResourceCommandCompiler implements CommandCompiler {
             if (nextLexem.getType() == LexemType.STRING) {
                 final String path = nextLexem.getValue();
                 try {
-                    baos.write(loadResource(path));
+                    baos.write(loadResource(FileUtil.toAbsolutePath(compilerApi.getFile().getParentFile(), path)));
                 } catch (FileNotFoundException e) {
                     throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_NOT_FOUND), path);

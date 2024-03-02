@@ -12,6 +12,7 @@ import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.syntax.LexemSequence;
+import ru.assembler.core.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -61,7 +62,7 @@ public class IncludeCommandCompiler implements CommandCompiler {
                 final String path = nextLexem.getValue();
                 try {
 
-                    if (!compilerApi.include(toAbsolutePath(path))) {
+                    if (!compilerApi.include(FileUtil.toAbsolutePath(compilerApi.getFile().getParentFile(), path))) {
                         Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
                                 .getMessage(MessageList.FILE_IS_ALREADY_INCLUDED), path);
                     }
@@ -83,14 +84,4 @@ public class IncludeCommandCompiler implements CommandCompiler {
         }
         return new byte[0];
     }
-
-    private String toAbsolutePath(String path) {
-        File includeFile = new File(path);
-        if (includeFile.isAbsolute()) {
-            return path;
-        }
-        includeFile = new File(compilerApi.getFile().getParentFile(), path);
-        return includeFile.getAbsolutePath();
-    }
-
 }

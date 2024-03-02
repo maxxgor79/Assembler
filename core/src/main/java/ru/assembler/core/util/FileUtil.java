@@ -54,4 +54,16 @@ public final class FileUtil {
         }
         return null;
     }
+
+    public static String toAbsolutePath(File parentFile, @NonNull final String path) {
+        File includeFile = new File(path);
+        if (includeFile.isAbsolute()) {
+            return path;
+        }
+        if (!parentFile.isDirectory()) {
+            throw new IllegalArgumentException("Directory required");
+        }
+        includeFile = new File(parentFile, path);
+        return includeFile.getAbsolutePath();
+    }
 }

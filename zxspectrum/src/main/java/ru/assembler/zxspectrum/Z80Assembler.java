@@ -72,6 +72,11 @@ public class Z80Assembler extends AbstractNamespaceApi {
         postCommandCompilerMap.clear();
     }
 
+    protected static void setLocale(@NonNull Locale locale) {
+        MessageList.setLocale(locale);
+        Z80Messages.setLocale(locale);
+    }
+
     protected void applySettings(@NonNull final Z80AssemblerSettings settings)
             throws SettingsException {
         if (settings.getMinAddress() != null) {
@@ -257,9 +262,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
             final CommandLine cli = parser.parse(options, args);
             //---------------------------------------------set locale----------------------------------------------------
             if (cli.hasOption("locale")) {
-                final Locale locale = new Locale(cli.getOptionValue("locale"));
-                MessageList.setLocale(locale);
-                Z80Messages.setLocale(locale);
+                setLocale(new Locale(cli.getOptionValue("locale")));
             }
             settings.load(cli);
             final List<File> files = new LinkedList<>();
