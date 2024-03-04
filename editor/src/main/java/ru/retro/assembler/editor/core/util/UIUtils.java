@@ -108,4 +108,13 @@ public final class UIUtils {
     public static boolean equals(@NonNull Locale locale1, @NonNull Locale locale2) {
         return locale1.getLanguage().equals(locale2.getLanguage());
     }
+
+    public static void updateUIManager() {
+        UIManager.put("ColorChooser.okText", Messages.get(Messages.OK));
+        UIManager.put("ColorChooser.cancelText",  Messages.get(Messages.CANCEL));
+        UIManager.put("ColorChooser.resetText", Messages.get(Messages.RESET));
+        UIManager.put("ColorChooser.sampleText", Messages.get(Messages.SAMPLE));
+        UIManager.put("ColorChooser.previewText", Messages.get(Messages.PREVIEW));
+        UIManager.put("ColorChooser.swatchesRecentText", Messages.get(Messages.RECENT));
+    }
 }

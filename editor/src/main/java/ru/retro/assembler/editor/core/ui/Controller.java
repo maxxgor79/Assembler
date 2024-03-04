@@ -256,6 +256,7 @@ public final class Controller implements Runnable {
     protected void setLocale(@NonNull Locale locale) {
         Locale.setDefault(locale);
         Messages.setLocale(locale);
+        UIUtils.updateUIManager();
     }
 
     protected static Source createSource(@NonNull File file) {

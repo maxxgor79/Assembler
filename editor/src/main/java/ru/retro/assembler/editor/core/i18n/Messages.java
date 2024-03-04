@@ -181,6 +181,14 @@ public final class Messages {
 
     public static final String RUSSIAN = "russian";
 
+    public static final String RESET = "reset";
+
+    public static final String SAMPLE = "sample";
+
+    public static final String RECENT = "recent";
+
+    public static final String PREVIEW = "preview";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);
