@@ -3,6 +3,7 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.SystemUtils;
 import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.Source;
@@ -85,9 +86,11 @@ public class MainWindow extends JFrame {
         try {
             Image image = ResourceUtils.loadImage("/icon16x16/chip.png");
             setIconImage(image);
-            image = ResourceUtils.loadImage("/icon48x48/microchip.png");
-            final Taskbar taskbar = Taskbar.getTaskbar();
-            taskbar.setIconImage(image);
+            if (org.apache.commons.lang.SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+                image = ResourceUtils.loadImage("/icon48x48/microchip.png");
+                final Taskbar taskbar = Taskbar.getTaskbar();
+                taskbar.setIconImage(image);
+            }
         } catch (IOException | UnsupportedOperationException | SecurityException e) {
             log.error(e.getMessage(), e);
         }
