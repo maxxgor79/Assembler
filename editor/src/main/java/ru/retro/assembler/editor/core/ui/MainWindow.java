@@ -83,8 +83,9 @@ public class MainWindow extends JFrame {
 
     protected void initComponents() {
         try {
-            final Image image = ResourceUtils.loadImage("/icon16x16/chip.png");
+            Image image = ResourceUtils.loadImage("/icon16x16/chip.png");
             setIconImage(image);
+            image = ResourceUtils.loadImage("/icon48x48/microchip.png");
             final Taskbar taskbar = Taskbar.getTaskbar();
             taskbar.setIconImage(image);
         } catch (IOException | UnsupportedOperationException | SecurityException e) {
