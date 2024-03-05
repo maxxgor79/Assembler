@@ -1,6 +1,7 @@
 package ru.retro.assembler.editor.core.util;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import javax.imageio.ImageIO;
@@ -11,22 +12,49 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * @Author: Maxim Gorin
- * Date: 20.02.2024
+ * @Author: Maxim Gorin Date: 20.02.2024
  */
+@Slf4j
 public final class ResourceUtils {
-    private ResourceUtils() {
 
-    }
+  private static Icon questionIcon;
 
-    public static Image loadImage(@NonNull String path) throws IOException {
-        byte[] iconData = IOUtils.toByteArray(ResourceUtils.class.getResourceAsStream(path));
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(iconData));
-        return image;
-    }
+  private static Icon errorIcon;
 
-    public static Icon loadIcon(@NonNull String path) throws IOException {
-        Image image = loadImage(path);
-        return new ImageIcon(image);
+  private ResourceUtils() {
+
+  }
+
+  public static Image loadImage(@NonNull String path) throws IOException {
+    byte[] iconData = IOUtils.toByteArray(ResourceUtils.class.getResourceAsStream(path));
+    BufferedImage image = ImageIO.read(new ByteArrayInputStream(iconData));
+    return image;
+  }
+
+  public static Icon loadIcon(@NonNull String path) throws IOException {
+    Image image = loadImage(path);
+    return new ImageIcon(image);
+  }
+
+  public static Icon getQuestionIcon() {
+    if (questionIcon == null) {
+      try {
+        questionIcon = loadIcon("/icon48x48/question.png");
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+      }
     }
+    return questionIcon;
+  }
+
+  public static Icon getErrorIcon() {
+    if (errorIcon == null) {
+      try {
+        errorIcon = loadIcon("/icon48x48/error.png");
+      } catch (IOException e) {
+        log.error(e.getMessage(), e);
+      }
+    }
+    return errorIcon;
+  }
 }
