@@ -63,6 +63,7 @@
         <exec.name>z80asm</exec.name>
         <major.version>1</major.version>
         <minor.version>3</minor.version>
+	<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
