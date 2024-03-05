@@ -127,11 +127,11 @@ public class Z80Assembler extends AbstractNamespaceApi {
             runSettings(outputFile);
             outputCompileResult(compilerApi);
         } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
             Output.formatPrintln(MessageList.getMessage(MessageList.FILE_NOT_FOUND), file.getAbsolutePath());
-        } catch (Exception e) {
             log.error(e.getMessage(), e);
+        } catch (Exception e) {
             Output.println(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -318,8 +318,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
                 options = createOptions();
             }
         } catch (ParseException e) {
-            log.error(e.getMessage(), e);
             Output.formatPrintln(Z80Messages.getMessage(Z80Messages.UNKNOWN_OPTION));
+            log.error(e.getMessage(), e);
         }
         return options;
     }
