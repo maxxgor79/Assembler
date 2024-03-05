@@ -11,7 +11,13 @@ import java.util.ResourceBundle;
  * Date: 19.02.2024
  */
 public final class Messages {
-    private static ResourceBundle bundle = ResourceBundle.getBundle("i18n.Messages", Locale.getDefault());
+    private static ResourceBundle bundle;
+
+    private static Locale locale;
+
+    static {
+        setLocale(Locale.getDefault());
+    }
 
     private Messages() {
 
@@ -189,21 +195,23 @@ public final class Messages {
 
     public static final String PREVIEW = "preview";
 
+    public static final String OCCURRENCE = "occurrence";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);
     }
 
-    public static void setLocale(Locale locale) {
-        if (locale == null) {
-            locale = bundle.getLocale();
+    public static void setLocale(Locale l) {
+        if (l == null || l.getLanguage().trim().isEmpty()) {
+            locale = Locale.ENGLISH;
+        } else {
+            locale = l;
         }
-        if (!UIUtils.equals(bundle.getLocale(), locale)) {
-            bundle = ResourceBundle.getBundle("i18n.Messages", locale);
-        }
+        bundle = ResourceBundle.getBundle("i18n.Messages", locale);
     }
 
     public static Locale getLocale() {
-        return bundle.getLocale();
+        return locale;
     }
 }

@@ -21,6 +21,8 @@ public final class ResourceUtils {
 
   private static Icon errorIcon;
 
+  private static Icon informationIcon;
+
   private ResourceUtils() {
 
   }
@@ -56,5 +58,16 @@ public final class ResourceUtils {
       }
     }
     return errorIcon;
+  }
+
+  public static Icon getInformationIcon() {
+    if (informationIcon == null) {
+        try {
+            informationIcon = loadIcon("/icon48x48/information.png");
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+    return informationIcon;
   }
 }

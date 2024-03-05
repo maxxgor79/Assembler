@@ -21,10 +21,6 @@ public class Editor {
     private static Controller controller;
 
     public static void main(String[] args) {
-        final String language = UIUtils.toLanguage(Locale.getDefault());
-        if (language == null || language.trim().isEmpty()) {
-            Locale.setDefault(UIUtils.toLocale(Messages.get(Messages.ENGLISH)));
-        }
         controller = new Controller(List.of(args));
         SwingUtilities.invokeLater(controller);
     }
