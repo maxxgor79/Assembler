@@ -52,6 +52,8 @@ public final class Z80Messages {
 
     public static final String SETUP_LOCALE = "setup_locale";
 
+    public static final String UNKNOWN_OPTION = "unknown_option";
+
     private Z80Messages() {
 
     }

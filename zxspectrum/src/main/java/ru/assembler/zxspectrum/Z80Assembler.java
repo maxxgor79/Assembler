@@ -126,6 +126,9 @@ public class Z80Assembler extends AbstractNamespaceApi {
             runOptions(outputFile, compilerApi);
             runSettings(outputFile);
             outputCompileResult(compilerApi);
+        } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
+            Output.formatPrintln(MessageList.getMessage(MessageList.FILE_NOT_FOUND), file.getAbsolutePath());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             Output.println(e.getMessage());
@@ -260,10 +263,6 @@ public class Z80Assembler extends AbstractNamespaceApi {
         try {
             // parse the command line arguments
             final CommandLine cli = parser.parse(options, args);
-            //---------------------------------------------set locale----------------------------------------------------
-            if (cli.hasOption("locale")) {
-                setLocale(new Locale(cli.getOptionValue("locale")));
-            }
             settings.load(cli);
             final List<File> files = new LinkedList<>();
             for (final String fileName : cli.getArgList()) {
@@ -308,29 +307,21 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    public static void main(final String[] args) {
-        final Z80AssemblerSettings settings = loadSettings();
-        final Options options = getOptions();
-        if (args.length == 0) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(settings.getCmdFilename() + " " + Z80Messages.getMessage(Z80Messages
-                    .FILE_ENUM), options);
-            return;
-        }
-        final Z80Assembler z80Assembler = new Z80Assembler();
-        final List<File> fileList = setCli(settings, args, options);
+    private static Options processCli(@NonNull final String[] args) {
+        Options options = createOptions();
+        final CommandLineParser parser = new DefaultParser();
         try {
-            z80Assembler.applySettings(settings);
-        } catch (SettingsException e) {
-            Output.println(e.getMessage());
-            return;
+            // parse the command line arguments
+            final CommandLine cli = parser.parse(options, args);
+            if (cli.hasOption("locale")) {
+                setLocale(new Locale(cli.getOptionValue("locale")));
+                options = createOptions();
+            }
+        } catch (ParseException e) {
+            log.error(e.getMessage(), e);
+            Output.formatPrintln(Z80Messages.getMessage(Z80Messages.UNKNOWN_OPTION));
         }
-        if (!fileList.isEmpty()) {
-            Output.println(z80Assembler.createWelcome());
-            z80Assembler.run(fileList.toArray(new File[fileList.size()]));
-        } else {
-            Output.println(Z80Messages.getMessage(Z80Messages.NO_INPUT_FILES));
-        }
+        return options;
     }
 
     protected static Z80AssemblerSettings loadSettings() {
@@ -346,8 +337,9 @@ public class Z80Assembler extends AbstractNamespaceApi {
         return settings;
     }
 
-    protected static Options getOptions() {
+    protected static Options createOptions() {
         final Options options = new Options();
+        options.addOption("l", "locale", true, Z80Messages.getMessage(Z80Messages.SETUP_LOCALE));
         options.addOption("st", "strict-type-conversion", false, Z80Messages.getMessage(Z80Messages
                 .O_STRICT_CONVERSION));
         options.addOption("a", "address", true, Z80Messages.getMessage(Z80Messages.O_ORG_ADDRESS));
@@ -362,7 +354,6 @@ public class Z80Assembler extends AbstractNamespaceApi {
         options.addOption("wav", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_WAV));
         options.addOption("tzx", false, Z80Messages.getMessage(Z80Messages.O_PRODUCE_TZX));
         options.addOption("cpu", true, Z80Messages.getMessage(Z80Messages.O_USE_SPECIAL_PROCESSOR));
-        options.addOption("l", "locale", true, Z80Messages.getMessage(Z80Messages.SETUP_LOCALE));
         return options;
     }
 
@@ -373,5 +364,30 @@ public class Z80Assembler extends AbstractNamespaceApi {
                 , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
                 , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
                 , MessageList.getMessage(MessageList.SOURCES));
+    }
+
+    public static void main(final String[] args) {
+        final Options options = processCli(args);
+        final Z80AssemblerSettings settings = loadSettings();
+        final List<File> fileList = setCli(settings, args, options);
+        if (args.length == 0) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(settings.getCmdFilename() + " " + Z80Messages.getMessage(Z80Messages
+                    .FILE_ENUM), options);
+            return;
+        }
+        final Z80Assembler z80Assembler = new Z80Assembler();
+        try {
+            z80Assembler.applySettings(settings);
+        } catch (SettingsException e) {
+            Output.println(e.getMessage());
+            return;
+        }
+        if (!fileList.isEmpty()) {
+            Output.println(z80Assembler.createWelcome());
+            z80Assembler.run(fileList.toArray(new File[fileList.size()]));
+        } else {
+            Output.println(Z80Messages.getMessage(Z80Messages.NO_INPUT_FILES));
+        }
     }
 }
