@@ -60,7 +60,7 @@ public final class FileUtil {
         if (includeFile.isAbsolute()) {
             return path;
         }
-        if (!parentFile.isDirectory()) {
+        if (parentFile != null && !parentFile.isDirectory()) {
             throw new IllegalArgumentException("Directory required");
         }
         includeFile = new File(parentFile, path);
