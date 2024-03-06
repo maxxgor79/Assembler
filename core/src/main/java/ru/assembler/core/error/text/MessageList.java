@@ -122,6 +122,8 @@ public final class MessageList {
 
     public static final String FILE_IS_ALREADY_INCLUDED = "file_is_already_included";
 
+    public static final String IMAGE_NOT_SUPPORTED = "image_not_supported";
+
     private static ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {

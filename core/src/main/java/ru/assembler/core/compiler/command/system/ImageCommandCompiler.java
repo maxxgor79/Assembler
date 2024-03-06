@@ -4,7 +4,10 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 import ru.assembler.core.compiler.CompilerApi;
+import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Output;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.util.ImageUtils;
 
@@ -44,6 +47,10 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
 
     @Override
     protected byte[] loadResource(@NonNull String path) throws IOException {
+        if (SystemUtils.IS_OS_LINUX) {
+            Output.println(MessageList.getMessage(MessageList.IMAGE_NOT_SUPPORTED));
+            return new byte[0];
+        }
         final File file = new File(path);
         if (!file.exists()) {
             throw new FileNotFoundException(file.getAbsolutePath());

@@ -47,5 +47,5 @@ rw_port_zero:
 ; temporary data from port 254
 rw_port_value:
      db 0
+     .image "img.png"
 ;    .defres "test1.txt" "test2.txt"
-    .img "img.png"
