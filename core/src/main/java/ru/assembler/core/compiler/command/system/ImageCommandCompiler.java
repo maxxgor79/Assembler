@@ -47,7 +47,7 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
 
     @Override
     protected byte[] loadResource(@NonNull String path) throws IOException {
-        if (SystemUtils.IS_OS_LINUX) {
+        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
             Output.println(MessageList.getMessage(MessageList.IMAGE_NOT_SUPPORTED));
             return new byte[0];
         }
