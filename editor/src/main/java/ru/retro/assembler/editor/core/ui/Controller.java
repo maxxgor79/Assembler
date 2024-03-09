@@ -30,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.prefs.BackingStoreException;
 
 /**
  * Author: Maxim Gorin Date: 26.02.2024
@@ -40,8 +41,6 @@ public final class Controller implements Runnable {
     protected static final int TIMER_DELAY = 250;
 
     protected static final String NEW_SOURCE_NAME = "noname.asm";
-
-    protected static final String SETTINGS_FILENAME = "editor.properties";
 
     protected final AppSettings settings = new AppSettings();
 
@@ -112,10 +111,10 @@ public final class Controller implements Runnable {
     }
 
     private void loadSettings() {
-        try (FileInputStream fis = new FileInputStream(SETTINGS_FILENAME)) {
-            settings.load(fis);
+        try {
+            settings.load();
             log.info("Setting are loaded successfully");
-        } catch (ConfigurationException | IOException e) {
+        } catch (BackingStoreException e) {
             log.error(e.getMessage(), e);
         }
         buildVersionReader.loadFromResource("/build.version");
@@ -126,11 +125,11 @@ public final class Controller implements Runnable {
     }
 
     private void saveSettings() {
-        try (FileOutputStream fos = new FileOutputStream(SETTINGS_FILENAME)) {
+        try {
             store(settings);
-            settings.save(fos);
+            settings.save();
             log.info("Setting are saved successfully");
-        } catch (ConfigurationException | IOException e) {
+        } catch (BackingStoreException e) {
             log.error(e.getMessage(), e);
         }
     }

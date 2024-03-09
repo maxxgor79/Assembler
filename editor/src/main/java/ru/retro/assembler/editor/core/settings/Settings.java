@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * @Author: Maxim Gorin
@@ -18,58 +20,55 @@ import java.io.OutputStreamWriter;
  */
 @Slf4j
 public abstract class Settings extends AnnotationProcessor {
-    private final PropertiesConfiguration configs = new PropertiesConfiguration();
+    private final Preferences prefs = Preferences.userRoot();
 
     protected void flush() throws IllegalAccessException {
-        configs.clear();
         for (Property p : getProperties(this)) {
             if (p.isBoolean()) {
-                configs.setProperty(p.getName(), String.valueOf(p.getBoolean()));
+                prefs.putBoolean(p.getName(), p.getBoolean());
             } else if (p.isInt()) {
-                configs.setProperty(p.getName(), String.valueOf(p.getInt()));
+                prefs.putInt(p.getName(), p.getInt());
             } else if (p.isReal()) {
-                configs.setProperty(p.getName(), String.valueOf(p.getReal()));
+                prefs.putDouble(p.getName(), p.getReal());
             } else if (p.isText()) {
-                configs.setProperty(p.getName(), String.valueOf(p.getText()));
+                prefs.put(p.getName(), String.valueOf(p.getText()));
             }
         }
     }
 
-    public void save(@NonNull OutputStream os) throws ConfigurationException {
+    public void save() throws BackingStoreException {
         try {
             flush();
+            prefs.flush();
         } catch (IllegalAccessException e) {
             log.error(e.getMessage(), e);
-            throw new ConfigurationException(e);
+            throw new BackingStoreException(e);
         }
-        configs.save(new OutputStreamWriter(os));
     }
 
     protected void apply() throws IllegalAccessException {
         for (Property p : getProperties(this)) {
             final String name = p.getName();
-            if (configs.containsKey(name)) {
+            if (prefs.get(name, null) != null) {
                 if (p.isBoolean()) {
-                    p.set(configs.getBoolean(name));
+                    p.set(prefs.getBoolean(name, false));
                 } else if (p.isInt()) {
-                    p.set(configs.getInt(name));
+                    p.set(prefs.getInt(name, 0));
                 } else if (p.isReal()) {
-                    p.set(configs.getDouble(name));
+                    p.set(prefs.getDouble(name, 0.0));
                 } else if (p.isText()) {
-                    p.set(configs.getString(name));
+                    p.set(prefs.get(name, null));
                 }
             }
         }
     }
 
-    public void load(@NonNull InputStream is) throws ConfigurationException {
-        configs.clear();
-        configs.load(new InputStreamReader(is));
+    public void load() throws BackingStoreException {
         try {
             apply();
         } catch (IllegalAccessException e) {
             log.error(e.getMessage(), e);
-            throw new ConfigurationException(e);
+            throw new BackingStoreException(e);
         }
     }
 }

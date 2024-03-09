@@ -76,6 +76,7 @@ public class MainWindow extends JFrame {
 
     protected void init() {
         setTitle(TITLE);
+        setLocationByPlatform(true);
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(new Dimension((int) (screenSize.width * 0.75), (int) (screenSize.height * 0.75)));
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
