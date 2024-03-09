@@ -68,7 +68,7 @@ public final class Controller implements Runnable {
 
     private final BuildVersionReader buildVersionReader = new BuildVersionReader();
 
-    public Controller(Collection<String> args) {
+    public Controller(final Collection<String> args) {
         loadSettings();
         this.args = args;
         this.mainWindow = new MainWindow();
@@ -102,13 +102,13 @@ public final class Controller implements Runnable {
     @Override
     public void run() {
         Environment.getInstance().setMainWindow(mainWindow);
+        apply(settings, buildVersionReader);
+        mainWindow.setVisible(true);
         if (args != null && !args.isEmpty()) {
             for (String fileName : args) {
                 openSource(new File(fileName));
             }
         }
-        apply(settings, buildVersionReader);
-        mainWindow.setVisible(true);
     }
 
     private void loadSettings() {
