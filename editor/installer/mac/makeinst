@@ -3,7 +3,7 @@ jpackage -i app --name RetroIDE \
   --main-class ru.retro.assembler.editor.core.Editor \
   --type dmg \
   --verbose \
-  --icon res/microchip.png \
+  --icon res/microchip.icns \
   --dest dest \
   --description 'Light IDE for Z80 assembler' \
   --mac-app-category Development
