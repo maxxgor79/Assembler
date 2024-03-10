@@ -4,6 +4,8 @@ import lombok.Getter;
 import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
@@ -23,8 +25,12 @@ public class CompilerPanel extends JPanel {
     @Getter
     private JButton btnOutputDirectory;
 
+    @Getter
+    private JCheckBox cbEmbedded;
+
     public CompilerPanel() {
         initComponents();
+        initListeners();
     }
 
     private void initComponents() {
@@ -35,7 +41,7 @@ public class CompilerPanel extends JPanel {
         c.gridy = 0;
         c.gridwidth = 1;
         c.gridheight = 1;
-        c.insets = new Insets(4, 4,4, 4);
+        c.insets = new Insets(4, 4, 4, 4);
         add(label1, c);
         compilerPathField = new TextField(64);
         compilerPathField.setEditable(false);
@@ -53,12 +59,19 @@ public class CompilerPanel extends JPanel {
         c.gridheight = 1;
         c.fill = GridBagConstraints.NONE;
         add(btnCompilerPath, c);
+        cbEmbedded = new JCheckBox(Messages.get(Messages.EMBEDDED));
+        c.gridx = 3;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.fill = GridBagConstraints.NONE;
+        add(cbEmbedded, c);
         JLabel label2 = new JLabel(Messages.get(Messages.OUTPUT_DIRECTORY));
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 1;
         c.gridheight = 1;
-        c.insets = new Insets(0, 4,0, 4);
+        c.insets = new Insets(0, 4, 0, 4);
         add(label2, c);
         outputPathField = new TextField(64);
         outputPathField.setEditable(false);
@@ -77,4 +90,12 @@ public class CompilerPanel extends JPanel {
         c.fill = GridBagConstraints.NONE;
         add(btnOutputDirectory, c);
     }
+
+    private void initListeners() {
+        cbEmbedded.addChangeListener(e -> {
+            compilerPathField.setEnabled(!cbEmbedded.isSelected());
+            btnCompilerPath.setEnabled(!cbEmbedded.isSelected());
+        });
+    }
+
 }

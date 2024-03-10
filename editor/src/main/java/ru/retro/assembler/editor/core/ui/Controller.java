@@ -3,14 +3,14 @@ package ru.retro.assembler.editor.core.ui;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.configuration.ConfigurationException;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
-import ru.retro.assembler.editor.core.io.ConsoleWriter;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.ui.compile.EmbeddedCompiling;
+import ru.retro.assembler.editor.core.ui.compile.ExternalCompiling;
 import ru.retro.assembler.editor.core.ui.find.FindDialog;
 import ru.retro.assembler.editor.core.ui.preferences.ColorPanel;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
@@ -191,6 +191,8 @@ public final class Controller implements Runnable {
                     .getCbLanguages()
                     .setSelectedItem(UIUtils.toLanguage(Messages.getLocale()));
         }
+        preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getCbEmbedded()
+                .setSelected(settings.isCompiledEmbedded());
         if (settings.getEditorFontName() != null) {
             Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
                     , settings.getEditorFontSize()));
@@ -200,13 +202,6 @@ public final class Controller implements Runnable {
 
     protected void store(@NonNull final AppSettings settings) {
         mainWindow.store(settings);
-        settings.setCompilerPath(preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
-                .getCompilerPathField().getText());
-        settings.setOutputDirectory(preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
-                .getOutputPathField().getText());
-        settings.setEncoding(
-                (String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCharsetPanel()
-                        .getCbEncoding().getSelectedItem());
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -513,31 +508,14 @@ public final class Controller implements Runnable {
 
 
     private void compile(@NonNull final Source src, String... args) {
-        final String asmDir = settings.getCompilerPath();
-        final String outputDir = settings.getOutputDirectory();
-        final File pathToAsm = new File(asmDir, CLIUtils.ASM_FILENAME);
-        try {
-            if (!pathToAsm.exists()) {
-                throw new FileNotFoundException(pathToAsm.getAbsolutePath());
+
+            if (!settings.isCompiledEmbedded()) {
+                final ExternalCompiling compiling = new ExternalCompiling(settings, mainWindow);
+                compiling.compile(src, args);
+            } else {
+                final EmbeddedCompiling compiling = new EmbeddedCompiling(settings, mainWindow);
+                compiling.compile(src, args);
             }
-            final java.util.List<String> argList = CLIUtils.toList(pathToAsm.getAbsolutePath(),
-                    CLIUtils.ARG_OUTPUT
-                    , outputDir, src.getFile().getAbsolutePath(), args);
-            final Process p = new ProcessBuilder(argList).start();
-            final ConsoleWriter consoleWriter = new ConsoleWriter(p, mainWindow.getConsole().getArea());
-            SwingUtilities.invokeLater(consoleWriter);
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.get(Messages.FILE_NOT_FOUND)
-                            , pathToAsm.getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE
-                    , ResourceUtils.getErrorIcon());
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow,
-                    String.format(Messages.get(Messages.IO_ERROR), src.getFile()
-                            .getAbsolutePath()), Messages.get(Messages.ERROR), JOptionPane.ERROR_MESSAGE
-                    , ResourceUtils.getErrorIcon());
-        }
     }
 
     private void cleanConsole() {
@@ -658,6 +636,8 @@ public final class Controller implements Runnable {
             final String outputDir = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
                     .getOutputPathField().getText();
             settings.setOutputDirectory(outputDir);
+            settings.setCompiledEmbedded(preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
+                    .getCbEmbedded().isSelected());
             settings.setConsoleFontName(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
                     .getConsoleAppearancePanel().getFontPanel().getSelectedFontName());
             settings.setConsoleFontSize(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()

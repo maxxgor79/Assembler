@@ -197,6 +197,10 @@ public final class Messages {
 
     public static final String OCCURRENCE = "occurrence";
 
+    public static final String EMBEDDED = "embedded";
+
+    public static final String EMBEDDED_NOT_FOUND = "embedded_not_found";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);
@@ -208,7 +212,7 @@ public final class Messages {
         } else {
             locale = l;
         }
-        bundle = ResourceBundle.getBundle("i18n.Messages", locale);
+        bundle = ResourceBundle.getBundle("i18n.EditorMessages", locale);
     }
 
     public static Locale getLocale() {

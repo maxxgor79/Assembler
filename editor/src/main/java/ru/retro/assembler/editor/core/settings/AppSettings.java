@@ -121,4 +121,9 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     protected String language = "English";
+
+    @Getter
+    @Setter
+    @Setting
+    protected boolean compiledEmbedded;
 }

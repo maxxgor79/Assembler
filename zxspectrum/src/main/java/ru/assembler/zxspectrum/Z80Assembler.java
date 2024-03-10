@@ -390,4 +390,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
             Output.println(Z80Messages.getMessage(Z80Messages.NO_INPUT_FILES));
         }
     }
+
+    public static void entry(@NonNull Collection<String> c) {
+        main(c.toArray(new String[c.size()]));
+    }
 }

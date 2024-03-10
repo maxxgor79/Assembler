@@ -40,6 +40,8 @@ public class PreferencesDialog extends JDialog {
 
     private static final int LANGUAGE = 10;
 
+    private static final int EMBEDDED = 11;
+
     public static int OPTION_OK = 1;
 
     public static int OPTION_CANCEL = 0;
@@ -122,6 +124,7 @@ public class PreferencesDialog extends JDialog {
                 .getFontColorPanel().getColor());
         store.putObject(LANGUAGE, preferencesTabbedPane.getOtherPanel().getLanguagePanel().getCbLanguages()
                 .getSelectedItem());
+        store.putBoolean(EMBEDDED, preferencesTabbedPane.getCompilerPanel().getCbEmbedded().isSelected());
     }
 
     protected void restore() {
@@ -207,6 +210,13 @@ public class PreferencesDialog extends JDialog {
             try {
                 preferencesTabbedPane.getOtherPanel().getLanguagePanel().getCbLanguages().setSelectedItem
                         (store.getObject(LANGUAGE));
+            } catch (StoreException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        if (store.contains(EMBEDDED)) {
+            try {
+                preferencesTabbedPane.getCompilerPanel().getCbEmbedded().setSelected(store.getBoolean(EMBEDDED));
             } catch (StoreException e) {
                 log.error(e.getMessage(), e);
             }
