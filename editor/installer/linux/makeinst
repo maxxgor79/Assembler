@@ -8,4 +8,5 @@ jpackage -i app --name RetroIDE \
   --dest dest \
   --linux-app-category Development \
   --description 'Light IDE for Z80 assembler' \
-  --linux-menu-group Development
+  --linux-menu-group Development \
+  --java-options -Dz80asm.embedded=true

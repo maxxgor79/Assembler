@@ -28,7 +28,7 @@ public class Editor {
     }
 
     private static void setSystemVariables() {
-        System.setProperty("z80asm.embedded", "true");
+        //System.setProperty("z80asm.embedded", "true");
     }
 
     private static void setAppName() {
