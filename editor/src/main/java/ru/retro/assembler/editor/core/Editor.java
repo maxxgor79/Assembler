@@ -21,9 +21,14 @@ public class Editor {
     private static Controller controller;
 
     public static void main(String[] args) {
+        setSystemVariables();
         setAppName();
         controller = new Controller(List.of(args));
         SwingUtilities.invokeLater(controller);
+    }
+
+    private static void setSystemVariables() {
+        System.setProperty("z80asm.embedded", "true");
     }
 
     private static void setAppName() {

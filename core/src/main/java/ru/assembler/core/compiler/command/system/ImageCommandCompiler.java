@@ -47,9 +47,11 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
 
     @Override
     protected byte[] loadResource(@NonNull String path) throws IOException {
-        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-            Output.println(MessageList.getMessage(MessageList.IMAGE_NOT_SUPPORTED));
-            return new byte[0];
+        if ("false".equalsIgnoreCase(System.getProperty("z80asm.embedded"))) {
+            if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+                Output.println(MessageList.getMessage(MessageList.IMAGE_NOT_SUPPORTED));
+                return new byte[0];
+            }
         }
         final File file = new File(path);
         if (!file.exists()) {
