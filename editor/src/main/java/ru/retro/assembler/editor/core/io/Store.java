@@ -1,32 +1,32 @@
 package ru.retro.assembler.editor.core.io;
 
 /**
- * @Author: Maxim Gorin
- * Date: 02.03.2024
+ * @Author: Maxim Gorin Date: 02.03.2024
  */
 public interface Store {
-    void clear();
 
-    byte getByte(int id) throws StoreException;
+  void clear();
 
-    void putByte(int id, byte b);
+  byte getByte(int id) throws StoreException;
 
-    int getInt(int id) throws StoreException;
+  void putByte(int id, byte b);
 
-    void putInt(int id, int val);
+  int getInt(int id) throws StoreException;
 
-    String getString(int id) throws StoreException;
+  void putInt(int id, int val);
 
-    void putString(int id, String s);
+  String getString(int id) throws StoreException;
 
-    Object getObject(int id) throws StoreException;
+  void putString(int id, String s);
 
-    void putObject(int id, Object o);
+  Object getObject(int id) throws StoreException;
 
-    boolean getBoolean(int id) throws StoreException;
+  void putObject(int id, Object o);
 
-    void putBoolean(int id, boolean b);
+  boolean getBoolean(int id) throws StoreException;
 
-    boolean contains(int id);
+  void putBoolean(int id, boolean b);
+
+  boolean contains(int id);
 
 }

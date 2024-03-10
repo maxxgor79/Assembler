@@ -38,7 +38,7 @@ public class ExternalCompiling implements Compiling {
                     CLIUtils.ARG_OUTPUT
                     , outputDir, src.getFile().getAbsolutePath(), args);
             final Process p = new ProcessBuilder(argList).start();
-            final ConsoleWriter consoleWriter = new ConsoleWriter(p, mainWindow.getConsole().getArea());
+            final ConsoleWriter consoleWriter = new ConsoleWriter(p.getInputStream(), mainWindow.getConsole().getArea());
             SwingUtilities.invokeLater(consoleWriter);
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
