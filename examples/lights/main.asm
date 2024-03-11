@@ -1,11 +1,11 @@
 ; main program
-    org 32768
+    .org 32768
     .include "gfx.asm"
     .def LPT_PORT 0x1f
     .def TAPE_PORT 0xfe
     .message "This is test\n"
 vector_addr:
-    equ f0ffh
+    .equ f0ffh
     ld bc, interrupt
     ld (vector_addr), bc
     ld a, vector_addr >> 8
