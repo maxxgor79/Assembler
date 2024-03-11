@@ -201,6 +201,10 @@ public final class Messages {
 
     public static final String EMBEDDED_NOT_FOUND = "embedded_not_found";
 
+    public static final String FILE_ENCODING = "file_encoding";
+
+    public static final String CURSOR_POSITION = "cursor_position";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);

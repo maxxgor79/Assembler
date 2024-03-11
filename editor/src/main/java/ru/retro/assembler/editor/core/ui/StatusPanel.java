@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import ru.retro.assembler.editor.core.i18n.Messages;
 
 /**
  * StatusPanel.
@@ -20,11 +21,7 @@ public class StatusPanel extends JPanel {
 
   private static final String POSITION_PATTERN = "%d:%d";
 
-  private static final String POSITION_HINT_PATTERN = "Go to Line";
-
   private JLabel posLabel;
-
-  private static final String ENCODING_PATTERN = "File encoding: %s";
 
   private JLabel encodingLabel;
 
@@ -58,11 +55,11 @@ public class StatusPanel extends JPanel {
 
   public void setEncoding(String s) {
     encodingLabel.setText(s);
-    encodingLabel.setToolTipText(String.format(ENCODING_PATTERN, s));
+    encodingLabel.setToolTipText(String.format(Messages.get(Messages.FILE_ENCODING), s));
   }
 
   public void setPosition(int row, int col) {
     posLabel.setText(String.format(POSITION_PATTERN, row, col));
-    posLabel.setToolTipText(POSITION_HINT_PATTERN);
+    posLabel.setToolTipText(Messages.get(Messages.CURSOR_POSITION));
   }
 }
