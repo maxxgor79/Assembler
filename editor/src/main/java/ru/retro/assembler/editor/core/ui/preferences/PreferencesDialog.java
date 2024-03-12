@@ -118,7 +118,7 @@ public class PreferencesDialog extends JDialog {
     store.putString(C_OUTPUT,
         preferencesTabbedPane.getCompilerPanel().getOutputPathField().getText());
     store.putObject(ENCODING,
-        preferencesTabbedPane.getOtherPanel().getCharsetPanel().getCbEncoding()
+        preferencesTabbedPane.getMiscellaneousPanel().getCharsetPanel().getCbEncoding()
             .getSelectedItem());
     store.putString(EDITOR_FONT,
         preferencesTabbedPane.getAppearancePanel().getEditorAppearancePanel()
@@ -142,7 +142,7 @@ public class PreferencesDialog extends JDialog {
         preferencesTabbedPane.getAppearancePanel().getConsoleAppearancePanel()
             .getFontColorPanel().getColor());
     store.putObject(LANGUAGE,
-        preferencesTabbedPane.getOtherPanel().getLanguagePanel().getCbLanguages()
+        preferencesTabbedPane.getMiscellaneousPanel().getLanguagePanel().getCbLanguages()
             .getSelectedItem());
     store.putBoolean(EMBEDDED,
         preferencesTabbedPane.getCompilerPanel().getCbEmbedded().isSelected());
@@ -167,7 +167,7 @@ public class PreferencesDialog extends JDialog {
     }
     if (store.contains(ENCODING)) {
       try {
-        preferencesTabbedPane.getOtherPanel().getCharsetPanel().getCbEncoding()
+        preferencesTabbedPane.getMiscellaneousPanel().getCharsetPanel().getCbEncoding()
             .setSelectedItem(store.getObject(ENCODING));
       } catch (StoreException e) {
         log.error(e.getMessage(), e);
@@ -231,7 +231,7 @@ public class PreferencesDialog extends JDialog {
     }
     if (store.contains(LANGUAGE)) {
       try {
-        preferencesTabbedPane.getOtherPanel().getLanguagePanel().getCbLanguages().setSelectedItem
+        preferencesTabbedPane.getMiscellaneousPanel().getLanguagePanel().getCbLanguages().setSelectedItem
             (store.getObject(LANGUAGE));
       } catch (StoreException e) {
         log.error(e.getMessage(), e);

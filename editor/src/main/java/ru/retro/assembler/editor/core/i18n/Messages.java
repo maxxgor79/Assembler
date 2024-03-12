@@ -1,7 +1,6 @@
 package ru.retro.assembler.editor.core.i18n;
 
 import lombok.NonNull;
-import ru.retro.assembler.editor.core.util.UIUtils;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -131,7 +130,7 @@ public final class Messages {
 
     public static final String CHOOSE_DIRECTORY = "choose_directory";
 
-    public static final String OTHER = "other";
+    public static final String MISCELLANEOUS = "miscellaneous";
 
     public static final String ENCODING = "encoding";
 

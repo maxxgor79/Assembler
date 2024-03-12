@@ -15,7 +15,7 @@ public class PreferencesTabbedPane extends JTabbedPane {
     private CompilerPanel compilerPanel;
 
     @Getter
-    private OtherPanel otherPanel;
+    private MiscellaneousPanel miscellaneousPanel;
 
     @Getter
     private AppearancePanel appearancePanel;
@@ -32,10 +32,10 @@ public class PreferencesTabbedPane extends JTabbedPane {
         addTab(Messages.get(Messages.COMPILER), panel1);
         appearancePanel = new AppearancePanel();
         addTab(Messages.get(Messages.APPEARANCE), new JScrollPane(appearancePanel));
-        otherPanel = new OtherPanel();
+        miscellaneousPanel = new MiscellaneousPanel();
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FlowLayout(FlowLayout.LEADING));
-        panel2.add(otherPanel);
-        addTab(Messages.get(Messages.OTHER), panel2);
+        panel2.add(miscellaneousPanel);
+        addTab(Messages.get(Messages.MISCELLANEOUS), panel2);
     }
 }

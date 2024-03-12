@@ -9,7 +9,7 @@ import java.awt.*;
  * @Author: Maxim Gorin
  * Date: 26.02.2024
  */
-public class OtherPanel extends JPanel {
+public class MiscellaneousPanel extends JPanel {
     @Getter
     private CharsetPanel charsetPanel;
 
@@ -17,7 +17,7 @@ public class OtherPanel extends JPanel {
     private LanguagePanel languagePanel;
 
 
-    public OtherPanel() {
+    public MiscellaneousPanel() {
         initComponents();
     }
 

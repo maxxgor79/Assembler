@@ -157,7 +157,7 @@ public final class Controller implements Runnable {
         aboutDialog.setBuildVersion(buildVersionReader.getBuildVersion());
         aboutDialog.setBuildDate(buildVersionReader.getBuildDate());
         if (settings.getEncoding() != null) {
-            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getCharsetPanel().getCbEncoding()
+            preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getCharsetPanel().getCbEncoding()
                     .setSelectedItem(settings.getEncoding().toUpperCase());
         }
 
@@ -185,11 +185,11 @@ public final class Controller implements Runnable {
                 .getBkColorPanel()
                 .setColor(new Color(settings.getEditorBkColor()));
         if (settings.getLanguage() != null) {
-            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getLanguagePanel()
+            preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getLanguagePanel()
                     .getCbLanguages()
                     .setSelectedItem(settings.getLanguage());
         } else {
-            preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getLanguagePanel()
+            preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getLanguagePanel()
                     .getCbLanguages()
                     .setSelectedItem(UIUtils.toLanguage(Messages.getLocale()));
         }
@@ -655,7 +655,7 @@ public final class Controller implements Runnable {
     private final ActionListener preferencesListener = e -> {
         log.info("Preferences");
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_OK) {
-            final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getOtherPanel()
+            final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel()
                     .getCharsetPanel().getCbEncoding().getSelectedItem();
             mainWindow.getStatusPanel().setEncoding(encoding);
             settings.setEncoding(encoding);
@@ -682,7 +682,7 @@ public final class Controller implements Runnable {
             settings.setEditorBkColor(preferencesDialog.getPreferencesTabbedPane().getAppearancePanel()
                     .getEditorAppearancePanel().getBkColorPanel().getColor().getRGB());
             settings.setLanguage(
-                    preferencesDialog.getPreferencesTabbedPane().getOtherPanel().getLanguagePanel()
+                    preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getLanguagePanel()
                             .getCbLanguages().getSelectedItem().toString());
             Environment.getInstance().setEditorFont(UIUtils.createFont(settings.getEditorFontName()
                     , settings.getEditorFontSize()));
