@@ -25,7 +25,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -508,14 +510,14 @@ public final class Controller implements Runnable {
 
 
     private void compile(@NonNull final Source src, String... args) {
-
-            if (!settings.isCompiledEmbedded()) {
-                final ExternalCompiling compiling = new ExternalCompiling(settings, mainWindow);
-                compiling.compile(src, args);
-            } else {
-                final EmbeddedCompiling compiling = new EmbeddedCompiling(settings, mainWindow);
-                compiling.compile(src, args);
-            }
+        cleanConsole();
+        if (!settings.isCompiledEmbedded()) {
+            final ExternalCompiling compiling = new ExternalCompiling(settings, mainWindow);
+            compiling.compile(src, args);
+        } else {
+            final EmbeddedCompiling compiling = new EmbeddedCompiling(settings, mainWindow);
+            compiling.compile(src, args);
+        }
     }
 
     private void cleanConsole() {
@@ -561,6 +563,14 @@ public final class Controller implements Runnable {
             mainWindow.getStatusPanel().setPosition(line + 1, col + 1);
         } catch (BadLocationException ex) {
             log.error(ex.getMessage(), ex);
+        }
+    }
+
+    private void setCaption(String fileName) {
+        if (fileName == null || fileName.trim().isEmpty()) {
+            mainWindow.setDefaultTitle();
+        } else {
+            mainWindow.setTitle(String.format("%s - %s", Messages.get(Messages.CAPTION), fileName));
         }
     }
 
@@ -804,8 +814,10 @@ public final class Controller implements Runnable {
                     newSrc.getTextArea().addCaretListener(caretListener);
                     newSrc.getTextArea().addKeyListener(textAreaKeyListener);
                     setPosition(newSrc.getTextArea());
+                    setCaption(newSrc.getFile().getName());
                 } else {
                     mainWindow.getStatusPanel().setPosition(0, 0);
+                    setCaption(null);
                 }
             }
         }

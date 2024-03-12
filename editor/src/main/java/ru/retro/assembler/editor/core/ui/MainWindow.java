@@ -251,4 +251,8 @@ public class MainWindow extends JFrame {
         settings.setState(getExtendedState());
         settings.setDividerLocation(splitPane.getDividerLocation());
     }
+
+    public void setDefaultTitle() {
+        setTitle(TITLE);
+    }
 }
