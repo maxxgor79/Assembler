@@ -1,5 +1,7 @@
 package ru.retro.assembler.editor.core.ui;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,8 @@ public class ToolsMenuItems {
 
     private void initComponents() {
         miPreferences = new JMenuItem(Messages.get(Messages.PREFERENCES));
+        miPreferences.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent
+            .CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
         try {
             miPreferences.setIcon(ResourceUtils.loadIcon("/icon16x16/preferences.png"));
         } catch (IOException e) {

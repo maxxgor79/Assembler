@@ -1,16 +1,20 @@
 package ru.retro.assembler.editor.core.ui.find;
 
+import java.io.IOException;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 /**
  * @Author: Maxim Gorin
  * Date: 29.02.2024
  */
+@Slf4j
 public class FindDialog extends JDialog {
     public static final int OPTION_FIND = 1;
 
@@ -31,6 +35,13 @@ public class FindDialog extends JDialog {
     }
 
     private void initComponents() {
+        Image image = null;
+        try {
+            image = ResourceUtils.loadImage("/icon16x16/chip.png");
+            setIconImage(image);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         setTitle(Messages.get(Messages.FIND));
         setModal(true);
         setResizable(false);

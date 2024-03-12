@@ -103,6 +103,7 @@ public class EditMenuItems {
 
         miFind = new JMenuItem(Messages.get(Messages.FIND));
         miFind.setMnemonic('F');
+        miFind.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
         try {
             miFind.setIcon(ResourceUtils.loadIcon("/icon16x16/find.png"));
         } catch (IOException e) {

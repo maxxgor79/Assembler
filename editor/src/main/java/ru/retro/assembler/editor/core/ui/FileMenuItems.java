@@ -1,5 +1,7 @@
 package ru.retro.assembler.editor.core.ui;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +63,7 @@ public class FileMenuItems {
     private void initComponents() {
         miNew = new JMenuItem(Messages.get(Messages.NEW));
         miNew.setMnemonic('N');
+        miNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         try {
             miNew.setIcon(ResourceUtils.loadIcon("/icon16x16/new.png"));
         } catch (IOException e) {
@@ -68,6 +71,7 @@ public class FileMenuItems {
         }
         miOpen = new JMenuItem(Messages.get(Messages.OPEN));
         miOpen.setMnemonic('O');
+        miOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         try {
             miOpen.setIcon(ResourceUtils.loadIcon("/icon16x16/open.png"));
         } catch (IOException e) {
@@ -82,7 +86,10 @@ public class FileMenuItems {
         }
         miSaveAs = new JMenuItem(Messages.get(Messages.SAVE_AS));
         miSaveAll = new JMenuItem(Messages.get(Messages.SAVE_ALL));
+        miSaveAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         miReloadAllFromDisk = new JMenuItem(Messages.get(Messages.RELOAD_ALL_FILES));
+        miReloadAllFromDisk.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent
+            .CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
         try {
             miReloadAllFromDisk.setIcon(ResourceUtils.loadIcon("/icon16x16/refresh.png"));
         } catch (IOException e) {
@@ -97,6 +104,7 @@ public class FileMenuItems {
         miCloseAll = new JMenuItem(Messages.get(Messages.CLOSE_ALL));
         miExit = new JMenuItem(Messages.get(Messages.EXIT));
         miExit.setMnemonic('E');
+        miExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_DOWN_MASK));
         try {
             miExit.setIcon(ResourceUtils.loadIcon("/icon16x16/exit.png"));
         } catch (IOException e) {

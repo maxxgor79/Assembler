@@ -115,6 +115,9 @@ public class SourceTabbedPane extends JTabbedPane {
     }
 
     public Source getSource(int index) {
+        if (sourceList.isEmpty()) {
+            return null;
+        }
         return sourceList.get(index);
     }
 }
