@@ -43,6 +43,8 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiCopy().setEnabled(false);
             mainWindow.getEditMenuItems().getMiCut().setEnabled(false);
             mainWindow.getEditMenuItems().getMiPaste().setEnabled(false);
+            mainWindow.getEditMenuItems().getMiDelete().setEnabled(false);
+            mainWindow.getEditMenuItems().getMiSelectAll().setEnabled(false);
             mainWindow.getEditMenuItems().getMiFind().setEnabled(false);
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(false);
             mainWindow.getConsole().getConsolePopupMenu().getMiCopyText().setEnabled(false);
@@ -54,10 +56,13 @@ public class Activator implements ActionListener {
         if (!noSources) {
             final Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
             mainWindow.getEditMenuItems().getMiUndo().setEnabled(src.getTextArea().canUndo());
-            final String selectedText = src.getTextArea().getSelectedText();
-            mainWindow.getEditMenuItems().getMiCut().setEnabled(selectedText != null);
-            mainWindow.getEditMenuItems().getMiCopy().setEnabled(selectedText != null);
-            mainWindow.getEditMenuItems().getMiFind().setEnabled(!src.getTextArea().getText().isEmpty());
+            final boolean hasSelectedText = src.getTextArea().getSelectedText() != null;
+            final boolean hasText = !src.getTextArea().getText().isEmpty();
+            mainWindow.getEditMenuItems().getMiCut().setEnabled(hasSelectedText);
+            mainWindow.getEditMenuItems().getMiDelete().setEnabled(hasSelectedText);
+            mainWindow.getEditMenuItems().getMiCopy().setEnabled(hasSelectedText);
+            mainWindow.getEditMenuItems().getMiSelectAll().setEnabled(hasText);
+            mainWindow.getEditMenuItems().getMiFind().setEnabled(hasText);
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(Environment.getInstance().getNextOccurrenceIndex()
                     != -1);
             try {

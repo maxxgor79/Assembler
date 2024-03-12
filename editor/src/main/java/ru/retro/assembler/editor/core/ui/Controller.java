@@ -232,6 +232,9 @@ public final class Controller implements Runnable {
         mainWindow.getEditMenuItems().getMiCopy().addActionListener(copyListener);
         mainWindow.getEditMenuItems().getMiCut().addActionListener(cutListener);
         mainWindow.getEditMenuItems().getMiPaste().addActionListener(pasteListener);
+        mainWindow.getEditMenuItems().getMiDelete().addActionListener(deleteListener);
+        mainWindow.getEditMenuItems().getMiSelectAll().addActionListener(selectAllListener);
+        //--------------------------------------------------------------------------------------------------------------
         mainWindow.getEditMenuItems().getMiFind().addActionListener(findListener);
         mainWindow.getEditMenuItems().getMiFindNext().addActionListener(findNextListener);
         //--------------------------------------------------------------------------------------------------------------
@@ -556,6 +559,22 @@ public final class Controller implements Runnable {
         selectedSource.getTextArea().paste();
     }
 
+    private void deleteText() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        selectedSource.getTextArea().replaceSelection("");
+    }
+
+    private void selectAllText() {
+        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (selectedSource == null) {
+            return;
+        }
+        selectedSource.getTextArea().selectAll();
+    }
+
     private void setPosition(@NonNull JTextArea textArea) {
         try {
             int line = UIUtils.getLine(textArea);
@@ -761,6 +780,16 @@ public final class Controller implements Runnable {
     private final ActionListener pasteListener = e -> {
         log.info("Paste action");
         pasteText();
+    };
+
+    private final ActionListener deleteListener = e -> {
+        log.info("Delete action");
+        deleteText();
+    };
+
+    private final ActionListener selectAllListener = e -> {
+        log.info("Select all action");
+        selectAllText();
     };
 
     private final ActionListener findListener = e -> {

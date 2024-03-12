@@ -205,6 +205,8 @@ public final class Messages {
 
     public static final String CURSOR_POSITION = "cursor_position";
 
+    public static final String SELECT_ALL = "select_all";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);
