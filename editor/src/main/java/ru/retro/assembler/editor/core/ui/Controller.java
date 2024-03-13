@@ -681,6 +681,7 @@ public final class Controller implements Runnable {
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         log.info("Preferences");
+        preferencesDialog.setLocationRelativeTo(mainWindow);
         if (preferencesDialog.showModal() == PreferencesDialog.OPTION_OK) {
             final String encoding = (String) preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel()
                     .getCharsetPanel().getCbEncoding().getSelectedItem();

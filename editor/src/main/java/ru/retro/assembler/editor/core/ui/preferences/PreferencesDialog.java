@@ -249,7 +249,6 @@ public class PreferencesDialog extends JDialog {
   public int showModal() {
     result = OPTION_CANCEL;
     store();
-    setLocationRelativeTo(getOwner());
     getRootPane().setDefaultButton(buttonPanel.getBtnCancel());
     buttonPanel.getBtnCancel().requestFocus();
     setVisible(true);
