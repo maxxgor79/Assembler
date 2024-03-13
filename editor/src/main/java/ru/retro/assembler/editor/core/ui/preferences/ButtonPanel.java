@@ -24,6 +24,8 @@ public class ButtonPanel extends JPanel {
 
     private void initComponents() {
         btnOk = new JButton(Messages.get(Messages.OK));
+        btnOk.setMnemonic('O');
         btnCancel = new JButton(Messages.get(Messages.CANCEL));
+        btnCancel.setMnemonic('C');
     }
 }

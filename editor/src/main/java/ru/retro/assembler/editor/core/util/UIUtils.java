@@ -116,5 +116,7 @@ public final class UIUtils {
         UIManager.put("ColorChooser.sampleText", Messages.get(Messages.SAMPLE));
         UIManager.put("ColorChooser.previewText", Messages.get(Messages.PREVIEW));
         UIManager.put("ColorChooser.swatchesRecentText", Messages.get(Messages.RECENT));
+        UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
+        UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));
     }
 }

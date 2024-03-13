@@ -1,17 +1,21 @@
 package ru.retro.assembler.editor.core.ui.preferences;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * @Author: Maxim Gorin
  * Date: 25.02.2024
  */
+@Slf4j
 public class CompilerPanel extends JPanel {
     @Getter
     private TextField compilerPathField;
@@ -51,7 +55,12 @@ public class CompilerPanel extends JPanel {
         c.gridheight = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         add(compilerPathField, c);
-        btnCompilerPath = new JButton("...");
+        btnCompilerPath = new JButton("");
+        try {
+            btnCompilerPath.setIcon(ResourceUtils.loadIcon("/icon16x16/open.png"));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         btnCompilerPath.setToolTipText(Messages.get(Messages.CHOOSE_DIRECTORY));
         c.gridx = 2;
         c.gridy = 0;
@@ -81,7 +90,12 @@ public class CompilerPanel extends JPanel {
         c.gridheight = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         add(outputPathField, c);
-        btnOutputDirectory = new JButton("...");
+        btnOutputDirectory = new JButton("");
+        try {
+            btnOutputDirectory.setIcon(ResourceUtils.loadIcon("/icon16x16/open.png"));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         btnOutputDirectory.setToolTipText(Messages.get(Messages.CHOOSE_DIRECTORY));
         c.gridx = 2;
         c.gridy = 1;

@@ -55,7 +55,7 @@ public class ReplaceDialog extends JDialog {
             dispose();
         });
 
-        buttonPanel.getBtnReplace().addActionListener(e -> {
+        buttonPanel.getBtnOK().addActionListener(e -> {
             if (getTextFieldsPanel().getTfOldText().getText().trim().isEmpty() ||
                     getTextFieldsPanel().getTfNewText().getText().trim().isEmpty()) {
                 return;

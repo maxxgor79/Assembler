@@ -22,8 +22,10 @@ public class ButtonPanel extends JPanel {
 
     private void initComponents() {
         btnFind = new JButton(Messages.get(Messages.FIND));
+        btnFind.setMnemonic('F');
         add(btnFind);
         btnCancel = new JButton(Messages.get(Messages.CANCEL));
+        btnCancel.setMnemonic('C');
         add(btnCancel);
     }
 }

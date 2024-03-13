@@ -210,6 +210,10 @@ public final class Messages {
 
     public static final String REPLACES_IS_OCCURRED = "replaces_is_occurred";
 
+    public static final String YES = "yes";
+
+    public static final String NO = "no";
+
     public static final String ALL = "all";
 
 

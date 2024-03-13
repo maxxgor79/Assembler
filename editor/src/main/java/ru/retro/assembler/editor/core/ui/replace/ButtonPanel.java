@@ -11,7 +11,7 @@ import javax.swing.*;
  */
 public class ButtonPanel  extends JPanel {
     @Getter
-    private JButton btnReplace;
+    private JButton btnOK;
 
     @Getter
     private JButton btnCancel;
@@ -21,9 +21,11 @@ public class ButtonPanel  extends JPanel {
     }
 
     private void initComponents() {
-        btnReplace = new JButton(Messages.get(Messages.REPLACE));
-        add(btnReplace);
+        btnOK = new JButton(Messages.get(Messages.OK));
+        btnOK.setMnemonic('O');
+        add(btnOK);
         btnCancel = new JButton(Messages.get(Messages.CANCEL));
+        btnOK.setMnemonic('C');
         add(btnCancel);
     }
 }
