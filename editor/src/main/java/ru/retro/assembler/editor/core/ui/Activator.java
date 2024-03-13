@@ -47,6 +47,7 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiSelectAll().setEnabled(false);
             mainWindow.getEditMenuItems().getMiFind().setEnabled(false);
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(false);
+            mainWindow.getEditMenuItems().getMiReplace().setEnabled(false);
             mainWindow.getConsole().getConsolePopupMenu().getMiCopyText().setEnabled(false);
         }
         mainWindow.getBuildMenuItems().getMiCompile().setEnabled(!noSources);
@@ -65,6 +66,7 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiFind().setEnabled(hasText);
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(Environment.getInstance().getNextOccurrenceIndex()
                     != -1);
+            mainWindow.getEditMenuItems().getMiReplace().setEnabled(hasText);
             try {
                 final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 final Transferable contents = clipboard.getContents(null);

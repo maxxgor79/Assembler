@@ -1,53 +1,50 @@
-package ru.retro.assembler.editor.core.ui.find;
+package ru.retro.assembler.editor.core.ui.replace;
 
-import java.io.IOException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import ru.retro.assembler.editor.core.util.ResourceUtils;
+import java.io.IOException;
 
 /**
  * @Author: Maxim Gorin
- * Date: 29.02.2024
+ * Date: 12.03.2024
  */
 @Slf4j
-public class FindDialog extends JDialog {
-    public static final int OPTION_FIND = 1;
+public class ReplaceDialog extends JDialog {
+    public static final int OPTION_REPLACE = 1;
 
     public static final int OPTION_CANCEL = 0;
 
     private int result;
 
     @Getter
-    private TextFieldPanel textFieldPanel;
+    private TextFieldsPanel textFieldsPanel;
 
     @Getter
     private ButtonPanel buttonPanel;
 
-    public FindDialog(Frame owner) {
+    public ReplaceDialog(Frame owner) {
         super(owner);
         initComponents();
         initListeners();
     }
 
     private void initComponents() {
-        Image image = null;
+        setTitle(Messages.get(Messages.REPLACE));
+        setModal(true);
+        setResizable(false);
         try {
-            image = ResourceUtils.loadImage("/icon16x16/find.png");
-            setIconImage(image);
+            setIconImage(ResourceUtils.loadImage("/icon16x16/replace.png"));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        setTitle(Messages.get(Messages.FIND));
-        setModal(true);
-        setResizable(false);
         setLayout(new BorderLayout());
-        textFieldPanel = new TextFieldPanel();
-        add(textFieldPanel, BorderLayout.CENTER);
+        textFieldsPanel = new TextFieldsPanel();
+        add(textFieldsPanel, BorderLayout.CENTER);
         buttonPanel = new ButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
         pack();
@@ -58,19 +55,23 @@ public class FindDialog extends JDialog {
             dispose();
         });
 
-        buttonPanel.getBtnFind().addActionListener(e -> {
-            result = OPTION_FIND;
-            if (textFieldPanel.getTfText().getText().trim().isEmpty()) {
+        buttonPanel.getBtnReplace().addActionListener(e -> {
+            if (getTextFieldsPanel().getTfOldText().getText().trim().isEmpty() ||
+                    getTextFieldsPanel().getTfNewText().getText().trim().isEmpty()) {
                 return;
             }
+            if (getTextFieldsPanel().getTfOldText().getText().equals(getTextFieldsPanel().getTfNewText().getText())) {
+                return;
+            }
+            result = OPTION_REPLACE;
             dispose();
         });
     }
 
     public int showModal() {
+        result = OPTION_CANCEL;
         getRootPane().setDefaultButton(buttonPanel.getBtnCancel());
         buttonPanel.getBtnCancel().requestFocus();
-        result = OPTION_CANCEL;
         setVisible(true);
         return result;
     }

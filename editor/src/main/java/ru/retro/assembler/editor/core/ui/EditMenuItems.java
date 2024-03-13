@@ -30,7 +30,6 @@ public class EditMenuItems {
     @Getter
     private JMenuItem miCopy;
 
-
     @Getter
     private JMenuItem miPaste;
 
@@ -46,6 +45,9 @@ public class EditMenuItems {
     @Getter
     private JMenuItem miFindNext;
 
+    @Getter
+    private JMenuItem miReplace;
+
     public EditMenuItems(@NonNull JMenu menu) {
         initComponents();
         menu.add(miUndo);
@@ -59,6 +61,8 @@ public class EditMenuItems {
         menu.addSeparator();
         menu.add(miFind);
         menu.add(miFindNext);
+        menu.addSeparator();
+        menu.add(miReplace);
     }
 
     private void initComponents() {
@@ -112,5 +116,14 @@ public class EditMenuItems {
         miFindNext = new JMenuItem(Messages.get(Messages.FIND_NEXT));
         miFindNext.setMnemonic('E');
         miFindNext.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK));
+
+        miReplace = new JMenuItem(Messages.get(Messages.REPLACE));
+        miReplace.setMnemonic('R');
+        miReplace.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
+        try {
+            miReplace.setIcon(ResourceUtils.loadIcon("/icon16x16/replace.png"));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }

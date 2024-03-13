@@ -14,8 +14,10 @@ import ru.retro.assembler.editor.core.ui.compile.ExternalCompiling;
 import ru.retro.assembler.editor.core.ui.find.FindDialog;
 import ru.retro.assembler.editor.core.ui.preferences.ColorPanel;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
+import ru.retro.assembler.editor.core.ui.replace.ReplaceDialog;
 import ru.retro.assembler.editor.core.util.CLIUtils;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
+import ru.retro.assembler.editor.core.util.TextUtils;
 import ru.retro.assembler.editor.core.util.UIUtils;
 
 import javax.swing.*;
@@ -54,6 +56,8 @@ public final class Controller implements Runnable {
 
     private FindDialog findDialog;
 
+    private ReplaceDialog replaceDialog;
+
     private URI helpUri;
 
     private Timer timer;
@@ -76,6 +80,7 @@ public final class Controller implements Runnable {
         this.preferencesDialog = new PreferencesDialog(mainWindow);
         this.aboutDialog = new AboutDialog(mainWindow);
         this.findDialog = new FindDialog(mainWindow);
+        this.replaceDialog = new ReplaceDialog(mainWindow);
         initListeners();
     }
 
@@ -238,6 +243,7 @@ public final class Controller implements Runnable {
         mainWindow.getEditMenuItems().getMiFind().addActionListener(findListener);
         mainWindow.getEditMenuItems().getMiFindNext().addActionListener(findNextListener);
         //--------------------------------------------------------------------------------------------------------------
+        mainWindow.getEditMenuItems().getMiReplace().addActionListener(replaceListener);
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiClose()
                 .addActionListener(closeListener);
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiSave()
@@ -651,6 +657,27 @@ public final class Controller implements Runnable {
         }
     }
 
+    private void replace() {
+        final Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (src == null) {
+            return;
+        }
+        replaceDialog.setLocationRelativeTo(mainWindow);
+        int option = replaceDialog.showModal();
+        if (option == ReplaceDialog.OPTION_REPLACE) {
+            final TextUtils.ReplaceResult result = TextUtils.replace(src.getTextArea().getText(), replaceDialog
+                    .getTextFieldsPanel().getTfOldText().getText(), replaceDialog.getTextFieldsPanel().getTfNewText()
+                    .getText(), replaceDialog.getTextFieldsPanel().getCbAll().isSelected());
+            if (result.getNumReplaces() > 0) {
+                src.getTextArea().setText(result.getText());
+            }
+            JOptionPane.showMessageDialog(mainWindow,
+                    String.format(Messages.get(Messages.REPLACES_IS_OCCURRED), result.getNumReplaces())
+                    , Messages.get(Messages.REPLACE), JOptionPane.INFORMATION_MESSAGE
+                    , ResourceUtils.getInformationIcon());
+        }
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         log.info("Preferences");
@@ -795,6 +822,11 @@ public final class Controller implements Runnable {
     private final ActionListener findListener = e -> {
         log.info("Find action");
         find();
+    };
+
+    private final ActionListener replaceListener = e -> {
+        log.info("Replace action");
+        replace();
     };
 
     private final ActionListener findNextListener = e -> {

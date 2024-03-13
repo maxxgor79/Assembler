@@ -206,6 +206,12 @@ public final class Messages {
 
     public static final String SELECT_ALL = "select_all";
 
+    public static final String REPLACE = "replace";
+
+    public static final String REPLACES_IS_OCCURRED = "replaces_is_occurred";
+
+    public static final String ALL = "all";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);

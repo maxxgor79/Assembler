@@ -23,6 +23,8 @@ public class FontPanel extends JPanel {
     }
 
     private void initComponents() {
+        setLayout(new FlowLayout());
+        setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         label = new JLabel(Messages.get(Messages.FONT) + ":");
         add(label);
         add(cbFont);

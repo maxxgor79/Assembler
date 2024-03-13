@@ -83,8 +83,6 @@ public class PreferencesDialog extends JDialog {
     openFileChooser = new LocalizedOpenChooser();
     openFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     openFileChooser.setDialogTitle(Messages.get(Messages.CHOOSE_DIRECTORY));
-    getRootPane().setDefaultButton(buttonPanel.getBtnCancel());
-    buttonPanel.getBtnCancel().requestFocus();
     setResizable(false);
     pack();
     initListeners();
@@ -252,6 +250,8 @@ public class PreferencesDialog extends JDialog {
     result = OPTION_CANCEL;
     store();
     setLocationRelativeTo(getOwner());
+    getRootPane().setDefaultButton(buttonPanel.getBtnCancel());
+    buttonPanel.getBtnCancel().requestFocus();
     setVisible(true);
     if (result == OPTION_CANCEL) {
       restore();
