@@ -9,6 +9,7 @@ import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.MainWindow;
 import ru.retro.assembler.editor.core.util.CLIUtils;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
+import ru.retro.assembler.editor.core.util.UIUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -35,8 +36,11 @@ public class ExternalCompiling implements Compiling {
                 throw new FileNotFoundException(pathToAsm.getAbsolutePath());
             }
             final java.util.List<String> argList = CLIUtils.toList(pathToAsm.getAbsolutePath(),
-                    CLIUtils.ARG_OUTPUT
-                    , outputDir, src.getFile().getAbsolutePath(), args);
+                    String.format(CLIUtils.ARG_LOCALE, UIUtils.toLocale(settings.getLanguage()).getLanguage())
+                    , CLIUtils.ARG_OUTPUT
+                    , outputDir
+                    , src.getFile().getAbsolutePath()
+                    , args);
             final Process p = new ProcessBuilder(argList).start();
             final ConsoleWriter consoleWriter = new ConsoleWriter(p.getInputStream(), mainWindow.getConsole().getArea());
             SwingUtilities.invokeLater(consoleWriter);

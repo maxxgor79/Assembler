@@ -16,7 +16,8 @@ public class DdwCommandCompiler extends DwCommandCompiler {
   }
 
   @NonNull
-  public String[] getNames() {
+  @Override
+  public String[] names() {
     return NAMES;
   }
 

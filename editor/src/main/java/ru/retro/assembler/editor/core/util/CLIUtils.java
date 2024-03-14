@@ -21,6 +21,8 @@ public final class CLIUtils {
 
     public static final String ARG_OUTPUT = "-o";
 
+    public static final String ARG_LOCALE = "-Duser.language=%s";
+
     public static final String ASM_FILENAME;
 
     static {
@@ -35,10 +37,11 @@ public final class CLIUtils {
 
     }
 
-    public static List<String> toList(@NonNull final String asmFile, @NonNull final String argDir
+    public static List<String> toList(@NonNull final String asmFile, @NonNull String lang, @NonNull final String argDir
             , @NonNull final String dir, @NonNull final String source, @NonNull final String... extArgs) {
         final List<String> list = new ArrayList<>();
         list.add(asmFile);
+        list.add(lang);
         list.add(argDir);
         list.add(dir);
         if (extArgs != null) {

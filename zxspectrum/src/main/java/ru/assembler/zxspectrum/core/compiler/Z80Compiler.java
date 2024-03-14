@@ -9,6 +9,7 @@ import ru.assembler.zxspectrum.core.compiler.command.system.WavCommandCompiler;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.syntax.SyntaxAnalyzer;
+import ru.assembler.zxspectrum.core.compiler.command.system.Z80CommandCompiler;
 
 import java.io.OutputStream;
 
@@ -31,7 +32,7 @@ public class Z80Compiler extends Compiler {
   }
 
   private void addCommands() {
-
+    addCommand(new Z80CommandCompiler(this));
     addCommand(new WavCommandCompiler(this));
     addCommand(new TapCommandCompiler(this));
     addCommand(new TzxCommandCompiler(this));
