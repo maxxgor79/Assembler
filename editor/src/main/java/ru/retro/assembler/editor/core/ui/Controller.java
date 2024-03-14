@@ -77,6 +77,7 @@ public final class Controller implements Runnable {
         loadSettings();
         this.args = args;
         this.mainWindow = new MainWindow();
+        this.mainWindow.setLocationByPlatform(true);
         this.preferencesDialog = new PreferencesDialog(mainWindow);
         this.aboutDialog = new AboutDialog(mainWindow);
         this.findDialog = new FindDialog(mainWindow);
