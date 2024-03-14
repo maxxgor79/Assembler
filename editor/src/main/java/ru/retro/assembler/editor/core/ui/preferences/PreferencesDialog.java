@@ -83,7 +83,6 @@ public class PreferencesDialog extends JDialog {
     openFileChooser = new LocalizedOpenChooser();
     openFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     openFileChooser.setDialogTitle(Messages.get(Messages.CHOOSE_DIRECTORY));
-    setResizable(false);
     pack();
     initListeners();
   }

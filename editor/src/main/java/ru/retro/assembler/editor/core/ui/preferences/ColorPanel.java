@@ -62,6 +62,7 @@ public class ColorPanel extends JPanel {
     public Color getColor() {
         return colorPanel.getBackground();
     }
+
     public void addActionListener(@NonNull ActionListener l) {
         listenerList.add(l);
     }

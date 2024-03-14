@@ -216,6 +216,8 @@ public final class Messages {
 
     public static final String ALL = "all";
 
+    public static final String EXAMPLE = "example";
+
 
     public static String get(@NonNull String s) {
         return bundle.getString(s);
