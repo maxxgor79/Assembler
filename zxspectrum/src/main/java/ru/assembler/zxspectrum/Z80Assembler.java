@@ -72,11 +72,6 @@ public class Z80Assembler extends AbstractNamespaceApi {
         postCommandCompilerMap.clear();
     }
 
-    protected static void setLocale(@NonNull Locale locale) {
-        MessageList.setLocale(locale);
-        Z80Messages.setLocale(locale);
-    }
-
     protected void applySettings(@NonNull final Z80AssemblerSettings settings)
             throws SettingsException {
         if (settings.getMinAddress() != null) {
@@ -270,7 +265,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
             }
             return files;
         } catch (ParseException e) {
-            log.debug(e.getMessage());
+            Output.formatPrintln(e.getMessage());
         }
         return Collections.emptyList();
     }
@@ -307,23 +302,6 @@ public class Z80Assembler extends AbstractNamespaceApi {
         }
     }
 
-    private static Options processCli(@NonNull final String[] args) {
-        Options options = createOptions();
-        final CommandLineParser parser = new DefaultParser();
-        try {
-            // parse the command line arguments
-            final CommandLine cli = parser.parse(options, args);
-            if (cli.hasOption("locale")) {
-                setLocale(new Locale(cli.getOptionValue("locale")));
-                options = createOptions();
-            }
-        } catch (ParseException e) {
-            Output.formatPrintln(Z80Messages.getMessage(Z80Messages.UNKNOWN_OPTION));
-            log.error(e.getMessage(), e);
-        }
-        return options;
-    }
-
     protected static Z80AssemblerSettings loadSettings() {
         final Z80AssemblerSettings settings = new Z80AssemblerSettings();
         settings.merge(new DefaultSettings());
@@ -339,7 +317,6 @@ public class Z80Assembler extends AbstractNamespaceApi {
 
     protected static Options createOptions() {
         final Options options = new Options();
-        options.addOption("l", "locale", true, Z80Messages.getMessage(Z80Messages.SETUP_LOCALE));
         options.addOption("st", "strict-type-conversion", false, Z80Messages.getMessage(Z80Messages
                 .O_STRICT_CONVERSION));
         options.addOption("a", "address", true, Z80Messages.getMessage(Z80Messages.O_ORG_ADDRESS));
@@ -367,8 +344,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     public static void main(final String[] args) {
-        final Options options = processCli(args);
         final Z80AssemblerSettings settings = loadSettings();
+        final Options options = createOptions();
         final List<File> fileList = setCli(settings, args, options);
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();

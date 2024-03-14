@@ -124,19 +124,12 @@ public final class MessageList {
 
     public static final String IMAGE_NOT_SUPPORTED = "image_not_supported";
 
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     private MessageList() {
     }
 
     public static String getMessage(@NonNull String s) {
         return resourceBundle.getString(s);
-    }
-
-    public static void setLocale(Locale locale) {
-        if (locale == null) {
-            locale = Locale.getDefault();
-        }
-        resourceBundle = ResourceBundle.getBundle("i18n.Messages", locale);
     }
 }
