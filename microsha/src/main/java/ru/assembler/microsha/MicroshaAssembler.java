@@ -283,31 +283,6 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         }
     }
 
-    public static void main(final String[] args) {
-        final MicroshaAssemblerSettings settings = loadSettings();
-        final Options options = getOptions();
-        if (args.length == 0) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(settings.getCmdFilename() + " " + MicroshaMessages.getMessage(MicroshaMessages
-                    .FILE_ENUM), options);
-            return;
-        }
-        final MicroshaAssembler asm = new MicroshaAssembler();
-        final List<File> fileList = setCli(settings, args, options);
-        try {
-            asm.applySettings(settings);
-        } catch (SettingsException e) {
-            Output.println(e.getMessage());
-            return;
-        }
-        if (!fileList.isEmpty()) {
-            Output.println(asm.createWelcome());
-            asm.run(fileList.toArray(new File[fileList.size()]));
-        } else {
-            Output.println(MicroshaMessages.getMessage(MicroshaMessages.NO_INPUT_FILES));
-        }
-    }
-
     protected static MicroshaAssemblerSettings loadSettings() {
         final MicroshaAssemblerSettings settings = new MicroshaAssemblerSettings();
         settings.merge(new DefaultSettings());
@@ -347,5 +322,34 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
                 , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
                 , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
                 , MessageList.getMessage(MessageList.SOURCES));
+    }
+
+    public static void main(final String[] args) {
+        final MicroshaAssemblerSettings settings = loadSettings();
+        final Options options = getOptions();
+        if (args.length == 0) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp(settings.getCmdFilename() + " " + MicroshaMessages.getMessage(MicroshaMessages
+                    .FILE_ENUM), options);
+            return;
+        }
+        final MicroshaAssembler asm = new MicroshaAssembler();
+        final List<File> fileList = setCli(settings, args, options);
+        try {
+            asm.applySettings(settings);
+        } catch (SettingsException e) {
+            Output.println(e.getMessage());
+            return;
+        }
+        if (!fileList.isEmpty()) {
+            Output.println(asm.createWelcome());
+            asm.run(fileList.toArray(new File[fileList.size()]));
+        } else {
+            Output.println(MicroshaMessages.getMessage(MicroshaMessages.NO_INPUT_FILES));
+        }
+    }
+
+    public static void entry(@NonNull Collection<String> c) {
+        main(c.toArray(new String[c.size()]));
     }
 }
