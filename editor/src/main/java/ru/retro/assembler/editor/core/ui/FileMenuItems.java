@@ -109,6 +109,7 @@ public class FileMenuItems {
         miCloseAll = new JMenuItem(Messages.get(Messages.CLOSE_ALL));
         miPrint = new JMenuItem(Messages.get(Messages.PRINT) + "...");
         miPrint.setMnemonic('P');
+        miPrint.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
         try {
             miPrint.setIcon(ResourceUtils.loadIcon("/icon16x16/print.png"));
         } catch (IOException e) {
