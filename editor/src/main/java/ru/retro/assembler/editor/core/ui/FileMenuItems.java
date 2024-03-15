@@ -84,6 +84,7 @@ public class FileMenuItems {
         }
         miSave = new JMenuItem(Messages.get(Messages.SAVE));
         miSave.setMnemonic('S');
+        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         try {
             miSave.setIcon(ResourceUtils.loadIcon("/icon16x16/save.png"));
         } catch (IOException e) {
@@ -91,7 +92,6 @@ public class FileMenuItems {
         }
         miSaveAs = new JMenuItem(Messages.get(Messages.SAVE_AS));
         miSaveAll = new JMenuItem(Messages.get(Messages.SAVE_ALL));
-        miSaveAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         miReloadAllFromDisk = new JMenuItem(Messages.get(Messages.RELOAD_ALL_FILES));
         miReloadAllFromDisk.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent
             .CTRL_DOWN_MASK | InputEvent.ALT_DOWN_MASK));
