@@ -27,6 +27,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -232,6 +234,7 @@ public final class Controller implements Runnable {
         mainWindow.getFileMenuItems().getMiClose().addActionListener(closeListener);
         mainWindow.getFileMenuItems().getMiCloseAll().addActionListener(closeAllListener);
         mainWindow.getFileMenuItems().getMiReloadAllFromDisk().addActionListener(reloadAllListener);
+        mainWindow.getFileMenuItems().getMiPrint().addActionListener(printListener);
         mainWindow.getFileMenuItems().getMiExit().addActionListener(exitListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getEditMenuItems().getMiUndo().addActionListener(undoListener);
@@ -679,6 +682,22 @@ public final class Controller implements Runnable {
         }
     }
 
+    private void print() {
+        final Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
+        if (src == null) {
+            return;
+        }
+        final PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(src.getTextArea().getPrintable(null, null));
+        if (job.printDialog()) {
+            try {
+                job.print();
+            } catch (PrinterException e) {
+                log.info(e.getMessage(), e);
+            }
+        }
+    }
+
     //------------------------------------------------------------------------------------------------------------------
     private final ActionListener preferencesListener = e -> {
         log.info("Preferences");
@@ -789,6 +808,11 @@ public final class Controller implements Runnable {
     private final ActionListener exitListener = e -> {
         log.info("Exit action");
         closeWindow();
+    };
+
+    private final ActionListener printListener = e -> {
+      log.error("print");
+      print();
     };
 
     private final ActionListener undoListener = e -> {

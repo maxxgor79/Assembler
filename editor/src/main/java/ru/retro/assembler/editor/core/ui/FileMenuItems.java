@@ -42,6 +42,9 @@ public class FileMenuItems {
     private JMenuItem miCloseAll;
 
     @Getter
+    private JMenuItem miPrint;
+
+    @Getter
     private JMenuItem miExit;
 
     public FileMenuItems(@NonNull JMenu menu) {
@@ -56,6 +59,8 @@ public class FileMenuItems {
         menu.addSeparator();
         menu.add(miClose);
         menu.add(miCloseAll);
+        menu.addSeparator();
+        menu.add(miPrint);
         menu.addSeparator();
         menu.add(miExit);
     }
@@ -102,6 +107,13 @@ public class FileMenuItems {
             log.error(e.getMessage(), e);
         }
         miCloseAll = new JMenuItem(Messages.get(Messages.CLOSE_ALL));
+        miPrint = new JMenuItem(Messages.get(Messages.PRINT) + "...");
+        miPrint.setMnemonic('P');
+        try {
+            miPrint.setIcon(ResourceUtils.loadIcon("/icon16x16/print.png"));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
         miExit = new JMenuItem(Messages.get(Messages.EXIT));
         miExit.setMnemonic('E');
         miExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_DOWN_MASK));

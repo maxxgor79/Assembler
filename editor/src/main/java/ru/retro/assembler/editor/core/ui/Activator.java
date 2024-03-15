@@ -49,16 +49,21 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(false);
             mainWindow.getEditMenuItems().getMiReplace().setEnabled(false);
             mainWindow.getConsole().getConsolePopupMenu().getMiCopyText().setEnabled(false);
+            mainWindow.getFileMenuItems().getMiPrint().setEnabled(false);
         }
         mainWindow.getBuildMenuItems().getMiCompile().setEnabled(!noSources);
         mainWindow.getBuildMenuItems().getMiCompileTap().setEnabled(!noSources);
         mainWindow.getBuildMenuItems().getMiCompileTzx().setEnabled(!noSources);
         mainWindow.getBuildMenuItems().getMiCompileWav().setEnabled(!noSources);
         if (!noSources) {
+            boolean hasSelectedText = false;
+            boolean hasText = false;
             final Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
-            mainWindow.getEditMenuItems().getMiUndo().setEnabled(src.getTextArea().canUndo());
-            final boolean hasSelectedText = src.getTextArea().getSelectedText() != null;
-            final boolean hasText = !src.getTextArea().getText().isEmpty();
+            if (src != null) {
+                mainWindow.getEditMenuItems().getMiUndo().setEnabled(src.getTextArea().canUndo());
+                hasSelectedText = src.getTextArea().getSelectedText() != null;
+                hasText = !src.getTextArea().getText().isEmpty();
+            }
             mainWindow.getEditMenuItems().getMiCut().setEnabled(hasSelectedText);
             mainWindow.getEditMenuItems().getMiDelete().setEnabled(hasSelectedText);
             mainWindow.getEditMenuItems().getMiCopy().setEnabled(hasSelectedText);
@@ -67,6 +72,7 @@ public class Activator implements ActionListener {
             mainWindow.getEditMenuItems().getMiFindNext().setEnabled(Environment.getInstance().getNextOccurrenceIndex()
                     != -1);
             mainWindow.getEditMenuItems().getMiReplace().setEnabled(hasText);
+            mainWindow.getFileMenuItems().getMiPrint().setEnabled(hasText);
             try {
                 final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 final Transferable contents = clipboard.getContents(null);
