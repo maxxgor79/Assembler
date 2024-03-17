@@ -1,12 +1,14 @@
 package ru.assembler.core.error;
 
+import ru.assembler.core.io.FileDescriptor;
+
 import java.io.File;
 
 /**
  * @author Maxim Gorin
  */
 public class BadCharsetEncodingException extends AssemblerException {
-    public BadCharsetEncodingException(File file, int lineNumber, String text, String... args) {
-        super(file, lineNumber, text, args);
+    public BadCharsetEncodingException(FileDescriptor fd, int lineNumber, String text, String... args) {
+        super(fd, lineNumber, text, args);
     }
 }

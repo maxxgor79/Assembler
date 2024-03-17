@@ -33,7 +33,7 @@ public class Z80CommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem != null) {
-            throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
                     .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
         return new byte[0];

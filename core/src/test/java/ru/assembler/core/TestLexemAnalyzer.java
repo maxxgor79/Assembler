@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemAnalyzer;
 import ru.assembler.core.lexem.LexemType;
@@ -26,7 +27,7 @@ public class TestLexemAnalyzer {
     @Test
     public void testNumbers() throws IOException {
         String numbers = "1234 0h 0123 0x123 0b111 0123h 1001b 077q 0";
-        LexemAnalyzer analyzer = new LexemAnalyzer(new File(""), new ByteArrayInputStream(numbers.getBytes()));
+        LexemAnalyzer analyzer = new LexemAnalyzer(new FileDescriptor(new File("")), new ByteArrayInputStream(numbers.getBytes()));
         Lexem lexem;
         Iterator<Lexem> iter = analyzer.iterator();
         List<Lexem> lexemList = new ArrayList<>();

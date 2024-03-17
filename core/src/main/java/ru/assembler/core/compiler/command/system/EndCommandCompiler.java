@@ -39,7 +39,7 @@ public class EndCommandCompiler implements CommandCompiler {
     }
     if (iterator.hasNext()) {
       nextLexem = iterator.next();
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
     compilerApi.stop();

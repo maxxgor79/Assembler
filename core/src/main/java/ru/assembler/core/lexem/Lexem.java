@@ -3,6 +3,7 @@ package ru.assembler.core.lexem;
 import java.io.File;
 import lombok.Getter;
 import lombok.NonNull;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.util.Converter;
 
 import java.math.BigInteger;
@@ -13,7 +14,7 @@ import java.util.Objects;
  */
 @Getter
 public class Lexem {
-  private File file;
+  private FileDescriptor fd;
 
   private int lineNumber;
 
@@ -30,15 +31,15 @@ public class Lexem {
     this.value = value;
   }
 
-  public Lexem(File file, int lineNumber, LexemType type) {
-    this(file, lineNumber, type, null);
+  public Lexem(FileDescriptor fd, int lineNumber, LexemType type) {
+    this(fd, lineNumber, type, null);
   }
 
-  public Lexem(File file, int lineNumber, @NonNull LexemType type, String value) {
+  public Lexem(FileDescriptor fd, int lineNumber, @NonNull LexemType type, String value) {
     if (lineNumber < 0) {
       throw new IllegalArgumentException("lineNumber is negative");
     }
-    this.file = file;
+    this.fd = fd;
     this.lineNumber = lineNumber;
     this.type = type;
     this.value = value;

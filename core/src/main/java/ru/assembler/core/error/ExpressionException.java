@@ -1,5 +1,7 @@
 package ru.assembler.core.error;
 
+import ru.assembler.core.io.FileDescriptor;
+
 import java.io.File;
 
 /**
@@ -7,7 +9,7 @@ import java.io.File;
  */
 
 public class ExpressionException extends AssemblerException {
-    public ExpressionException(File file, int lineNumber, String text, String... args) {
-        super(file, lineNumber, text, args);
+    public ExpressionException(FileDescriptor fd, int lineNumber, String text, String... args) {
+        super(fd, lineNumber, text, args);
     }
 }

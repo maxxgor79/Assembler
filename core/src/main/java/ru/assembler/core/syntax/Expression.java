@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.DividingByZeroException;
@@ -25,7 +26,7 @@ import java.util.Iterator;
 public class Expression {
     private final RepeatableIteratorImpl<Lexem> lexemIterator;
 
-    private File file;
+    private FileDescriptor fd;
 
     private NamespaceApi namespaceApi;
 
@@ -38,13 +39,13 @@ public class Expression {
         lexemIterator = null;
     }
 
-    public Expression(File file, Iterator<Lexem> iterator, NamespaceApi namespaceApi) {
-        this(file, iterator, namespaceApi, false);
+    public Expression(FileDescriptor fd, Iterator<Lexem> iterator, NamespaceApi namespaceApi) {
+        this(fd, iterator, namespaceApi, false);
     }
 
-    public Expression(@NonNull File file, @NonNull Iterator<Lexem> iterator, @NonNull NamespaceApi namespaceApi
+    public Expression(@NonNull FileDescriptor fd, @NonNull Iterator<Lexem> iterator, @NonNull NamespaceApi namespaceApi
             , boolean onlyConst) {
-        this.file = file;
+        this.fd = fd;
         this.lexemIterator = new LexemIterator(iterator);
         this.namespaceApi = namespaceApi;
         this.onlyConst = onlyConst;
@@ -154,14 +155,14 @@ public class Expression {
                     try {
                         result.value = result.value.divide(result2.value);
                     } catch (ArithmeticException e) {
-                        throw new DividingByZeroException(file, lexem.getLineNumber());
+                        throw new DividingByZeroException(fd, lexem.getLineNumber());
                     }
                 }
                 case PERCENT -> {
                     try {
                         result.value = result.value.mod(result2.value);
                     } catch (ArithmeticException e) {
-                        throw new DividingByZeroException(file, lexem.getLineNumber());
+                        throw new DividingByZeroException(fd, lexem.getLineNumber());
                     }
                 }
             }
@@ -200,7 +201,7 @@ public class Expression {
             lexem = lastLexem = lexemIterator.next();
             if (lexem.getType() == LexemType.CLOSED_BRACE || lexem.getType() == LexemType.EOF
                 || lexem.getType() == LexemType.EOL) {
-                throw new ExpressionException(file, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
+                throw new ExpressionException(fd, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
                         MessageList.getMessage(MessageList.EXPRESSION));
             }
             Result result = evaluate(lexem);
@@ -208,7 +209,7 @@ public class Expression {
             if (lexem.getType() == LexemType.CLOSED_BRACE) {
                 lexem = lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
             } else {
-                throw new ExpressionException(file, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
+                throw new ExpressionException(fd, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
                         ")");
             }
             return result;
@@ -247,14 +248,14 @@ public class Expression {
                 if (!onlyConst) {
                     result = evaluateLabel(lexem);
                 } else {
-                    throw new CompilerException(file, lexem.getLineNumber(), MessageList.getMessage(MessageList
+                    throw new CompilerException(fd, lexem.getLineNumber(), MessageList.getMessage(MessageList
                             .UNEXPECTED_LABEL), lexem.getValue());
                 }
 
             }
 
             default -> {
-                throw new CompilerException(file, lexem.getLineNumber(),
+                throw new CompilerException(fd, lexem.getLineNumber(),
                         MessageList.getMessage(MessageList.UNEXPECTED_SYMBOL), lexem.getValue());
             }
         }
@@ -308,7 +309,7 @@ public class Expression {
         BigInteger value = namespaceApi.getVariableValue(lexem.getValue());
         lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         if (value == null) {
-            throw new CompilerException(file, lexem.getLineNumber(), MessageList
+            throw new CompilerException(fd, lexem.getLineNumber(), MessageList
                     .getMessage(MessageList.VARIABLE_NOT_FOUND), lexem.getValue());
         }
         return new Result(value);

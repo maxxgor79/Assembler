@@ -79,12 +79,12 @@ public class SyntaxAnalyzer implements Iterable<LexemSequence> {
     }
 
     private void putLineNumber(Lexem lexem) {
-        if (lexem.getFile() == null) {
+        if (lexem.getFd() == null || lexem.getFd().getFile() == null) {
             return;
         }
-        final Integer lineNumber = fileLineMap.get(lexem.getFile());
+        final Integer lineNumber = fileLineMap.get(lexem.getFd().getFile());
         if (lineNumber == null || lexem.getLineNumber() > lineNumber) {
-            fileLineMap.put(lexem.getFile(), lexem.getLineNumber());
+            fileLineMap.put(lexem.getFd().getFile(), lexem.getLineNumber());
         }
     }
 

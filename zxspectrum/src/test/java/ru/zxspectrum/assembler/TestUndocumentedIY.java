@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.CompilerFactory;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.zxspectrum.core.compiler.Z80Compiler;
 import ru.assembler.zxspectrum.core.settings.DefaultSettings;
@@ -39,7 +40,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -119,7 +120,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -209,7 +210,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -366,7 +367,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -519,7 +520,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -660,7 +661,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -800,7 +801,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -936,7 +937,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;
@@ -1029,7 +1030,7 @@ public class TestUndocumentedIY {
 
         CompilerNamespace namespace = new CompilerNamespace();
         CompilerApi compiler = CompilerFactory.create(namespace, new DefaultSettings()
-                , new File("test"), bis, bos);
+                , new FileDescriptor(new File("test")), bis, bos);
         compiler.compile();
         byte[] bytes = bos.toByteArray();
         int pc = 0;

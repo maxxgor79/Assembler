@@ -31,6 +31,7 @@ import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemAnalyzer;
 import ru.assembler.core.lexem.LexemType;
@@ -72,7 +73,7 @@ public class Compiler implements CompilerApi {
 
     private final OutputStream os;
 
-    private File file;
+    private FileDescriptor fd;
 
     private int sourceCount;
 
@@ -119,7 +120,7 @@ public class Compiler implements CompilerApi {
 
     private void processLabel(Lexem lexem) {
         if (namespaceApi.containsLabel(lexem.getValue())) {
-            throw new CompilerException(lexem.getFile(), lexem.getLineNumber(),
+            throw new CompilerException(lexem.getFd(), lexem.getLineNumber(),
                     MessageList.getMessage(MessageList
                             .LABEL_IS_ALREADY_DEFINED), lexem.getValue());
         }
@@ -201,7 +202,7 @@ public class Compiler implements CompilerApi {
     public void compile() throws IOException {
         loadCommandTables();
         Output.println(
-                MessageList.getMessage(MessageList.COMPILING) + " " + getFile().getAbsolutePath());
+                MessageList.getMessage(MessageList.COMPILING) + " " + getFd().getDisplay());
         for (LexemSequence lexemSequence : syntaxAnalyzer) {
             Lexem lexem = lexemSequence.first();
             setLineNumber(lexem.getLineNumber());
@@ -209,7 +210,7 @@ public class Compiler implements CompilerApi {
                 processLabel(lexem);
             } else {
                 if (!processCommand(lexemSequence)) {
-                    throw new CompilerException(lexemSequence.getFile(), lexemSequence.getLineNumber(),
+                    throw new CompilerException(lexemSequence.getFd(), lexemSequence.getLineNumber(),
                             MessageList
                                     .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
                 }
@@ -250,16 +251,12 @@ public class Compiler implements CompilerApi {
 
     @Override
     public String getFileName() {
-        File file = getFile();
-        if (file == null) {
-            return null;
-        }
-        return file.getName();
+        return getFd().getDisplay();
     }
 
     @Override
-    public File getFile() {
-        return file;
+    public FileDescriptor getFd() {
+        return fd;
     }
 
     @Override
@@ -316,7 +313,7 @@ public class Compiler implements CompilerApi {
         try (FileInputStream fis = new FileInputStream(file)) {
             data = IOUtils.toByteArray(fis);
         }
-        final LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(file, new ByteArrayInputStream(data)
+        final LexemAnalyzer lexemAnalyzer = new LexemAnalyzer(fd, new ByteArrayInputStream(data)
                 , settingsApi.getPlatformEncoding(), settingsApi.getSourceEncoding());
         lexemAnalyzer.setTrimEof(false);
         syntaxAnalyzer.append(new RepeatableIteratorImpl<>(lexemAnalyzer.iterator()));
@@ -324,8 +321,8 @@ public class Compiler implements CompilerApi {
         return true;
     }
 
-    public void setFile(@NonNull File file) {
-        this.file = file;
+    public void setFd(@NonNull FileDescriptor fd) {
+        this.fd = fd;
     }
 
     @Override

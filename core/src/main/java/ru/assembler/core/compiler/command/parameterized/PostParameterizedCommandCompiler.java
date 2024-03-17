@@ -31,11 +31,11 @@ class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
     protected BigInteger compileExpressionNumber(LexemSequence command, Lexem patternLexem, Lexem commandLexem
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         final Type expectedType = TypeUtil.toType(patternLexem.getValue());
-        final Expression expression = new Expression(commandLexem.getFile(), commandIterator, namespaceApi);
+        final Expression expression = new Expression(commandLexem.getFd(), commandIterator, namespaceApi);
         final Expression.Result result = expression.evaluate(commandLexem);
         commandIterator.back();
         if (result.isUndefined()) {
-            throw new CompilerException(commandLexem.getFile(), commandLexem.getLineNumber(), MessageList
+            throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNKNOWN_IDENTIFIER), result.getLexem().getValue());
         } else {
             BigInteger value = result.getValue();
@@ -43,11 +43,11 @@ class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
                 final Type srcType = TypeUtil.typeOf(value);
                 value = TypeConverter.convert(srcType, value, expectedType, settingsApi.isStrictConversion());
             } catch (ConversationException e) {
-                throw new CompilerException(commandLexem.getFile(), commandLexem.getLineNumber(), MessageList
+                throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
             }
             if (!result.getValue().equals(value)) {
-                Output.throwWarning(commandLexem.getFile(), commandLexem.getLineNumber(), MessageList
+                Output.throwWarning(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
                                 .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
                         , value.toString());
             }
@@ -61,18 +61,18 @@ class PostParameterizedCommandCompiler extends ParameterizedCommandCompiler {
             , PushbackIterator<Lexem> commandIterator, List<BigInteger> argumentCommandList) {
         final Type expectedType = TypeUtil.toType(patternLexem.getValue());
         final BigInteger currentCodeOffset = namespaceApi.getCurrentCodeOffset();
-        final Expression expression = new Expression(commandLexem.getFile(), commandIterator, namespaceApi);
+        final Expression expression = new Expression(commandLexem.getFd(), commandIterator, namespaceApi);
         final Expression.Result address = expression.evaluate(commandLexem);
         commandIterator.back();
         if (address.isUndefined()) {
-            throw new CompilerException(commandLexem.getFile(), commandLexem.getLineNumber(), MessageList
+            throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.UNKNOWN_IDENTIFIER), address.getLexem().getValue());
         } else {
             final BigInteger offset = address.getValue().subtract(namespaceApi.getAddress())
                     .subtract(currentCodeOffset.add(BigInteger.valueOf(byteCodeCompiler
                             .getArgOffset(argumentCommandList.size()))));
             if (!TypeUtil.isInRange(expectedType, offset)) {
-                throw new CompilerException(commandLexem.getFile(), commandLexem.getLineNumber(), MessageList
+                throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.VALUE_OUT_OF_RANGE), offset.toString());
             }
             argumentCommandList.add(offset);

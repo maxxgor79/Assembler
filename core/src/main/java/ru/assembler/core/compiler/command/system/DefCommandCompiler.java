@@ -47,34 +47,34 @@ public class DefCommandCompiler implements CommandCompiler {
       return null;
     }
     if (!iterator.hasNext()) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.IDENTIFIER_EXPECTED));
     }
     nextLexem = iterator.next();
     if (nextLexem.getType() != LexemType.IDENTIFIER) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getType().getName());
     }
     String name = nextLexem.getValue();
     if (!iterator.hasNext()) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.VALUE_EXCEPTED));
     }
-    final Expression expression = new Expression(nextLexem.getFile(), iterator, namespaceApi);
+    final Expression expression = new Expression(nextLexem.getFd(), iterator, namespaceApi);
     nextLexem = iterator.next();
     final Expression.Result result = expression.evaluate(nextLexem);
     if (result.isUndefined()) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
           , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
     }
     if (expression.getLastLexem() != null) {
       nextLexem = expression.getLastLexem();
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
           , MessageList.getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
 
     }
     if (namespaceApi.containsVariable(name)) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList.
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList.
           getMessage(MessageList.VARIABLE_IS_ALREADY_DEFINED), name);
     }
     namespaceApi.addVariable(name, result.getValue());

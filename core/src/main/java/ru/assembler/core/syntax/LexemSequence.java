@@ -2,6 +2,7 @@ package ru.assembler.core.syntax;
 
 import java.io.File;
 import lombok.NonNull;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemAnalyzer;
 import ru.assembler.core.lexem.LexemType;
@@ -81,11 +82,11 @@ public class LexemSequence {
     return first().getLineNumber();
   }
 
-  public File getFile() {
+  public FileDescriptor getFd() {
     if (lexemSequence.isEmpty()) {
       return null;
     }
-    return first().getFile();
+    return first().getFd();
   }
 
   public String getCaption() {

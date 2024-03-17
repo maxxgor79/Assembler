@@ -49,24 +49,24 @@ public class OrgCommandCompiler implements CommandCompiler {
       return null;
     }
     if (!iterator.hasNext()) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.ADDRESS_EXCEPTED));
     }
     nextLexem = iterator.next();
-    Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+    Expression expression = new Expression(compilerApi.getFd(), iterator, namespaceApi);
     Expression.Result result = expression.evaluate(nextLexem);
     if (result.isUndefined()) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
           , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
     }
     if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(),
         result.getValue())) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
     }
     nextLexem = expression.getLastLexem();
     if (nextLexem != null) {
-      throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
           .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
     namespaceApi.setAddress(result.getValue());

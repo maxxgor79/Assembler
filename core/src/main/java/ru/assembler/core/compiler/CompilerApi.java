@@ -3,6 +3,7 @@ package ru.assembler.core.compiler;
 import java.io.FileNotFoundException;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.compiler.option.OptionType;
+import ru.assembler.core.io.FileDescriptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,7 @@ public interface CompilerApi {
 
   String getFileName();
 
-  File getFile();
+  FileDescriptor getFd();
 
   OutputStream getOutputStream();
 

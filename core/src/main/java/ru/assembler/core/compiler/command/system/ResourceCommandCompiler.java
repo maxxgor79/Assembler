@@ -44,23 +44,24 @@ public class ResourceCommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem == null) {
-            throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
                     .getMessage(MessageList.FILE_PATH_EXCEPTED));
         }
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
                 final String path = nextLexem.getValue();
                 try {
-                    baos.write(loadResource(FileUtil.toAbsolutePath(compilerApi.getFile().getParentFile(), path)));
+                    baos.write(loadResource(FileUtil.toAbsolutePath(compilerApi.getFd().getFile().getParentFile()
+                            , path)));
                 } catch (FileNotFoundException e) {
-                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                    throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_NOT_FOUND), path);
                 } catch (IOException e) {
-                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                    throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
                             .getMessage(MessageList.FILE_READ_ERROR), path);
                 }
             } else {
-                throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+                throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
             }
             nextLexem = iterator.hasNext() ? iterator.next() : null;

@@ -5,6 +5,7 @@ import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.compiler.option.OptionType;
+import ru.assembler.core.io.FileDescriptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +21,13 @@ public class CompilerApiFreezed implements CompilerApi {
 
     private final int compiledSourceNumber;
 
-    private final File file;
+    private final FileDescriptor fd;
 
     public CompilerApiFreezed(@NonNull CompilerApi compilerApi) {
         lineNumber = compilerApi.getLineNumber();
         compiledLineNumber = compilerApi.getCompiledLineCount();
         compiledSourceNumber = compilerApi.getCompiledSourceCount();
-        file = compilerApi.getFile();
+        fd = compilerApi.getFd();
     }
 
     @Override
@@ -61,15 +62,12 @@ public class CompilerApiFreezed implements CompilerApi {
 
     @Override
     public String getFileName() {
-        if (file == null) {
-            return null;
-        }
-        return file.getName();
+        return fd.getDisplay();
     }
 
     @Override
-    public File getFile() {
-        return file;
+    public FileDescriptor getFd() {
+        return fd;
     }
 
     @Override

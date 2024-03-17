@@ -42,17 +42,17 @@ public class PrintCommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem == null) {
-            throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
                     .getMessage(MessageList.FILE_PATH_EXCEPTED));
         }
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
                 print(nextLexem.getValue());
             } else {
-                final Expression expression = new Expression(compilerApi.getFile(), iterator, namespaceApi);
+                final Expression expression = new Expression(compilerApi.getFd(), iterator, namespaceApi);
                 final Expression.Result result = expression.evaluate(nextLexem);
                 if (result.isUndefined()) {
-                    throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
+                    throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
                             , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
                 }
                 print(result.getValue());

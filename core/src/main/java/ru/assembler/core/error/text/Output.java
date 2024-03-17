@@ -2,6 +2,7 @@ package ru.assembler.core.error.text;
 
 import lombok.Getter;
 import ru.assembler.core.error.AssemblerException;
+import ru.assembler.core.io.FileDescriptor;
 
 import java.io.File;
 
@@ -31,8 +32,8 @@ public final class Output {
         println(String.format(mask, args));
     }
 
-    public static void throwWarning(File file, int lineNumber, String message, String... args) {
-        String text = MessageFormatter.generateWarningText(file, lineNumber, message, args);
+    public static void throwWarning(FileDescriptor fd, int lineNumber, String message, String... args) {
+        String text = MessageFormatter.generateWarningText(fd, lineNumber, message, args);
         System.out.println(text);
         warningCount++;
         if (warningCount >= maxAdmirableWarningCount) {

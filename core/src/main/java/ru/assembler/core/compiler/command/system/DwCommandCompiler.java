@@ -61,18 +61,18 @@ public class DwCommandCompiler implements CommandCompiler {
       nextLexem = iterator.hasNext() ? iterator.next() : null;
       while (true) {
         if (nextLexem == null) {
-          throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(),
+          throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(),
               MessageList
                   .getMessage(MessageList.VALUE_EXCEPTED));
         }
         if (nextLexem.getType() == LexemType.CHAR || nextLexem.getType() == LexemType.DECIMAL ||
             nextLexem.getType() == LexemType.OCTAL
             || nextLexem.getType() == LexemType.HEXADECIMAL) {
-          final Expression expression = new Expression(compilerApi.getFile(), iterator,
+          final Expression expression = new Expression(compilerApi.getFd(), iterator,
               namespaceApi);
           final Expression.Result result = expression.evaluate(nextLexem);
           if (result.isUndefined()) {
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber()
+            throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
                 , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
           }
           if (expression.getLastLexem() != null) {
@@ -85,18 +85,18 @@ public class DwCommandCompiler implements CommandCompiler {
                 settingsApi.isStrictConversion());
           } catch (ConversationException e) {
             log.error(e.getMessage(), e);
-            throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+            throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
                 .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
           }
           if (!result.getValue().equals(value)) {
-            Output.throwWarning(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+            Output.throwWarning(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
                     .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
                 , value.toString());
           }
           IOUtils.writeWord(baos, value.byteValue(), settingsApi.getByteOrder());
           nextLexem = expression.getLastLexem();
         } else {
-          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
               .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
         if (nextLexem == null) {
@@ -105,7 +105,7 @@ public class DwCommandCompiler implements CommandCompiler {
         if (nextLexem.getType() == LexemType.COMMA) {
           nextLexem = iterator.hasNext() ? iterator.next() : null;
         } else {
-          throw new CompilerException(nextLexem.getFile(), nextLexem.getLineNumber(), MessageList
+          throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
               .getMessage(MessageList.EXPECTED_SYMBOL), ",");
         }
       }
