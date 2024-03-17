@@ -30,6 +30,12 @@ abstract class AbstractCompileMenuItem extends AbstractMenuItem {
 
     @Override
     public boolean isEnabled() {
+        final Source selectedSource = controller.getMainWindow().getSourceTabbedPane().getSourceSelected();
+        if (selectedSource != null) {
+            String text = selectedSource.getTextArea().getText();
+            return text != null && !text.trim().isEmpty() && controller.getMainWindow().getSourceTabbedPane()
+                    .getTabCount() != 0;
+        }
         return controller.getMainWindow().getSourceTabbedPane().getTabCount() != 0;
     }
 }

@@ -39,7 +39,7 @@ public class ExternalCompiling implements Compiling {
                     String.format(CLIUtils.ARG_LOCALE, UIUtils.toLocale(settings.getLanguage()).getLanguage())
                     , CLIUtils.ARG_OUTPUT
                     , outputDir
-                    , src.getFile().getAbsolutePath()
+                    , toArgument(src, settings.getEncoding())
                     , args);
             final Process p = new ProcessBuilder(argList).start();
             final ConsoleWriter consoleWriter = new ConsoleWriter(p.getInputStream(), mainWindow.getConsole().getArea());

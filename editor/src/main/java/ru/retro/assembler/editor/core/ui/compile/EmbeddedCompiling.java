@@ -1,9 +1,11 @@
 package ru.retro.assembler.editor.core.ui.compile;
 
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.*;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +18,9 @@ import ru.retro.assembler.editor.core.ui.MainWindow;
 import ru.retro.assembler.editor.core.util.CLIUtils;
 
 import javax.swing.*;
-import java.io.PrintStream;
 import java.util.List;
+
+import ru.retro.assembler.editor.core.util.FileUtils;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 @Slf4j
@@ -43,9 +46,9 @@ public class EmbeddedCompiling implements Compiling {
       return;
     }
     final String outputDir = settings.getOutputDirectory();
-    final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir, src.getFile()
-        .getAbsolutePath(), args);
     try {
+      final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir, toArgument(src, settings.getEncoding())
+              , args);
       final Method method = asmClazz.getMethod("entry", Collection.class);
       final PipedInputStream pis = new PipedInputStream();
       final PipedOutputStream pos = new PipedOutputStream(pis);
