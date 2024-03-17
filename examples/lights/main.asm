@@ -15,6 +15,7 @@ vector_addr:
     ret
 ; interruption procedure
 interrupt:
+nop
     di
     push af
     push hl	

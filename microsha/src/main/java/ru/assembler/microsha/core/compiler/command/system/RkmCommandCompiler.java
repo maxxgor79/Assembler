@@ -43,7 +43,7 @@ public class RkmCommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem == null) {
-            throw new CompilerException(compilerApi.getFile(), compilerApi.getLineNumber(), MessageList
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
                     .getMessage(MessageList.FILE_PATH_EXCEPTED));
         }
         final List<String> paths = new LinkedList<>();
@@ -52,7 +52,7 @@ public class RkmCommandCompiler implements CommandCompiler {
                 final String path = nextLexem.getValue();
                 paths.add(path);
             } else {
-                throw new CompilerException(compilerApi.getFile(), nextLexem.getLineNumber(), MessageList
+                throw new CompilerException(compilerApi.getFd(), nextLexem.getLineNumber(), MessageList
                         .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
             }
             nextLexem = iterator.hasNext() ? iterator.next() : null;

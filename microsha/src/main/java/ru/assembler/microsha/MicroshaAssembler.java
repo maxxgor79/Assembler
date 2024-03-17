@@ -20,6 +20,7 @@ import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.io.LimitedOutputStream;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.ResourceSettings;
@@ -35,13 +36,7 @@ import ru.assembler.microsha.io.generator.SoundGenerator;
 import ru.assembler.microsha.io.rkm.RkmData;
 import ru.assembler.microsha.text.MicroshaMessages;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,19 +110,19 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         this.settings = settings;
     }
 
-    public void run(@NonNull final File... files) {
-        for (File file : files) {
-            run(file);
+    public void run(@NonNull final FileDescriptor... fds) {
+        for (FileDescriptor fd : fds) {
+            run(fd);
         }
     }
 
-    protected void run(@NonNull final File file) {
+    protected void run(@NonNull final FileDescriptor fd) {
         OutputStream os;
-        final File outputFile = createOutputFile(file);
+        final File outputFile = createOutputFile(fd.getFile());
         try {
             reset();
             os = new FileOutputStream(outputFile);
-            final CompilerApi compilerApi = compile(file, os);
+            final CompilerApi compilerApi = compile(fd, os);
             os.close();
             postCompile(outputFile);
             runOptions(outputFile, compilerApi);
@@ -200,19 +195,19 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         return FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, null);
     }
 
-    protected CompilerApi compile(@NonNull final File file, @NonNull final OutputStream os) throws IOException {
-        try (FileInputStream fis = new FileInputStream(file)) {
-            return compile(file, fis, os);
+    protected CompilerApi compile(@NonNull final FileDescriptor fd, @NonNull final OutputStream os) throws IOException {
+        try (FileInputStream fis = new FileInputStream(fd.getFile())) {
+            return compile(fd, fis, os);
         }
     }
 
-    protected CompilerApi compile(@NonNull final File file, @NonNull final InputStream is
+    protected CompilerApi compile(@NonNull final FileDescriptor fd, @NonNull final InputStream is
             , @NonNull final OutputStream os) throws IOException {
         final int limitation = settings.getMaxAddress().subtract(settings.getMinAddress()).intValue();
         final LimitedOutputStream los = new LimitedOutputStream(os, limitation);
         final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                         -> new MicroshaCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os)
-                , this, settings, file, is, los);
+                , this, settings, fd, is, los);
         compilerApi.compile();
         return compilerApi;
     }
@@ -234,16 +229,22 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         return sb.toString();
     }
 
-    protected static List<File> setCli(@NonNull MicroshaAssemblerSettings settings, @NonNull final String[] args
+    private static FileDescriptor toFileDescription(String filename) {
+        final String [] pair = filename.split("#");
+        return pair.length == 2 ? new FileDescriptor(new File(pair[0]), pair[1]) :
+                new FileDescriptor(new File(pair[0]));
+    }
+
+    protected static List<FileDescriptor> setCli(@NonNull MicroshaAssemblerSettings settings, @NonNull final String[] args
             , @NonNull final Options options) {
         final CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
             final CommandLine cli = parser.parse(options, args);
             settings.load(cli);
-            final List<File> files = new LinkedList<>();
+            final List<FileDescriptor> files = new LinkedList<>();
             for (final String fileName : cli.getArgList()) {
-                files.add(new File(fileName));
+                files.add(toFileDescription(fileName));
             }
             return files;
         } catch (ParseException e) {
@@ -334,16 +335,16 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
             return;
         }
         final MicroshaAssembler asm = new MicroshaAssembler();
-        final List<File> fileList = setCli(settings, args, options);
+        final List<FileDescriptor> fdList = setCli(settings, args, options);
         try {
             asm.applySettings(settings);
         } catch (SettingsException e) {
             Output.println(e.getMessage());
             return;
         }
-        if (!fileList.isEmpty()) {
+        if (!fdList.isEmpty()) {
             Output.println(asm.createWelcome());
-            asm.run(fileList.toArray(new File[fileList.size()]));
+            asm.run(fdList.toArray(new FileDescriptor[fdList.size()]));
         } else {
             Output.println(MicroshaMessages.getMessage(MicroshaMessages.NO_INPUT_FILES));
         }
