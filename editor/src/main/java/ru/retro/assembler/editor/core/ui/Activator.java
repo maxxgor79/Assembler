@@ -25,10 +25,11 @@ public class Activator implements ActionListener {
     }
 
     private void run() {
+        mainWindow.getBuildMenuItems().updateAll();
+        mainWindow.getToolBarButtons().updateAll();
         boolean noSources = mainWindow.getSourceTabbedPane().getTabCount() == 0;
         mainWindow.getBtnSave().setEnabled(!noSources);
         mainWindow.getBtnReload().setEnabled(!noSources);
-        mainWindow.getBtnCompile().setEnabled(!noSources);
         mainWindow.getFileMenuItems().getMiSave().setEnabled(!noSources);
         mainWindow.getFileMenuItems().getMiSaveAs().setEnabled(!noSources);
         mainWindow.getFileMenuItems().getMiSaveAll().setEnabled(!noSources);
@@ -51,10 +52,6 @@ public class Activator implements ActionListener {
             mainWindow.getConsole().getConsolePopupMenu().getMiCopyText().setEnabled(false);
             mainWindow.getFileMenuItems().getMiPrint().setEnabled(false);
         }
-        mainWindow.getBuildMenuItems().getMiCompile().setEnabled(!noSources);
-        mainWindow.getBuildMenuItems().getMiCompileTap().setEnabled(!noSources);
-        mainWindow.getBuildMenuItems().getMiCompileTzx().setEnabled(!noSources);
-        mainWindow.getBuildMenuItems().getMiCompileWav().setEnabled(!noSources);
         if (!noSources) {
             boolean hasSelectedText = false;
             boolean hasText = false;

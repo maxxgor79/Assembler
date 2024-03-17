@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.ui;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.env.Environment;
@@ -11,14 +12,14 @@ import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.compile.EmbeddedCompiling;
 import ru.retro.assembler.editor.core.ui.compile.ExternalCompiling;
+import ru.retro.assembler.editor.core.ui.components.MenuItem;
+import ru.retro.assembler.editor.core.ui.components.ToolButton;
 import ru.retro.assembler.editor.core.ui.find.FindDialog;
+import ru.retro.assembler.editor.core.ui.menu.build.BuildToolButtons;
 import ru.retro.assembler.editor.core.ui.preferences.ColorPanel;
 import ru.retro.assembler.editor.core.ui.preferences.PreferencesDialog;
 import ru.retro.assembler.editor.core.ui.replace.ReplaceDialog;
-import ru.retro.assembler.editor.core.util.CLIUtils;
-import ru.retro.assembler.editor.core.util.ResourceUtils;
-import ru.retro.assembler.editor.core.util.TextUtils;
-import ru.retro.assembler.editor.core.util.UIUtils;
+import ru.retro.assembler.editor.core.util.*;
 
 import javax.swing.*;
 import javax.swing.event.CaretListener;
@@ -48,8 +49,10 @@ public final class Controller implements Runnable {
 
     protected static final String NEW_SOURCE_NAME = "noname.asm";
 
+    @Getter
     protected final AppSettings settings = new AppSettings();
 
+    @Getter
     protected MainWindow mainWindow;
 
     private AboutDialog aboutDialog;
@@ -66,9 +69,22 @@ public final class Controller implements Runnable {
 
     private int index = -1;
 
-    private LocalizedSaveAsChooser saveAsFileChooser;
+    private JFileChooser saveAsFileChooser;
 
-    private LocalizedOpenChooser openFileChooser;
+    private JFileChooser openFileChooser;
+
+    @Getter
+    @Setter
+    @NonNull
+    private static FileChooserFactory fileChooserFactory = FileChoosers.defaultFileChooserFactory();
+
+    @Getter
+    @Setter
+    @NonNull
+    private static MenuItemFactory menuItemFactory = ru.retro.assembler.editor.core.ui.menu
+            .build.BuildMenuItems.defaultMenuItemFactory();
+
+    private static ToolButtonFactory toolButtonFactory = BuildToolButtons.defaultToolButtonFactory();
 
     @Getter
     private Collection<String> args;
@@ -87,26 +103,25 @@ public final class Controller implements Runnable {
         initListeners();
     }
 
-    private LocalizedSaveAsChooser getSaveAsFileChooser() {
+    private JFileChooser getSaveAsFileChooser() {
         if (saveAsFileChooser == null) {
-            if (settings.getSaveDialogCurrentDirectory() == null) {
-                saveAsFileChooser = new LocalizedSaveAsChooser();
-            } else {
-                saveAsFileChooser = new LocalizedSaveAsChooser(settings.getSaveDialogCurrentDirectory());
+            saveAsFileChooser = fileChooserFactory.newSaveChooser();
+            if (settings.getSaveDialogCurrentDirectory() != null) {
+                saveAsFileChooser.setCurrentDirectory(new File(settings.getSaveDialogCurrentDirectory()));
             }
         }
         return saveAsFileChooser;
     }
 
-    private LocalizedOpenChooser getOpenFileChooser() {
-        if (settings.getOpenDialogCurrentDirectory() == null) {
-            openFileChooser = new OpenFileChooser();
-        } else {
-            openFileChooser = new OpenFileChooser(settings.getOpenDialogCurrentDirectory());
+    private JFileChooser getOpenFileChooser() {
+        if (openFileChooser == null) {
+            openFileChooser = fileChooserFactory.newOpenChooser();
+            if (settings.getOpenDialogCurrentDirectory() != null) {
+                openFileChooser.setCurrentDirectory(new File(settings.getOpenDialogCurrentDirectory()));
+            }
         }
         return openFileChooser;
     }
-
 
     @Override
     public void run() {
@@ -216,6 +231,14 @@ public final class Controller implements Runnable {
 
     //------------------------------------------------------------------------------------------------------------------
     protected void initListeners() {
+        final Collection<ToolButton> buildToolButtons = toolButtonFactory.newToolButtons(this);
+        for (ToolButton button : buildToolButtons) {
+            mainWindow.getToolBarButtons().add(button);
+        }
+        final Collection<MenuItem> buildMenuItems = menuItemFactory.newMenuItems(this);
+        for (MenuItem menuItem : buildMenuItems) {
+            mainWindow.getBuildMenuItems().add(menuItem);
+        }
         mainWindow.addWindowListener(windowAdapter);
         mainWindow.getHelpMenuItems().getMiHelp().addActionListener(helpListener);
         mainWindow.getHelpMenuItems().getMiAbout().addActionListener(aboutListener);
@@ -224,7 +247,6 @@ public final class Controller implements Runnable {
         mainWindow.getBtnOpen().addActionListener(openListener);
         mainWindow.getBtnSave().addActionListener(saveListener);
         mainWindow.getBtnReload().addActionListener(reloadAllListener);
-        mainWindow.getBtnCompile().addActionListener(compileListener);
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getFileMenuItems().getMiNew().addActionListener(newListener);
         mainWindow.getFileMenuItems().getMiOpen().addActionListener(openListener);
@@ -255,10 +277,13 @@ public final class Controller implements Runnable {
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiSaveAs()
                 .addActionListener(saveAsListener);
         //--------------------------------------------------------------------------------------------------------------
+ /*
         mainWindow.getBuildMenuItems().getMiCompile().addActionListener(compileListener);
         mainWindow.getBuildMenuItems().getMiCompileTap().addActionListener(compileTapListener);
         mainWindow.getBuildMenuItems().getMiCompileTzx().addActionListener(compileTzxListener);
         mainWindow.getBuildMenuItems().getMiCompileWav().addActionListener(compileWavListener);
+
+  */
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getSourceTabbedPane().addChangeListener(tabbedPaneChangedListener);
         //--------------------------------------------------------------------------------------------------------------
@@ -325,10 +350,11 @@ public final class Controller implements Runnable {
     }
 
     private void openSource() {
-        final LocalizedOpenChooser openFileChooser = getOpenFileChooser();
+        final JFileChooser openFileChooser = getOpenFileChooser();
         if (openFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setOpenDialogCurrentDirectory(
                     openFileChooser.getCurrentDirectory().getAbsolutePath());
+            File []selected = openFileChooser.getSelectedFiles();
             for (File file : openFileChooser.getSelectedFiles()) {
                 openSource(file);
             }
@@ -375,7 +401,7 @@ public final class Controller implements Runnable {
     }
 
     private void saveSourceAs(@NonNull Source src) {
-        final LocalizedSaveAsChooser localizedSaveAsChooser = getSaveAsFileChooser();
+        final JFileChooser localizedSaveAsChooser = getSaveAsFileChooser();
         localizedSaveAsChooser.setSelectedFile(src.getFile());
         if (localizedSaveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             final File file = localizedSaveAsChooser.getSelectedFile();
@@ -533,7 +559,7 @@ public final class Controller implements Runnable {
         }
     }
 
-    private void cleanConsole() {
+    public void cleanConsole() {
         mainWindow.getConsole().getArea().setText(null);
     }
 
@@ -811,8 +837,8 @@ public final class Controller implements Runnable {
     };
 
     private final ActionListener printListener = e -> {
-      log.error("print");
-      print();
+        log.error("print");
+        print();
     };
 
     private final ActionListener undoListener = e -> {

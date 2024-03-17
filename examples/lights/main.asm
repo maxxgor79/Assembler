@@ -1,5 +1,6 @@
 ; main program
     .org 32768
+    .z80
     .include "gfx.asm"
     .def LPT_PORT 0x1f
     .def TAPE_PORT 0xfe

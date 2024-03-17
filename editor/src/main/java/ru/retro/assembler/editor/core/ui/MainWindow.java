@@ -41,9 +41,6 @@ public class MainWindow extends JFrame {
     private JButton btnReload;
 
     @Getter
-    private JButton btnCompile;
-
-    @Getter
     private FileMenuItems fileMenuItems;
 
     @Getter
@@ -69,6 +66,9 @@ public class MainWindow extends JFrame {
 
     @Getter
     private StatusPanel statusPanel;
+
+    @Getter
+    private ToolBarButtons toolBarButtons;
 
     public MainWindow() {
         init();
@@ -97,7 +97,9 @@ public class MainWindow extends JFrame {
         }
         setLayout(new BorderLayout());
         setJMenuBar(createMenuBar());
-        add(createToolBar(), BorderLayout.NORTH);
+        final JToolBar jToolBar = createToolBar();
+        toolBarButtons = new ToolBarButtons(jToolBar);
+        add(jToolBar, BorderLayout.NORTH);
         console = createConsole();
         sourceTabbedPane = new SourceTabbedPane();
         splitPane = createSplitPane(sourceTabbedPane, console);
@@ -171,7 +173,6 @@ public class MainWindow extends JFrame {
         toolBar.add(btnSave = createBtnSave());
         toolBar.add(btnReload = createBtnRefresh());
         toolBar.addSeparator();
-        toolBar.add(btnCompile = createBtnCompile());
         return toolBar;
     }
 
@@ -190,12 +191,6 @@ public class MainWindow extends JFrame {
     protected JButton createBtnRefresh() {
         JButton btn = createToolButton("/icon32x32/refresh.png");
         btn.setToolTipText(Messages.get(Messages.RELOAD_ALL_FILES));
-        return btn;
-    }
-
-    protected JButton createBtnCompile() {
-        JButton btn = createToolButton("/icon32x32/compile.png");
-        btn.setToolTipText(Messages.get(Messages.COMPILE));
         return btn;
     }
 
