@@ -50,10 +50,6 @@ public final class Z80Messages {
 
     public static final String ADDRESS_IS_OUT_RANGE = "address_is_out_of_range";
 
-    public static final String UNKNOWN_OPTION = "unknown_option";
-
-    public static final String SETUP_LOCALE = "setup_locale";
-
     private Z80Messages() {
 
     }

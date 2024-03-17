@@ -13,6 +13,7 @@ import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
+import ru.assembler.core.error.text.MessageFormatter;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.io.FileDescriptor;
@@ -220,6 +221,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
             throws IOException {
         try (FileInputStream fis = new FileInputStream(fd.getFile())) {
             return compile(fd, fis, os);
+        } catch (FileNotFoundException e) {
+            throw new IOException(String.format(MessageList.getMessage(MessageList.FILE_NOT_FOUND), fd.getDisplay()));
         }
     }
 
@@ -254,7 +257,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     private static FileDescriptor toFileDescription(String filename) {
-        String [] pair = filename.split(";");
+        final String [] pair = filename.split("#");
         return pair.length == 2 ? new FileDescriptor(new File(pair[0]), pair[1]) :
                 new FileDescriptor(new File(pair[0]));
     }
