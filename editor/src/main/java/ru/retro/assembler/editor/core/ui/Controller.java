@@ -241,19 +241,27 @@ public final class Controller implements Runnable {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    protected void initListeners() {
+    private void createBuildToolButtons() {
         final Collection<ToolButton> buildToolButtons = toolButtonFactory.newToolButtons(this);
         if (buildToolButtons != null) {
             for (ToolButton button : buildToolButtons) {
                 mainWindow.getToolBarButtons().add(button);
             }
         }
+    }
+
+    private void createMenuItems() {
         final Collection<MenuItem> buildMenuItems = menuItemFactory.newMenuItems(this);
         if (buildMenuItems != null) {
             for (MenuItem menuItem : buildMenuItems) {
                 mainWindow.getBuildMenuItems().add(menuItem);
             }
         }
+    }
+
+    protected void initListeners() {
+        createBuildToolButtons();
+        createMenuItems();
         mainWindow.addWindowListener(windowAdapter);
         mainWindow.getHelpMenuItems().getMiHelp().addActionListener(helpListener);
         mainWindow.getHelpMenuItems().getMiAbout().addActionListener(aboutListener);
@@ -364,7 +372,7 @@ public final class Controller implements Runnable {
         if (openFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setOpenDialogCurrentDirectory(
                     openFileChooser.getCurrentDirectory().getAbsolutePath());
-            File []selected = openFileChooser.getSelectedFiles();
+            File[] selected = openFileChooser.getSelectedFiles();
             for (File file : openFileChooser.getSelectedFiles()) {
                 openSource(file);
             }
@@ -416,7 +424,7 @@ public final class Controller implements Runnable {
             log.info("saveAsChooser is null");
             return;
         }
-            saveAsChooser.setSelectedFile(src.getFile());
+        saveAsChooser.setSelectedFile(src.getFile());
         if (saveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             final File file = saveAsChooser.getSelectedFile();
             settings.setSaveDialogCurrentDirectory(
@@ -801,6 +809,10 @@ public final class Controller implements Runnable {
 
     private final ActionListener aboutListener = e -> {
         final ModalDialog aboutDialog = getAboutDialog();
+        if (aboutDialog == null) {
+            log.info("aboutDialog is null");
+            return;
+        }
         aboutDialog.showModal();
     };
 
