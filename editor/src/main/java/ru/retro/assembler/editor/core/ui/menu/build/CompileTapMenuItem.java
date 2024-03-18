@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 @Slf4j
 public class CompileTapMenuItem extends AbstractCompileMenuItem {
     public CompileTapMenuItem(@NonNull Controller controller) {
-        super(controller, Messages.get(Messages.COMPILE_WAV), (char) 0, null, null);
+        super(controller, Messages.get(Messages.COMPILE_TAP), (char) 0, null, null);
     }
 
     @Override
