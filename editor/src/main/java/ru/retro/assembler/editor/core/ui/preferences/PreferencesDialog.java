@@ -12,13 +12,15 @@ import ru.retro.assembler.editor.core.ui.LocalizedOpenChooser;
 
 import javax.swing.*;
 import java.awt.*;
+
+import ru.retro.assembler.editor.core.ui.ModalDialog;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 /**
  * @Author: Maxim Gorin Date: 25.02.2024
  */
 @Slf4j
-public class PreferencesDialog extends JDialog {
+public class PreferencesDialog extends JDialog implements ModalDialog {
 
   private static final int C_PATH = 0;
 
@@ -245,6 +247,7 @@ public class PreferencesDialog extends JDialog {
     store.clear();
   }
 
+  @Override
   public int showModal() {
     result = OPTION_CANCEL;
     store();

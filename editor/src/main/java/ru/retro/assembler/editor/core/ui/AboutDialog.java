@@ -17,7 +17,7 @@ import java.util.Date;
  * Date: 24.02.2024
  */
 @Slf4j
-public class AboutDialog extends JDialog {
+public class AboutDialog extends JDialog implements ModalDialog {
     private static final String TEXT = "<html><b><h2>%s %d.%d</h2></b><br>%s %04d, %s %tY-%tm-%td<br>%s</html>";
     @Setter
     @Getter
@@ -97,10 +97,12 @@ public class AboutDialog extends JDialog {
                 , buildDate, Messages.get(Messages.WRITTEN_BY));
     }
 
-    public void showModal() {
+    @Override
+    public int showModal() {
         textLabel.setText(renderText());
         setLocationRelativeTo(getOwner());
         setVisible(true);
+        return 0;
     }
 
     private void initListeners() {

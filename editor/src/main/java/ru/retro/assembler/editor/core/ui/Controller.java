@@ -55,7 +55,7 @@ public final class Controller implements Runnable {
     @Getter
     protected MainWindow mainWindow;
 
-    private AboutDialog aboutDialog;
+    private ModalDialog aboutDialog;
 
     private PreferencesDialog preferencesDialog;
 
@@ -84,11 +84,20 @@ public final class Controller implements Runnable {
     private static MenuItemFactory menuItemFactory = ru.retro.assembler.editor.core.ui.menu
             .build.BuildMenuItems.defaultMenuItemFactory();
 
+    @Getter
+    @Setter
+    @NonNull
     private static ToolButtonFactory toolButtonFactory = BuildToolButtons.defaultToolButtonFactory();
+
+    @Getter
+    @Setter
+    @NonNull
+    private static UIFactory uiFactory = UIComponents.defaultUIFactory();
 
     @Getter
     private Collection<String> args;
 
+    @Getter
     private final BuildVersionReader buildVersionReader = new BuildVersionReader();
 
     public Controller(final Collection<String> args) {
@@ -97,10 +106,16 @@ public final class Controller implements Runnable {
         this.mainWindow = new MainWindow();
         this.mainWindow.setLocationByPlatform(true);
         this.preferencesDialog = new PreferencesDialog(mainWindow);
-        this.aboutDialog = new AboutDialog(mainWindow);
         this.findDialog = new FindDialog(mainWindow);
         this.replaceDialog = new ReplaceDialog(mainWindow);
         initListeners();
+    }
+
+    private ModalDialog getAboutDialog() {
+        if (aboutDialog == null) {
+            aboutDialog = uiFactory.newAboutDialog(this);
+        }
+        return aboutDialog;
     }
 
     private JFileChooser getSaveAsFileChooser() {
@@ -175,10 +190,6 @@ public final class Controller implements Runnable {
             preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getOutputPathField()
                     .setText(settings.getOutputDirectory());
         }
-        aboutDialog.setMajorVersion(settings.getMajorVersion());
-        aboutDialog.setMinorVersion(settings.getMinorVersion());
-        aboutDialog.setBuildVersion(buildVersionReader.getBuildVersion());
-        aboutDialog.setBuildDate(buildVersionReader.getBuildDate());
         if (settings.getEncoding() != null) {
             preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getCharsetPanel().getCbEncoding()
                     .setSelectedItem(settings.getEncoding().toUpperCase());
@@ -232,12 +243,16 @@ public final class Controller implements Runnable {
     //------------------------------------------------------------------------------------------------------------------
     protected void initListeners() {
         final Collection<ToolButton> buildToolButtons = toolButtonFactory.newToolButtons(this);
-        for (ToolButton button : buildToolButtons) {
-            mainWindow.getToolBarButtons().add(button);
+        if (buildToolButtons != null) {
+            for (ToolButton button : buildToolButtons) {
+                mainWindow.getToolBarButtons().add(button);
+            }
         }
         final Collection<MenuItem> buildMenuItems = menuItemFactory.newMenuItems(this);
-        for (MenuItem menuItem : buildMenuItems) {
-            mainWindow.getBuildMenuItems().add(menuItem);
+        if (buildMenuItems != null) {
+            for (MenuItem menuItem : buildMenuItems) {
+                mainWindow.getBuildMenuItems().add(menuItem);
+            }
         }
         mainWindow.addWindowListener(windowAdapter);
         mainWindow.getHelpMenuItems().getMiHelp().addActionListener(helpListener);
@@ -276,14 +291,6 @@ public final class Controller implements Runnable {
                 .addActionListener(saveListener);
         mainWindow.getSourceTabbedPane().getSourcePopupMenu().getMiSaveAs()
                 .addActionListener(saveAsListener);
-        //--------------------------------------------------------------------------------------------------------------
- /*
-        mainWindow.getBuildMenuItems().getMiCompile().addActionListener(compileListener);
-        mainWindow.getBuildMenuItems().getMiCompileTap().addActionListener(compileTapListener);
-        mainWindow.getBuildMenuItems().getMiCompileTzx().addActionListener(compileTzxListener);
-        mainWindow.getBuildMenuItems().getMiCompileWav().addActionListener(compileWavListener);
-
-  */
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getSourceTabbedPane().addChangeListener(tabbedPaneChangedListener);
         //--------------------------------------------------------------------------------------------------------------
@@ -351,6 +358,9 @@ public final class Controller implements Runnable {
 
     private void openSource() {
         final JFileChooser openFileChooser = getOpenFileChooser();
+        if (openFileChooser == null) {
+            log.info("openFileChooser is null");
+        }
         if (openFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setOpenDialogCurrentDirectory(
                     openFileChooser.getCurrentDirectory().getAbsolutePath());
@@ -401,12 +411,16 @@ public final class Controller implements Runnable {
     }
 
     private void saveSourceAs(@NonNull Source src) {
-        final JFileChooser localizedSaveAsChooser = getSaveAsFileChooser();
-        localizedSaveAsChooser.setSelectedFile(src.getFile());
-        if (localizedSaveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
-            final File file = localizedSaveAsChooser.getSelectedFile();
+        final JFileChooser saveAsChooser = getSaveAsFileChooser();
+        if (saveAsChooser == null) {
+            log.info("saveAsChooser is null");
+            return;
+        }
+            saveAsChooser.setSelectedFile(src.getFile());
+        if (saveAsChooser.showSaveDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
+            final File file = saveAsChooser.getSelectedFile();
             settings.setSaveDialogCurrentDirectory(
-                    localizedSaveAsChooser.getCurrentDirectory().getAbsolutePath());
+                    saveAsChooser.getCurrentDirectory().getAbsolutePath());
             try {
                 overwriteSave(file, src);
                 src.rename(file);
@@ -786,6 +800,7 @@ public final class Controller implements Runnable {
     };
 
     private final ActionListener aboutListener = e -> {
+        final ModalDialog aboutDialog = getAboutDialog();
         aboutDialog.showModal();
     };
 
