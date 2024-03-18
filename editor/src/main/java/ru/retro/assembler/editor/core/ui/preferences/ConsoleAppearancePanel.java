@@ -54,6 +54,12 @@ public class ConsoleAppearancePanel extends JPanel {
         c.anchor = GridBagConstraints.WEST;
         add(fontSizePanel, c);
 
+        c.gridx = 2;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        add(examplePanel, c);
+
         bkColorPanel = new ColorPanel(Messages.get(Messages.BACKGROUND_COLOR) + ":") {
             @Override
             public void setColor(@NonNull Color c) {
@@ -82,12 +88,6 @@ public class ConsoleAppearancePanel extends JPanel {
         c.weightx = 0;
         c.anchor = GridBagConstraints.WEST;
         add(fontColorPanel, c);
-
-        c.gridx = 2;
-        c.gridy = 1;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.EAST;
-        add(examplePanel, c);
     }
 
     private void initListeners() {
