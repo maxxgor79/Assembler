@@ -68,13 +68,6 @@ public class PreferencesDialog extends JDialog implements ModalDialog {
   }
 
   private void initComponents() {
-    Image image = null;
-    try {
-      image = ResourceUtils.loadImage("/icon16x16/chip.png");
-      setIconImage(image);
-    } catch (IOException e) {
-      log.error(e.getMessage(), e);
-    }
     setTitle(Messages.getInstance().get(Messages.PREFERENCES));
     setModal(true);
     setLayout(new BorderLayout());

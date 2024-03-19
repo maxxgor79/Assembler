@@ -84,17 +84,6 @@ public class MainWindow extends JFrame {
     }
 
     protected void initComponents() {
-        try {
-            Image image = ResourceUtils.loadImage("/icon16x16/chip.png");
-            setIconImage(image);
-            if (org.apache.commons.lang.SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-                image = ResourceUtils.loadImage("/icon48x48/microchip.png");
-                final Taskbar taskbar = Taskbar.getTaskbar();
-                taskbar.setIconImage(image);
-            }
-        } catch (IOException | UnsupportedOperationException | SecurityException e) {
-            log.error(e.getMessage(), e);
-        }
         setLayout(new BorderLayout());
         setJMenuBar(createMenuBar());
         final JToolBar jToolBar = createToolBar();
@@ -249,5 +238,12 @@ public class MainWindow extends JFrame {
 
     public void setDefaultTitle() {
         setTitle(TITLE);
+    }
+
+    public void setTaskBar(Image image) {
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
+            final Taskbar taskbar = Taskbar.getTaskbar();
+            taskbar.setIconImage(image);
+        }
     }
 }

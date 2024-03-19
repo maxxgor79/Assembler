@@ -4,6 +4,7 @@ import ru.retro.assembler.editor.core.ui.Controller;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @Author: Maxim Gorin
@@ -11,4 +12,8 @@ import javax.swing.*;
  */
 public interface UIFactory {
     ModalDialog newAboutDialog(Controller controller);
+
+    Image newTaskBarImage();
+
+    Image newWindowImage();
 }

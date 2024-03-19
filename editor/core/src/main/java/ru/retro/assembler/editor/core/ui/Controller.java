@@ -252,7 +252,14 @@ public final class Controller implements Runnable {
         }
     }
 
+    private void createIcons() {
+        mainWindow.setTaskBar(uiFactory.newTaskBarImage());
+        mainWindow.setIconImage(uiFactory.newWindowImage());
+        preferencesDialog.setIconImage(uiFactory.newWindowImage());
+    }
+
     protected void initListeners() {
+        createIcons();
         createBuildToolButtons();
         createMenuItems();
         mainWindow.addWindowListener(windowAdapter);
