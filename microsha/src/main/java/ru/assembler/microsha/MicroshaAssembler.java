@@ -259,9 +259,10 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         if (address.signum() == -1) {
             throw new IllegalArgumentException("address is negative");
         }
-        if (!TypeUtil.isInRange(settings.getMinAddress(), settings.getMaxAddress(), address)) {
+        if (!TypeUtil.isInRange(getMinAddress(), getMaxAddress(), address)) {
             throw new IllegalArgumentException("address is out of range");
         }
+
         this.address = address;
     }
 

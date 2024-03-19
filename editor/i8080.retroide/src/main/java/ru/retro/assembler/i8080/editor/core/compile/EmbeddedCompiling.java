@@ -47,6 +47,10 @@ public class EmbeddedCompiling implements Compiling {
       final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir, toArgument(src, settings.getEncoding())
               , args);
       final Method method = asmClazz.getMethod("entry", Collection.class);
+      if (method == null) {
+        log.info("entry method not found");
+        throw new NoSuchMethodException("entry");
+      }
       final PipedInputStream pis = new PipedInputStream();
       final PipedOutputStream pos = new PipedOutputStream(pis);
       System.setOut(new PrintStream(pos));
