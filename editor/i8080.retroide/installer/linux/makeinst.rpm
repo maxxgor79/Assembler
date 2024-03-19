@@ -4,7 +4,7 @@ jpackage -i app --name RetroIDE-Microsha \
   --type rpm \
   --linux-shortcut \
   --verbose \
-  --icon res/microchip.png \
+  --icon res/keyboard.png \
   --dest dest \
   --linux-app-category Development \
   --description 'Light IDE for i8080 assembler' \

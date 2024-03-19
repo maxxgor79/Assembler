@@ -3,7 +3,7 @@ jpackage -i app --name RetroIDE-Microsha \
   --main-class ru.retro.assembler.microsha.editor.I8080Editor \
   --type dmg \
   --verbose \
-  --icon res/microchip.icns \
+  --icon res/keyboard.icns \
   --dest dest \
   --description 'Light IDE for i8080 assembler' \
   --mac-app-category Development \
