@@ -50,6 +50,11 @@ public interface SyntaxConstants {
 	 */
 	String SYNTAX_STYLE_ASSEMBLER_Z80	= "text/z80";
 
+	/**
+	 * Style for highlighting i8080 assembler.
+	 */
+	String SYNTAX_STYLE_ASSEMBLER_I8080	= "text/i8080";
+
 
 	/**
 	 * Style for highlighting x86 assembler.

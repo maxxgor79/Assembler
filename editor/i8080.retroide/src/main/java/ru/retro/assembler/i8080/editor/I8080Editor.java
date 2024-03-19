@@ -19,9 +19,9 @@ public class I8080Editor {
     }
 
     private static void setDefaultExt() {
-        UIUtils.putExt("asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
-        UIUtils.putExt("mcsasm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
-        UIUtils.putExt("hasm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
+        UIUtils.putExt("asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_I8080);
+        UIUtils.putExt("mcsasm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_I8080);
+        UIUtils.putExt("hasm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_I8080);
     }
 
     private static void setDefaultFactories() {
