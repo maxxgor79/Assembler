@@ -1,0 +1,10 @@
+jpackage -i app --name RetroIDE \
+  --main-jar z80.retroide-1.0-jar-with-dependencies.jar \
+  --main-class ru.retro.assembler.z80.editor.Z80Editor \
+  --type dmg \
+  --verbose \
+  --icon res/microchip.icns \
+  --dest dest \
+  --description 'Light IDE for Z80 assembler' \
+  --mac-app-category Development \
+  --java-options -Dz80asm.embedded=true
