@@ -800,11 +800,7 @@ public final class Controller implements Runnable {
     };
 
     private final ActionListener helpListener = e -> {
-        try {
-            Desktop.getDesktop().browse(helpUri);
-        } catch (IOException ex) {
-            log.error(ex.getMessage(), ex);
-        }
+        ResourceUtils.browse(helpUri);
     };
 
     private final ActionListener aboutListener = e -> {
