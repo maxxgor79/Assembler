@@ -9,6 +9,7 @@ import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.settings.DefaultAppSettings;
 import ru.retro.assembler.editor.core.ui.components.MenuItem;
 import ru.retro.assembler.editor.core.ui.components.ToolButton;
 import ru.retro.assembler.editor.core.ui.find.FindDialog;
@@ -48,7 +49,7 @@ public final class Controller implements Runnable {
     protected static final String NEW_SOURCE_NAME = "noname.asm";
 
     @Getter
-    protected final AppSettings settings = new AppSettings();
+    protected AppSettings settings;
 
     @Getter
     protected MainWindow mainWindow;
@@ -89,12 +90,18 @@ public final class Controller implements Runnable {
     @Getter
     @Setter
     @NonNull
-    private static UIFactory uiFactory = EmptyUIComponents.defaultUIFactory();
+    private static UIFactory uiFactory = DefaultUIComponents.defaultUIFactory();
+
+    @Getter
+    @Setter
+    @NonNull
+    private static AppSettingsFactory appSettingsFactory = DefaultAppSettings.defaultAppSettingsFactory();
 
     @Getter
     private Collection<String> args;
 
     public Controller(final Collection<String> args) {
+        this.settings = appSettingsFactory.newAppSettings();
         loadSettings();
         this.args = args;
         this.mainWindow = new MainWindow();

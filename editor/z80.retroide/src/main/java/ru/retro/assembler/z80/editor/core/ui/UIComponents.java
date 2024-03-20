@@ -3,7 +3,7 @@ package ru.retro.assembler.z80.editor.core.ui;
 import lombok.NonNull;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.ui.Controller;
-import ru.retro.assembler.editor.core.ui.EmptyUIComponents;
+import ru.retro.assembler.editor.core.ui.DefaultUIComponents;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
 import ru.retro.assembler.editor.core.util.UIFactory;
 
@@ -20,7 +20,7 @@ public final class UIComponents {
 
     public static UIFactory defaultUIFactory(@NonNull final BuildVersionReader buildVersionReader) {
         return new UIFactory() {
-            private UIFactory defaultUiFactory = EmptyUIComponents.defaultUIFactory();
+            private UIFactory defaultUiFactory = DefaultUIComponents.defaultUIFactory();
 
             @Override
             public ModalDialog newAboutDialog(Controller controller) {

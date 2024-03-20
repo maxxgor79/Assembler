@@ -15,16 +15,23 @@ import java.util.prefs.Preferences;
 public abstract class Settings extends AnnotationProcessor {
     private final Preferences prefs = Preferences.userRoot();
 
+    private String getNameWithPrefix(String name) {
+        if (getPrefix() != null) {
+            return getPrefix() + "." + name;
+        }
+        return name;
+    }
+
     protected void flush() throws IllegalAccessException {
         for (Property p : getProperties(this)) {
             if (p.isBoolean()) {
-                prefs.putBoolean(p.getName(), p.getBoolean());
+                prefs.putBoolean(getNameWithPrefix(p.getName()), p.getBoolean());
             } else if (p.isInt()) {
-                prefs.putInt(p.getName(), p.getInt());
+                prefs.putInt(getNameWithPrefix(p.getName()), p.getInt());
             } else if (p.isReal()) {
-                prefs.putDouble(p.getName(), p.getReal());
+                prefs.putDouble(getNameWithPrefix(p.getName()), p.getReal());
             } else if (p.isText()) {
-                prefs.put(p.getName(), String.valueOf(p.getText()));
+                prefs.put(getNameWithPrefix(p.getName()), String.valueOf(p.getText()));
             }
         }
     }
@@ -42,15 +49,15 @@ public abstract class Settings extends AnnotationProcessor {
     protected void apply() throws IllegalAccessException {
         for (Property p : getProperties(this)) {
             final String name = p.getName();
-            if (prefs.get(name, null) != null) {
+            if (prefs.get(getNameWithPrefix(name), null) != null) {
                 if (p.isBoolean()) {
-                    p.set(prefs.getBoolean(name, false));
+                    p.set(prefs.getBoolean(getNameWithPrefix(name), false));
                 } else if (p.isInt()) {
-                    p.set(prefs.getInt(name, 0));
+                    p.set(prefs.getInt(getNameWithPrefix(name), 0));
                 } else if (p.isReal()) {
-                    p.set(prefs.getDouble(name, 0.0));
+                    p.set(prefs.getDouble(getNameWithPrefix(name), 0.0));
                 } else if (p.isText()) {
-                    p.set(prefs.get(name, null));
+                    p.set(prefs.get(getNameWithPrefix(name), null));
                 }
             }
         }
@@ -64,4 +71,6 @@ public abstract class Settings extends AnnotationProcessor {
             throw new BackingStoreException(e);
         }
     }
+
+    public abstract String getPrefix();
 }

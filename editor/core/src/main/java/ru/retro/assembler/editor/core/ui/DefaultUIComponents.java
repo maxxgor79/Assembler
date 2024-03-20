@@ -13,8 +13,8 @@ import java.io.IOException;
  * Date: 18.03.2024
  */
 @Slf4j
-public final class EmptyUIComponents {
-    private EmptyUIComponents() {
+public final class DefaultUIComponents {
+    private DefaultUIComponents() {
 
     }
 

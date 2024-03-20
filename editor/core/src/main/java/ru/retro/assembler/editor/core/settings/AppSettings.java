@@ -126,4 +126,9 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     protected boolean compiledEmbedded;
+
+    @Override
+    public String getPrefix() {
+        return null;
+    }
 }
