@@ -107,7 +107,7 @@ public class SourceTabbedPane extends JTabbedPane {
     public void update(@NonNull final Source src) {
         final int index = sourceList.indexOf(src);
         this.setTitleAt(index, src.getName());
-        this.setToolTipTextAt(index, src.getName());
+        this.setToolTipTextAt(index, src.getFile().getAbsolutePath());
     }
 
     public Source getSourceSelected() {

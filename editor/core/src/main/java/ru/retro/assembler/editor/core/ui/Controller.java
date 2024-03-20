@@ -436,6 +436,7 @@ public final class Controller implements Runnable {
             try {
                 overwriteSave(file, src);
                 src.rename(file);
+                mainWindow.getSourceTabbedPane().update(src);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance().get(Messages.IO_ERROR)
