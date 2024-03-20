@@ -23,8 +23,9 @@ public final class ResourceUtils {
 
     private static final String WIN_FLAG = "url.dll,FileProtocolHandler";
 
-    private static final java.util.List<String> browserList = Arrays.asList("firefox", "chrome-stable", "opera"
-            , "mozilla");
+    private static final java.util.List<String> browserList = Arrays.asList("google-chrome", "chrome-stable"
+            , "firefox", "mozilla", "opera", "epiphany", "konqueror", "chromium", "links"
+            , "lynx", "brave-browser");
 
     private static Icon questionIcon;
 
@@ -82,11 +83,13 @@ public final class ResourceUtils {
 
     public static void browse(@NonNull final URI uri) {
         if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().browse(uri);
-                return;
-            } catch (UnsupportedOperationException | IOException e) {
-                log.error(e.getMessage(), e);
+            if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    Desktop.getDesktop().browse(uri);
+                    return;
+                } catch (UnsupportedOperationException | IOException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -107,8 +110,7 @@ public final class ResourceUtils {
             try {
                 String browser = null;
                 for (int count = 0; count < browserList.size() && browser == null; count++) {
-                    if (Runtime.getRuntime().exec(
-                            new String[]{"which", browserList.get(count)}).waitFor() == 0) {
+                    if (Runtime.getRuntime().exec(new String[]{"which", browserList.get(count)}).waitFor() == 0) {
                         browser = browserList.get(count);
                         break;
                     }
