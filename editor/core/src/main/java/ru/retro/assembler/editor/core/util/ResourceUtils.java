@@ -85,7 +85,7 @@ public final class ResourceUtils {
             try {
                 Desktop.getDesktop().browse(uri);
                 return;
-            } catch (IOException e) {
+            } catch (UnsupportedOperationException | IOException e) {
                 log.error(e.getMessage(), e);
             }
         }
