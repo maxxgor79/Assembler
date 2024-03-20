@@ -19,7 +19,11 @@ public interface Compiling {
         final Path tmpPath = FileUtils.createTempFile(src.getFile()).toPath();
         Files.write(tmpPath, src.getTextArea().getText().getBytes(encoding), StandardOpenOption.TRUNCATE_EXISTING);
         final StringBuilder sb = new StringBuilder(tmpPath.toFile().getAbsolutePath());
-        sb.append("#").append(src.getFile().getAbsolutePath());
+        if (src.isNew()) {
+            sb.append("#").append(src.getFile().getName());
+        } else {
+            sb.append("#").append(src.getFile().getAbsolutePath());
+        }
         return sb.toString();
     }
 }
