@@ -437,6 +437,7 @@ public final class Controller implements Runnable {
                 overwriteSave(file, src);
                 src.rename(file);
                 mainWindow.getSourceTabbedPane().update(src);
+                setCaption(src.getFile().getName());
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance().get(Messages.IO_ERROR)
@@ -797,7 +798,6 @@ public final class Controller implements Runnable {
         log.info("Save as action");
         Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
         saveSourceAs(src);
-        mainWindow.getSourceTabbedPane().update(src);
     };
 
     private final ActionListener saveAllListener = e -> {
