@@ -1,10 +1,14 @@
 package ru.retro.assembler.i8080.editor.core.ui;
 
+import ru.retro.assembler.editor.core.util.FileUtils;
 import ru.retro.assembler.i8080.editor.core.i18n.I8080Messages;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @Author: Maxim Gorin
@@ -27,6 +31,7 @@ public class LocalizedSaveAsChooser extends JFileChooser {
         UIManager.put("FileChooser.upFolderAccessibleName", I8080Messages.getInstance().get(I8080Messages.UP_FOLDER));
         UIManager.put("FileChooser.newFolderToolTipText", I8080Messages.getInstance().get(I8080Messages.NEW_FOLDER));
     }
+
     public LocalizedSaveAsChooser() {
         initComponent();
     }
@@ -52,5 +57,37 @@ public class LocalizedSaveAsChooser extends JFileChooser {
         extension = new FileNameExtensionFilter(I8080Messages.getInstance().get(I8080Messages.MCSASM_SOURCES)
                 , "mcsasm");
         addChoosableFileFilter(extension);
+    }
+
+    @Override
+    public File getSelectedFile() {
+        if (super.getSelectedFile() == null) {
+            return null;
+        }
+        if (super.getFileFilter() instanceof FileNameExtensionFilter) {
+            final FileNameExtensionFilter filter = (FileNameExtensionFilter) super.getFileFilter();
+            if (filter.getExtensions() != null && (filter.getExtensions().length > 0)) {
+                return FileUtils.addExt(super.getSelectedFile(), filter.getExtensions()[0]);
+            }
+        }
+        return super.getSelectedFile();
+    }
+
+    @Override
+    public File[] getSelectedFiles() {
+        if (super.getSelectedFiles() == null) {
+            return null;
+        }
+        if (super.getFileFilter() instanceof FileNameExtensionFilter) {
+            final FileNameExtensionFilter filter = (FileNameExtensionFilter) super.getFileFilter();
+            if (filter.getExtensions() != null && (filter.getExtensions().length > 0)) {
+                final List<File> fileList = new LinkedList<>();
+                for (File file : super.getSelectedFiles()) {
+                    fileList.add(FileUtils.addExt(file, filter.getExtensions()[0]));
+                }
+                return fileList.toArray(new File[fileList.size()]);
+            }
+        }
+        return super.getSelectedFiles();
     }
 }

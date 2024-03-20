@@ -1,11 +1,14 @@
 package ru.retro.assembler.z80.editor.core.ui;
 
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.util.FileUtils;
 import ru.retro.assembler.z80.editor.core.i18n.Z80Messages;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @Author: Maxim Gorin
@@ -51,5 +54,37 @@ public class LocalizedSaveAsChooser extends JFileChooser {
         addChoosableFileFilter(extension);
         extension = new FileNameExtensionFilter(Z80Messages.getInstance().get(Z80Messages.Z80_SOURCES), "z80");
         addChoosableFileFilter(extension);
+    }
+
+    @Override
+    public File getSelectedFile() {
+        if (super.getSelectedFile() == null) {
+            return null;
+        }
+        if (super.getFileFilter() instanceof FileNameExtensionFilter) {
+            final FileNameExtensionFilter filter = (FileNameExtensionFilter) super.getFileFilter();
+            if (filter.getExtensions() != null && (filter.getExtensions().length > 0)) {
+                return FileUtils.addExt(super.getSelectedFile(), filter.getExtensions()[0]);
+            }
+        }
+        return super.getSelectedFile();
+    }
+
+    @Override
+    public File[] getSelectedFiles() {
+        if (super.getSelectedFiles() == null) {
+            return null;
+        }
+        if (super.getFileFilter() instanceof FileNameExtensionFilter) {
+            final FileNameExtensionFilter filter = (FileNameExtensionFilter) super.getFileFilter();
+            if (filter.getExtensions() != null && (filter.getExtensions().length > 0)) {
+                final List<File> fileList = new LinkedList<>();
+                for (File file : super.getSelectedFiles()) {
+                    fileList.add(FileUtils.addExt(file, filter.getExtensions()[0]));
+                }
+                return fileList.toArray(new File[fileList.size()]);
+            }
+        }
+        return super.getSelectedFiles();
     }
 }
