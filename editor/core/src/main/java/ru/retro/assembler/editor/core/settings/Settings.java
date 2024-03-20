@@ -17,21 +17,22 @@ public abstract class Settings extends AnnotationProcessor {
 
     private String getNameWithPrefix(String name) {
         if (getPrefix() != null) {
-            return getPrefix() + "." + name;
+            name = getPrefix() + "." + name;
         }
         return name;
     }
 
     protected void flush() throws IllegalAccessException {
         for (Property p : getProperties(this)) {
+            final String prefixedName = getNameWithPrefix(p.getName());
             if (p.isBoolean()) {
-                prefs.putBoolean(getNameWithPrefix(p.getName()), p.getBoolean());
+                prefs.putBoolean(prefixedName, p.getBoolean());
             } else if (p.isInt()) {
-                prefs.putInt(getNameWithPrefix(p.getName()), p.getInt());
+                prefs.putInt(prefixedName, p.getInt());
             } else if (p.isReal()) {
-                prefs.putDouble(getNameWithPrefix(p.getName()), p.getReal());
+                prefs.putDouble(prefixedName, p.getReal());
             } else if (p.isText()) {
-                prefs.put(getNameWithPrefix(p.getName()), String.valueOf(p.getText()));
+                prefs.put(prefixedName, String.valueOf(p.getText()));
             }
         }
     }
@@ -48,16 +49,16 @@ public abstract class Settings extends AnnotationProcessor {
 
     protected void apply() throws IllegalAccessException {
         for (Property p : getProperties(this)) {
-            final String name = p.getName();
-            if (prefs.get(getNameWithPrefix(name), null) != null) {
+            final String prefixedName = getNameWithPrefix(p.getName());
+            if (prefs.get(prefixedName, null) != null) {
                 if (p.isBoolean()) {
-                    p.set(prefs.getBoolean(getNameWithPrefix(name), false));
+                    p.set(prefs.getBoolean(prefixedName, false));
                 } else if (p.isInt()) {
-                    p.set(prefs.getInt(getNameWithPrefix(name), 0));
+                    p.set(prefs.getInt(prefixedName, 0));
                 } else if (p.isReal()) {
-                    p.set(prefs.getDouble(getNameWithPrefix(name), 0.0));
+                    p.set(prefs.getDouble(prefixedName, 0.0));
                 } else if (p.isText()) {
-                    p.set(prefs.get(getNameWithPrefix(name), null));
+                    p.set(prefs.get(prefixedName, null));
                 }
             }
         }

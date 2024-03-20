@@ -14,12 +14,7 @@ public final class DefaultAppSettings {
   }
 
   public static AppSettingsFactory defaultAppSettingsFactory() {
-    return new AppSettingsFactory() {
-      @Override
-      public AppSettings newAppSettings() {
-        return new AppSettings();
-      }
-    };
+    return () -> new AppSettings();
   }
 
 }
