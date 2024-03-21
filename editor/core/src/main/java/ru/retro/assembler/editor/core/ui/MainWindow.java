@@ -53,6 +53,9 @@ public class MainWindow extends JFrame {
     private BuildMenuItems buildMenuItems;
 
     @Getter
+    private RunMenuItems runMenuItems;
+
+    @Getter
     private ToolsMenuItems toolsMenuItems;
 
     @Getter
@@ -117,6 +120,8 @@ public class MainWindow extends JFrame {
         editMenuItems = new EditMenuItems(menu);
         bar.add(menu = createMenuBuild());
         buildMenuItems = new BuildMenuItems(menu);
+        bar.add(menu = createMenuRun());
+        runMenuItems = new RunMenuItems(menu);
         bar.add(menu = createMenuTools());
         toolsMenuItems = new ToolsMenuItems(menu);
         bar.add(menu = createMenuHelp());
@@ -140,6 +145,12 @@ public class MainWindow extends JFrame {
         JMenu edit = new JMenu(Messages.getInstance().get(Messages.BUILD));
         edit.setMnemonic('B');
         return edit;
+    }
+
+    protected JMenu createMenuRun() {
+        final JMenu run = new JMenu(Messages.getInstance().get(Messages.RUN));
+        run.setMnemonic('U');
+        return run;
     }
 
     protected JMenu createMenuTools() {

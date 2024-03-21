@@ -192,6 +192,10 @@ public final class Messages {
 
     public static final String ABOUT = "about";
 
+    public static final String PLAYER_TITLE = "player_title";
+
+    public static final String RUN = "run";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }
