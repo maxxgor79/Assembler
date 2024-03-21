@@ -8,7 +8,7 @@
         <java.version>14</java.version>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
-        <exec.name>retroide</exec.name>
+        <exec.name>z80.retroide</exec.name>
         <major.version>1</major.version>
         <minor.version>0</minor.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>

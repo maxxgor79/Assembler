@@ -1,5 +1,7 @@
 package ru.retro.assembler.editor.core.util;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -38,8 +40,12 @@ public final class ResourceUtils {
     }
 
     public static Image loadImage(@NonNull String path) throws IOException {
-        byte[] iconData = IOUtils.toByteArray(ResourceUtils.class.getResourceAsStream(path));
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(iconData));
+        final InputStream is = ResourceUtils.class.getResourceAsStream(path);
+        if (is == null) {
+            throw new FileNotFoundException(path);
+        }
+        final byte[] iconData = IOUtils.toByteArray(is);
+        final BufferedImage image = ImageIO.read(new ByteArrayInputStream(iconData));
         return image;
     }
 

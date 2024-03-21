@@ -26,6 +26,7 @@ public class Activator implements ActionListener {
 
     private void run() {
         mainWindow.getBuildMenuItems().updateAll();
+        mainWindow.getRunMenuItems().updateAll();
         mainWindow.getToolBarButtons().updateAll();
         boolean noSources = mainWindow.getSourceTabbedPane().getTabCount() == 0;
         mainWindow.getBtnSave().setEnabled(!noSources);

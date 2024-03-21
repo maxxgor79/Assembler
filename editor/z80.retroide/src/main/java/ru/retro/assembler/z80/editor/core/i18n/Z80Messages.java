@@ -74,6 +74,8 @@ public final class Z80Messages {
 
     public static final String COMPILE_WAV = "compile_wav";
 
+    public static final String TAPE_PLAYER = "tape_player";
+
     private Z80Messages() {
         bundle = ResourceBundle.getBundle("i18n.Z80EditorMessages");
     }
