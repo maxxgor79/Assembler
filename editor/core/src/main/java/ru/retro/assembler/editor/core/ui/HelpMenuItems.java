@@ -7,6 +7,8 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 /**
@@ -30,6 +32,7 @@ public class HelpMenuItems {
 
     private void initComponents() {
         miHelp = new JMenuItem(Messages.getInstance().get(Messages.HELP));
+        miHelp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
         miHelp.setMnemonic('H');
         try {
             miHelp.setIcon(ResourceUtils.loadIcon("/icon16x16/help.png"));
