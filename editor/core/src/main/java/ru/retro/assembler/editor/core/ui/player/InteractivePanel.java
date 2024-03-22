@@ -16,6 +16,16 @@ public class InteractivePanel extends JPanel {
     @Getter
     private JSlider slider;
 
+    private byte[] buf;
+
+    private int off;
+
+    private int len;
+
+    private int[] x = new int[1000];
+
+    private int[] y = new int[1000];
+
     public InteractivePanel() {
         initComponents();
     }
@@ -46,14 +56,38 @@ public class InteractivePanel extends JPanel {
     }
 
     protected void paintScreen(Graphics g) {
+        final int width = screenPanel.getWidth();
+        final int height = screenPanel.getHeight();
         g.setColor(Color.BLACK);
-        Rectangle clip = g.getClipBounds();
-        g.fillRect(clip.x, clip.y, clip.width, clip.height);
+        g.fillRect(0, 0, width, height);
         g.setColor(Color.YELLOW);
-        g.drawLine(clip.x, clip.y + clip.height / 2, clip.x + clip.width, clip.y + clip.height / 2);
+        g.drawLine(0, height / 2, width, height / 2);
+        if (buf != null && buf.length >= len) {
+            double dx = (double) len / width;
+            double dy = (double) height / 256.0;
+            double offset = off;
+            g.setColor(Color.GREEN);
+            for (int i = 0; i < width; i++, offset += dx) {
+                int b = buf[(int) offset] & 0xff;
+                int y = (int) ((255 - b) * dy);
+                this.x[i] = i;
+                this.y[i] = y;
+            }
+            g.drawPolyline(x, y, width);
+        }
     }
 
-    public void setData(byte []data) {
+    public void updateData(byte[] buf, int off, int len) {
+        this.buf = buf;
+        this.off = off;
+        this.len = len;
+        repaint();
+    }
 
+    public void reset() {
+        buf = null;
+        off = 0;
+        len = 0;
+        repaint();
     }
 }
