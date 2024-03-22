@@ -1,9 +1,7 @@
 package ru.retro.assembler.editor.core.ui.player;
 
-import javax.sound.sampled.LineEvent.Type;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import ru.retro.assembler.editor.core.audio.AudioPlayer;
 import ru.retro.assembler.editor.core.audio.AudioPlayerEvent;
 import ru.retro.assembler.editor.core.audio.AudioPlayerException;
@@ -13,17 +11,12 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @Author: Maxim Gorin Date: 21.03.2024
@@ -104,7 +97,14 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
   }
 
   protected void play() {
-    player.start();
+      try {
+          player.start();
+      } catch (AudioPlayerException e) {
+        log.error(e.getMessage(), e);
+        SwingUtilities.invokeLater(
+                () -> JOptionPane.showMessageDialog(Player.this.getOwner(), e.getMessage()
+                        , Messages.getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE));
+      }
   }
 
   protected void stop() {
@@ -129,7 +129,8 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
 
   @Override
   public void stopped(AudioPlayer player) {
-    interactivePanel.getSlider().setValue(0);
+    log.info("Player stopped");
+    interactivePanel.getSlider().setValue(1);
     buttonsPanel.getBtnPlay().setEnabled(true);
     buttonsPanel.getBtnStop().setEnabled(false);
   }

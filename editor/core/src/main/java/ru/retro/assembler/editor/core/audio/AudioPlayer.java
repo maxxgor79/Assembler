@@ -14,7 +14,7 @@ public interface AudioPlayer {
 
   File getFile();
 
-  void start();
+  void start() throws AudioPlayerException;
 
   void stop();
 
