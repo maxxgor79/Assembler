@@ -2,6 +2,7 @@ package ru.retro.assembler.i8080.editor.utils;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import javax.imageio.ImageIO;
@@ -29,5 +30,13 @@ public final class ResourceUtils {
   public static Icon loadIcon(@NonNull String path) throws IOException {
     Image image = loadImage(path);
     return new ImageIcon(image);
+  }
+
+  public static String cutExtension(@NonNull final String path) {
+    int index = FilenameUtils.indexOfExtension(path);
+    if (index == -1) {
+      return path;
+    }
+    return path.substring(0, index);
   }
 }

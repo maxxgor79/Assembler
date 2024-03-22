@@ -25,6 +25,7 @@ import ru.retro.assembler.z80.editor.utils.ResourceUtils;
  */
 @Slf4j
 public class TapePlayerMenuItem extends AbstractMenuItem {
+  protected static final String EXTENSION = "wav";
 
   private Player player;
 
@@ -67,7 +68,7 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
   private void play(ActionEvent actionEvent, @NonNull final File file) {
     String name = file.getName();
     name = ResourceUtils.cutExtension(name);
-    final File wavFile = new File(settings.getOutputDirectory(), name + ".wav");
+    final File wavFile = new File(settings.getOutputDirectory(), name + "." + EXTENSION);
     if (!wavFile.exists()) {
       compileWavMenuItem.onAction(actionEvent);
     }

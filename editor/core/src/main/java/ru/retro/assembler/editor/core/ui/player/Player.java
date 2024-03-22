@@ -112,7 +112,18 @@ public class Player extends JDialog implements ModalDialog, Runnable, LineListen
       sourceDataLine.addLineListener(this);
       sourceDataLine.open(audioFormat);
       sourceDataLine.start();
-      executorService.execute(this);
+      executorService.execute(() -> {
+        int readBytes;
+        try {
+          while ((readBytes = audioStream.read(buffer)) != -1) {
+            sourceDataLine.write(buffer, 0, readBytes);
+            receivedData(buffer, 0, readBytes);
+          }
+        } catch (IOException e) {
+          log.error(e.getMessage(), e);
+        }
+        sourceDataLine.close();
+      });
     } catch (LineUnavailableException | UnsupportedAudioFileException e) {
       log.error(e.getMessage(), e);
       SwingUtilities.invokeLater(
@@ -132,19 +143,13 @@ public class Player extends JDialog implements ModalDialog, Runnable, LineListen
   public void run() {
     int readBytes;
     try {
-      System.out.println("run ");
       while ((readBytes = audioStream.read(buffer)) != -1) {
-        log.info("read {}", readBytes);
-        System.out.println("read " + readBytes);
         sourceDataLine.write(buffer, 0, readBytes);
-        log.info("written {}", readBytes);
-        System.out.println("write " + readBytes);
         receivedData(buffer, 0, readBytes);
       }
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }
-    System.out.println("run end");
     sourceDataLine.close();
   }
 

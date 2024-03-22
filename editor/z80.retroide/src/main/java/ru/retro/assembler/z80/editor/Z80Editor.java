@@ -6,12 +6,11 @@ import ru.retro.assembler.editor.core.Editor;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.Controller;
-import ru.retro.assembler.editor.core.util.AppSettingsFactory;
 import ru.retro.assembler.editor.core.util.UIUtils;
-import ru.retro.assembler.z80.editor.core.ui.FileChoosers;
-import ru.retro.assembler.z80.editor.core.ui.UIComponents;
 import ru.retro.assembler.z80.editor.core.menu.build.BuildMenuItems;
 import ru.retro.assembler.z80.editor.core.menu.build.BuildToolButtons;
+import ru.retro.assembler.z80.editor.core.ui.FileChoosers;
+import ru.retro.assembler.z80.editor.core.ui.UIComponents;
 
 public class Z80Editor {
 
