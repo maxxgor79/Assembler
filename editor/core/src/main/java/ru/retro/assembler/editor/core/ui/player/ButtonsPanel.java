@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.ui.player;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 
 import javax.swing.*;
@@ -30,6 +31,7 @@ public class ButtonsPanel extends JPanel {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        btnPlay.setToolTipText(Messages.getInstance().get(Messages.PLAY));
         add(btnPlay);
         btnStop = new JButton();
         try {
@@ -37,6 +39,7 @@ public class ButtonsPanel extends JPanel {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        btnStop.setToolTipText(Messages.getInstance().get(Messages.STOP));
         add(btnStop);
     }
 }
