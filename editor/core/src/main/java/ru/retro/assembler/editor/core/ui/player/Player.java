@@ -28,6 +28,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     private ButtonsPanel buttonsPanel;
 
     private AudioPlayer player;
+
     private double scale;
 
     private final byte[] sampleBuffer = new byte[4096];
@@ -77,24 +78,29 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     }
 
     public void setFile(@NonNull File file) {
-        buttonsPanel.getBtnPlay().setEnabled(false);
         try {
             player.setFile(file);
             buttonsPanel.getBtnPlay().setEnabled(true);
-            buttonsPanel.getBtnStop().setEnabled(false);
             buttonsPanel.getBtnPlay().requestFocus();
+            buttonsPanel.getBtnStop().setEnabled(false);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(Player.this.getOwner(), String.format(Messages
-                                    .getInstance().get(Messages.IO_ERROR), player.getFile().getAbsolutePath()),
-                            Messages.getInstance().get(Messages
-                                    .ERROR), JOptionPane.ERROR_MESSAGE));
+                    () -> {
+                        buttonsPanel.getBtnPlay().setEnabled(false);
+                        JOptionPane.showMessageDialog(Player.this.getOwner(), String.format(Messages
+                                        .getInstance().get(Messages.IO_ERROR), player.getFile().getAbsolutePath()),
+                                Messages.getInstance().get(Messages
+                                        .ERROR), JOptionPane.ERROR_MESSAGE);
+                    });
         } catch (AudioPlayerException e) {
             log.error(e.getMessage(), e);
             SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(Player.this.getOwner(), e.getMessage()
-                            , Messages.getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE));
+                    () -> {
+                        buttonsPanel.getBtnPlay().setEnabled(false);
+                        JOptionPane.showMessageDialog(Player.this.getOwner(), e.getMessage()
+                                , Messages.getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE);
+                    });
         }
     }
 
@@ -145,8 +151,8 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     @Override
     public void started(AudioPlayer player) {
         buttonsPanel.getBtnPlay().setEnabled(false);
+        buttonsPanel.getBtnPlay().requestFocus();
         buttonsPanel.getBtnStop().setEnabled(true);
-        buttonsPanel.getBtnStop().requestFocus();
     }
 
     @Override
@@ -154,8 +160,8 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
         log.info("Player stopped");
         interactivePanel.getSlider().setValue(0);
         buttonsPanel.getBtnPlay().setEnabled(true);
-        buttonsPanel.getBtnStop().setEnabled(false);
         buttonsPanel.getBtnPlay().requestFocus();
+        buttonsPanel.getBtnStop().setEnabled(false);
         interactivePanel.reset();
     }
 
