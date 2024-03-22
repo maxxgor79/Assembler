@@ -4,6 +4,11 @@ import javax.sound.sampled.LineEvent.Type;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import ru.retro.assembler.editor.core.audio.AudioPlayer;
+import ru.retro.assembler.editor.core.audio.AudioPlayerEvent;
+import ru.retro.assembler.editor.core.audio.AudioPlayerException;
+import ru.retro.assembler.editor.core.audio.ClipPlayer;
+import ru.retro.assembler.editor.core.audio.SDLPlayer;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
@@ -24,24 +29,13 @@ import java.util.concurrent.Executors;
  * @Author: Maxim Gorin Date: 21.03.2024
  */
 @Slf4j
-public class Player extends JDialog implements ModalDialog, Runnable, LineListener {
+public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
 
   private InteractivePanel interactivePanel;
 
   private ButtonsPanel buttonsPanel;
 
-  private File file;
-
-  private AudioInputStream audioStream;
-
-  private AudioFormat audioFormat;
-
-  private SourceDataLine sourceDataLine;
-
-  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-  private final byte[] buffer = new byte[4096];
-
+  private AudioPlayer player;
   private double scale;
 
   public Player(Frame owner) {
@@ -60,6 +54,8 @@ public class Player extends JDialog implements ModalDialog, Runnable, LineListen
     } catch (IOException e) {
       log.error(e.getMessage(), e);
     }
+    //player = new SDLPlayer(this);
+    player = new ClipPlayer(this);
     buttonsPanel = new ButtonsPanel();
     add(buttonsPanel, BorderLayout.SOUTH);
     interactivePanel = new InteractivePanel();
@@ -73,8 +69,7 @@ public class Player extends JDialog implements ModalDialog, Runnable, LineListen
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
-        closed();
-        executorService.shutdownNow();
+        player.close();
         dispose();
       }
     });
@@ -88,112 +83,59 @@ public class Player extends JDialog implements ModalDialog, Runnable, LineListen
   }
 
   public void setFile(@NonNull File file) {
-    this.file = file;
-    if (file != null) {
+    buttonsPanel.getBtnPlay().setEnabled(false);
+    try {
+      player.setFile(file);
       buttonsPanel.getBtnPlay().setEnabled(true);
       buttonsPanel.getBtnStop().setEnabled(false);
-    } else {
-      buttonsPanel.getBtnPlay().setEnabled(false);
-      buttonsPanel.getBtnStop().setEnabled(false);
-    }
-  }
-
-  protected void play() {
-    if (file == null) {
-      throw new IllegalArgumentException("file not defined");
-    }
-    try {
-      audioStream = AudioSystem.getAudioInputStream(new ByteArrayInputStream(IOUtils.toByteArray
-          (new FileInputStream(file))));
-      scale = (double) interactivePanel.getSlider().getMaximum() / audioStream.getFrameLength();
-      audioFormat = audioStream.getFormat();
-      final DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-      sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-      sourceDataLine.addLineListener(this);
-      sourceDataLine.open(audioFormat);
-      sourceDataLine.start();
-      executorService.execute(() -> {
-        int readBytes;
-        try {
-          while ((readBytes = audioStream.read(buffer)) != -1) {
-            sourceDataLine.write(buffer, 0, readBytes);
-            receivedData(buffer, 0, readBytes);
-          }
-        } catch (IOException e) {
-          log.error(e.getMessage(), e);
-        }
-        sourceDataLine.close();
-      });
-    } catch (LineUnavailableException | UnsupportedAudioFileException e) {
-      log.error(e.getMessage(), e);
-      SwingUtilities.invokeLater(
-          () -> JOptionPane.showMessageDialog(Player.this.getOwner(), e.getMessage()
-              , Messages.getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE));
     } catch (IOException e) {
       log.error(e.getMessage(), e);
       SwingUtilities.invokeLater(
           () -> JOptionPane.showMessageDialog(Player.this.getOwner(), String.format(Messages
-                  .getInstance().get(Messages.IO_ERROR), file.getAbsolutePath()),
+                  .getInstance().get(Messages.IO_ERROR), player.getFile().getAbsolutePath()),
               Messages.getInstance().get(Messages
                   .ERROR), JOptionPane.ERROR_MESSAGE));
+    } catch (AudioPlayerException e) {
+      log.error(e.getMessage(), e);
+      SwingUtilities.invokeLater(
+          () -> JOptionPane.showMessageDialog(Player.this.getOwner(), e.getMessage()
+              , Messages.getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE));
     }
   }
 
-  @Override
-  public void run() {
-    int readBytes;
-    try {
-      while ((readBytes = audioStream.read(buffer)) != -1) {
-        sourceDataLine.write(buffer, 0, readBytes);
-        receivedData(buffer, 0, readBytes);
-      }
-    } catch (IOException e) {
-      log.error(e.getMessage(), e);
-    }
-    sourceDataLine.close();
+  protected void play() {
+    player.start();
   }
 
   protected void stop() {
-    sourceDataLine.stop();
+    player.stop();
   }
 
-  protected void started() {
+  @Override
+  public void received(AudioPlayer player, byte[] buf, int off, int len) {
+    interactivePanel.getSlider().setValue((int) (player.getFramePosition() * scale));
+  }
+
+  @Override
+  public void open(AudioPlayer player) {
+    scale = (double) interactivePanel.getSlider().getMaximum() / player.getFrameLength();
+  }
+
+  @Override
+  public void started(AudioPlayer player) {
     buttonsPanel.getBtnPlay().setEnabled(false);
     buttonsPanel.getBtnStop().setEnabled(true);
   }
 
-  protected void stopped() {
+  @Override
+  public void stopped(AudioPlayer player) {
     interactivePanel.getSlider().setValue(0);
     buttonsPanel.getBtnPlay().setEnabled(true);
     buttonsPanel.getBtnStop().setEnabled(false);
   }
 
-  protected void closed() {
-    if (sourceDataLine != null) {
-      sourceDataLine.close();
-      sourceDataLine = null;
-    }
-    IOUtils.closeQuietly(audioStream);
-    audioStream = null;
-    audioFormat = null;
-  }
-
   @Override
-  public void update(LineEvent event) {
-    if (LineEvent.Type.START == event.getType()) {
-      log.info("Playback started.");
-      started();
-    } else if (LineEvent.Type.STOP == event.getType()) {
-      log.info("Playback stopped.");
-      stopped();
-    } else if (LineEvent.Type.CLOSE == event.getType()) {
-      log.info("Playback closed.");
-      closed();
-    }
-  }
-
-  protected void receivedData(byte[] buf, int off, int len) {
-    interactivePanel.getSlider().setValue((int) (sourceDataLine.getLongFramePosition() * scale));
+  public void closed(AudioPlayer player) {
   }
 }
 
