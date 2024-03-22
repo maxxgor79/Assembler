@@ -56,6 +56,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
         setResizable(false);
         buttonsPanel.getBtnPlay().setEnabled(false);
         buttonsPanel.getBtnStop().setEnabled(false);
+        getRootPane().setDefaultButton(buttonsPanel.getBtnPlay());
     }
 
     private void initListeners() {
@@ -81,6 +82,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
             player.setFile(file);
             buttonsPanel.getBtnPlay().setEnabled(true);
             buttonsPanel.getBtnStop().setEnabled(false);
+            buttonsPanel.getBtnPlay().requestFocus();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             SwingUtilities.invokeLater(
@@ -144,6 +146,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     public void started(AudioPlayer player) {
         buttonsPanel.getBtnPlay().setEnabled(false);
         buttonsPanel.getBtnStop().setEnabled(true);
+        buttonsPanel.getBtnStop().requestFocus();
     }
 
     @Override
@@ -152,6 +155,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
         interactivePanel.getSlider().setValue(0);
         buttonsPanel.getBtnPlay().setEnabled(true);
         buttonsPanel.getBtnStop().setEnabled(false);
+        buttonsPanel.getBtnPlay().requestFocus();
         interactivePanel.reset();
     }
 
