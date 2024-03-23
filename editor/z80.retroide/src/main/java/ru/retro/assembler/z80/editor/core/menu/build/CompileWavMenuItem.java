@@ -2,8 +2,8 @@ package ru.retro.assembler.z80.editor.core.menu.build;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.Source;
-import ru.retro.assembler.editor.core.ui.Controller;
 import ru.retro.assembler.z80.editor.core.i18n.Z80Messages;
 import ru.retro.assembler.z80.editor.utils.CLIUtils;
 

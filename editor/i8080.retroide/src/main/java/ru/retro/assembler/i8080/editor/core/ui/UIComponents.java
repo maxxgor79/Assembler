@@ -2,8 +2,8 @@ package ru.retro.assembler.i8080.editor.core.ui;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
-import ru.retro.assembler.editor.core.ui.Controller;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
 import ru.retro.assembler.editor.core.util.UIFactory;
 import ru.retro.assembler.i8080.editor.utils.ResourceUtils;
@@ -24,7 +24,7 @@ public final class UIComponents {
     public static UIFactory defaultUIFactory(@NonNull final BuildVersionReader buildVersionReader) {
         return new UIFactory() {
             @Override
-            public ModalDialog newAboutDialog(Controller controller) {
+            public ModalDialog newAboutDialog(@NonNull Controller controller) {
                 final AboutDialog dialog = new AboutDialog(controller.getMainWindow());
                 dialog.setMajorVersion(controller.getSettings().getMajorVersion());
                 dialog.setMinorVersion(controller.getSettings().getMinorVersion());

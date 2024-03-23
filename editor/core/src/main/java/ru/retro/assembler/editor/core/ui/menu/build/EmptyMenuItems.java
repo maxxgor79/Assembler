@@ -1,11 +1,10 @@
 package ru.retro.assembler.editor.core.ui.menu.build;
 
 import java.util.Collection;
-import ru.retro.assembler.editor.core.ui.Controller;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.ui.components.MenuItem;
 import ru.retro.assembler.editor.core.util.MenuItemFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public final class EmptyMenuItems {

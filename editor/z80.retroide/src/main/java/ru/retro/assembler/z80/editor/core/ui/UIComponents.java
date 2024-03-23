@@ -1,13 +1,14 @@
 package ru.retro.assembler.z80.editor.core.ui;
 
 import lombok.NonNull;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
-import ru.retro.assembler.editor.core.ui.Controller;
 import ru.retro.assembler.editor.core.ui.DefaultUIComponents;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
 import ru.retro.assembler.editor.core.util.UIFactory;
 
 import java.awt.*;
+
 
 /**
  * @Author: Maxim Gorin
@@ -23,7 +24,7 @@ public final class UIComponents {
             private UIFactory defaultUiFactory = DefaultUIComponents.defaultUIFactory();
 
             @Override
-            public ModalDialog newAboutDialog(Controller controller) {
+            public ModalDialog newAboutDialog(@NonNull Controller controller) {
                 final AboutDialog dialog = new AboutDialog(controller.getMainWindow());
                 dialog.setMajorVersion(controller.getSettings().getMajorVersion());
                 dialog.setMinorVersion(controller.getSettings().getMinorVersion());

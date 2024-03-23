@@ -1,4 +1,4 @@
-package ru.retro.assembler.editor.core.ui;
+package ru.retro.assembler.editor.core.control;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,6 +10,7 @@ import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.settings.DefaultAppSettings;
+import ru.retro.assembler.editor.core.ui.*;
 import ru.retro.assembler.editor.core.ui.components.MenuItem;
 import ru.retro.assembler.editor.core.ui.components.ToolButton;
 import ru.retro.assembler.editor.core.ui.find.FindDialog;

@@ -2,7 +2,7 @@ package ru.retro.assembler.z80.editor.core.menu.build;
 
 import java.util.Collection;
 import lombok.NonNull;
-import ru.retro.assembler.editor.core.ui.Controller;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.ui.components.MenuItem;
 import ru.retro.assembler.editor.core.util.MenuItemFactory;
 

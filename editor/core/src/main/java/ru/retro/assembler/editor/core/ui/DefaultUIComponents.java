@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.ui;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 import ru.retro.assembler.editor.core.util.UIFactory;
 
