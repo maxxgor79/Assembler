@@ -2,6 +2,7 @@ package ru.assembler.core.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -12,55 +13,64 @@ import lombok.NonNull;
  */
 public class LimitedOutputStream extends OutputStream {
 
-  @Getter
-  private int limit;
+    @Getter
+    private Limitation limitation;
 
-  @Getter
-  private int counter;
+    @Getter
+    private int counter;
 
-  @NonNull
-  private OutputStream os;
+    @NonNull
+    private OutputStream os;
 
-  private LimitedOutputStream() {
+    private LimitedOutputStream() {
 
-  }
-
-  public LimitedOutputStream(@NonNull final OutputStream os, final int limit) {
-    this.os = os;
-    this.limit = limit;
-  }
-
-  private void checkLimit() throws IOException {
-    if (counter >= limit) {
-      throw new IOException("Exceed limit at " + limit + " bytes");
     }
-  }
 
-  public void write(@NonNull final byte[] b, final int off, final int len) throws IOException {
-    os.write(b, off, len);
-    counter += len;
-    checkLimit();
-  }
+    public LimitedOutputStream(@NonNull final OutputStream os, final Limitation limitation) {
+        this.os = os;
+        this.limitation = limitation;
+    }
 
-  @Override
-  public void write(final int b) throws IOException {
-    os.write(b);
-    counter++;
-    checkLimit();
-  }
+    public LimitedOutputStream(@NonNull final OutputStream os, final int limit) {
+        this.os = os;
+        this.limitation = () -> limit;
+    }
 
-  @Override
-  public void write(@NonNull final byte[] b) throws IOException {
-    os.write(b);
-    counter += b.length;
-    checkLimit();
-  }
+    private void checkLimit() throws IOException {
+        if (limitation != null && counter >= limitation.getLimit()) {
+            throw new IOException("Exceed limit at " + limitation.getLimit() + " bytes");
+        }
+    }
 
-  public void flush() throws IOException {
-    os.flush();
-  }
+    public void write(@NonNull final byte[] b, final int off, final int len) throws IOException {
+        os.write(b, off, len);
+        counter += len;
+        checkLimit();
+    }
 
-  public void close() throws IOException {
-    os.close();
-  }
+    @Override
+    public void write(final int b) throws IOException {
+        os.write(b);
+        counter++;
+        checkLimit();
+    }
+
+    @Override
+    public void write(@NonNull final byte[] b) throws IOException {
+        os.write(b);
+        counter += b.length;
+        checkLimit();
+    }
+
+    public void flush() throws IOException {
+        os.flush();
+    }
+
+    public void close() throws IOException {
+        os.close();
+    }
+
+    public interface Limitation {
+        int getLimit();
+    }
 }

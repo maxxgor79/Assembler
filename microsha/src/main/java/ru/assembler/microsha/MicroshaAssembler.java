@@ -203,10 +203,10 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
 
     protected CompilerApi compile(@NonNull final FileDescriptor fd, @NonNull final InputStream is
             , @NonNull final OutputStream os) throws IOException {
-        final int limitation = settings.getMaxAddress().subtract(settings.getMinAddress()).intValue();
-        final LimitedOutputStream los = new LimitedOutputStream(os, limitation);
+        final LimitedOutputStream los = new LimitedOutputStream(os, () -> settings.getMaxAddress().subtract(
+                getAddress()).intValue());
         final CompilerApi compilerApi = CompilerFactory.create((namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
-                        -> new MicroshaCompiler(namespaceApi, settingsApi, syntaxAnalyzer, os)
+                        -> new MicroshaCompiler(namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                 , this, settings, fd, is, los);
         compilerApi.compile();
         return compilerApi;

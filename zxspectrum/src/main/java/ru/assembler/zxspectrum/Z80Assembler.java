@@ -5,7 +5,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.assembler.core.compiler.CompilerApi;
@@ -13,7 +18,6 @@ import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
-import ru.assembler.core.error.text.MessageFormatter;
 import ru.assembler.core.error.text.MessageList;
 import ru.assembler.core.error.text.Output;
 import ru.assembler.core.io.FileDescriptor;
@@ -34,9 +38,21 @@ import ru.zxspectrum.io.tap.TapData;
 import ru.zxspectrum.io.tap.TapUtils;
 import ru.zxspectrum.io.tzx.TzxUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Maxim Gorin
@@ -228,8 +244,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
 
     protected CompilerApi compile(@NonNull final FileDescriptor fd, @NonNull final InputStream is
             , @NonNull final OutputStream os) throws IOException {
-        final int limitation = settings.getMaxAddress().subtract(settings.getMinAddress()).intValue();
-        final LimitedOutputStream los = new LimitedOutputStream(os, limitation);
+        final LimitedOutputStream los = new LimitedOutputStream(os, () -> settings.getMaxAddress().subtract(
+                getAddress()).intValue());
         final CompilerApi compilerApi = CompilerFactory.create(
                 (namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
                         -> new Z80Compiler(namespaceApi, settingsApi, syntaxAnalyzer, outputStream)
