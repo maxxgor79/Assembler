@@ -69,9 +69,8 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
     String name = file.getName();
     name = ResourceUtils.cutExtension(name);
     final File wavFile = new File(settings.getOutputDirectory(), name + "." + EXTENSION);
-    if (!wavFile.exists()) {
-      compileWavMenuItem.onAction(actionEvent);
-    }
+    wavFile.delete();
+    compileWavMenuItem.onAction(actionEvent);
     final Player player = getPlayer();
     player.setFile(wavFile);
     player.setLocationRelativeTo(mainWindow);

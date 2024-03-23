@@ -64,9 +64,8 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
         String name = file.getName();
         name = ResourceUtils.cutExtension(name);
         final File wavFile = new File(settings.getOutputDirectory(), name + "." + EXTENSION);
-        if (!wavFile.exists()) {
-            compileWavMenuItem.onAction(actionEvent);
-        }
+        wavFile.delete();
+        compileWavMenuItem.onAction(actionEvent);
         final ru.retro.assembler.editor.core.ui.player.Player player = getPlayer();
         player.setFile(wavFile);
         player.setLocationRelativeTo(mainWindow);
