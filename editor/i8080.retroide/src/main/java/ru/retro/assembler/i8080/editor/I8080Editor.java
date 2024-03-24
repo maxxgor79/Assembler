@@ -12,6 +12,11 @@ import ru.retro.assembler.i8080.editor.core.menu.build.BuildMenuItems;
 import ru.retro.assembler.i8080.editor.core.menu.build.BuildToolButtons;
 import ru.retro.assembler.i8080.editor.core.ui.FileChoosers;
 import ru.retro.assembler.i8080.editor.core.ui.UIComponents;
+import ru.retro.assembler.i8080.editor.utils.ResourceUtils;
+
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @Slf4j
 public class I8080Editor {
@@ -55,7 +60,21 @@ public class I8080Editor {
         log.info(message);
     }
 
+    private static void loadFonts() {
+        byte [] data;
+        try {
+            data = ResourceUtils.loadResource("/font/Microsha.ttf");
+            Font font = Font.createFont(Font.TRUETYPE_FONT, new ByteArrayInputStream(data));
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font);
+        } catch (FontFormatException | IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     public static void main(String[] args) {
+        //ResourceUtils.toPng(args[0]);
+        loadFonts();
         printSystemInfo();
         setDefaultExt();
         setDefaultFactories();
