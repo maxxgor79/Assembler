@@ -74,13 +74,13 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     @NonNull
-    protected String openDialogCurrentDirectory;
+    protected String openDialogCurrentDirectory = "${user.dir}";
 
     @Getter
     @Setter
     @Setting
     @NonNull
-    protected String saveDialogCurrentDirectory;
+    protected String saveDialogCurrentDirectory = "${user.dir}";
 
     @Getter
     @Setter
