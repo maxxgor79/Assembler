@@ -73,7 +73,6 @@ public class I8080Editor {
     }
 
     public static void main(String[] args) {
-        //ResourceUtils.toPng(args[0]);
         loadFonts();
         printSystemInfo();
         setDefaultExt();
