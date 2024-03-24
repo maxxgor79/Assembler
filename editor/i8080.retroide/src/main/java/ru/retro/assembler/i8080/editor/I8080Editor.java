@@ -37,6 +37,7 @@ public class I8080Editor {
             }
         };
         instance.setOutputDirectory("${user.home}${file.separator}i8080${file.separator}output");
+        instance.setCompilerPath("mscasm");
         return instance;
     }
 

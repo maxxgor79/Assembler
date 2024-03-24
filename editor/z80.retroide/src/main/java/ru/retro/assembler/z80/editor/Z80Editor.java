@@ -38,6 +38,7 @@ public class Z80Editor {
       }
     };
     instance.setOutputDirectory("${user.home}${file.separator}z80${file.separator}output");
+    instance.setCompilerPath("z80asm");
     return instance;
   }
 
