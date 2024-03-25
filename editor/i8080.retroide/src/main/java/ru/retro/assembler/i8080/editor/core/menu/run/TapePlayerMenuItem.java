@@ -34,7 +34,7 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
             @NonNull Controller controller) {
         super(controller, I8080Messages.getInstance().get(I8080Messages.TAPE_PLAYER), (char) 0, KeyStroke
                 .getKeyStroke(KeyEvent.VK_F10, InputEvent.ALT_DOWN_MASK | InputEvent
-                        .SHIFT_DOWN_MASK), null);
+                        .SHIFT_DOWN_MASK), "/icon16x16/play.png");
         this.mainWindow = controller.getMainWindow();
         this.settings = controller.getSettings();
         this.compileWavMenuItem = new CompileWavMenuItem(controller);
