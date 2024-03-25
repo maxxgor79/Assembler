@@ -60,20 +60,7 @@ public class I8080Editor {
         log.info(message);
     }
 
-    private static void loadFonts() {
-        byte [] data;
-        try {
-            data = ResourceUtils.loadResource("/font/Microsha.ttf");
-            Font font = Font.createFont(Font.TRUETYPE_FONT, new ByteArrayInputStream(data));
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font);
-        } catch (FontFormatException | IOException e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
     public static void main(String[] args) {
-        loadFonts();
         printSystemInfo();
         setDefaultExt();
         setDefaultFactories();

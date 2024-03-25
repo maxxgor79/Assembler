@@ -4,12 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public interface ToolButton {
+public interface ToolButton extends Order {
     int ICON_WIDTH = 32;
 
     int ICON_HEIGHT = 32;
-
-    int order();
 
     String name();
 

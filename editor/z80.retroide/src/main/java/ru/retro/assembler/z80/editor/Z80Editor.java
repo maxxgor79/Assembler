@@ -61,21 +61,8 @@ public class Z80Editor {
     log.info(message);
   }
 
-  private static void loadFonts() {
-    byte [] data;
-    try {
-      data = ResourceUtils.loadResource("/font/zxspectrum.ttf");
-      Font font = Font.createFont(Font.TRUETYPE_FONT, new ByteArrayInputStream(data));
-      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      ge.registerFont(font);
-    } catch (FontFormatException | IOException e) {
-      log.error(e.getMessage(), e);
-    }
-  }
-
   public static void main(String[] args) {
     printSystemInfo();
-    loadFonts();
     setDefaultExt();
     setDefaultFactories();
     final Editor editor = new Editor();

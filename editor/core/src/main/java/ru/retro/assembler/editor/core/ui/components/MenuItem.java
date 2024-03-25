@@ -3,9 +3,7 @@ package ru.retro.assembler.editor.core.ui.components;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public interface MenuItem {
-    int order();
-
+public interface MenuItem extends Order {
     String name();
 
     char mnemonic();
