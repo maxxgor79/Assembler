@@ -163,8 +163,8 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     public void started(AudioPlayer player) {
         log.info("Player started");
         buttonsPanel.getBtnPlay().setEnabled(false);
-        buttonsPanel.getBtnPlay().requestFocus();
         buttonsPanel.getBtnStop().setEnabled(true);
+        buttonsPanel.getBtnStop().requestFocus();
     }
 
     @Override

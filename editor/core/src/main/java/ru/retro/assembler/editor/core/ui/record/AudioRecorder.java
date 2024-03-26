@@ -152,8 +152,8 @@ public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent
   public void started(Recorder recorder) {
     log.info("Recorder started");
     buttonsPanel.getBtnRecord().setEnabled(false);
-    buttonsPanel.getBtnRecord().requestFocus();
     buttonsPanel.getBtnStop().setEnabled(true);
+    buttonsPanel.getBtnStop().requestFocus();
   }
 
   @Override

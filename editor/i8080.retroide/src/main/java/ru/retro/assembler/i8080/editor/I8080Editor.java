@@ -6,21 +6,15 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import ru.retro.assembler.editor.core.Editor;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
-import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.util.UIUtils;
-import ru.retro.assembler.i8080.editor.core.menu.build.BuildMenuItems;
+import ru.retro.assembler.i8080.editor.core.menu.MenuItems;
 import ru.retro.assembler.i8080.editor.core.menu.build.BuildToolButtons;
+import ru.retro.assembler.i8080.editor.core.settings.I8080AppSettings;
 import ru.retro.assembler.i8080.editor.core.ui.FileChoosers;
 import ru.retro.assembler.i8080.editor.core.ui.UIComponents;
-import ru.retro.assembler.i8080.editor.utils.ResourceUtils;
-
-import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 @Slf4j
 public class I8080Editor {
-
     @Getter
     private static final BuildVersionReader buildVersionReader = new BuildVersionReader();
 
@@ -34,24 +28,17 @@ public class I8080Editor {
         UIUtils.putExt("hasm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_I8080);
     }
 
-    private static AppSettings createSettings() {
-        final AppSettings instance = new AppSettings() {
+    private static void setDefaultFactories() {
+        Controller.setAppSettingsFactory(() -> new I8080AppSettings() {
             @Override
             public String getPrefix() {
                 return "i8080";
             }
-        };
-        instance.setOutputDirectory("${user.home}${file.separator}i8080${file.separator}output");
-        instance.setCompilerPath("mscasm");
-        return instance;
-    }
-
-    private static void setDefaultFactories() {
+        });
         Controller.setToolButtonFactory(BuildToolButtons.defaultToolButtonFactory());
-        Controller.setMenuItemFactory(BuildMenuItems.defaultMenuItemFactory());
+        Controller.setMenuItemFactory(MenuItems.defaultMenuItemFactory());
         Controller.setFileChooserFactory(FileChoosers.defaultFileChooserFactory());
         Controller.setUiFactory(UIComponents.defaultUIFactory(buildVersionReader));
-        Controller.setAppSettingsFactory(() -> createSettings());
     }
 
     private static void printSystemInfo() {

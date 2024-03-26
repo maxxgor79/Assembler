@@ -47,7 +47,7 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
 
     @Override
     public boolean hasSeparator() {
-        return false;
+        return true;
     }
 
     @Override

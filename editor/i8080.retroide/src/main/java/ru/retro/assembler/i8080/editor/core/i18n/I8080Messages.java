@@ -74,6 +74,8 @@ public final class I8080Messages {
 
     public static final String TAPE_PLAYER = "tape_player";
 
+    public static final String RECORDER = "recorder";
+
     private I8080Messages() {
         bundle = ResourceBundle.getBundle("i18n.I8080EditorMessages");
     }
