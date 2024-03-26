@@ -16,4 +16,6 @@ public interface AudioPlayerEvent {
   void stopped(AudioPlayer player);
 
   void closed(AudioPlayer player);
+
+  void error(Exception e);
 }

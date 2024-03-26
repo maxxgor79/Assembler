@@ -200,6 +200,10 @@ public final class Messages {
 
     public static final String PLAY = "play";
 
+    public static final String RECORDER_TITLE = "recorder_title";
+
+    public static final String RECORD = "record";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }

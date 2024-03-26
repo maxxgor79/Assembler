@@ -1,5 +1,6 @@
 package ru.retro.assembler.z80.editor;
 
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -7,6 +8,7 @@ import ru.retro.assembler.editor.core.Editor;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.ui.record.AudioRecorder;
 import ru.retro.assembler.editor.core.util.UIUtils;
 import ru.retro.assembler.z80.editor.core.menu.build.BuildMenuItems;
 import ru.retro.assembler.z80.editor.core.menu.build.BuildToolButtons;

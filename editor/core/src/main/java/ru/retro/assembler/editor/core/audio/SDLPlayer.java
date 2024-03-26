@@ -25,143 +25,146 @@ import org.apache.commons.io.IOUtils;
 @Slf4j
 public class SDLPlayer implements AudioPlayer, LineListener {
 
-    private File file;
+  private File file;
 
-    private AudioState state = AudioState.Initialized;
+  private AudioState state = AudioState.Initialized;
 
-    private InputStream is;
+  private InputStream is;
 
-    private AudioInputStream audioStream;
+  private AudioInputStream audioStream;
 
-    private AudioFormat audioFormat;
+  private AudioFormat audioFormat;
 
-    private SourceDataLine sourceDataLine;
+  private SourceDataLine sourceDataLine;
 
-    private AudioPlayerEvent handler;
+  private AudioPlayerEvent handler;
 
-    private Thread thread;
+  private Thread thread;
 
-    public SDLPlayer(AudioPlayerEvent handler) {
-        this.handler = handler;
+  final byte[] buffer = new byte[4096];
+
+  public SDLPlayer(AudioPlayerEvent handler) {
+    this.handler = handler;
+  }
+
+  @Override
+  public void setFile(@NonNull final File file) throws IOException, AudioPlayerException {
+    this.file = file;
+    try (FileInputStream fis = new FileInputStream(file)) {
+      is = new ByteArrayInputStream(IOUtils.toByteArray(fis));
     }
+  }
 
-    @Override
-    public void setFile(@NonNull final File file) throws IOException, AudioPlayerException {
-        this.file = file;
-        try (FileInputStream fis = new FileInputStream(file)) {
-            is = new ByteArrayInputStream(IOUtils.toByteArray(fis));
+  @Override
+  public File getFile() {
+    return file;
+  }
+
+  @Override
+  public void start() throws AudioPlayerException {
+    if (is == null) {
+      throw new IllegalArgumentException("null");
+    }
+    try {
+      is.reset();
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+      throw new AudioPlayerException(e);
+    }
+    thread = new Thread(() -> {
+      int readBytes;
+      try {
+        audioStream = AudioSystem.getAudioInputStream(is);
+        audioFormat = audioStream.getFormat();
+        final DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+        sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
+        sourceDataLine.addLineListener(this);
+        sourceDataLine.open(audioFormat);
+        sourceDataLine.start();
+        while ((readBytes = audioStream.read(buffer)) != -1) {
+          sourceDataLine.write(buffer, 0, readBytes);
+          if (handler != null && sourceDataLine.isRunning()) {
+            handler.received(SDLPlayer.this, buffer, 0, readBytes);
+          }
         }
-    }
-
-    @Override
-    public File getFile() {
-        return file;
-    }
-
-    @Override
-    public void start() throws AudioPlayerException {
-        if (is == null) {
-            throw new IllegalArgumentException("null");
+      } catch (LineUnavailableException | UnsupportedAudioFileException | IOException e) {
+        log.error(e.getMessage(), e);
+        if (handler != null) {
+          handler.error(e);
         }
-        try {
-            is.reset();
-            audioStream = AudioSystem.getAudioInputStream(is);
-            audioFormat = audioStream.getFormat();
-            final DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-            sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
-            sourceDataLine.addLineListener(this);
-            sourceDataLine.open(audioFormat);
-            sourceDataLine.start();
-        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
-            log.error(e.getMessage(), e);
-            throw new AudioPlayerException(e);
-        }
-        thread = new Thread(() -> {
-            int readBytes;
-            final byte[] buffer = new byte[4096];
-            try {
-                while ((readBytes = audioStream.read(buffer)) != -1) {
-                    sourceDataLine.write(buffer, 0, readBytes);
-                    if (handler != null && sourceDataLine.isRunning()) {
-                        handler.received(SDLPlayer.this, buffer, 0, readBytes);
-                    }
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            }
-            close();
-        });
-        thread.start();
-    }
+      }
+      finally {
+        close();
+      }
+    });
+    thread.start();
+  }
 
-    @Override
-    public void stop() {
-        if (sourceDataLine != null) {
-            sourceDataLine.stop();
-        }
+  @Override
+  public void stop() {
+    if (sourceDataLine != null) {
+      sourceDataLine.stop();
     }
+  }
 
-    @Override
-    public void close() {
-        if (sourceDataLine != null) {
-            sourceDataLine.close();
-            sourceDataLine = null;
-        }
-        IOUtils.closeQuietly(audioStream);
-        audioStream = null;
-        audioFormat = null;
-        if (thread != null) {
-            thread.interrupt();
-            thread = null;
-        }
+  @Override
+  public void close() {
+    if (sourceDataLine != null) {
+      sourceDataLine.close();
+      sourceDataLine = null;
     }
+    IOUtils.closeQuietly(audioStream);
+    audioStream = null;
+    audioFormat = null;
+    state = AudioState.Initialized;
+  }
 
-    @Override
-    public AudioFormat getFormat() {
-        return audioFormat;
-    }
+  @Override
+  public AudioFormat getFormat() {
+    return audioFormat;
+  }
 
-    @Override
-    public AudioState getState() {
-        return state;
-    }
+  @Override
+  public AudioState getState() {
+    return state;
+  }
 
-    @Override
-    public long getFrameLength() {
-        return audioStream == null ? 0 : audioStream.getFrameLength();
-    }
+  @Override
+  public long getFrameLength() {
+    return audioStream == null ? 0 : audioStream.getFrameLength();
+  }
 
-    @Override
-    public long getFramePosition() {
-        return sourceDataLine == null ? 0 : sourceDataLine.getLongFramePosition();
-    }
+  @Override
+  public long getFramePosition() {
+    return sourceDataLine == null ? 0 : sourceDataLine.getLongFramePosition();
+  }
 
-    @Override
-    public void update(LineEvent e) {
-        if (LineEvent.Type.OPEN == e.getType()) {
-            log.info("Playback started.");
-            state = AudioState.Open;
-            if (handler != null) {
-                handler.open(this);
-            }
-        } else if (LineEvent.Type.START == e.getType()) {
-            log.info("Playback started.");
-            state = AudioState.Started;
-            if (handler != null) {
-                handler.started(this);
-            }
-        } else if (LineEvent.Type.STOP == e.getType()) {
-            log.info("Playback stopped.");
-            state = AudioState.Stopped;
-            if (handler != null) {
-                handler.stopped(this);
-            }
-        } else if (LineEvent.Type.CLOSE == e.getType()) {
-            log.info("Playback closed.");
-            state = AudioState.Closed;
-            if (handler != null) {
-                handler.closed(this);
-            }
-        }
+  @Override
+  public void update(LineEvent e) {
+    if (LineEvent.Type.OPEN == e.getType()) {
+      log.info("Playback started.");
+      state = AudioState.Open;
+      if (handler != null) {
+        handler.open(this);
+      }
+    } else if (LineEvent.Type.START == e.getType()) {
+      log.info("Playback started.");
+      state = AudioState.Started;
+      if (handler != null) {
+        handler.started(this);
+      }
+    } else if (LineEvent.Type.STOP == e.getType()) {
+      log.info("Playback stopped.");
+      state = AudioState.Stopped;
+      if (handler != null) {
+        handler.stopped(this);
+      }
+    } else if (LineEvent.Type.CLOSE == e.getType()) {
+      log.info("Playback closed.");
+      state = AudioState.Closed;
+      if (handler != null) {
+        handler.closed(this);
+      }
     }
+  }
 }

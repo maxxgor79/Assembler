@@ -1,4 +1,4 @@
-package ru.retro.assembler.editor.core.ui.player;
+package ru.retro.assembler.editor.core.ui.media;
 
 import lombok.Getter;
 
@@ -22,9 +22,9 @@ public class InteractivePanel extends JPanel {
 
     private int len;
 
-    private int[] x = new int[1000];
+    private final int[] x = new int[1000];
 
-    private int[] y = new int[1000];
+    private final int[] y = new int[1000];
 
     public InteractivePanel() {
         initComponents();
