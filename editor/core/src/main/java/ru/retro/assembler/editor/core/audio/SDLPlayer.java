@@ -95,6 +95,11 @@ public class SDLPlayer implements AudioPlayer, LineListener {
       }
       finally {
         close();
+        IOUtils.closeQuietly(audioStream);
+        audioStream = null;
+        sourceDataLine = null;
+        audioFormat = null;
+        thread = null;
       }
     });
     thread.start();
@@ -111,11 +116,7 @@ public class SDLPlayer implements AudioPlayer, LineListener {
   public void close() {
     if (sourceDataLine != null) {
       sourceDataLine.close();
-      sourceDataLine = null;
     }
-    IOUtils.closeQuietly(audioStream);
-    audioStream = null;
-    audioFormat = null;
     state = AudioState.Initialized;
   }
 

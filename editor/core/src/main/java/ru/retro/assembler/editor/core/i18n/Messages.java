@@ -204,6 +204,8 @@ public final class Messages {
 
     public static final String RECORD = "record";
 
+    public static final String WAVE_FILES = "wav_files";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }

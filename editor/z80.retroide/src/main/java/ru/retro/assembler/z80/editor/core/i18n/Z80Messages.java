@@ -76,6 +76,8 @@ public final class Z80Messages {
 
     public static final String TAPE_PLAYER = "tape_player";
 
+    public static final String RECORDER = "recorder";
+
     private Z80Messages() {
         bundle = ResourceBundle.getBundle("i18n.Z80EditorMessages");
     }

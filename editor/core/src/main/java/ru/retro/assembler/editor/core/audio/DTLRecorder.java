@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -62,6 +61,9 @@ public class DTLRecorder implements Recorder, LineListener {
     if (file == null) {
       throw new IllegalArgumentException("file is null");
     }
+    if (thread != null) {
+      throw new IllegalStateException("Recorder is running");
+    }
     thread = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -71,14 +73,17 @@ public class DTLRecorder implements Recorder, LineListener {
           targetLine.addLineListener(DTLRecorder.this);
           targetLine.open(audioFormat);
           targetLine.start();
-          int readBytes;
           totalRead = 0;
           final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-          while ((readBytes = targetLine.read(buffer, 0, buffer.length)) != -1) {
-            baos.write(buffer, 0, readBytes);
-            totalRead += readBytes;
-            if (handler != null) {
-              handler.received(DTLRecorder.this, buffer, 0, readBytes);
+          while (!thread.isInterrupted()) {
+            final int availableBytes = targetLine.available();
+            if (availableBytes > 0) {
+              targetLine.read(buffer, 0, availableBytes);
+              baos.write(buffer, 0, availableBytes);
+              totalRead += availableBytes;
+              if (handler != null) {
+                handler.received(DTLRecorder.this, buffer, 0, availableBytes);
+              }
             }
           }
           final AudioInputStream ais = new AudioInputStream(
@@ -92,7 +97,10 @@ public class DTLRecorder implements Recorder, LineListener {
           }
         } finally {
           close();
+          thread = null;
+          targetLine = null;
         }
+        log.info("Stopped");
       }
     });
     thread.start();
@@ -100,22 +108,21 @@ public class DTLRecorder implements Recorder, LineListener {
 
   @Override
   public void stop() {
-    if (targetLine != null) {
-      targetLine.stop();
-    }
+    log.info("Stop");
+    close();
   }
 
   @Override
   public void close() {
-    stop();
+    log.info("Close");
+    if (thread != null) {
+      thread.interrupt();
+    }
     if (targetLine != null) {
       targetLine.stop();
       targetLine.close();
-      targetLine = null;
     }
-    audioFormat = null;
     state = AudioState.Initialized;
-    totalRead = 0;
   }
 
   @Override
