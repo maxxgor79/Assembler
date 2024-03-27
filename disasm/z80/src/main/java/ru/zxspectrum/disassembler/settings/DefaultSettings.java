@@ -1,6 +1,7 @@
 package ru.zxspectrum.disassembler.settings;
 
 import lombok.NonNull;
+import ru.zxspectrum.disassembler.decode.DecoderStrategy;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
 import ru.zxspectrum.disassembler.utils.NumberStyle;
 
@@ -99,6 +100,11 @@ public class DefaultSettings implements Settings {
     @Override
     public NumberStyle getNumberStyle() {
         return NumberStyle.Classic;
+    }
+
+    @Override
+    public DecoderStrategy getStrategy() {
+        return DecoderStrategy.Sequentially;
     }
 
     @Override

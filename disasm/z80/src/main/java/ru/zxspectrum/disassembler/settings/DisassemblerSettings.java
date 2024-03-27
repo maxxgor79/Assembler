@@ -3,6 +3,7 @@ package ru.zxspectrum.disassembler.settings;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
+import ru.zxspectrum.disassembler.decode.DecoderStrategy;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
 import ru.zxspectrum.disassembler.utils.ConvertUtils;
 import ru.zxspectrum.disassembler.utils.NumberStyle;
@@ -53,6 +54,10 @@ public class DisassemblerSettings extends BaseSettings {
             final NumberStyle ns = ConvertUtils.toNumberStyle(cli.getOptionValue("ns"));
             setNumberStyle(ns);
         }
+        if (cli.hasOption("strategy")) {
+            final DecoderStrategy strategy = ConvertUtils.toStrategy(cli.getOptionValue("strategy"));
+            setStrategy(strategy);
+        }
     }
 
     @Override
@@ -61,7 +66,6 @@ public class DisassemblerSettings extends BaseSettings {
         setAddressDimension(settings.getAddressDimension());
         setRadix(settings.getRadix());
         setUpperCase(settings.isUpperCase());
-        setNumberStyle(settings.getNumberStyle());
         if (getDefaultAddress() == null) {
             setDefaultAddress(settings.getDefaultAddress());
         }
@@ -91,6 +95,12 @@ public class DisassemblerSettings extends BaseSettings {
         }
         if (settings.getTemplates() != null) {
             setTemplates(settings.getTemplates());
+        }
+        if (settings.getNumberStyle() != null) {
+            setNumberStyle(settings.getNumberStyle());
+        }
+        if (settings.getStrategy() != null) {
+            setStrategy(settings.getStrategy());
         }
     }
 }

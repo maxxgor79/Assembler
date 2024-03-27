@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import ru.zxspectrum.disassembler.decode.DecoderStrategy;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
 import ru.zxspectrum.disassembler.utils.NumberStyle;
 
@@ -93,7 +94,13 @@ public class BaseSettings implements Settings {
 
     @Setter
     @Getter
+    @NonNull
     private NumberStyle numberStyle;
+
+    @Setter
+    @Getter
+    @NonNull
+    private DecoderStrategy strategy;
 
     public BaseSettings() {
 
@@ -206,6 +213,11 @@ public class BaseSettings implements Settings {
     @Override
     public boolean isUpperCase() {
         return upperCase;
+    }
+
+    @Override
+    public DecoderStrategy getStrategy() {
+        return null;
     }
 
     protected void setTemplates(@NonNull Collection<String> templates) {

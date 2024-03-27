@@ -1,6 +1,7 @@
 package ru.zxspectrum.disassembler.utils;
 
 import lombok.NonNull;
+import ru.zxspectrum.disassembler.decode.DecoderStrategy;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -51,8 +52,23 @@ public final class ConvertUtils {
         styleName2NumberStyle.put("retro", NumberStyle.Retro);
     }
 
+    private static final Map<String, DecoderStrategy> strategyName2DecoderStrategy = new HashMap<>();
+
+    static {
+        strategyName2DecoderStrategy.put("sequentially", DecoderStrategy.Sequentially);
+        strategyName2DecoderStrategy.put("branching", DecoderStrategy.Branching);
+    }
+
     private ConvertUtils() {
 
+    }
+
+    public static DecoderStrategy toStrategy(@NonNull String name) {
+        DecoderStrategy strategy = strategyName2DecoderStrategy.get(name);
+        if (strategy == null) {
+            return DecoderStrategy.Sequentially;
+        }
+        return strategy;
     }
 
     public static int toRadixIndex(@NonNull String radixName) {

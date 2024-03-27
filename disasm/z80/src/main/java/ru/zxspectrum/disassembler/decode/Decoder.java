@@ -41,7 +41,7 @@ public class Decoder implements Runnable {
     @Setter
     @Getter
     @NonNull
-    private DecoderStrategy strategy = DecoderStrategy.Sequentially;
+    protected static DecoderStrategy strategy = DecoderStrategy.Sequentially;
 
     @Getter
     @Setter(AccessLevel.PROTECTED)

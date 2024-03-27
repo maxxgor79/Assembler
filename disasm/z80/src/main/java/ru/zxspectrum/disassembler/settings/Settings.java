@@ -1,5 +1,6 @@
 package ru.zxspectrum.disassembler.settings;
 
+import ru.zxspectrum.disassembler.decode.DecoderStrategy;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
 import ru.zxspectrum.disassembler.utils.NumberStyle;
 
@@ -47,6 +48,8 @@ public interface Settings {
     boolean isUpperCase();
 
     NumberStyle getNumberStyle();
+
+    DecoderStrategy getStrategy();
 
     void load(InputStream is) throws IOException;
 
