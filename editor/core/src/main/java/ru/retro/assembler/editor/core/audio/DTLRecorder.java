@@ -76,8 +76,11 @@ public class DTLRecorder implements Recorder, LineListener {
           totalRead = 0;
           final ByteArrayOutputStream baos = new ByteArrayOutputStream();
           while (!thread.isInterrupted()) {
-            final int availableBytes = targetLine.available();
+            int availableBytes = targetLine.available();
             if (availableBytes > 0) {
+              if (availableBytes > buffer.length) {
+                availableBytes = buffer.length;
+              }
               targetLine.read(buffer, 0, availableBytes);
               baos.write(buffer, 0, availableBytes);
               totalRead += availableBytes;
