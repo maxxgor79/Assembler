@@ -21,10 +21,17 @@ public class Org extends Command {
     private final Address address;
 
     public Org(@NonNull final BigInteger address) {
-        this.address = new Address(address);
+        this.address = new Address(address) {
+            @Override
+            public String generate() throws RenderException {
+                return generateValue();
+            }
+        };
     }
+
     @Override
     public String generate() throws RenderException {
-        return new StringBuilder().append(NAME).append(SPACE).append(address.generate()).toString();
+        final String name = uppercase ? NAME : NAME.toLowerCase();
+        return new StringBuilder().append(name).append(SPACE).append(address.generate()).toString();
     }
 }

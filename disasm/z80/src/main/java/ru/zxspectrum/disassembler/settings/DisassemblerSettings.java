@@ -3,8 +3,9 @@ package ru.zxspectrum.disassembler.settings;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
+import ru.zxspectrum.disassembler.utils.ConvertUtils;
+import ru.zxspectrum.disassembler.utils.NumberStyle;
 
 import java.math.BigInteger;
 
@@ -34,41 +35,62 @@ public class DisassemblerSettings extends BaseSettings {
         if (cli.hasOption("v")) {
             setAddressVisible(true);
         }
+        if (cli.hasOption("stdout")) {
+            setStdout(true);
+        }
+        if (cli.hasOption("r")) {
+            final int radix = ConvertUtils.toRadixIndex(cli.getOptionValue("r"));
+            if (radix != -1) {
+                setRadix(radix);
+            }
+        }
+        if (cli.hasOption("lc")) {
+            final boolean b = ConvertUtils.toUpperCase(cli.getOptionValue("lc"));
+            setUpperCase(b);
+        }
+
+        if (cli.hasOption("ns")) {
+            final NumberStyle ns = ConvertUtils.toNumberStyle(cli.getOptionValue("ns"));
+            setNumberStyle(ns);
+        }
     }
 
     @Override
     public void merge(@NonNull Settings settings) {
         setAddressVisible(settings.isAddressVisible());
         setAddressDimension(settings.getAddressDimension());
-        if (getDefaultAddress() != null) {
-            setDefaultAddress(getDefaultAddress());
+        setRadix(settings.getRadix());
+        setUpperCase(settings.isUpperCase());
+        setNumberStyle(settings.getNumberStyle());
+        if (getDefaultAddress() == null) {
+            setDefaultAddress(settings.getDefaultAddress());
         }
-        if (getByteOrder() != null) {
-            setByteOrder(getByteOrder());
+        if (settings.getByteOrder() != null) {
+            setByteOrder(settings.getByteOrder());
         }
-        if (getDestEncoding() != null) {
-            setDestEncoding(getDestEncoding());
+        if (settings.getDestEncoding() != null) {
+            setDestEncoding(settings.getDestEncoding());
         }
-        if (getCommentsTemplate() != null) {
-            setCommentsTemplate(getCommentsTemplate());
+        if (settings.getCommentsTemplate() != null) {
+            setCommentsTemplate(settings.getCommentsTemplate());
         }
-        if (getMajorVersion() != null) {
-            setMajorVersion(getMajorVersion());
+        if (settings.getMajorVersion() != null) {
+            setMajorVersion(settings.getMajorVersion());
         }
-        if (getMinorVersion() != null) {
-            setMinorVersion(getMinorVersion());
+        if (settings.getMinorVersion() != null) {
+            setMinorVersion(settings.getMinorVersion());
         }
-        if (getMaxAddress() != null) {
-            setMaxAddress(getMaxAddress());
+        if (settings.getMaxAddress() != null) {
+            setMaxAddress(settings.getMaxAddress());
         }
-        if (getMinAddress() != null) {
-            setMinAddress(getMinAddress());
+        if (settings.getMinAddress() != null) {
+            setMinAddress(settings.getMinAddress());
         }
-        if (getCmdFilename() != null) {
-            setCmdFilename(getCmdFilename());
+        if (settings.getCmdFilename() != null) {
+            setCmdFilename(settings.getCmdFilename());
         }
-        if (getTemplates() != null) {
-            setTemplates(getTemplates());
+        if (settings.getTemplates() != null) {
+            setTemplates(settings.getTemplates());
         }
     }
 }

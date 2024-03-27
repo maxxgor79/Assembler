@@ -3,12 +3,10 @@ package ru.zxspectrum.disassembler.io;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
 
-import java.io.EOFException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * @author maxim
@@ -30,22 +28,25 @@ public class ByteCodeInputStream extends InputStream {
     @Getter
     private byte[] data;
 
-    public ByteCodeInputStream(File file, final byte[] data) {
-        this(file, data, ByteOrder.LittleEndian);
+    public ByteCodeInputStream(final byte[] data) {
+        this(data, ByteOrder.LittleEndian);
     }
 
-    public ByteCodeInputStream(File file, @NonNull byte[] data, @NonNull ByteOrder byteOrder) {
+    public ByteCodeInputStream(@NonNull final File file) throws IOException {
+        this(file, ByteOrder.LittleEndian);
+    }
+
+    public ByteCodeInputStream(@NonNull final File file, @NonNull final ByteOrder byteOrder) throws IOException {
         this.file = file;
+        this.byteOrder = byteOrder;
+        try (FileInputStream fis = new FileInputStream(file)) {
+            this.data = IOUtils.toByteArray(fis);
+        }
+    }
+
+    public ByteCodeInputStream(@NonNull final byte[] data, @NonNull final ByteOrder byteOrder) {
         this.data = data;
         this.byteOrder = byteOrder;
-    }
-
-    public ByteCodeInputStream(byte[] data, ByteOrder byteOrder) {
-        this(null, data, byteOrder);
-    }
-
-    public ByteCodeInputStream(byte[] data) {
-        this(null, data, ByteOrder.LittleEndian);
     }
 
     @Override
@@ -127,7 +128,7 @@ public class ByteCodeInputStream extends InputStream {
 
     @Override
     public ByteCodeInputStream clone() {
-        return new ByteCodeInputStream(file, data, byteOrder);
+        return new ByteCodeInputStream(data, byteOrder);
     }
 
     public int size() {

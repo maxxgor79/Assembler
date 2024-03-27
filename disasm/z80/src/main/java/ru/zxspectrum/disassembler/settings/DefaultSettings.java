@@ -2,6 +2,7 @@ package ru.zxspectrum.disassembler.settings;
 
 import lombok.NonNull;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
+import ru.zxspectrum.disassembler.utils.NumberStyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,96 +16,89 @@ import java.util.Collections;
  * @author Maxim Gorin
  */
 public class DefaultSettings implements Settings {
-    protected static final ByteOrder BYTE_ORDER = ByteOrder.LittleEndian;
-
-    protected static final int ADDRESS_DIMENSION = 4;
-
-    protected static final String MINOR_VERSION = String.valueOf(1);
-
-    protected static final String MAJOR_VERSION = String.valueOf(1);
-
-    protected static final String DEST_ENCODING = Charset.defaultCharset().name();
-
-    protected static final BigInteger DEFAULT_ADDRESS = new BigInteger("8000", 16);
-
-    protected static final BigInteger MIN_ADDRESS = BigInteger.ZERO;
-
-    protected static final BigInteger MAX_ADDRESS = new BigInteger("ffff", 16);
-
-    protected static final String COMMENTS_TEMPLATE = "";
-
-    protected static final String OUTPUT_DIRECTORY = "output";
-
-    protected static final boolean ADDRESS_VISIBLE = true;
-
-    protected static final String CMD_FILENAME = "disasm";
-
-    protected static final Collection<String> TEMPLATES = Collections.emptyList();
-
-
     @Override
     public ByteOrder getByteOrder() {
-        return BYTE_ORDER;
+        return ByteOrder.LittleEndian;
     }
 
     @Override
     public int getAddressDimension() {
-        return ADDRESS_DIMENSION;
+        return 4;
     }
 
     @Override
     public String getMinorVersion() {
-        return MINOR_VERSION;
+        return "1";
     }
 
     @Override
     public String getMajorVersion() {
-        return MAJOR_VERSION;
+        return "1";
     }
 
     @Override
     public String getDestEncoding() {
-        return DEST_ENCODING;
+        return Charset.defaultCharset().name();
     }
 
     @Override
     public BigInteger getDefaultAddress() {
-        return DEFAULT_ADDRESS;
+        return new BigInteger("8000", 16);
     }
 
     @Override
     public BigInteger getMinAddress() {
-        return MIN_ADDRESS;
+        return BigInteger.ZERO;
     }
 
     @Override
     public BigInteger getMaxAddress() {
-        return MAX_ADDRESS;
+        return new BigInteger("ffff", 16);
     }
 
     @Override
     public String getCommentsTemplate() {
-        return COMMENTS_TEMPLATE;
+        return "";
     }
 
     @Override
     public Collection<String> getTemplates() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public File getOutputDirectory() {
-        return new File(OUTPUT_DIRECTORY);
+        return new File("output");
     }
 
     @Override
     public boolean isAddressVisible() {
-        return ADDRESS_VISIBLE;
+        return false;
     }
 
     @Override
     public String getCmdFilename() {
-        return CMD_FILENAME;
+        return "disasm";
+    }
+
+    @Override
+    public boolean getStdout() {
+        return false;
+    }
+
+    @Override
+    public int getRadix() {
+        return 16;
+    }
+
+    @Override
+    public boolean isUpperCase() {
+        return true;
+    }
+
+    @Override
+    public NumberStyle getNumberStyle() {
+        return NumberStyle.Classic;
     }
 
     @Override

@@ -3,6 +3,7 @@ package ru.zxspectrum.disassembler;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnit;
 import ru.zxspectrum.disassembler.command.CommandRecord;
@@ -16,10 +17,9 @@ import ru.zxspectrum.disassembler.io.Output;
 import ru.zxspectrum.disassembler.lang.Type;
 import ru.zxspectrum.disassembler.lang.tree.Tree;
 import ru.zxspectrum.disassembler.loader.DisassemblerLoader;
-import ru.zxspectrum.disassembler.render.Canvas;
-import ru.zxspectrum.disassembler.render.Label;
-import ru.zxspectrum.disassembler.render.Row;
-import ru.zxspectrum.disassembler.render.RowFactory;
+import ru.zxspectrum.disassembler.render.*;
+import ru.zxspectrum.disassembler.render.Number;
+import ru.zxspectrum.disassembler.render.command.Command;
 import ru.zxspectrum.disassembler.render.command.CommandFactory;
 import ru.zxspectrum.disassembler.render.command.Instruction;
 import ru.zxspectrum.disassembler.render.command.Variable;
@@ -30,13 +30,9 @@ import ru.zxspectrum.disassembler.utils.FileUtils;
 import ru.zxspectrum.disassembler.utils.ObjectUtils;
 import ru.zxspectrum.disassembler.utils.SymbolUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -47,7 +43,7 @@ import java.util.*;
 public class Disassembler {
     protected static final String EXT = "asm";
 
-    private Map<BigInteger, String> labelMap = new HashMap<>();
+    private final Map<BigInteger, String> labelMap = new HashMap<>();
 
     private static final Tree<CommandFactory> TREE = new Tree<>();
 
@@ -68,8 +64,8 @@ public class Disassembler {
 
     protected void reset() {
         errorCount = 0;
-        labelMap.clear();
         addressSize = 0;
+        labelMap.clear();
         successfullyDisassembled.clear();
     }
 
@@ -81,16 +77,24 @@ public class Disassembler {
         }
     }
 
-    protected Collection<String> setCli(@NonNull final String[] args, @NonNull final Options options) {
-        CommandLineParser parser = new DefaultParser();
+    protected Collection<String> getCli(@NonNull final String[] args, @NonNull final Options options) {
+        final CommandLineParser parser = new DefaultParser();
         try {
-            CommandLine cli = parser.parse(options, args);
+            final CommandLine cli = parser.parse(options, args);
             settings.load(cli);
+            applySettings();
             return cli.getArgList();
         } catch (ParseException e) {
             log.error(e.getMessage(), e);
         }
         return Collections.emptyList();
+    }
+
+    private void applySettings() {
+        Address.setVisible(settings.isAddressVisible());
+        Number.setRadix(settings.getRadix());
+        Command.setUppercase(settings.isUpperCase());
+        Number.setStyle(settings.getNumberStyle());
     }
 
     public void run(@NonNull final File... files) {
@@ -111,11 +115,10 @@ public class Disassembler {
     }
 
     private void runSingle(final File file) throws IOException, InterruptedException, RenderException {
-        final ByteCodeInputStream is = new ByteCodeInputStream(file, Files.readAllBytes(file.toPath())
-                , settings.getByteOrder());
-        final Canvas canvas = new Canvas();
+        final ByteCodeInputStream is = new ByteCodeInputStream(file, settings.getByteOrder());
         final DecoderExecutor executor = new DecoderExecutor();
         final Decoder decoder = new Decoder(executor, TREE, settings.getDefaultAddress(), is);
+        final Canvas canvas = new Canvas();
         decoder.setOutput(canvas);
         executor.execute(decoder);
         executor.await();
@@ -131,6 +134,9 @@ public class Disassembler {
         canvas.setFile(outputFile);
         try (FileOutputStream fos = new FileOutputStream(outputFile)) {
             canvas.flush(fos);
+        }
+        if (settings.getStdout()) {
+            canvas.flush(System.out);
         }
         showReport(canvas);
     }
@@ -209,15 +215,16 @@ public class Disassembler {
             final DisassemblerSettings settings = loadSettings();
             final Disassembler disassembler = new Disassembler(settings);
             loadCommands(settings);
-            Options options = getOptions();
+            final Options options = getOptions();
             if (args.length == 0) {
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp(settings.getCmdFilename() + " <file1>...<fileN>", options);
+                formatter.printHelp(String.format("%s %s...%s", settings.getCmdFilename(), Messages.getMessage(Messages
+                        .FILE_ARG1), Messages.getMessage(Messages.FILE_ARGN)), options);
                 return;
             }
-            final Collection<String> fileNames = disassembler.setCli(args, options);
+            final Collection<String> fileNames = disassembler.getCli(args, options);
             if (fileNames.isEmpty()) {
-                Output.println("No input files");
+                Output.println(Messages.getMessage(Messages.NO_INPUT_FILES));
                 return;
             }
             final List<File> files = new LinkedList<>();
@@ -234,7 +241,7 @@ public class Disassembler {
         final DisassemblerSettings settings = new DisassemblerSettings();
         settings.merge(new DefaultSettings());
         try {
-            settings.load(Disassembler.class.getResourceAsStream("/settings.properties"));
+            settings.load(new ByteArrayInputStream(IOUtils.resourceToByteArray("/settings.properties")));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -254,6 +261,14 @@ public class Disassembler {
         options.addOption("b", "byte-order", true, "byte order" +
                 ": little-endian or big-endian.");
         options.addOption("v", "visible", false, "Show or not address in decompiled file.");
+        options.addOption("stdout", "standard-output", false, "Redirect result into std" +
+                "out stream");
+        options.addOption("r", "radix", true, "Set radix (bin, oct, dec, hex). Hex is" +
+                " default");
+        options.addOption("lc", "letter-case", true, "Set letter case (upper, lower)." +
+                " Upper is default");
+        options.addOption("ns", "number-style", true, "Set number style (C, Java, Nix," +
+                " Classic, Retro). Classic is default");
         return options;
     }
 

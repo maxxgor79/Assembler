@@ -1,6 +1,7 @@
 package ru.zxspectrum.disassembler.settings;
 
 import ru.zxspectrum.disassembler.lang.ByteOrder;
+import ru.zxspectrum.disassembler.utils.NumberStyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,14 @@ public interface Settings {
     boolean isAddressVisible();
 
     String getCmdFilename();
+
+    boolean getStdout();
+
+    int getRadix();
+
+    boolean isUpperCase();
+
+    NumberStyle getNumberStyle();
 
     void load(InputStream is) throws IOException;
 

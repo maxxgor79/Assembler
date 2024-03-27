@@ -1,9 +1,11 @@
 package ru.zxspectrum.disassembler.settings;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
+import ru.zxspectrum.disassembler.utils.NumberStyle;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,51 +19,81 @@ import java.util.LinkedList;
  * @author Maxim Gorin
  */
 public class BaseSettings implements Settings {
-    @Setter(AccessLevel.PROTECTED)
-    private ByteOrder byteOrder;
+    @Setter
+    @Getter
+    @NonNull
+    protected ByteOrder byteOrder;
 
-    @Setter(AccessLevel.PROTECTED)
-    private int addressDimension;
+    @Setter
+    @Getter
+    protected int addressDimension;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private String minorVersion;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private String majorVersion;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private String destEncoding;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private BigInteger defaultAddress;
 
-    @Setter(AccessLevel.PACKAGE)
+    @Setter
+    @Getter
     @NonNull
     private BigInteger minAddress;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private BigInteger maxAddress;
 
-    @Setter(AccessLevel.PACKAGE)
+    @Setter
+    @Getter
+    @NonNull
     private String commentsTemplate;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private String outputDirectory;
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     private boolean addressVisible;
 
     private final Collection<String> templates = new LinkedList<>();
 
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
+    @Getter
     @NonNull
     private String cmdFilename;
+
+    @Setter
+    @Getter
+    private boolean stdout;
+
+    @Setter
+    @Getter
+    private int radix;
+
+    @Setter
+    @Getter
+    private boolean upperCase;
+
+    @Setter
+    @Getter
+    private NumberStyle numberStyle;
 
     public BaseSettings() {
 
@@ -159,6 +191,21 @@ public class BaseSettings implements Settings {
     @Override
     public String getCmdFilename() {
         return cmdFilename;
+    }
+
+    @Override
+    public boolean getStdout() {
+        return stdout;
+    }
+
+    @Override
+    public int getRadix() {
+        return radix;
+    }
+
+    @Override
+    public boolean isUpperCase() {
+        return upperCase;
     }
 
     protected void setTemplates(@NonNull Collection<String> templates) {

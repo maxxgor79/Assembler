@@ -3,6 +3,9 @@ package ru.zxspectrum.disassembler.utils;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Maxim Gorin
  * Date: 25.02.2023
@@ -20,10 +23,6 @@ public final class SymbolUtils {
 
     public static boolean isDollar(int ch) {
         return ch == '$';
-    }
-
-    public static String fillChar(char c, int count) {
-        return StringUtils.repeat(c, count);
     }
 
     public static String replace(@NonNull String s1, int index, @NonNull String s2) {

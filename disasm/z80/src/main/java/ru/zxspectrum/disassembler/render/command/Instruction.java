@@ -3,13 +3,13 @@ package ru.zxspectrum.disassembler.render.command;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnits;
 import ru.zxspectrum.disassembler.command.Behavior;
 import ru.zxspectrum.disassembler.error.RenderException;
 import ru.zxspectrum.disassembler.lexem.Lexem;
 import ru.zxspectrum.disassembler.lexem.LexemType;
 import ru.zxspectrum.disassembler.lexem.Lexemes;
-import ru.zxspectrum.disassembler.render.Cell;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,7 @@ import java.util.List;
  */
 @EqualsAndHashCode
 public class Instruction extends Command {
+
     private final List<Variable> variables = new ArrayList<>();
 
     @Getter
@@ -64,7 +65,10 @@ public class Instruction extends Command {
             }
             prevLexem = lexem;
         }
-        return sb.toString();
+        if (uppercase) {
+            return sb.toString().toUpperCase();
+        }
+        return sb.toString().toLowerCase();
     }
 
     public void setVariables(@NonNull Collection<Variable> variables) {

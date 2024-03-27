@@ -49,7 +49,13 @@ public final class Messages {
 
     public static final String DISASSEMBLED_LINES_IN = "disassembledLinesIn";
 
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
+    public static final String NO_INPUT_FILES = "no_input_files";
+
+    public static final String FILE_ARG1 = "file_arg1";
+
+    public static final String FILE_ARGN = "file_argN";
+
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     public static String getMessage(String message) {
         if (message == null) {

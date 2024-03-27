@@ -17,7 +17,7 @@ import java.math.BigInteger;
 public class Address extends Number {
     @Getter
     @Setter
-    private boolean visible = true;
+    private static boolean visible;
 
     public Address() {
     }
