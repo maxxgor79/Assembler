@@ -41,7 +41,7 @@ public class Decoder implements Runnable {
     @Setter
     @Getter
     @NonNull
-    private DecoderStrategy strategy = DecoderStrategy.Scrolling;
+    private DecoderStrategy strategy = DecoderStrategy.Sequentially;
 
     @Getter
     @Setter(AccessLevel.PROTECTED)
@@ -167,7 +167,7 @@ public class Decoder implements Runnable {
         final Instruction instruction = navigator.getContent().create();
         instruction.setVariables(variables);
         switch (strategy) {
-            case Scrolling -> decodeLinear(address, instruction);
+            case Sequentially -> decodeLinear(address, instruction);
             case Branching -> decodeBranching(address, instruction);
         }
     }
@@ -252,7 +252,7 @@ public class Decoder implements Runnable {
     @Override
     public Decoder clone() {
         Decoder newDecoder = new Decoder(executor, commandTree, firstAddress, input.clone());
-        newDecoder.setStrategy(DecoderStrategy.Scrolling);
+        newDecoder.setStrategy(DecoderStrategy.Sequentially);
         newDecoder.setOutput(output);
         return newDecoder;
     }
