@@ -95,6 +95,7 @@ public class Disassembler {
         Number.setRadix(settings.getRadix());
         Command.setUppercase(settings.isUpperCase());
         Number.setStyle(settings.getNumberStyle());
+        Decoder.setStrategy(settings.getStrategy());
     }
 
     public void run(@NonNull final File... files) {
@@ -269,6 +270,8 @@ public class Disassembler {
                 " Upper is default");
         options.addOption("ns", "number-style", true, "Set number style (C, Java, Nix," +
                 " Classic, Retro). Classic is default");
+        options.addOption("s", "strategy", true, "Set decompiling strategy (sequentially," +
+                " branching). Default is sequentially");
         return options;
     }
 
