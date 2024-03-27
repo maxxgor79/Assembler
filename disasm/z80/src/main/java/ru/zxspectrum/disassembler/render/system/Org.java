@@ -31,7 +31,7 @@ public class Org extends Command {
 
     @Override
     public String generate() throws RenderException {
-        final String name = uppercase ? NAME : NAME.toLowerCase();
-        return new StringBuilder().append(name).append(SPACE).append(address.generate()).toString();
+        return new StringBuilder().append(toUpperOrLowerCase(NAME)).append(SPACE)
+                .append(address.generate()).toString();
     }
 }

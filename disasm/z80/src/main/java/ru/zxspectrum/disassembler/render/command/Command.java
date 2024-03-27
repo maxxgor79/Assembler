@@ -1,6 +1,7 @@
 package ru.zxspectrum.disassembler.render.command;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import ru.zxspectrum.disassembler.render.Cell;
 
@@ -12,4 +13,8 @@ public abstract class Command extends Cell {
     @Getter
     @Setter
     protected static boolean uppercase = true;
+
+    public String toUpperOrLowerCase(@NonNull String s) {
+        return uppercase ? s.toUpperCase() : s.toLowerCase();
+    }
 }
