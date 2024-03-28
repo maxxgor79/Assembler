@@ -37,6 +37,6 @@ public class Label extends Cell {
     }
     public static String generateLabelName(int addressSize) {
         String name =  String.format("%s%0" + addressSize * 2 + "X", LABEL_PREFIX, labelCounter++);
-        return uppercase ? name.toUpperCase() : name.toLowerCase();
+        return toUpperOrLowerCase(name);
     }
 }

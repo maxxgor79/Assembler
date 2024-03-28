@@ -30,13 +30,13 @@ public abstract class Number extends Cell {
     protected String generateValue() {
         switch (radix) {
             case 2:
-                return ConvertUtils.toBinary(value, style);
+                return toUpperOrLowerCase(ConvertUtils.toBinary(value, style));
             case 8:
                 return ConvertUtils.toOctal(value, style);
             case 10:
                 return ConvertUtils.toDecimal(value, style);
             case 16:
-                return ConvertUtils.toHex(value, style);
+                return toUpperOrLowerCase(ConvertUtils.toHex(value, style));
             default:
                 throw new UnsupportedOperationException();
         }

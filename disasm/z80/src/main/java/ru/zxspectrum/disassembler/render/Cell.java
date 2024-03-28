@@ -1,6 +1,7 @@
 package ru.zxspectrum.disassembler.render;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -10,7 +11,11 @@ import lombok.Setter;
 public abstract class Cell implements Render {
     @Getter
     @Setter
-    protected static boolean uppercase = true;
+    private static boolean uppercase = true;
 
     protected static final String SPACE = " ";
+
+    public static String toUpperOrLowerCase(@NonNull String s) {
+        return uppercase ? s.toUpperCase() : s.toLowerCase();
+    }
 }

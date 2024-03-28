@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.ToString;
 import ru.zxspectrum.disassembler.error.RenderException;
 import ru.zxspectrum.disassembler.render.Address;
+import ru.zxspectrum.disassembler.render.Cell;
 import ru.zxspectrum.disassembler.render.command.Command;
 
 import java.math.BigInteger;

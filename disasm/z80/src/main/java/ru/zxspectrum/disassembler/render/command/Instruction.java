@@ -64,7 +64,7 @@ public class Instruction extends Command {
             }
             prevLexem = lexem;
         }
-        return uppercase ? sb.toString().toUpperCase() : sb.toString().toLowerCase();
+        return toUpperOrLowerCase(sb.toString());
     }
 
     public void setVariables(@NonNull Collection<Variable> variables) {

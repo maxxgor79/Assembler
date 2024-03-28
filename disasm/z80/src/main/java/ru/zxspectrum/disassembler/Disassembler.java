@@ -5,11 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import ru.zxspectrum.disassembler.bytecode.ByteCodeUnit;
-import ru.zxspectrum.disassembler.bytecode.Pattern;
 import ru.zxspectrum.disassembler.command.CommandRecord;
 import ru.zxspectrum.disassembler.concurrent.DecoderExecutor;
 import ru.zxspectrum.disassembler.decode.Decoder;
+import ru.zxspectrum.disassembler.enrich.Enricher;
 import ru.zxspectrum.disassembler.error.ExceptionGroup;
 import ru.zxspectrum.disassembler.error.RenderException;
 import ru.zxspectrum.disassembler.i18n.Messages;
@@ -20,13 +19,11 @@ import ru.zxspectrum.disassembler.lang.tree.Tree;
 import ru.zxspectrum.disassembler.loader.DisassemblerLoader;
 import ru.zxspectrum.disassembler.render.Number;
 import ru.zxspectrum.disassembler.render.*;
-import ru.zxspectrum.disassembler.render.command.Command;
 import ru.zxspectrum.disassembler.render.command.CommandFactory;
-import ru.zxspectrum.disassembler.render.command.Instruction;
-import ru.zxspectrum.disassembler.render.command.Variable;
 import ru.zxspectrum.disassembler.render.system.Org;
 import ru.zxspectrum.disassembler.settings.DefaultSettings;
 import ru.zxspectrum.disassembler.settings.DisassemblerSettings;
+import ru.zxspectrum.disassembler.sys.Environment;
 import ru.zxspectrum.disassembler.utils.FileUtils;
 import ru.zxspectrum.disassembler.utils.SymbolUtils;
 
@@ -40,7 +37,7 @@ import java.util.*;
  * Date: 12/24/2023
  */
 @Slf4j
-public class Disassembler {
+public class Disassembler implements Environment {
     protected static final String EXT = "asm";
 
     private final Map<BigInteger, String> labelMap = new HashMap<>();
@@ -129,7 +126,7 @@ public class Disassembler {
             throw new ExceptionGroup(errors);
         }
         enrichSystems(decoder, canvas);
-        enrichLabels(decoder, canvas);
+        Enricher.enrichLabels(this, canvas);
         enrichComment(canvas);
         final File outputFile = FileUtils.createNewFileSameName(new File("."), file.getAbsoluteFile(), EXT);
         canvas.setFile(outputFile);
@@ -144,59 +141,6 @@ public class Disassembler {
 
     private void enrichSystems(@NonNull Decoder decoder, @NonNull Canvas canvas) {
         canvas.setOrg(RowFactory.createRow(new Org(decoder.getFirstAddress())));
-    }
-
-    private void enrichLabels(Decoder decoder, @NonNull final Canvas canvas) {
-        canvas.walkThrough(entry -> {
-            final Row row = entry.getValue();
-            if (row.getCommand() instanceof Instruction) {
-                enrichInstruction(row, (Instruction) row.getCommand(), canvas);
-            }
-        });
-    }
-
-    private void enrichInstruction(final Row row, final Instruction inst, final Canvas canvas) {
-        for (int i = 0; i < inst.getVariableCount(); i++) {
-            final ByteCodeUnit bcUnit = inst.getUnits().getPattern(i);
-            final Pattern pattern = new Pattern(bcUnit);
-            final Variable var = inst.getVariable(i);
-            if (pattern.isAddressOffset()) {
-                //relative address
-                translateRelativeAddress(row.getAddress(), inst.getUnits().getOffsetInBytes(i), var, canvas);
-            } else if (pattern.isNumber() && pattern.getDimension() == addressSize) {
-                // absolute address
-                translateAbsoluteAddress(var, canvas);
-            }
-        }
-    }
-
-    private void translateAbsoluteAddress(final Variable var, final Canvas canvas) {
-        final Row labelRow = canvas.get(var.getValue());
-        if (labelRow != null) {
-            String labelName = labelMap.get(var.getValue());
-            if (labelName == null) {
-                labelName = Label.generateLabelName(addressSize);
-                labelMap.put(var.getValue(), labelName);
-                labelRow.setLabel(new Label(labelName));
-            }
-            var.setName(labelName);
-        }
-    }
-
-    private void translateRelativeAddress(final Address address, final int offset, final Variable var
-            , final Canvas canvas) {
-        final BigInteger absAddress = address.getValue().add(BigInteger.valueOf(offset)).add(var.getValue());
-        final Row labelRow = canvas.get(absAddress);
-        if (labelRow != null) {
-            String labelName = labelMap.get(absAddress);
-            if (labelName == null) {
-                labelName = Label.generateLabelName(addressSize);
-                labelMap.put(absAddress, labelName);
-                labelRow.setLabel(new Label(labelName));
-            }
-            var.setName(labelName);
-        }
-
     }
 
     private void enrichComment(@NonNull final Canvas canvas) {
@@ -308,5 +252,30 @@ public class Disassembler {
         for (final CommandRecord r : commands) {
             TREE.add(r.getCodePattern(), new CommandFactory(r));
         }
+    }
+
+    @Override
+    public String getExtension() {
+        return EXT;
+    }
+
+    @Override
+    public int getAddressSize() {
+        return addressSize;
+    }
+
+    @Override
+    public DisassemblerSettings getSettings() {
+        return settings;
+    }
+
+    @Override
+    public String getLabel(@NonNull BigInteger address) {
+        return labelMap.get(address);
+    }
+
+    @Override
+    public void putLabel(@NonNull BigInteger address, @NonNull String labelName) {
+        labelMap.put(address, labelName);
     }
 }

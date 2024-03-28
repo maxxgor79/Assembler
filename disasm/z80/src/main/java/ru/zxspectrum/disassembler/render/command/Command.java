@@ -10,7 +10,4 @@ import ru.zxspectrum.disassembler.render.Cell;
  * Date: 1/5/2024
  */
 public abstract class Command extends Cell {
-    public String toUpperOrLowerCase(@NonNull String s) {
-        return uppercase ? s.toUpperCase() : s.toLowerCase();
-    }
 }
