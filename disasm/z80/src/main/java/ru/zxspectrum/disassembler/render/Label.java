@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.zxspectrum.disassembler.error.RenderException;
 
+import java.math.BigInteger;
+
 /**
  * @author maxim
  * Date: 1/3/2024
@@ -14,6 +16,10 @@ import ru.zxspectrum.disassembler.error.RenderException;
 
 @EqualsAndHashCode
 public class Label extends Cell {
+    protected static final String LABEL_PREFIX = "lbl";
+
+    protected static int labelCounter = 1;
+
     @Getter
     @Setter
     @NonNull
@@ -28,5 +34,9 @@ public class Label extends Cell {
         StringBuilder sb = new StringBuilder();
         sb.append(SPACE).append(name).append(":").append(System.lineSeparator());
         return sb.toString();
+    }
+    public static String generateLabelName(int addressSize) {
+        String name =  String.format("%s%0" + addressSize * 2 + "X", LABEL_PREFIX, labelCounter++);
+        return uppercase ? name.toUpperCase() : name.toLowerCase();
     }
 }

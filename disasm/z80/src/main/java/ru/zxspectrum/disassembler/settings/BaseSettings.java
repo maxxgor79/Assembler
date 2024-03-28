@@ -217,7 +217,7 @@ public class BaseSettings implements Settings {
 
     @Override
     public DecoderStrategy getStrategy() {
-        return null;
+        return strategy;
     }
 
     protected void setTemplates(@NonNull Collection<String> templates) {

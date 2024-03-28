@@ -3,7 +3,6 @@ package ru.zxspectrum.disassembler.render.command;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnits;
 import ru.zxspectrum.disassembler.command.Behavior;
 import ru.zxspectrum.disassembler.error.RenderException;
@@ -55,7 +54,7 @@ public class Instruction extends Command {
     public String generate() throws RenderException {
         int variableIndex = 0;
         Lexem prevLexem = null;
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (Lexem lexem : lexemes.toCollection()) {
             Formatter.format(sb, prevLexem, lexem);
             if (lexem.getType() == LexemType.Variable) {
@@ -65,10 +64,7 @@ public class Instruction extends Command {
             }
             prevLexem = lexem;
         }
-        if (uppercase) {
-            return sb.toString().toUpperCase();
-        }
-        return sb.toString().toLowerCase();
+        return uppercase ? sb.toString().toUpperCase() : sb.toString().toLowerCase();
     }
 
     public void setVariables(@NonNull Collection<Variable> variables) {
@@ -98,6 +94,6 @@ public class Instruction extends Command {
     }
 
     public int getByteCodeSize(int i) {
-        return units.getByteCodeSize(i);
+        return units.getOffsetInBytes(i);
     }
 }

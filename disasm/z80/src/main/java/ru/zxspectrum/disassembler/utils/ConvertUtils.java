@@ -139,6 +139,10 @@ public final class ConvertUtils {
         };
     }
 
+    public static String toDecimal(@NonNull BigInteger value, @NonNull NumberStyle style) {
+        return value.toString(10);
+    }
+
     public static NumberStyle toNumberStyle(@NonNull String name) {
         NumberStyle style = styleName2NumberStyle.get(name.toLowerCase());
         if (style == null) {

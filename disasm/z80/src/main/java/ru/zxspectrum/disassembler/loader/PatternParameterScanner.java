@@ -16,7 +16,7 @@ public class PatternParameterScanner {
 
     public PatternParameterScanner(@NonNull String pattern) {
         Scanner scanner = new Scanner(pattern);
-        this.iter = scanner.findAll("[$][nd]+").iterator();
+        this.iter = scanner.findAll("[$][nde]+").iterator();
     }
 
     public boolean hasNextVariable() {

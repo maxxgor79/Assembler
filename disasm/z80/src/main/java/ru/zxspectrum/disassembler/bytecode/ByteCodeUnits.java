@@ -74,7 +74,7 @@ public class ByteCodeUnits {
         return null;
     }
 
-    public int getByteCodeSize(final int i) {
+    public int getOffsetInBytes(final int i) {
         int size = 0;
         int num = 0;
         for (ByteCodeUnit unit : units) {

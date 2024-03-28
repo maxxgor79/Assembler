@@ -34,7 +34,7 @@ public abstract class Number extends Cell {
             case 8:
                 return ConvertUtils.toOctal(value, style);
             case 10:
-                return value.toString(radix);
+                return ConvertUtils.toDecimal(value, style);
             case 16:
                 return ConvertUtils.toHex(value, style);
             default:

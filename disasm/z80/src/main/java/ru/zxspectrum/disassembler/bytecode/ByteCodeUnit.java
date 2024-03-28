@@ -60,7 +60,7 @@ public class ByteCodeUnit {
     }
 
     public ByteCodeUnit(@NonNull String pattern) {
-        Type type = Type.getByPattern(pattern);
+        final Type type = Type.getByPattern(pattern);
         Objects.requireNonNull(type, pattern);
         this.type = ByteCodeType.Pattern;
         setValue(pattern);
@@ -77,11 +77,11 @@ public class ByteCodeUnit {
     }
 
     public static ByteCodeUnit valueOf(int value) {
-        ByteCodeUnit found = INTEGER_MAP.get(value);
+        final ByteCodeUnit found = INTEGER_MAP.get(value);
         if (found != null) {
             return found;
         }
-        return new ByteCodeUnit(value);
+        return new ByteCodeUnit(value);//?
     }
 
     public static ByteCodeUnit valueOf(@NonNull String pattern) {
@@ -90,7 +90,7 @@ public class ByteCodeUnit {
             return unit;
         }
         try {
-            return new ByteCodeUnit(pattern);
+            return new ByteCodeUnit(pattern);//?
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

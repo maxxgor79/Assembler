@@ -13,7 +13,9 @@ import ru.zxspectrum.disassembler.io.ByteCodeInputStream;
 import ru.zxspectrum.disassembler.lang.Type;
 import ru.zxspectrum.disassembler.lang.tree.Navigator;
 import ru.zxspectrum.disassembler.lang.tree.Tree;
+import ru.zxspectrum.disassembler.render.Address;
 import ru.zxspectrum.disassembler.render.Canvas;
+import ru.zxspectrum.disassembler.render.Row;
 import ru.zxspectrum.disassembler.render.RowFactory;
 import ru.zxspectrum.disassembler.render.command.Command;
 import ru.zxspectrum.disassembler.render.command.CommandFactory;
@@ -56,7 +58,7 @@ public class Decoder implements Runnable {
     @Setter
     @Getter
     @NonNull
-    private Canvas output;
+    private Canvas canvas;
 
     private boolean finish;
 
@@ -78,17 +80,17 @@ public class Decoder implements Runnable {
             finish = false;
             while (!finish) {
                 final BigInteger address = getCurrentAddress();
-                if (output.contains(address)) {
+                if (canvas.contains(address)) {
                     break;
                 }
                 int b = input.read();
                 if (b == -1) {
                     break;
                 }
-                final Navigator<CommandFactory> navigator = commandTree.getNavigator();
-                if (navigator.contains(ByteCodeUnit.valueOf(b))) {
+                final Navigator<CommandFactory> treeNavigator = commandTree.getNavigator();
+                if (treeNavigator.contains(ByteCodeUnit.valueOf(b))) {
                     input.pushback();
-                    fetchCommand(address, navigator);
+                    fetchCommand(address, treeNavigator);
                 } else {
                     throw new DecoderException(input.getFile(), input.getPc(), Messages.getMessage(Messages.UNKNOWN_COMMAND)
                             , b);
@@ -108,7 +110,7 @@ public class Decoder implements Runnable {
         return firstAddress.add(BigInteger.valueOf(input.size() - 1));
     }
 
-    private void fetchCommand(final BigInteger address, Navigator<CommandFactory> navigator) throws IOException {
+    private void fetchCommand(final BigInteger address, Navigator<CommandFactory> treeNavigator) throws IOException {
         variables.clear();
         cmdCodes.clear();
         while (!finish) {
@@ -118,13 +120,13 @@ public class Decoder implements Runnable {
             }
             ByteCodeUnit unit = ByteCodeUnit.valueOf(b);
             cmdCodes.add(unit);
-            if (navigator.next(unit)) {
-                if (navigator.isTerminal()) {
-                    decode(address, navigator, variables);
+            if (treeNavigator.next(unit)) {
+                if (treeNavigator.isTerminal()) {
+                    decode(address, treeNavigator, variables);
                     break;
                 }
             } else {
-                unit = getPattern(navigator);
+                unit = getPattern(treeNavigator);
                 if (unit != null) {
                     input.pushback();
                     switch (Type.getByPattern(unit.getValue())) {
@@ -135,9 +137,9 @@ public class Decoder implements Runnable {
                         case Int32 -> variables.add(new Variable(input.readInt(), Type.Int32));
                         case UInt32 -> variables.add(new Variable(input.readUnsignedInt(), Type.UInt32));
                     }
-                    if (navigator.next(unit)) {
-                        if (navigator.isTerminal()) {
-                            decode(address, navigator, variables);
+                    if (treeNavigator.next(unit)) {
+                        if (treeNavigator.isTerminal()) {
+                            decode(address, treeNavigator, variables);
                             break;
                         }
                     } else {
@@ -167,14 +169,16 @@ public class Decoder implements Runnable {
         final Instruction instruction = navigator.getContent().create();
         instruction.setVariables(variables);
         switch (strategy) {
-            case Sequentially -> decodeLinear(address, instruction);
+            case Sequentially -> decodeSequentially(address, instruction);
             case Branching -> decodeBranching(address, instruction);
         }
     }
 
     private void decodeBranching(BigInteger address, Instruction instruction) {
-        if (output != null) {
-            output.put(address, RowFactory.createRow(instruction));
+        if (canvas != null) {
+            final Row row = RowFactory.createRow(instruction);
+            row.setAddress(new Address(address));
+            canvas.put(address, row);
         } else {
             log.info("output is null");
         }
@@ -194,9 +198,11 @@ public class Decoder implements Runnable {
         }
     }
 
-    private void decodeLinear(final BigInteger address, final Command command) {
-        if (output != null) {
-            output.put(address, RowFactory.createRow(command));
+    private void decodeSequentially(final BigInteger address, final Command command) {
+        if (canvas != null) {
+            final Row row = RowFactory.createRow(command);
+            row.setAddress(new Address(address));
+            canvas.put(address, row);
         } else {
             log.info("output is null");
         }
@@ -209,7 +215,7 @@ public class Decoder implements Runnable {
         }
         final BigInteger jumpAddress = getAddressToJump(address, instruction);
         if (!ObjectUtils.isInRange(getFirstAddress(), getLastAddress(), jumpAddress) ||
-                output.contains(jumpAddress)) {
+                canvas.contains(jumpAddress)) {
             finish = true;
             return;
         }
@@ -223,7 +229,7 @@ public class Decoder implements Runnable {
         }
         final BigInteger jumpAddress = getAddressToJump(address, instruction);
         if (ObjectUtils.isInRange(getFirstAddress(), getLastAddress(), jumpAddress) &&
-                !output.contains(jumpAddress)) {
+                !canvas.contains(jumpAddress)) {
             final Decoder newDecoder = clone();
             newDecoder.getInput().jump(jumpAddress.intValue());
             executor.execute(newDecoder);
@@ -253,7 +259,7 @@ public class Decoder implements Runnable {
     public Decoder clone() {
         Decoder newDecoder = new Decoder(executor, commandTree, firstAddress, input.clone());
         newDecoder.setStrategy(DecoderStrategy.Sequentially);
-        newDecoder.setOutput(output);
+        newDecoder.setCanvas(canvas);
         return newDecoder;
     }
 }

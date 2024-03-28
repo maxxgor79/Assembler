@@ -6,6 +6,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnit;
+import ru.zxspectrum.disassembler.bytecode.Pattern;
 import ru.zxspectrum.disassembler.command.CommandRecord;
 import ru.zxspectrum.disassembler.concurrent.DecoderExecutor;
 import ru.zxspectrum.disassembler.decode.Decoder;
@@ -17,8 +18,8 @@ import ru.zxspectrum.disassembler.io.Output;
 import ru.zxspectrum.disassembler.lang.Type;
 import ru.zxspectrum.disassembler.lang.tree.Tree;
 import ru.zxspectrum.disassembler.loader.DisassemblerLoader;
-import ru.zxspectrum.disassembler.render.*;
 import ru.zxspectrum.disassembler.render.Number;
+import ru.zxspectrum.disassembler.render.*;
 import ru.zxspectrum.disassembler.render.command.Command;
 import ru.zxspectrum.disassembler.render.command.CommandFactory;
 import ru.zxspectrum.disassembler.render.command.Instruction;
@@ -27,7 +28,6 @@ import ru.zxspectrum.disassembler.render.system.Org;
 import ru.zxspectrum.disassembler.settings.DefaultSettings;
 import ru.zxspectrum.disassembler.settings.DisassemblerSettings;
 import ru.zxspectrum.disassembler.utils.FileUtils;
-import ru.zxspectrum.disassembler.utils.ObjectUtils;
 import ru.zxspectrum.disassembler.utils.SymbolUtils;
 
 import java.io.*;
@@ -93,8 +93,8 @@ public class Disassembler {
     private void applySettings() {
         Address.setVisible(settings.isAddressVisible());
         Number.setRadix(settings.getRadix());
-        Command.setUppercase(settings.isUpperCase());
         Number.setStyle(settings.getNumberStyle());
+        Cell.setUppercase(settings.isUpperCase());
         Decoder.setStrategy(settings.getStrategy());
     }
 
@@ -120,7 +120,7 @@ public class Disassembler {
         final DecoderExecutor executor = new DecoderExecutor();
         final Decoder decoder = new Decoder(executor, TREE, settings.getDefaultAddress(), is);
         final Canvas canvas = new Canvas();
-        decoder.setOutput(canvas);
+        decoder.setCanvas(canvas);
         executor.execute(decoder);
         executor.await();
         executor.shutdown();
@@ -128,8 +128,8 @@ public class Disassembler {
         if (!errors.isEmpty()) {
             throw new ExceptionGroup(errors);
         }
-        enrichSystem(decoder, canvas);
-        enrichLabel(decoder, canvas);
+        enrichSystems(decoder, canvas);
+        enrichLabels(decoder, canvas);
         enrichComment(canvas);
         final File outputFile = FileUtils.createNewFileSameName(new File("."), file.getAbsoluteFile(), EXT);
         canvas.setFile(outputFile);
@@ -142,41 +142,61 @@ public class Disassembler {
         showReport(canvas);
     }
 
-    private void enrichSystem(@NonNull Decoder decoder, @NonNull Canvas canvas) {
+    private void enrichSystems(@NonNull Decoder decoder, @NonNull Canvas canvas) {
         canvas.setOrg(RowFactory.createRow(new Org(decoder.getFirstAddress())));
     }
 
-    private void enrichLabel(Decoder decoder, @NonNull final Canvas canvas) {
+    private void enrichLabels(Decoder decoder, @NonNull final Canvas canvas) {
         canvas.walkThrough(entry -> {
             final Row row = entry.getValue();
             if (row.getCommand() instanceof Instruction) {
-                Instruction inst = (Instruction) row.getCommand();
-                for (int i = 0; i < inst.getVariableCount(); i++) {
-                    final ByteCodeUnit unit = inst.getUnits().getPattern(i);
-                    final Variable var = inst.getVariable(i);
-                    if (Type.getByPattern(unit.getValue()).getSize() == addressSize ||
-                            unit.getValue().startsWith("e")) { //offset
-                        final BigInteger address = var.getValue();
-                        String labelName = labelMap.get(address);
-                        if (labelName != null) {
-                            var.setName(labelName);
-                        } else {
-                            final Row labelRow = canvas.get(address);
-                            if (labelRow != null) {
-                                labelName = ObjectUtils.generateLabelName(address, addressSize);
-                                labelMap.put(address, labelName);
-                                labelRow.setLabel(new Label(labelName));
-                                var.setName(labelName);
-                            } else {
-                                if (ObjectUtils.isInRange(decoder.getFirstAddress(), decoder.getLastAddress(), address)) {
-                                    log.info("Address {} is not disasmed", address);
-                                }
-                            }
-                        }
-                    }
-                }
+                enrichInstruction(row, (Instruction) row.getCommand(), canvas);
             }
         });
+    }
+
+    private void enrichInstruction(final Row row, final Instruction inst, final Canvas canvas) {
+        for (int i = 0; i < inst.getVariableCount(); i++) {
+            final ByteCodeUnit bcUnit = inst.getUnits().getPattern(i);
+            final Pattern pattern = new Pattern(bcUnit);
+            final Variable var = inst.getVariable(i);
+            if (pattern.isAddressOffset()) {
+                //relative address
+                translateRelativeAddress(row.getAddress(), inst.getUnits().getOffsetInBytes(i), var, canvas);
+            } else if (pattern.isNumber() && pattern.getDimension() == addressSize) {
+                // absolute address
+                translateAbsoluteAddress(var, canvas);
+            }
+        }
+    }
+
+    private void translateAbsoluteAddress(final Variable var, final Canvas canvas) {
+        final Row labelRow = canvas.get(var.getValue());
+        if (labelRow != null) {
+            String labelName = labelMap.get(var.getValue());
+            if (labelName == null) {
+                labelName = Label.generateLabelName(addressSize);
+                labelMap.put(var.getValue(), labelName);
+                labelRow.setLabel(new Label(labelName));
+            }
+            var.setName(labelName);
+        }
+    }
+
+    private void translateRelativeAddress(final Address address, final int offset, final Variable var
+            , final Canvas canvas) {
+        final BigInteger absAddress = address.getValue().add(BigInteger.valueOf(offset)).add(var.getValue());
+        final Row labelRow = canvas.get(absAddress);
+        if (labelRow != null) {
+            String labelName = labelMap.get(absAddress);
+            if (labelName == null) {
+                labelName = Label.generateLabelName(addressSize);
+                labelMap.put(absAddress, labelName);
+                labelRow.setLabel(new Label(labelName));
+            }
+            var.setName(labelName);
+        }
+
     }
 
     private void enrichComment(@NonNull final Canvas canvas) {

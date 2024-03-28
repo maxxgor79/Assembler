@@ -9,9 +9,13 @@ import java.math.BigInteger;
  * @author Maxim Gorin
  */
 public enum Type {
-    Int8(1, -128, 127, new String[]{"d", "e"}), UInt8(1, 0, 255, new String[]{"n"}), Int16(2, -32768, 32767, new String[]{"dd", "ee"}), UInt16(2, 0, 65535
-            , new String[]{"nn"}), Int32(4, Integer.MIN_VALUE, Integer.MAX_VALUE
-            , new String[]{"dddd", "eeee"}), UInt32(4, 0, 0xFFFFFFFF, new String[]{"nnnn"}), Unknown(0, 0, 0, new String[0]);
+    Int8(1, -128, 127, new String[]{"d", "e"})
+    , UInt8(1, 0, 255, new String[]{"n"})
+    , Int16(2, -32768, 32767, new String[]{"dd", "ee"})
+    , UInt16(2, 0, 65535, new String[]{"nn"})
+    , Int32(4, Integer.MIN_VALUE, Integer.MAX_VALUE, new String[]{"dddd", "eeee"})
+    , UInt32(4, 0, 0xFFFFFFFF, new String[]{"nnnn"})
+    , Unknown(0, 0, 0, new String[0]);
 
     Type(int size, long min, long max, String[] patterns) {
         this.size = size;
