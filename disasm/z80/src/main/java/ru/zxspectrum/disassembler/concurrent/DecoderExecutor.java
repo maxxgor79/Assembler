@@ -3,7 +3,6 @@ package ru.zxspectrum.disassembler.concurrent;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Wrapper;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;

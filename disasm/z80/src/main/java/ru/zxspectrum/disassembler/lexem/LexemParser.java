@@ -6,12 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import ru.zxspectrum.disassembler.error.ParserException;
 import ru.zxspectrum.disassembler.i18n.Messages;
-import ru.zxspectrum.disassembler.utils.SymbolUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;

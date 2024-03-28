@@ -1,7 +1,6 @@
 package ru.zxspectrum.disassembler.render;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import ru.zxspectrum.disassembler.error.RenderException;
 

@@ -5,9 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnit;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnits;
 import ru.zxspectrum.disassembler.bytecode.CodePatternParser;
-import ru.zxspectrum.disassembler.command.CommandRecord;
-
-import java.util.Collection;
 
 /**
  * @author maxim

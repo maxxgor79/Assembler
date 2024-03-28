@@ -1,10 +1,8 @@
 package ru.zxspectrum.disassembler.bytecode;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.zxspectrum.disassembler.lang.Type;
 import ru.zxspectrum.disassembler.utils.SymbolUtils;

@@ -1,10 +1,6 @@
 package ru.zxspectrum.disassembler.utils;
 
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Maxim Gorin

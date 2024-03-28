@@ -1,21 +1,16 @@
 package ru.zxspectrum.disassembler.render.command;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import ru.zxspectrum.disassembler.bytecode.ByteCodeUnits;
 import ru.zxspectrum.disassembler.bytecode.CodePatternParser;
 import ru.zxspectrum.disassembler.command.Behavior;
 import ru.zxspectrum.disassembler.command.CommandRecord;
-import ru.zxspectrum.disassembler.lexem.Lexem;
 import ru.zxspectrum.disassembler.lexem.LexemParser;
 import ru.zxspectrum.disassembler.lexem.Lexemes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author maxim

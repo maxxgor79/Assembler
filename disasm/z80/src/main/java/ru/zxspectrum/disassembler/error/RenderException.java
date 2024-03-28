@@ -1,7 +1,5 @@
 package ru.zxspectrum.disassembler.error;
 
-import java.io.File;
-
 /**
  * @author Maxim Gorin
  */

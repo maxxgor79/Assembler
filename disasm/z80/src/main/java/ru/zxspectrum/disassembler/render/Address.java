@@ -1,6 +1,5 @@
 package ru.zxspectrum.disassembler.render;
 
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;

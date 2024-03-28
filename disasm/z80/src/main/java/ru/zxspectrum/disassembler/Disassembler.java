@@ -221,6 +221,10 @@ public class Disassembler implements Environment {
         }
     }
 
+    public static void entry(@NonNull Collection<String> col) {
+        main(col.toArray(new String[col.size()]));
+    }
+
     protected static DisassemblerSettings loadSettings() {
         final DisassemblerSettings settings = new DisassemblerSettings();
         settings.merge(new DefaultSettings());

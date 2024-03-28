@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import ru.zxspectrum.disassembler.error.RenderException;
-import ru.zxspectrum.disassembler.render.system.Org;
-import ru.zxspectrum.disassembler.render.system.Z80;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,7 +15,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 

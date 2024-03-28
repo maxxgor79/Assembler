@@ -9,8 +9,6 @@ import ru.zxspectrum.disassembler.lang.Type;
 import ru.zxspectrum.disassembler.render.Number;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author maxim

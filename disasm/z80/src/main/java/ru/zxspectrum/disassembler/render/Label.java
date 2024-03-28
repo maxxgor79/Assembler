@@ -3,11 +3,8 @@ package ru.zxspectrum.disassembler.render;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.zxspectrum.disassembler.error.RenderException;
-
-import java.math.BigInteger;
 
 /**
  * @author maxim

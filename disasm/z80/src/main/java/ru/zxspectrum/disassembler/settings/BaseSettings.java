@@ -1,6 +1,5 @@
 package ru.zxspectrum.disassembler.settings;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
