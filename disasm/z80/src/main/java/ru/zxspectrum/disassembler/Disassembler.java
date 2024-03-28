@@ -150,14 +150,27 @@ public class Disassembler implements Environment {
     }
 
     private void showReport(Canvas canvas) {
-        Output.println(Messages.getMessage(Messages.DISASSEMBLED_LINES_IN), String.valueOf(canvas.getLineCount()),
-                canvas.getFile().getName());
+        final StringBuilder sb = new StringBuilder();
+        addCommentIfStdout(sb);
+        sb.append(Messages.getMessage(Messages.DISASSEMBLED_LINES_IN));
+        Output.println(sb.toString(), String.valueOf(canvas.getLineCount()), canvas.getFile().getName());
+    }
+
+    private void addCommentIfStdout(StringBuilder sb) {
+        if (settings.getStdout()) {
+            sb.append(";");
+        }
     }
 
     private void showTotalReport() {
-        Output.println(Messages.getMessage(Messages.TOTAL_ERRORS), String.valueOf(errorCount));
-        Output.println(Messages.getMessage(Messages.SUCCESSFULLY_DISASSEMBLED),
-                String.valueOf(successfullyDisassembled.size()));
+        final StringBuilder sb = new StringBuilder();
+        addCommentIfStdout(sb);
+        sb.append(Messages.getMessage(Messages.TOTAL_ERRORS));
+        Output.println(sb.toString(), String.valueOf(errorCount));
+        sb.setLength(0);
+        addCommentIfStdout(sb);
+        sb.append(Messages.getMessage(Messages.SUCCESSFULLY_DISASSEMBLED));
+        Output.println(sb.toString(), String.valueOf(successfullyDisassembled.size()));
     }
 
     private String createWelcome() {
@@ -166,13 +179,17 @@ public class Disassembler implements Environment {
                 , settings.getMinorVersion());
         String writtenBy = Messages.getMessage(Messages.WRITTEN_BY);
         String lineExternal = StringUtils.repeat('*', 80);
+        addCommentIfStdout(sb);
         sb.append(lineExternal).append(System.lineSeparator());
         String lineInternal = (new StringBuilder().append('*').append(StringUtils.repeat(' ', 78))
                 .append('*')).toString();
+        addCommentIfStdout(sb);
         sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
                 , programWelcome)).append(System.lineSeparator());
+        addCommentIfStdout(sb);
         sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
                 , writtenBy)).append(System.lineSeparator());
+        addCommentIfStdout(sb);
         sb.append(lineExternal).append(System.lineSeparator());
         return sb.toString();
     }
