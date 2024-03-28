@@ -3,7 +3,7 @@ package ru.zxspectrum.disassembler.render;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import ru.zxspectrum.disassembler.utils.ConvertUtils;
+import ru.zxspectrum.disassembler.utils.ConverterUtils;
 import ru.zxspectrum.disassembler.utils.NumberStyle;
 
 import java.math.BigInteger;
@@ -30,13 +30,13 @@ public abstract class Number extends Cell {
     protected String generateValue() {
         switch (radix) {
             case 2:
-                return toUpperOrLowerCase(ConvertUtils.toBinary(value, style));
+                return toUpperOrLowerCase(ConverterUtils.toBinary(value, style));
             case 8:
-                return ConvertUtils.toOctal(value, style);
+                return ConverterUtils.toOctal(value, style);
             case 10:
-                return ConvertUtils.toDecimal(value, style);
+                return ConverterUtils.toDecimal(value, style);
             case 16:
-                return toUpperOrLowerCase(ConvertUtils.toHex(value, style));
+                return toUpperOrLowerCase(ConverterUtils.toHex(value, style));
             default:
                 throw new UnsupportedOperationException();
         }

@@ -11,7 +11,7 @@ import java.util.Map;
  * @Author: Maxim Gorin
  * Date: 27.03.2024
  */
-public final class ConvertUtils {
+public final class ConverterUtils {
     private static final Map<Integer, String> ZERO_MAP = new HashMap<>();
 
     static {
@@ -59,7 +59,7 @@ public final class ConvertUtils {
         strategyName2DecoderStrategy.put("branching", DecoderStrategy.Branching);
     }
 
-    private ConvertUtils() {
+    private ConverterUtils() {
 
     }
 
@@ -149,5 +149,30 @@ public final class ConvertUtils {
             style = NumberStyle.Classic;
         }
         return style;
+    }
+
+    public static BigInteger numberToInteger(@NonNull String s) {
+        s = s.toLowerCase();
+        int radix = 10;
+        if (s.endsWith("h")) {
+            s = s.substring(0, s.length() - 1);
+            radix = 16;
+        } else if (s.startsWith("0x")) {
+            s = s.substring(2);
+            radix = 16;
+        } else if (s.endsWith("b")) {
+            s = s.substring(0, s.length() - 1);
+            radix = 2;
+        } else if (s.startsWith("0b")) {
+            s = s.substring(2);
+            radix = 2;
+        } else if (s.startsWith("0")) {
+            s = s.substring(1);
+            radix = 8;
+        } else if (s.endsWith("q")) {
+            s = s.substring(0, s.length() - 1);
+            radix = 8;
+        }
+        return new BigInteger(s, radix);
     }
 }

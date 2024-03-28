@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import ru.zxspectrum.disassembler.decode.DecoderStrategy;
 import ru.zxspectrum.disassembler.lang.ByteOrder;
-import ru.zxspectrum.disassembler.utils.ConvertUtils;
+import ru.zxspectrum.disassembler.utils.ConverterUtils;
 import ru.zxspectrum.disassembler.utils.NumberStyle;
 
 import java.math.BigInteger;
@@ -18,7 +18,7 @@ public class DisassemblerSettings extends BaseSettings {
     public void load(@NonNull CommandLine cli) {
         // parse the command line arguments
         if (cli.hasOption("a")) {
-            setDefaultAddress(new BigInteger(cli.getOptionValue("a")));
+            setDefaultAddress(ConverterUtils.numberToInteger(cli.getOptionValue("a")));
         }
         if (cli.hasOption("min")) {
             setMinAddress(new BigInteger(cli.getOptionValue("min")));
@@ -40,22 +40,22 @@ public class DisassemblerSettings extends BaseSettings {
             setStdout(true);
         }
         if (cli.hasOption("r")) {
-            final int radix = ConvertUtils.toRadixIndex(cli.getOptionValue("r"));
+            final int radix = ConverterUtils.toRadixIndex(cli.getOptionValue("r"));
             if (radix != -1) {
                 setRadix(radix);
             }
         }
         if (cli.hasOption("lc")) {
-            final boolean b = ConvertUtils.toUpperCase(cli.getOptionValue("lc"));
+            final boolean b = ConverterUtils.toUpperCase(cli.getOptionValue("lc"));
             setUpperCase(b);
         }
 
         if (cli.hasOption("ns")) {
-            final NumberStyle ns = ConvertUtils.toNumberStyle(cli.getOptionValue("ns"));
+            final NumberStyle ns = ConverterUtils.toNumberStyle(cli.getOptionValue("ns"));
             setNumberStyle(ns);
         }
         if (cli.hasOption("strategy")) {
-            final DecoderStrategy strategy = ConvertUtils.toStrategy(cli.getOptionValue("strategy"));
+            final DecoderStrategy strategy = ConverterUtils.toStrategy(cli.getOptionValue("strategy"));
             setStrategy(strategy);
         }
     }
