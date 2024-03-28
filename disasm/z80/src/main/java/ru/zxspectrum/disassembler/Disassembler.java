@@ -21,6 +21,7 @@ import ru.zxspectrum.disassembler.render.Number;
 import ru.zxspectrum.disassembler.render.*;
 import ru.zxspectrum.disassembler.render.command.CommandFactory;
 import ru.zxspectrum.disassembler.render.system.Org;
+import ru.zxspectrum.disassembler.render.system.Z80;
 import ru.zxspectrum.disassembler.settings.DefaultSettings;
 import ru.zxspectrum.disassembler.settings.DisassemblerSettings;
 import ru.zxspectrum.disassembler.sys.Environment;
@@ -141,6 +142,7 @@ public class Disassembler implements Environment {
 
     private void enrichSystems(@NonNull Decoder decoder, @NonNull Canvas canvas) {
         canvas.setOrg(RowFactory.createRow(new Org(decoder.getFirstAddress())));
+        canvas.setZ80(RowFactory.createRow(new Z80()));
     }
 
     private void enrichComment(@NonNull final Canvas canvas) {

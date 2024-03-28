@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import ru.zxspectrum.disassembler.error.RenderException;
 import ru.zxspectrum.disassembler.render.system.Org;
+import ru.zxspectrum.disassembler.render.system.Z80;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,6 +36,11 @@ public class Canvas implements Render {
     @NonNull
     private Row org;
 
+    @Getter
+    @Setter
+    @NonNull
+    private Row z80;
+
     private final ConcurrentHashMap<BigInteger, Row> rowsMap = new ConcurrentHashMap<>();
 
     @Override
@@ -44,6 +50,9 @@ public class Canvas implements Render {
         StringBuilder sb = new StringBuilder();
         if (org != null) {
             sb.append(org.generate());
+        }
+        if (z80 != null) {
+            sb.append(z80.generate());
         }
         for (BigInteger address : addressList) {
             Row row = rowsMap.get(address);
