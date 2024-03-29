@@ -13,6 +13,7 @@ import ru.zxspectrum.disassembler.error.ExceptionGroup;
 import ru.zxspectrum.disassembler.error.RenderException;
 import ru.zxspectrum.disassembler.i18n.Messages;
 import ru.zxspectrum.disassembler.io.ByteCodeInputStream;
+import ru.zxspectrum.disassembler.io.ErrorOutput;
 import ru.zxspectrum.disassembler.io.Output;
 import ru.zxspectrum.disassembler.lang.Type;
 import ru.zxspectrum.disassembler.lang.tree.Tree;
@@ -97,24 +98,28 @@ public class Disassembler implements Environment {
     }
 
     public void run(@NonNull final File... files) {
-        Output.println(createWelcome());
+        if (!settings.getStdout()) {
+            Output.println(createWelcome());
+        }
         for (final File file : files) {
             try {
                 runSingle(file);
                 successfullyDisassembled.add(file);
             } catch (RenderException | InterruptedException | IOException e) {
-                Output.formattedError(e.getMessage());
+                ErrorOutput.println(e.getMessage());
                 errorCount++;
                 log.error(e.getMessage(), e);
             } catch (ExceptionGroup e) {
                 for (Throwable t : e.getExceptions()) {
-                    Output.formattedError(t.getMessage());
+                    ErrorOutput.println(e.getMessage());
                 }
                 errorCount += e.getExceptions().size();
                 log.error(e.getMessage(), e);
             }
         }
-        showTotalReport();
+        if (!settings.getStdout()) {
+            showTotalReport();
+        }
     }
 
     private void runSingle(final File file) throws IOException, InterruptedException, RenderException {
@@ -137,15 +142,17 @@ public class Disassembler implements Environment {
         enrichSystems(decoder, canvas);
         Enricher.enrichLabels(this, canvas);
         enrichComment(canvas);
-        final File outputFile = FileUtils.createNewFileSameName(new File("."), file.getAbsoluteFile(), EXT);
-        canvas.setFile(outputFile);
-        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-            canvas.flush(fos);
-        }
         if (settings.getStdout()) {
             canvas.flush(System.out);
+        } else {
+            final File outputFile = FileUtils.createNewFileSameName(new File("."),
+                file.getAbsoluteFile(), EXT);
+            canvas.setFile(outputFile);
+            try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+                canvas.flush(fos);
+            }
+            showReport(canvas);
         }
-        showReport(canvas);
     }
 
     private void enrichSystems(@NonNull Decoder decoder, @NonNull Canvas canvas) {
@@ -161,24 +168,15 @@ public class Disassembler implements Environment {
 
     private void showReport(Canvas canvas) {
         final StringBuilder sb = new StringBuilder();
-        addCommentIfStdout(sb);
         sb.append(Messages.getMessage(Messages.DISASSEMBLED_LINES_IN));
         Output.println(sb.toString(), String.valueOf(canvas.getLineCount()), canvas.getFile().getName());
     }
 
-    private void addCommentIfStdout(StringBuilder sb) {
-        if (settings.getStdout()) {
-            sb.append(";");
-        }
-    }
-
     private void showTotalReport() {
         final StringBuilder sb = new StringBuilder();
-        addCommentIfStdout(sb);
         sb.append(Messages.getMessage(Messages.TOTAL_ERRORS));
         Output.println(sb.toString(), String.valueOf(errorCount));
         sb.setLength(0);
-        addCommentIfStdout(sb);
         sb.append(Messages.getMessage(Messages.SUCCESSFULLY_DISASSEMBLED));
         Output.println(sb.toString(), String.valueOf(successfullyDisassembled.size()));
     }
@@ -189,17 +187,13 @@ public class Disassembler implements Environment {
                 , settings.getMinorVersion());
         String writtenBy = Messages.getMessage(Messages.WRITTEN_BY);
         String lineExternal = StringUtils.repeat('*', 80);
-        addCommentIfStdout(sb);
         sb.append(lineExternal).append(System.lineSeparator());
         String lineInternal = (new StringBuilder().append('*').append(StringUtils.repeat(' ', 78))
                 .append('*')).toString();
-        addCommentIfStdout(sb);
         sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - programWelcome.length()) / 2
                 , programWelcome)).append(System.lineSeparator());
-        addCommentIfStdout(sb);
         sb.append(SymbolUtils.replace(lineInternal, (lineInternal.length() - writtenBy.length()) / 2
                 , writtenBy)).append(System.lineSeparator());
-        addCommentIfStdout(sb);
         sb.append(lineExternal).append(System.lineSeparator());
         return sb.toString();
     }

@@ -1,5 +1,6 @@
 package ru.zxspectrum.disassembler.error;
 
+import ru.zxspectrum.disassembler.io.ErrorOutput;
 import ru.zxspectrum.disassembler.io.Output;
 
 import java.io.File;
@@ -25,10 +26,10 @@ public class DisassemblerException extends RuntimeException {
     }
 
     public DisassemblerException(int pos, String message, Object ... args) {
-        this(Output.formattedError(pos, message, args));
+        this(ErrorOutput.formattedError(pos, message, args));
     }
 
     public DisassemblerException(File file, int pos, String message, Object ... args) {
-        this(Output.formattedError(file.getAbsolutePath(), pos, message, args));
+        this(ErrorOutput.formattedError(file.getAbsolutePath(), pos, message, args));
     }
 }
