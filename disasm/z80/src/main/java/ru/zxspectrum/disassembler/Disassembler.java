@@ -32,6 +32,7 @@ import ru.zxspectrum.disassembler.utils.SymbolUtils;
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.*;
 
 /**
@@ -105,16 +106,16 @@ public class Disassembler implements Environment {
             try {
                 runSingle(file);
                 successfullyDisassembled.add(file);
-            } catch (RenderException | InterruptedException | IOException e) {
-                ErrorOutput.println(e.getMessage());
-                errorCount++;
+            } catch (UnsupportedCharsetException | RenderException | InterruptedException | IOException e) {
                 log.error(e.getMessage(), e);
+                ErrorOutput.println(file, e.getMessage());
+                errorCount++;
             } catch (ExceptionGroup e) {
+                log.error(e.getMessage(), e);
                 for (Throwable t : e.getExceptions()) {
                     ErrorOutput.println(e.getMessage());
                 }
                 errorCount += e.getExceptions().size();
-                log.error(e.getMessage(), e);
             }
         }
         if (!settings.getStdout()) {
@@ -125,7 +126,7 @@ public class Disassembler implements Environment {
     private void runSingle(final File file) throws IOException, InterruptedException, RenderException {
         if (!file.exists()) {
             throw new FileNotFoundException(String.format(Messages.getMessage(Messages
-                .FILE_NOT_FOUND), file.getName()));
+                    .FILE_NOT_FOUND), file.getName()));
         }
         final ByteCodeInputStream is = new ByteCodeInputStream(file, settings.getByteOrder());
         final DecoderExecutor executor = new DecoderExecutor();
@@ -147,7 +148,7 @@ public class Disassembler implements Environment {
             canvas.flush(System.out);
         } else {
             final File outputFile = FileUtils.createNewFileSameName(new File("."),
-                file.getAbsoluteFile(), EXT);
+                    file.getAbsoluteFile(), EXT);
             canvas.setFile(outputFile);
             try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                 canvas.flush(fos);
@@ -223,6 +224,7 @@ public class Disassembler implements Environment {
             disassembler.run(files.toArray(new File[files.size()]));
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
+            ErrorOutput.println(e.getMessage());
         }
     }
 
@@ -254,20 +256,20 @@ public class Disassembler implements Environment {
         options.addOption("b", "byte-order", true, "byte order" +
                 ": little-endian or big-endian.");
         options.addOption("v", "visible", false, "Show or not address in"
-            + " decompiled file.");
+                + " decompiled file.");
         options.addOption("stdout", "standard-output", false, "Redirect"
-            + " result into stdout stream");
+                + " result into stdout stream");
         options.addOption("r", "radix", true, "Set radix (bin, oct, dec"
-            + ", hex). Hex is" +
+                + ", hex). Hex is" +
                 " default");
         options.addOption("lc", "letter-case", true, "Set letter case"
-            + " (upper, lower). Upper is default");
+                + " (upper, lower). Upper is default");
         options.addOption("ns", "number-style", true, "Set number style"
-            + " (c, java, nix, classic, retro). Classic is default");
+                + " (c, java, nix, classic, retro). Classic is default");
         options.addOption("s", "strategy", true, "Set decompiling"
-            + " strategy (sequentially, branching). Default is sequentially");
+                + " strategy (sequentially, branching). Default is sequentially");
         options.addOption("c", "comments", true, "Switch on or off"
-            + " comments. Default is on");
+                + " comments. Default is on");
         options.addOption("e", "encoding", true, "Set encoding for result files. Default" +
                 " is UTF-8");
         return options;

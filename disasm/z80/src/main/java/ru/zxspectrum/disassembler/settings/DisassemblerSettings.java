@@ -109,5 +109,8 @@ public class DisassemblerSettings extends BaseSettings {
         if (settings.getStrategy() != null) {
             setStrategy(settings.getStrategy());
         }
+        if (settings.getEncoding() != null) {
+            setEncoding(settings.getEncoding());
+        }
     }
 }
