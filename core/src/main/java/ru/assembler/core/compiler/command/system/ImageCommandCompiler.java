@@ -7,7 +7,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.text.MessageList;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.ErrorOutput;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.util.ImageUtils;
 
@@ -49,7 +50,7 @@ public class ImageCommandCompiler extends ResourceCommandCompiler {
     protected byte[] loadResource(@NonNull String path) throws IOException {
         if ("false".equalsIgnoreCase(System.getProperty("asm.embedded"))) {
             if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX) {
-                Output.println(MessageList.getMessage(MessageList.IMAGE_NOT_SUPPORTED));
+                ErrorOutput.println(MessageList.getMessage(MessageList.IMAGE_NOT_SUPPORTED));
                 return new byte[0];
             }
         }

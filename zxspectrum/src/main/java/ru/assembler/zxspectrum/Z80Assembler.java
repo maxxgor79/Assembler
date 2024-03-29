@@ -19,9 +19,10 @@ import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
 import ru.assembler.core.error.text.MessageList;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.ErrorOutput;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.io.LimitedOutputStream;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.core.util.FileUtil;
@@ -140,10 +141,10 @@ public class Z80Assembler extends AbstractNamespaceApi {
             runSettings(outputFile);
             outputCompileResult(compilerApi);
         } catch (FileNotFoundException e) {
-            Output.formatPrintln(MessageList.getMessage(MessageList.FILE_NOT_FOUND), fd.getDisplay());
+            ErrorOutput.formatPrintln(MessageList.getMessage(MessageList.FILE_NOT_FOUND), fd.getDisplay());
             log.error(e.getMessage(), e);
         } catch (Exception e) {
-            Output.println(e.getMessage());
+            ErrorOutput.println(e.getMessage());
             log.error(e.getMessage(), e);
         }
     }
@@ -291,7 +292,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
             }
             return fds;
         } catch (ParseException e) {
-            Output.formatPrintln(e.getMessage());
+            ErrorOutput.formatPrintln(e.getMessage());
         }
         return Collections.emptyList();
     }
@@ -383,7 +384,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         try {
             z80Assembler.applySettings(settings);
         } catch (SettingsException e) {
-            Output.println(e.getMessage());
+            ErrorOutput.println(e.getMessage());
             return;
         }
         if (!fdList.isEmpty()) {

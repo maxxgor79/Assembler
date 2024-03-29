@@ -1,7 +1,8 @@
-package ru.assembler.core.error.text;
+package ru.assembler.core.io;
 
 import lombok.Getter;
 import ru.assembler.core.error.AssemblerException;
+import ru.assembler.core.error.text.MessageFormatter;
 import ru.assembler.core.io.FileDescriptor;
 
 import java.io.File;

@@ -5,7 +5,7 @@ import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.ConversationException;
 import ru.assembler.core.error.text.MessageList;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.lang.Type;
 import ru.assembler.core.lang.TypeConverter;
 import ru.assembler.core.lexem.Lexem;

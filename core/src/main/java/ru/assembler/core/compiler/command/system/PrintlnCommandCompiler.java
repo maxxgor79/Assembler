@@ -2,7 +2,7 @@ package ru.assembler.core.compiler.command.system;
 
 import lombok.NonNull;
 import ru.assembler.core.compiler.CompilerApi;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.ns.NamespaceApi;
 
 import java.math.BigInteger;

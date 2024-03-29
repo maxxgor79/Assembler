@@ -19,9 +19,10 @@ import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
 import ru.assembler.core.error.text.MessageList;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.ErrorOutput;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.io.LimitedOutputStream;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.ns.AbstractNamespaceApi;
 import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.core.util.FileUtil;
@@ -130,7 +131,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
             outputCompileResult(compilerApi);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            Output.println(e.getMessage());
+            ErrorOutput.println(e.getMessage());
         }
     }
 
@@ -340,7 +341,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         try {
             asm.applySettings(settings);
         } catch (SettingsException e) {
-            Output.println(e.getMessage());
+            ErrorOutput.println(e.getMessage());
             return;
         }
         if (!fdList.isEmpty()) {

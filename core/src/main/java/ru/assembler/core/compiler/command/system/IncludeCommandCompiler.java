@@ -6,7 +6,7 @@ import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.text.MessageList;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.ns.NamespaceApi;

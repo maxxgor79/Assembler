@@ -30,7 +30,7 @@ import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.text.MessageList;
-import ru.assembler.core.error.text.Output;
+import ru.assembler.core.io.Output;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemAnalyzer;
