@@ -101,6 +101,11 @@ public class BaseSettings implements Settings {
     @NonNull
     private DecoderStrategy strategy;
 
+    @Setter
+    @Getter
+    @NonNull
+    private boolean hasComments;
+
     public BaseSettings() {
 
     }
@@ -217,6 +222,11 @@ public class BaseSettings implements Settings {
     @Override
     public DecoderStrategy getStrategy() {
         return strategy;
+    }
+
+    @Override
+    public boolean hasComments() {
+        return this.hasComments;
     }
 
     protected void setTemplates(@NonNull Collection<String> templates) {

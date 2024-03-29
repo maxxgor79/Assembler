@@ -58,6 +58,9 @@ public class DisassemblerSettings extends BaseSettings {
             final DecoderStrategy strategy = ConverterUtils.toStrategy(cli.getOptionValue("strategy"));
             setStrategy(strategy);
         }
+        if (cli.hasOption("comments")) {
+            setHasComments(ConverterUtils.getStringToBoolean(cli.getOptionValue("comments")));
+        }
     }
 
     @Override
@@ -66,6 +69,7 @@ public class DisassemblerSettings extends BaseSettings {
         setAddressDimension(settings.getAddressDimension());
         setRadix(settings.getRadix());
         setUpperCase(settings.isUpperCase());
+        setHasComments(settings.hasComments());
         if (getDefaultAddress() == null) {
             setDefaultAddress(settings.getDefaultAddress());
         }

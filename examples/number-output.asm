@@ -2,6 +2,8 @@
 ;; This program demonstrates converting the number in HL to
 ;; ASCII and outputing it.
 ;;
+   ld a,i
+   ld i,a
 
 
    ; Set HL to 0xffff

@@ -34,4 +34,9 @@ public class Org extends Command {
         return new StringBuilder().append(toUpperOrLowerCase(NAME)).append(SPACE)
                 .append(address.generate()).toString();
     }
+
+    @Override
+    public byte[] toByteCode() {
+        return new byte[0];
+    }
 }

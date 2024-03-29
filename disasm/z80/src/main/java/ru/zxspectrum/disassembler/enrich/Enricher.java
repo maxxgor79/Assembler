@@ -5,6 +5,7 @@ import ru.zxspectrum.disassembler.bytecode.ByteCodeUnit;
 import ru.zxspectrum.disassembler.bytecode.Pattern;
 import ru.zxspectrum.disassembler.render.Address;
 import ru.zxspectrum.disassembler.render.Canvas;
+import ru.zxspectrum.disassembler.render.Comment;
 import ru.zxspectrum.disassembler.render.Label;
 import ru.zxspectrum.disassembler.render.Row;
 import ru.zxspectrum.disassembler.render.command.Instruction;
@@ -36,7 +37,7 @@ public class Enricher {
             if (pattern.isAddressOffset()) {
                 //relative address
                 translateRelativeAddress(env, row.getAddress(), inst.getUnits().getOffsetInBytes(i), var, canvas);
-            } else if (pattern.isNumber() && pattern.getDimension() == env.getAddressSize()) {
+            } else if (pattern.isNumber() && pattern.getDimension() == env.getAddressDimension()) {
                 // absolute address
                 translateAbsoluteAddress(env, var, canvas);
             }
@@ -48,7 +49,7 @@ public class Enricher {
         if (labelRow != null) {
             String labelName = env.getLabel(var.getValue());
             if (labelName == null) {
-                labelName = Label.generateLabelName(env.getAddressSize());
+                labelName = Label.generateLabelName(env.getAddressDimension());
                 env.putLabel(var.getValue(), labelName);
                 labelRow.setLabel(new Label(labelName));
             }
@@ -64,11 +65,28 @@ public class Enricher {
         if (labelRow != null) {
             String labelName = env.getLabel(absAddress);
             if (labelName == null) {
-                labelName = Label.generateLabelName(env.getAddressSize());
+                labelName = Label.generateLabelName(env.getAddressDimension());
                 env.putLabel(absAddress, labelName);
                 labelRow.setLabel(new Label(labelName));
             }
             var.setName(labelName);
         }
+    }
+
+    public static void enrichComment(@NonNull Environment env, @NonNull Canvas canvas) {
+        canvas.walkThrough(entry -> {
+            final Row row = entry.getValue();
+            Comment comment = row.getComment();
+            if (comment == null) {
+                comment = new Comment(env);
+                row.setComment(comment);
+            }
+            enrichComment(env, row, comment, canvas);
+        });
+    }
+
+    private static void enrichComment(Environment env, Row row, Comment comment, Canvas canvas) {
+        comment.setAddress(row.getAddress().getValue());
+        comment.setByteCode(row.getCommand().toByteCode());
     }
 }

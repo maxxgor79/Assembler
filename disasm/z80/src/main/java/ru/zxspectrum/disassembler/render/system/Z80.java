@@ -14,4 +14,9 @@ public class Z80 extends Command {
     public String generate() throws RenderException {
         return toUpperOrLowerCase(NAME);
     }
+
+    @Override
+    public byte[] toByteCode() {
+        return new byte[0];
+    }
 }

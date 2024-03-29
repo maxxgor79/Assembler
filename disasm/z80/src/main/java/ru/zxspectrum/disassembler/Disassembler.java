@@ -49,7 +49,7 @@ public class Disassembler implements Environment {
 
     private int errorCount;
 
-    private static int addressSize;
+    private static int addressDimension;
 
     private List<File> successfullyDisassembled = new LinkedList<>();
 
@@ -62,15 +62,15 @@ public class Disassembler implements Environment {
 
     protected void reset() {
         errorCount = 0;
-        addressSize = 0;
+        addressDimension = 0;
         labelMap.clear();
         successfullyDisassembled.clear();
     }
 
     protected void setSettings(@NonNull DisassemblerSettings settings) {
         this.settings = settings;
-        addressSize = Type.getSize(settings.getMaxAddress().longValue());
-        if (addressSize <= 0) {
+        addressDimension = Type.getSize(settings.getMaxAddress().longValue());
+        if (addressDimension <= 0) {
             throw new IllegalArgumentException("Bad address size");
         }
     }
@@ -146,7 +146,9 @@ public class Disassembler implements Environment {
     }
 
     private void enrichComment(@NonNull final Canvas canvas) {
-
+        if (settings.hasComments()) {
+            Enricher.enrichComment(this, canvas);
+        }
     }
 
     private void showReport(Canvas canvas) {
@@ -248,17 +250,21 @@ public class Disassembler implements Environment {
                 " disassembled files.");
         options.addOption("b", "byte-order", true, "byte order" +
                 ": little-endian or big-endian.");
-        options.addOption("v", "visible", false, "Show or not address in decompiled file.");
-        options.addOption("stdout", "standard-output", false, "Redirect result into std" +
-                "out stream");
-        options.addOption("r", "radix", true, "Set radix (bin, oct, dec, hex). Hex is" +
+        options.addOption("v", "visible", false, "Show or not address in"
+            + " decompiled file.");
+        options.addOption("stdout", "standard-output", false, "Redirect"
+            + " result into stdout stream");
+        options.addOption("r", "radix", true, "Set radix (bin, oct, dec"
+            + ", hex). Hex is" +
                 " default");
-        options.addOption("lc", "letter-case", true, "Set letter case (upper, lower)." +
-                " Upper is default");
-        options.addOption("ns", "number-style", true, "Set number style (C, Java, Nix," +
-                " Classic, Retro). Classic is default");
-        options.addOption("s", "strategy", true, "Set decompiling strategy (sequentially," +
-                " branching). Default is sequentially");
+        options.addOption("lc", "letter-case", true, "Set letter case"
+            + " (upper, lower). Upper is default");
+        options.addOption("ns", "number-style", true, "Set number style"
+            + " (c, java, nix, classic, retro). Classic is default");
+        options.addOption("s", "strategy", true, "Set decompiling"
+            + " strategy (sequentially, branching). Default is sequentially");
+        options.addOption("c", "comments", true, "Switch on or off"
+            + " comments. Default is on");
         return options;
     }
 
@@ -283,8 +289,8 @@ public class Disassembler implements Environment {
     }
 
     @Override
-    public int getAddressSize() {
-        return addressSize;
+    public int getAddressDimension() {
+        return addressDimension;
     }
 
     @Override

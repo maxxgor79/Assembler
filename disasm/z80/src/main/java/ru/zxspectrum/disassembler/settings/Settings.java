@@ -51,6 +51,8 @@ public interface Settings {
 
     DecoderStrategy getStrategy();
 
+    boolean hasComments();
+
     void load(InputStream is) throws IOException;
 
     void merge(Settings settings);

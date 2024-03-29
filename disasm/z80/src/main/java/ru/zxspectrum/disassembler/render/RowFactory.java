@@ -13,8 +13,6 @@ public final class RowFactory {
 
     public static final Tab TAB = new Tab();
 
-    public static final Comment EMPTY_COMMENT = new Comment();
-
     private RowFactory() {
 
     }

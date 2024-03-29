@@ -108,6 +108,11 @@ public class DefaultSettings implements Settings {
     }
 
     @Override
+    public boolean hasComments() {
+        return true;
+    }
+
+    @Override
     public void load(@NonNull InputStream is) throws IOException {
         throw new UnsupportedOperationException();
     }

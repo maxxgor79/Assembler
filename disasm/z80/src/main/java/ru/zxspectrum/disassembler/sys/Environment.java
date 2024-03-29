@@ -11,7 +11,7 @@ import java.math.BigInteger;
 public interface Environment {
     String getExtension();
 
-    int getAddressSize();
+    int getAddressDimension();
 
     DisassemblerSettings getSettings();
 
