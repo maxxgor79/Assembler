@@ -25,10 +25,10 @@ public class DisassemblerException extends RuntimeException {
     }
 
     public DisassemblerException(int pos, String message, Object ... args) {
-        this(Output.errorFormat(pos, message, args));
+        this(Output.formattedError(pos, message, args));
     }
 
     public DisassemblerException(File file, int pos, String message, Object ... args) {
-        this(Output.errorFormat(file.getAbsolutePath(), pos, message, args));
+        this(Output.formattedError(file.getAbsolutePath(), pos, message, args));
     }
 }

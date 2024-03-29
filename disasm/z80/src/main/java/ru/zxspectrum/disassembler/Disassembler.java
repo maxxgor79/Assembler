@@ -103,9 +103,13 @@ public class Disassembler implements Environment {
                 runSingle(file);
                 successfullyDisassembled.add(file);
             } catch (RenderException | InterruptedException | IOException e) {
+                Output.formattedError(e.getMessage());
                 errorCount++;
                 log.error(e.getMessage(), e);
             } catch (ExceptionGroup e) {
+                for (Throwable t : e.getExceptions()) {
+                    Output.formattedError(t.getMessage());
+                }
                 errorCount += e.getExceptions().size();
                 log.error(e.getMessage(), e);
             }
@@ -114,6 +118,10 @@ public class Disassembler implements Environment {
     }
 
     private void runSingle(final File file) throws IOException, InterruptedException, RenderException {
+        if (!file.exists()) {
+            throw new FileNotFoundException(String.format(Messages.getMessage(Messages
+                .FILE_NOT_FOUND), file.getName()));
+        }
         final ByteCodeInputStream is = new ByteCodeInputStream(file, settings.getByteOrder());
         final DecoderExecutor executor = new DecoderExecutor();
         final Decoder decoder = new Decoder(executor, TREE, settings.getDefaultAddress(), is);

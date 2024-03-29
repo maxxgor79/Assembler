@@ -55,6 +55,8 @@ public final class Messages {
 
     public static final String FILE_ARGN = "file_argN";
 
+    public static final String FILE_NOT_FOUND = "file_not_found";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     public static String getMessage(String message) {
