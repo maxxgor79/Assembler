@@ -53,6 +53,8 @@ public interface Settings {
 
     boolean hasComments();
 
+    String getEncoding();
+
     void load(InputStream is) throws IOException;
 
     void merge(Settings settings);

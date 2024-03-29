@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +39,11 @@ public class Canvas implements Render {
     @Setter
     @NonNull
     private Row z80;
+
+    @Setter
+    @Getter
+    @NonNull
+    private String encoding = Charset.defaultCharset().name();
 
     private final ConcurrentHashMap<BigInteger, Row> rowsMap = new ConcurrentHashMap<>();
 
@@ -75,7 +82,7 @@ public class Canvas implements Render {
     }
 
     public void flush(@NonNull OutputStream os) throws IOException, RenderException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, Charset.forName(encoding)));
         writer.write(generate());
         writer.flush();
     }

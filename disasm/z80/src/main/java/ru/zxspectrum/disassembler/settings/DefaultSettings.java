@@ -113,6 +113,11 @@ public class DefaultSettings implements Settings {
     }
 
     @Override
+    public String getEncoding() {
+        return "UTF-8";
+    }
+
+    @Override
     public void load(@NonNull InputStream is) throws IOException {
         throw new UnsupportedOperationException();
     }

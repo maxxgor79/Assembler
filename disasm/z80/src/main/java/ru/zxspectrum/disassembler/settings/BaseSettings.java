@@ -106,6 +106,11 @@ public class BaseSettings implements Settings {
     @NonNull
     private boolean hasComments;
 
+    @Setter
+    @Getter
+    @NonNull
+    private String encoding;
+
     public BaseSettings() {
 
     }

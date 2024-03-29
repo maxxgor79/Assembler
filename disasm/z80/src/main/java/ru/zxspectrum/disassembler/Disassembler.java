@@ -131,6 +131,7 @@ public class Disassembler implements Environment {
         final DecoderExecutor executor = new DecoderExecutor();
         final Decoder decoder = new Decoder(executor, TREE, settings.getDefaultAddress(), is);
         final Canvas canvas = new Canvas();
+        canvas.setEncoding(settings.getEncoding());
         decoder.setCanvas(canvas);
         executor.execute(decoder);
         executor.await();
@@ -267,6 +268,8 @@ public class Disassembler implements Environment {
             + " strategy (sequentially, branching). Default is sequentially");
         options.addOption("c", "comments", true, "Switch on or off"
             + " comments. Default is on");
+        options.addOption("e", "encoding", true, "Set encoding for result files. Default" +
+                " is UTF-8");
         return options;
     }
 

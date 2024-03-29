@@ -61,6 +61,9 @@ public class DisassemblerSettings extends BaseSettings {
         if (cli.hasOption("comments")) {
             setHasComments(ConverterUtils.getStringToBoolean(cli.getOptionValue("comments")));
         }
+        if (cli.hasOption("e")) {
+            setEncoding(cli.getOptionValue("e"));
+        }
     }
 
     @Override
