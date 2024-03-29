@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
+import ru.retro.assembler.editor.core.imprt.FileImportFactory;
+import ru.retro.assembler.editor.core.imprt.FileImporter;
+import ru.retro.assembler.editor.core.imprt.FileImporters;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.settings.DefaultAppSettings;
@@ -99,6 +102,11 @@ public final class Controller implements Runnable {
     @Setter
     @NonNull
     private static AppSettingsFactory appSettingsFactory = DefaultAppSettings.defaultAppSettingsFactory();
+
+    @Getter
+    @Setter
+    @NonNull
+    private static FileImportFactory fileImportFactory = FileImporters.defaultFileImporter();
 
     @Getter
     private Collection<String> args;
@@ -514,7 +522,11 @@ public final class Controller implements Runnable {
             log.info("importFileChooser is null");
         }
         if (importFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
-
+            FileImporter importer = fileImportFactory.newFileImporter(importFileChooser.getSelectedFile());
+            if (importer == null) {
+                JOptionPane.showMessageDialog(mainWindow, "Bad import initialization: null", Messages
+                        .getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
+            }
         }
     }
 

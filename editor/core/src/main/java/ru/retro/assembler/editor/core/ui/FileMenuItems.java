@@ -105,7 +105,7 @@ public class FileMenuItems {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        miImport = new JMenuItem(Messages.getInstance().get(Messages.IMPORT));
+        miImport = new JMenuItem(Messages.getInstance().get(Messages.IMPORT) + "...");
         miImport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent
                 .CTRL_DOWN_MASK));
 
