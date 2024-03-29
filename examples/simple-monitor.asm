@@ -14,7 +14,7 @@
 ;; Other input will generate an "ERR" message, and be ignored.
 ;;
 
-org 32768
+org 32768l
 
     ;;
     ;; Ensure we have a stack-pointer setup, with some room.
