@@ -43,6 +43,10 @@ public final class SymbolUtils {
         return new String(new char[]{hi, lo});
     }
 
+    public static boolean isSymbol(int ch) {
+        return ch >= ' ' && ch <= '~';
+    }
+
     public static boolean isDot(@NonNull String s) {
         return ".".equals(s);
     }

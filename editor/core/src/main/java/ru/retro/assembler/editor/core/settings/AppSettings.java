@@ -85,6 +85,12 @@ public class AppSettings extends Settings {
     @Getter
     @Setter
     @Setting
+    @NonNull
+    protected String importDialogCurrentDirectory = "${user.dir}";
+
+    @Getter
+    @Setter
+    @Setting
     protected String editorFontName = "Arial";
 
     @Getter

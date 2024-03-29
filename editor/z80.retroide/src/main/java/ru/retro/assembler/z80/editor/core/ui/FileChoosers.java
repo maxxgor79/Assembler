@@ -20,6 +20,11 @@ public final class FileChoosers {
             public JFileChooser newSaveChooser() {
                 return new LocalizedSaveAsChooser();
             }
+
+            @Override
+            public JFileChooser newImportChooser() {
+                return new ImportFileChooser();
+            }
         };
     }
 }

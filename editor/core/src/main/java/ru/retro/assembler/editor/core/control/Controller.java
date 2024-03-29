@@ -73,6 +73,8 @@ public final class Controller implements Runnable {
 
     private JFileChooser openFileChooser;
 
+    private JFileChooser importFileChooser;
+
     @Getter
     @Setter
     @NonNull
@@ -138,6 +140,16 @@ public final class Controller implements Runnable {
             }
         }
         return openFileChooser;
+    }
+
+    private JFileChooser getImportFileChooser() {
+        if (importFileChooser == null) {
+            importFileChooser = fileChooserFactory.newImportChooser();
+            if (settings.getImportDialogCurrentDirectory() != null) {
+                importFileChooser.setCurrentDirectory(new File(settings.getImportDialogCurrentDirectory()));
+            }
+        }
+        return importFileChooser;
     }
 
     @Override
@@ -290,6 +302,7 @@ public final class Controller implements Runnable {
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getFileMenuItems().getMiNew().addActionListener(newListener);
         mainWindow.getFileMenuItems().getMiOpen().addActionListener(openListener);
+        mainWindow.getFileMenuItems().getMiImport().addActionListener(importListener);
         mainWindow.getFileMenuItems().getMiSave().addActionListener(saveListener);
         mainWindow.getFileMenuItems().getMiSaveAs().addActionListener(saveAsListener);
         mainWindow.getFileMenuItems().getMiSaveAll().addActionListener(saveAllListener);
@@ -492,6 +505,16 @@ public final class Controller implements Runnable {
                         , src.getFile().getAbsolutePath()), Messages.getInstance().get(Messages.ERROR), JOptionPane
                         .ERROR_MESSAGE, ResourceUtils.getErrorIcon());
             }
+        }
+    }
+
+    private void importResource() {
+        final JFileChooser importFileChooser = getImportFileChooser();
+        if (importFileChooser == null) {
+            log.info("importFileChooser is null");
+        }
+        if (importFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
+
         }
     }
 
@@ -793,6 +816,11 @@ public final class Controller implements Runnable {
     private final ActionListener openListener = e -> {
         log.info("Open action");
         openSource();
+    };
+
+    private final ActionListener importListener = e -> {
+        log.info("Open action");
+        importResource();
     };
 
     private final ActionListener saveListener = e -> {

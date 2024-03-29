@@ -6,4 +6,6 @@ public interface FileChooserFactory {
     JFileChooser newOpenChooser();
 
     JFileChooser newSaveChooser();
+
+    JFileChooser newImportChooser();
 }

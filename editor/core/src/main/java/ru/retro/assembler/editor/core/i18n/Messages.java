@@ -206,6 +206,10 @@ public final class Messages {
 
     public static final String WAVE_FILES = "wav_files";
 
+    public static final String IMPORT = "import";
+
+    public static final String ALL_FILES = "all_files";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }

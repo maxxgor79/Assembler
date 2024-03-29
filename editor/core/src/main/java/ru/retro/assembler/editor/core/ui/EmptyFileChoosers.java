@@ -20,6 +20,11 @@ public final class EmptyFileChoosers {
             public JFileChooser newSaveChooser() {
                 return null;
             }
+
+            @Override
+            public JFileChooser newImportChooser() {
+                return null;
+            }
         };
     }
 }

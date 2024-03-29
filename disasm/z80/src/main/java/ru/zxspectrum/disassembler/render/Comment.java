@@ -42,13 +42,13 @@ public class Comment extends Cell {
         sb.append(PREFIX);
         if (address != null) {
             sb.append(renderAddress());
-            sb.append(' ');
         }
         if (byteCode != null) {
-            sb.append(renderByteCode());
             sb.append(' ');
+            sb.append(renderByteCode());
         }
         if (text != null) {
+            sb.append(' ');
             sb.append(text);
         }
         return sb.toString();

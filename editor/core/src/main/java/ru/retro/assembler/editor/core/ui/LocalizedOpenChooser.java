@@ -25,6 +25,7 @@ public class LocalizedOpenChooser extends JFileChooser {
         UIManager.put("FileChooser.upFolderToolTipText", Messages.getInstance().get(Messages.UP_FOLDER));
         UIManager.put("FileChooser.upFolderAccessibleName", Messages.getInstance().get(Messages.UP_FOLDER));
         UIManager.put("FileChooser.newFolderToolTipText", Messages.getInstance().get(Messages.NEW_FOLDER));
+        UIManager.put("FileChooser.acceptAllFileFilterText", Messages.getInstance().get(Messages.ALL_FILES));
     }
 
     public LocalizedOpenChooser() {

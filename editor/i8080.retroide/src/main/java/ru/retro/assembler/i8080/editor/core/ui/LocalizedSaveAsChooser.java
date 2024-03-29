@@ -30,6 +30,7 @@ public class LocalizedSaveAsChooser extends JFileChooser {
         UIManager.put("FileChooser.upFolderToolTipText", I8080Messages.getInstance().get(I8080Messages.UP_FOLDER));
         UIManager.put("FileChooser.upFolderAccessibleName", I8080Messages.getInstance().get(I8080Messages.UP_FOLDER));
         UIManager.put("FileChooser.newFolderToolTipText", I8080Messages.getInstance().get(I8080Messages.NEW_FOLDER));
+        UIManager.put("FileChooser.acceptAllFileFilterText", I8080Messages.getInstance().get(I8080Messages.ALL_FILES));
     }
 
     public LocalizedSaveAsChooser() {

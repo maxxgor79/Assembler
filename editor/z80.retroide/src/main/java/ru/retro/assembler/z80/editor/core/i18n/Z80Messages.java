@@ -30,6 +30,8 @@ public final class Z80Messages {
 
     public static final String OPEN_FILE = "open_file";
 
+    public static final String IMPORT_FILE = "import_file";
+
     public static final String ASM_SOURCES = "asm_sources";
 
     public static final String HEADER_SOURCES = "header_sources";
@@ -77,6 +79,10 @@ public final class Z80Messages {
     public static final String TAPE_PLAYER = "tape_player";
 
     public static final String RECORDER = "recorder";
+
+    public static final String BINARY_FILES = "binary_files";
+
+    public static final String ALL_FILES = "all_files";
 
     private Z80Messages() {
         bundle = ResourceBundle.getBundle("i18n.Z80EditorMessages");

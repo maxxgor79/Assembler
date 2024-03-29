@@ -36,6 +36,9 @@ public class FileMenuItems {
     private JMenuItem miReloadAllFromDisk;
 
     @Getter
+    private JMenuItem miImport;
+
+    @Getter
     private JMenuItem miClose;
 
     @Getter
@@ -56,6 +59,8 @@ public class FileMenuItems {
         menu.add(miSaveAs);
         menu.add(miSaveAll);
         menu.add(miReloadAllFromDisk);
+        menu.addSeparator();
+        menu.add(miImport);
         menu.addSeparator();
         menu.add(miClose);
         menu.add(miCloseAll);
@@ -100,6 +105,10 @@ public class FileMenuItems {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+        miImport = new JMenuItem(Messages.getInstance().get(Messages.IMPORT));
+        miImport.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent
+                .CTRL_DOWN_MASK));
+
         miClose = new JMenuItem(Messages.getInstance().get(Messages.CLOSE));
         try {
             miClose.setIcon(ResourceUtils.loadIcon("/icon16x16/close.png"));
