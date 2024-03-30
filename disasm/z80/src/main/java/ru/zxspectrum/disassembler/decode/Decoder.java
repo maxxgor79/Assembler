@@ -258,7 +258,7 @@ public class Decoder implements Runnable {
     @Override
     public Decoder clone() {
         Decoder newDecoder = new Decoder(executor, commandTree, firstAddress, input.clone());
-        newDecoder.setStrategy(DecoderStrategy.Sequentially);
+        newDecoder.setStrategy(strategy);
         newDecoder.setCanvas(canvas);
         return newDecoder;
     }

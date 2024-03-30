@@ -27,6 +27,7 @@ import ru.zxspectrum.disassembler.settings.DefaultSettings;
 import ru.zxspectrum.disassembler.settings.DisassemblerSettings;
 import ru.zxspectrum.disassembler.sys.Environment;
 import ru.zxspectrum.disassembler.utils.FileUtils;
+import ru.zxspectrum.disassembler.utils.ObjectUtils;
 import ru.zxspectrum.disassembler.utils.SymbolUtils;
 
 import java.io.*;
@@ -129,6 +130,11 @@ public class Disassembler implements Environment {
                     .FILE_NOT_FOUND), file.getName()));
         }
         final ByteCodeInputStream is = new ByteCodeInputStream(file, settings.getByteOrder());
+        if (!ObjectUtils.isInRange(settings.getMinAddress(), settings.getMaxAddress(), settings.getDefaultAddress()
+                , BigInteger.valueOf(is.size()))) {
+            Output.printlnWarning(Messages.getMessage(Messages.ADDRESS_OUT_OF_RANGE), settings.getDefaultAddress()
+                    .toString());
+        }
         final DecoderExecutor executor = new DecoderExecutor();
         final Decoder decoder = new Decoder(executor, TREE, settings.getDefaultAddress(), is);
         final Canvas canvas = new Canvas();
@@ -266,8 +272,8 @@ public class Disassembler implements Environment {
                 + " (upper, lower). Upper is default");
         options.addOption("ns", "number-style", true, "Set number style"
                 + " (c, java, nix, classic, retro). Classic is default");
-        options.addOption("s", "strategy", true, "Set decompiling"
-                + " strategy (sequentially, branching). Default is sequentially");
+        //options.addOption("s", "strategy", true, "Set decompiling"
+                //+ " strategy (sequentially, branching). Default is sequentially");
         options.addOption("c", "comments", true, "Switch on or off"
                 + " comments. Default is on");
         options.addOption("e", "encoding", true, "Set encoding for result files. Default" +
