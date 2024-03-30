@@ -57,6 +57,8 @@ public final class Messages {
 
     public static final String FILE_NOT_FOUND = "file_not_found";
 
+    public static final String ADDRESS_OUT_OF_RANGE = "address_out_of_range";
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
 
     public static String getMessage(String message) {

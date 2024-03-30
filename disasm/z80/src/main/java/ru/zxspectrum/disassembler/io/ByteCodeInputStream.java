@@ -110,7 +110,7 @@ public class ByteCodeInputStream extends InputStream {
             pos = 0;
         }
         if (pos >= data.length) {
-            pos = data.length;
+            throw new IndexOutOfBoundsException("pos=" + pos);
         }
         prevPc = pc;
         pc = pos;
