@@ -16,7 +16,7 @@ public class BuildToolButton extends AbstractCompileMenuItem implements ToolButt
 
     private String hint;
 
-    protected BuildToolButton(@NonNull Controller controller) {
+    public BuildToolButton(@NonNull Controller controller) {
         super(controller, "", (char) 0, null, "/icon32x32/compile.png");
         size = new Dimension(ICON_WIDTH, ICON_HEIGHT);
         hint = I8080Messages.getInstance().get(I8080Messages.COMPILE);

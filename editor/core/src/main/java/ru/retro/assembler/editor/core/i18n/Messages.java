@@ -210,6 +210,10 @@ public final class Messages {
 
     public static final String ALL_FILES = "all_files";
 
+    public static final String UNSUPPORTED_FORMAT = "unsupported_format";
+
+    public static final String IMPORT_ERROR = "import_error";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }

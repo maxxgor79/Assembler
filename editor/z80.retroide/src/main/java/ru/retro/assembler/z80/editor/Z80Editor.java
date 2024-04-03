@@ -7,10 +7,7 @@ import ru.retro.assembler.editor.core.Editor;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.util.UIUtils;
-import ru.retro.assembler.z80.editor.core.menu.MenuItems;
-import ru.retro.assembler.z80.editor.core.menu.build.BuildToolButtons;
 import ru.retro.assembler.z80.editor.core.settings.Z80AppSettings;
-import ru.retro.assembler.z80.editor.core.ui.FileChoosers;
 import ru.retro.assembler.z80.editor.core.ui.UIComponents;
 
 @Slf4j
@@ -36,9 +33,6 @@ public final class Z80Editor extends Editor {
         return "z80";
       }
     });
-    Controller.setToolButtonFactory(BuildToolButtons.defaultToolButtonFactory());
-    Controller.setMenuItemFactory(MenuItems.defaultMenuItemFactory());
-    Controller.setFileChooserFactory(FileChoosers.defaultFileChooserFactory());
     Controller.setUiFactory(UIComponents.defaultUIFactory(buildVersionReader));
   }
 

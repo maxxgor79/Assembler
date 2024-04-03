@@ -7,10 +7,7 @@ import ru.retro.assembler.editor.core.Editor;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.util.UIUtils;
-import ru.retro.assembler.i8080.editor.core.menu.MenuItems;
-import ru.retro.assembler.i8080.editor.core.menu.build.BuildToolButtons;
 import ru.retro.assembler.i8080.editor.core.settings.I8080AppSettings;
-import ru.retro.assembler.i8080.editor.core.ui.FileChoosers;
 import ru.retro.assembler.i8080.editor.core.ui.UIComponents;
 
 @Slf4j
@@ -35,9 +32,6 @@ public class I8080Editor {
                 return "i8080";
             }
         });
-        Controller.setToolButtonFactory(BuildToolButtons.defaultToolButtonFactory());
-        Controller.setMenuItemFactory(MenuItems.defaultMenuItemFactory());
-        Controller.setFileChooserFactory(FileChoosers.defaultFileChooserFactory());
         Controller.setUiFactory(UIComponents.defaultUIFactory(buildVersionReader));
     }
 

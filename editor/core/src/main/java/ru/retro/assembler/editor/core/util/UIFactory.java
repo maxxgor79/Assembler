@@ -2,8 +2,12 @@ package ru.retro.assembler.editor.core.util;
 
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.ui.ModalDialog;
+import ru.retro.assembler.editor.core.ui.components.MenuItem;
+import ru.retro.assembler.editor.core.ui.components.ToolButton;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 
 /**
  * @Author: Maxim Gorin
@@ -14,5 +18,17 @@ public interface UIFactory {
 
     Image newTaskBarImage();
 
-    Image newWindowImage();
+    Image newAboutDialogImage();
+
+    Collection<MenuItem> newBuildMenuItems(Controller controller);
+
+    Collection<MenuItem> newRunMenuItems(Controller controller);
+
+    Collection<ToolButton> newToolButtons(Controller controller);
+
+    JFileChooser newOpenChooser();
+
+    JFileChooser newSaveChooser();
+
+    JFileChooser newImportChooser();
 }
