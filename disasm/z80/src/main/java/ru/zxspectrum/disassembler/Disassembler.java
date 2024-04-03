@@ -35,6 +35,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * @author Maxim Gorin

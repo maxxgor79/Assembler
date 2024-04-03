@@ -38,7 +38,7 @@ public abstract class Number extends Cell {
             case 16:
                 return toUpperOrLowerCase(ConverterUtils.toHex(value, style));
             default:
-                throw new UnsupportedOperationException();
+                throw new NumberFormatException();
         }
     }
 }

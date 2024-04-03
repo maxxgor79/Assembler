@@ -44,6 +44,15 @@ public class ByteCodeInputStream extends InputStream {
         }
     }
 
+    public ByteCodeInputStream(@NonNull final FileInputStream fis, @NonNull final ByteOrder byteOrder) throws IOException {
+        this.byteOrder = byteOrder;
+        try {
+            this.data = IOUtils.toByteArray(fis);
+        } finally {
+            IOUtils.closeQuietly(fis);
+        }
+    }
+
     public ByteCodeInputStream(@NonNull final byte[] data, @NonNull final ByteOrder byteOrder) {
         this.data = data;
         this.byteOrder = byteOrder;
@@ -105,11 +114,8 @@ public class ByteCodeInputStream extends InputStream {
         return readInt() & 0xFFFF_FFFF;
     }
 
-    public int jump(int pos) {
-        if (pos < 0) {
-            pos = 0;
-        }
-        if (pos >= data.length) {
+    public int jump(final int pos) {
+        if (pos < 0 || pos >= data.length) {
             throw new IndexOutOfBoundsException("pos=" + pos);
         }
         prevPc = pc;
