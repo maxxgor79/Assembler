@@ -91,6 +91,7 @@ public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent
       recorder.setFile(file);
       SwingUtilities.invokeLater(() -> {
         buttonsPanel.getBtnRecord().setEnabled(true);
+        getRootPane().setDefaultButton(buttonsPanel.getBtnRecord());
         buttonsPanel.getBtnRecord().requestFocus();
         buttonsPanel.getBtnStop().setEnabled(false);
       });
@@ -156,6 +157,7 @@ public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent
     SwingUtilities.invokeLater(() -> {
       buttonsPanel.getBtnRecord().setEnabled(false);
       buttonsPanel.getBtnStop().setEnabled(true);
+      getRootPane().setDefaultButton(buttonsPanel.getBtnStop());
       buttonsPanel.getBtnStop().requestFocus();
     });
   }
@@ -165,6 +167,7 @@ public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent
     log.info("Recorder stopped");
     SwingUtilities.invokeLater(() -> {
       buttonsPanel.getBtnRecord().setEnabled(true);
+      getRootPane().setDefaultButton(buttonsPanel.getBtnRecord());
       buttonsPanel.getBtnRecord().requestFocus();
       buttonsPanel.getBtnStop().setEnabled(false);
       interactivePanel.reset();

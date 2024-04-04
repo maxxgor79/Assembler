@@ -95,6 +95,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
       player.setFile(file);
       SwingUtilities.invokeLater(() -> {
         buttonsPanel.getBtnPlay().setEnabled(true);
+        getRootPane().setDefaultButton(buttonsPanel.getBtnPlay());
         buttonsPanel.getBtnPlay().requestFocus();
         buttonsPanel.getBtnStop().setEnabled(false);
       });
@@ -168,6 +169,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     SwingUtilities.invokeLater(() -> {
       buttonsPanel.getBtnPlay().setEnabled(false);
       buttonsPanel.getBtnStop().setEnabled(true);
+      getRootPane().setDefaultButton(buttonsPanel.getBtnStop());
       buttonsPanel.getBtnStop().requestFocus();
     });
   }
@@ -178,6 +180,7 @@ public class Player extends JDialog implements ModalDialog, AudioPlayerEvent {
     SwingUtilities.invokeLater(() -> {
       interactivePanel.getSlider().setValue(0);
       buttonsPanel.getBtnPlay().setEnabled(true);
+      getRootPane().setDefaultButton(buttonsPanel.getBtnPlay());
       buttonsPanel.getBtnPlay().requestFocus();
       buttonsPanel.getBtnStop().setEnabled(false);
       interactivePanel.reset();
