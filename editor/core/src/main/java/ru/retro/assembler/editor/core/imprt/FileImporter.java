@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.imprt;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.CharacterCodingException;
 
 /**

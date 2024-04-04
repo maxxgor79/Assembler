@@ -82,8 +82,9 @@ public class Canvas implements Render {
     }
 
     public void flush(@NonNull OutputStream os) throws IOException, RenderException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, Charset.forName(encoding)));
-        writer.write(generate());
+        OutputStreamWriter writer = new OutputStreamWriter(os, Charset.forName(encoding));
+        String s = generate();
+        writer.write(s);
         writer.flush();
     }
 

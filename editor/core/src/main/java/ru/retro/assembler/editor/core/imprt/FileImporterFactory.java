@@ -6,6 +6,6 @@ import java.io.File;
  * Author: Maxim Gorin
  * Date: 29.03.2024
  */
-public interface FileImportFactory {
+public interface FileImporterFactory {
     FileImporter newFileImporter(File file);
 }

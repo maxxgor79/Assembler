@@ -35,7 +35,6 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * @author Maxim Gorin
@@ -108,7 +107,8 @@ public class Disassembler implements Environment {
             try {
                 runSingle(file);
                 successfullyDisassembled.add(file);
-            } catch (UnsupportedCharsetException | RenderException | InterruptedException | IOException e) {
+            } catch (UnsupportedCharsetException | RenderException
+                     | InterruptedException | IOException e) {
                 log.error(e.getMessage(), e);
                 ErrorOutput.println(file, e.getMessage());
                 errorCount++;

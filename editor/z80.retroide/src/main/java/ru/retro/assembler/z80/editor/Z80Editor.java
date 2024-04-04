@@ -7,6 +7,7 @@ import ru.retro.assembler.editor.core.Editor;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.BuildVersionReader;
 import ru.retro.assembler.editor.core.util.UIUtils;
+import ru.retro.assembler.z80.editor.core.imprt.FileImporters;
 import ru.retro.assembler.z80.editor.core.settings.Z80AppSettings;
 import ru.retro.assembler.z80.editor.core.ui.UIComponents;
 
@@ -33,6 +34,7 @@ public final class Z80Editor extends Editor {
         return "z80";
       }
     });
+    Controller.setFileImporterFactory(FileImporters.defaultFileImporterFactory());
     Controller.setUiFactory(UIComponents.defaultUIFactory(buildVersionReader));
   }
 
