@@ -59,7 +59,7 @@ public final class Messages {
 
     public static final String ADDRESS_OUT_OF_RANGE = "address_out_of_range";
 
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.DisasmMessages");
 
     public static String getMessage(String message) {
         if (message == null) {

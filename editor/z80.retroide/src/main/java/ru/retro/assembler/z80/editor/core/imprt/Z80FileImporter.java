@@ -45,7 +45,7 @@ public class Z80FileImporter implements FileImporter {
     @Override
     public String importFile(@NonNull final File file, @NonNull final String encoding)
             throws IOException, CharacterCodingException {
-        final BigInteger address = BigInteger.valueOf(32768);
+        final BigInteger address = BigInteger.valueOf(32768);//needs to enter manually
         try {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             System.setOut(new PrintStream(out));
