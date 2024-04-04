@@ -8,6 +8,7 @@ import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.MainWindow;
 import ru.retro.assembler.editor.core.ui.menu.AbstractMenuItem;
 import ru.retro.assembler.editor.core.ui.player.Player;
+import ru.retro.assembler.editor.core.ui.progress.SimpleWorker;
 import ru.retro.assembler.i8080.editor.core.i18n.I8080Messages;
 import ru.retro.assembler.i8080.editor.core.menu.build.CompileWavMenuItem;
 import ru.retro.assembler.i8080.editor.utils.ResourceUtils;
@@ -53,11 +54,23 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
     @Override
     public void onAction(ActionEvent actionEvent) {
         log.info("Action play");
-        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
-        if (selectedSource == null) {
-            return;
+        final SimpleWorker<Void> worker = new SimpleWorker<>(controller.getMainWindow()) {
+
+            @Override
+            protected Void perform() throws Exception {
+                final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+                if (selectedSource == null) {
+                    return null;
+                }
+                play(actionEvent, selectedSource.getFile());
+                return null;
+            }
+        };
+        try {
+            worker.execute();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
         }
-        play(actionEvent, selectedSource.getFile());
     }
 
     private void play(ActionEvent actionEvent, @NonNull final File file) {
