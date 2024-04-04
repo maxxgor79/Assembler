@@ -20,6 +20,7 @@ cls_loop2:
     ld (hl), a
     inc hl
     dec bc
+    
     xor a,a
     or b
     or c

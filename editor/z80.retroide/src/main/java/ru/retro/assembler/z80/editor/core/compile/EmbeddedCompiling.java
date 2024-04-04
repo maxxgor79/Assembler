@@ -40,10 +40,11 @@ public class EmbeddedCompiling implements Compiling {
 
   @Override
   public void compile(@NonNull Source src, String... args) {
-
     final String outputDir = settings.getOutputDirectory();
     PipedOutputStream outPos = null;
     PipedOutputStream errPos = null;
+    final PrintStream stdout = System.out;
+    final PrintStream stderr = System.err;
     try {
       final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir,
           toArgument(src
@@ -69,6 +70,8 @@ public class EmbeddedCompiling implements Compiling {
     } finally {
       IOUtils.closeQuietly(outPos);
       IOUtils.closeQuietly(errPos);
+      System.setOut(stdout);
+      System.setErr(stderr);
     }
   }
 }

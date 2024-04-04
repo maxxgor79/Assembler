@@ -18,46 +18,52 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Author: Maxim Gorin
- * Date: 04.04.2024
+ * Author: Maxim Gorin Date: 04.04.2024
  */
 @Slf4j
 public class Z80FileImporter implements FileImporter {
-    @Override
-    public boolean isAcceptable(File file) {
-        if (file == null) {
-            return false;
-        }
-        final String ext = FilenameUtils.getExtension(file.getAbsolutePath());
-        return "bin".equalsIgnoreCase(ext) || "".equals(ext);
-    }
 
-    @Override
-    public String importFile(@NonNull File file) throws IOException {
-        return importFile(file, StandardCharsets.UTF_8.name());
+  @Override
+  public boolean isAcceptable(File file) {
+    if (file == null) {
+      return false;
     }
+    final String ext = FilenameUtils.getExtension(file.getAbsolutePath());
+    return "bin".equalsIgnoreCase(ext) || "".equals(ext);
+  }
 
-    private Collection<String> getArguments(File file, BigInteger address, String encoding) {
-        return Arrays.asList("-stdout", "-lc", "lower", "-e", encoding, "-a", address.toString()
-                , file.getAbsolutePath());
-    }
+  @Override
+  public String importFile(@NonNull File file) throws IOException {
+    return importFile(file, StandardCharsets.UTF_8.name());
+  }
 
-    @Override
-    public String importFile(@NonNull final File file, @NonNull final String encoding)
-            throws IOException, CharacterCodingException {
-        final BigInteger address = BigInteger.valueOf(32768);//needs to enter manually
-        try {
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(out));
-            final ByteArrayOutputStream err = new ByteArrayOutputStream();
-            System.setErr(new PrintStream(err));
-            Caller.call("ru.zxspectrum.disassembler.Disassembler", getArguments(file, address, encoding));
-            final StringBuilder sb = new StringBuilder();
-            sb.append(new String(out.toByteArray(), encoding)).append(new String(err.toByteArray(), encoding));
-            return sb.toString();
-        } catch (CallException e) {
-            log.error(e.getMessage(), e);
-            throw new IOException(e);
-        }
+  private Collection<String> getArguments(File file, BigInteger address, String encoding) {
+    return Arrays.asList("-stdout", "-lc", "lower", "-e", encoding, "-a", address.toString()
+        , file.getAbsolutePath());
+  }
+
+  @Override
+  public String importFile(@NonNull final File file, @NonNull final String encoding)
+      throws IOException, CharacterCodingException {
+    final BigInteger address = BigInteger.valueOf(32768);//needs to enter manually
+    final PrintStream stdout = System.out;
+    final PrintStream stderr = System.err;
+    try {
+      final ByteArrayOutputStream out = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(out));
+      final ByteArrayOutputStream err = new ByteArrayOutputStream();
+      System.setErr(new PrintStream(err));
+      Caller.call("ru.zxspectrum.disassembler.Disassembler", getArguments(file, address, encoding));
+      final StringBuilder sb = new StringBuilder();
+      sb.append(new String(out.toByteArray(), encoding))
+          .append(new String(err.toByteArray(), encoding));
+      return sb.toString();
+    } catch (CallException e) {
+      log.error(e.getMessage(), e);
+      throw new IOException(e);
+    } finally {
+      System.setOut(stdout);
+      System.setErr(stderr);
     }
+  }
 }
