@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
 
 /**
- * @Author: Maxim Gorin
+ * Author: Maxim Gorin
  * Date: 29.03.2024
  */
 public interface FileImporter {
