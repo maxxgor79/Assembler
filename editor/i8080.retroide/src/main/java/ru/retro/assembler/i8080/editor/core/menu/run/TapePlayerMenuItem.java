@@ -8,6 +8,7 @@ import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.ui.MainWindow;
 import ru.retro.assembler.editor.core.ui.menu.AbstractMenuItem;
 import ru.retro.assembler.editor.core.ui.player.Player;
+import ru.retro.assembler.editor.core.ui.progress.SimpleWorker;
 import ru.retro.assembler.i8080.editor.core.i18n.I8080Messages;
 import ru.retro.assembler.i8080.editor.core.menu.build.CompileWavMenuItem;
 import ru.retro.assembler.i8080.editor.utils.ResourceUtils;
@@ -28,8 +29,6 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
 
     private final AppSettings settings;
 
-    private CompileWavMenuItem compileWavMenuItem;
-
     public TapePlayerMenuItem(
             @NonNull Controller controller) {
         super(controller, I8080Messages.getInstance().get(I8080Messages.TAPE_PLAYER), (char) 0, KeyStroke
@@ -37,7 +36,6 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
                         .SHIFT_DOWN_MASK), "/icon16x16/play.png");
         this.mainWindow = controller.getMainWindow();
         this.settings = controller.getSettings();
-        this.compileWavMenuItem = new CompileWavMenuItem(controller);
     }
 
     @Override
@@ -53,19 +51,29 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
     @Override
     public void onAction(ActionEvent actionEvent) {
         log.info("Action play");
-        final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
-        if (selectedSource == null) {
-            return;
+        final SimpleWorker<Void> worker = new SimpleWorker<>(controller.getMainWindow()) {
+
+            @Override
+            protected Void perform() throws Exception {
+                final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
+                if (selectedSource == null) {
+                    return null;
+                }
+                play(actionEvent, selectedSource.getFile());
+                return null;
+            }
+        };
+        try {
+            worker.execute();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
         }
-        play(actionEvent, selectedSource.getFile());
     }
 
     private void play(ActionEvent actionEvent, @NonNull final File file) {
         String name = file.getName();
         name = ResourceUtils.cutExtension(name);
         final File wavFile = new File(settings.getOutputDirectory(), name + "." + EXTENSION);
-        wavFile.delete();
-        compileWavMenuItem.onAction(actionEvent);
         final ru.retro.assembler.editor.core.ui.player.Player player = getPlayer();
         player.setFile(wavFile);
         player.setLocationRelativeTo(mainWindow);
