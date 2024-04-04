@@ -89,9 +89,11 @@ public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent
   public void setFile(@NonNull File file) {
     try {
       recorder.setFile(file);
-      buttonsPanel.getBtnRecord().setEnabled(true);
-      buttonsPanel.getBtnRecord().requestFocus();
-      buttonsPanel.getBtnStop().setEnabled(false);
+      SwingUtilities.invokeLater(() -> {
+        buttonsPanel.getBtnRecord().setEnabled(true);
+        buttonsPanel.getBtnRecord().requestFocus();
+        buttonsPanel.getBtnStop().setEnabled(false);
+      });
     } catch (RecorderException | IOException e) {
       SwingUtilities.invokeLater(
           () -> JOptionPane.showMessageDialog(AudioRecorder.this.getOwner(), e.getMessage()
@@ -151,18 +153,23 @@ public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent
   @Override
   public void started(Recorder recorder) {
     log.info("Recorder started");
-    buttonsPanel.getBtnRecord().setEnabled(false);
-    buttonsPanel.getBtnStop().setEnabled(true);
-    buttonsPanel.getBtnStop().requestFocus();
+    SwingUtilities.invokeLater(() -> {
+      buttonsPanel.getBtnRecord().setEnabled(false);
+      buttonsPanel.getBtnStop().setEnabled(true);
+      buttonsPanel.getBtnStop().requestFocus();
+    });
   }
 
   @Override
   public void stopped(Recorder recorder) {
     log.info("Recorder stopped");
-    buttonsPanel.getBtnRecord().setEnabled(true);
-    buttonsPanel.getBtnRecord().requestFocus();
-    buttonsPanel.getBtnStop().setEnabled(false);
-    interactivePanel.reset();
+    SwingUtilities.invokeLater(() -> {
+      buttonsPanel.getBtnRecord().setEnabled(true);
+      buttonsPanel.getBtnRecord().requestFocus();
+      buttonsPanel.getBtnStop().setEnabled(false);
+      interactivePanel.reset();
+    });
+
   }
 
   @Override

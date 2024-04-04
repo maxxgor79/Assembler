@@ -32,58 +32,42 @@ public class EmbeddedCompiling implements Compiling {
 
   private final MainWindow mainWindow;
 
-  private final ExecutorService executor;
-
   public EmbeddedCompiling(@NonNull final Controller controller) {
     this.settings = controller.getSettings();
     this.mainWindow = controller.getMainWindow();
-    this.executor = controller.getExecutor();
   }
 
   @Override
   public void compile(@NonNull Source src, String... args) {
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          final String outputDir = settings.getOutputDirectory();
-          PipedOutputStream outPos = null;
-          PipedOutputStream errPos = null;
-          try {
-            final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir,
-                toArgument(src, settings.getEncoding())
-                , args);
-            final PipedInputStream outPis = new PipedInputStream();
-            outPos = new PipedOutputStream(outPis);
-            final PipedInputStream errPis = new PipedInputStream();
-            errPos = new PipedOutputStream(errPis);
-            System.setOut(new PrintStream(outPos));
-            System.setErr(new PrintStream(errPos));
-            final ConsoleWriter consoleWriter = new ConsoleWriter(
-                new SequenceInputStream(outPis, errPis)
-                , mainWindow.getConsole().getArea());
-            SwingUtilities.invokeLater(consoleWriter);
-            Caller.call("ru.assembler.microsha.MicroshaAssembler", argList);
-          } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow,
-                t.getMessage(), I8080Messages.getInstance().get(Messages.ERROR),
-                JOptionPane.ERROR_MESSAGE
-                , ResourceUtils.getErrorIcon()));
-          } finally {
-            IOUtils.closeQuietly(outPos);
-            IOUtils.closeQuietly(errPos);
-          }
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
-      }
-    });
+    final String outputDir = settings.getOutputDirectory();
+    PipedOutputStream outPos = null;
+    PipedOutputStream errPos = null;
+    try {
+      final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir,
+          toArgument(src, settings.getEncoding())
+          , args);
+      final PipedInputStream outPis = new PipedInputStream();
+      outPos = new PipedOutputStream(outPis);
+      final PipedInputStream errPis = new PipedInputStream();
+      errPos = new PipedOutputStream(errPis);
+      System.setOut(new PrintStream(outPos));
+      System.setErr(new PrintStream(errPos));
+      final ConsoleWriter consoleWriter = new ConsoleWriter(
+          new SequenceInputStream(outPis, errPis)
+          , mainWindow.getConsole().getArea());
+      SwingUtilities.invokeLater(consoleWriter);
+      Caller.call("ru.assembler.microsha.MicroshaAssembler", argList);
+    } catch (Throwable t) {
+      log.error(t.getMessage(), t);
+      SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow,
+          t.getMessage(), I8080Messages.getInstance().get(Messages.ERROR),
+          JOptionPane.ERROR_MESSAGE
+          , ResourceUtils.getErrorIcon()));
+    } finally {
+      IOUtils.closeQuietly(outPos);
+      IOUtils.closeQuietly(errPos);
+    }
   }
 }
 

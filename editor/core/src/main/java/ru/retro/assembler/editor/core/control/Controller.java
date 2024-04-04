@@ -98,10 +98,6 @@ public final class Controller implements Runnable {
   @Getter
   private Collection<String> args;
 
-  @Getter
-  private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-
   public Controller(final Collection<String> args) {
     this.settings = appSettingsFactory.newAppSettings();
     loadSettings();
@@ -628,7 +624,6 @@ public final class Controller implements Runnable {
       closeAll();
       mainWindow.dispose();
       timer.stop();
-      executor.shutdown();
       saveSettings();
     }
   }
@@ -879,155 +874,140 @@ public final class Controller implements Runnable {
 
   private final ActionListener openListener = e -> {
     log.info("Open action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          openSource();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        openSource();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener importListener = e -> {
     log.info("Import action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          importResource();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+
+      @Override
+      protected Void perform() throws Exception {
+        importResource();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener saveListener = e -> {
     log.info("Save action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          saveSource();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        saveSource();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener reloadAllListener = e -> {
     log.info("Reload all action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          reloadAll();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        reloadAll();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener saveAsListener = e -> {
     log.info("Save as action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
-          saveSourceAs(src);
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
+        saveSourceAs(src);
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener saveAllListener = e -> {
     log.info("Save all action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          saveAllSources();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        saveAllSources();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener closeListener = e -> {
     log.info("Close action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          closeSource();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        closeSource();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener closeAllListener = e -> {
     log.info("Close all action");
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
+    final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          closeAll();
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+      @Override
+      protected Void perform() throws Exception {
+        closeAll();
+        return null;
       }
-    });
+    };
+    try {
+      worker.execute();
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+    }
   };
 
   private final ActionListener exitListener = e -> {

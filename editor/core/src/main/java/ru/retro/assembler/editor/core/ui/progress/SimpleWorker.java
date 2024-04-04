@@ -6,6 +6,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
@@ -18,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class SimpleWorker<T> extends SwingWorker<T, Void> {
+  private final CountDownLatch latch = new CountDownLatch(1);
 
   private static class GraphicsWorker extends JDialog {
 
@@ -52,7 +58,6 @@ public abstract class SimpleWorker<T> extends SwingWorker<T, Void> {
       gbc.fill = GridBagConstraints.HORIZONTAL;
       gb.setConstraints(progressResponse, gbc);
       panel.add(progressResponse);
-
       this.setLayout(new BorderLayout());
       this.add(panel, BorderLayout.CENTER);
       pack();
@@ -66,12 +71,19 @@ public abstract class SimpleWorker<T> extends SwingWorker<T, Void> {
   public SimpleWorker(Window frame) {
     this.frame = frame;
     graphicsWorker = new GraphicsWorker(frame, null, true);
+    graphicsWorker.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowOpened(WindowEvent e) {
+        latch.countDown();
+      }
+    });
   }
 
   @Override
   protected T doInBackground() throws Exception {
     showWaiter();
     try {
+      latch.await();
       return result = perform();
     } catch (Exception e) {
       log.error(e.getMessage(), e);

@@ -27,61 +27,45 @@ public class ExternalCompiling implements Compiling {
 
   private final MainWindow mainWindow;
 
-  private final ExecutorService executor;
-
   public ExternalCompiling(@NonNull final Controller controller) {
     this.settings = controller.getSettings();
     this.mainWindow = controller.getMainWindow();
-    this.executor = controller.getExecutor();
   }
 
   public void compile(@NonNull final Source src, String... args) {
-    executor.execute(() -> {
-      final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
 
-        @Override
-        protected Void perform() throws Exception {
-          final String asmDir = settings.getCompilerPath();
-          final String outputDir = settings.getOutputDirectory();
-          final File pathToAsm = new File(asmDir, CLIUtils.ASM_FILENAME);
-          try {
-            if (!pathToAsm.exists()) {
-              throw new FileNotFoundException(pathToAsm.getAbsolutePath());
-            }
-            final java.util.List<String> argList = CLIUtils.toList(pathToAsm.getAbsolutePath(),
-                String.format(CLIUtils.ARG_LOCALE,
-                    UIUtils.toLocale(settings.getLanguage()).getLanguage())
-                , CLIUtils.ARG_OUTPUT
-                , outputDir
-                , toArgument(src, settings.getEncoding())
-                , args);
-            final Process p = new ProcessBuilder(argList).start();
-            final ConsoleWriter consoleWriter = new ConsoleWriter(p.getInputStream(),
-                mainWindow.getConsole().getArea());
-            SwingUtilities.invokeLater(consoleWriter);
-          } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow,
-                String.format(I8080Messages.getInstance().get(I8080Messages.FILE_NOT_FOUND)
-                    , pathToAsm.getAbsolutePath()),
-                I8080Messages.getInstance().get(I8080Messages.ERROR)
-                , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
-          } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            JOptionPane.showMessageDialog(mainWindow,
-                String.format(I8080Messages.getInstance().get(I8080Messages.IO_ERROR), src.getFile()
-                    .getAbsolutePath()), I8080Messages.getInstance().get(I8080Messages.ERROR),
-                JOptionPane.ERROR_MESSAGE
-                , ResourceUtils.getErrorIcon());
-          }
-          return null;
-        }
-      };
-      try {
-        worker.execute();
-      } catch (Exception ex) {
-        log.error(ex.getMessage(), ex);
+    final String asmDir = settings.getCompilerPath();
+    final String outputDir = settings.getOutputDirectory();
+    final File pathToAsm = new File(asmDir, CLIUtils.ASM_FILENAME);
+    try {
+      if (!pathToAsm.exists()) {
+        throw new FileNotFoundException(pathToAsm.getAbsolutePath());
       }
-    });
+      final java.util.List<String> argList = CLIUtils.toList(pathToAsm.getAbsolutePath(),
+          String.format(CLIUtils.ARG_LOCALE,
+              UIUtils.toLocale(settings.getLanguage()).getLanguage())
+          , CLIUtils.ARG_OUTPUT
+          , outputDir
+          , toArgument(src, settings.getEncoding())
+          , args);
+      final Process p = new ProcessBuilder(argList).start();
+      final ConsoleWriter consoleWriter = new ConsoleWriter(p.getInputStream(),
+          mainWindow.getConsole().getArea());
+      SwingUtilities.invokeLater(consoleWriter);
+    } catch (FileNotFoundException e) {
+      log.error(e.getMessage(), e);
+      JOptionPane.showMessageDialog(mainWindow,
+          String.format(I8080Messages.getInstance().get(I8080Messages.FILE_NOT_FOUND)
+              , pathToAsm.getAbsolutePath()),
+          I8080Messages.getInstance().get(I8080Messages.ERROR)
+          , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
+    } catch (IOException e) {
+      log.error(e.getMessage(), e);
+      JOptionPane.showMessageDialog(mainWindow,
+          String.format(I8080Messages.getInstance().get(I8080Messages.IO_ERROR), src.getFile()
+              .getAbsolutePath()), I8080Messages.getInstance().get(I8080Messages.ERROR),
+          JOptionPane.ERROR_MESSAGE
+          , ResourceUtils.getErrorIcon());
+    }
   }
 }

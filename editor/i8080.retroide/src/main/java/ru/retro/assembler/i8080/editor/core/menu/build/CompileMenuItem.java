@@ -4,12 +4,14 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.Source;
+import ru.retro.assembler.editor.core.ui.progress.SimpleWorker;
 import ru.retro.assembler.i8080.editor.core.i18n.I8080Messages;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import ru.retro.assembler.i8080.editor.utils.CLIUtils;
 
 @Slf4j
 public class CompileMenuItem extends AbstractCompileMenuItem {
@@ -31,7 +33,21 @@ public class CompileMenuItem extends AbstractCompileMenuItem {
     @Override
     public void onAction(ActionEvent e) {
         log.info("Action compile");
-        compile();
+        controller.getExecutor().execute(() -> {
+            final SimpleWorker<Void> worker = new SimpleWorker<>(controller.getMainWindow()) {
+
+                @Override
+                protected Void perform() throws Exception {
+                    compile();
+                    return null;
+                }
+            };
+            try {
+                worker.execute();
+            } catch (Exception ex) {
+                log.error(ex.getMessage(), ex);
+            }
+        });
     }
 
     private void compile() {

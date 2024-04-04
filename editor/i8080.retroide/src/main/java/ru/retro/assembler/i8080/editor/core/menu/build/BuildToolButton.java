@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.ui.components.ToolButton;
+import ru.retro.assembler.editor.core.ui.progress.SimpleWorker;
 import ru.retro.assembler.i8080.editor.core.i18n.I8080Messages;
 
 import java.awt.*;
@@ -12,47 +13,63 @@ import java.awt.event.ActionEvent;
 
 @Slf4j
 public class BuildToolButton extends AbstractCompileMenuItem implements ToolButton {
-    private Dimension size;
 
-    private String hint;
+  private Dimension size;
 
-    public BuildToolButton(@NonNull Controller controller) {
-        super(controller, "", (char) 0, null, "/icon32x32/compile.png");
-        size = new Dimension(ICON_WIDTH, ICON_HEIGHT);
-        hint = I8080Messages.getInstance().get(I8080Messages.COMPILE);
-    }
+  private String hint;
 
-    @Override
-    public int order() {
-        return 1;
-    }
+  public BuildToolButton(@NonNull Controller controller) {
+    super(controller, "", (char) 0, null, "/icon32x32/compile.png");
+    size = new Dimension(ICON_WIDTH, ICON_HEIGHT);
+    hint = I8080Messages.getInstance().get(I8080Messages.COMPILE);
+  }
 
-    @Override
-    public Dimension size() {
-        return size;
-    }
+  @Override
+  public int order() {
+    return 1;
+  }
 
-    @Override
-    public String hint() {
-        return hint;
-    }
+  @Override
+  public Dimension size() {
+    return size;
+  }
 
-    @Override
-    public boolean hasSeparator() {
-        return false;
-    }
+  @Override
+  public String hint() {
+    return hint;
+  }
 
-    @Override
-    public void onAction(ActionEvent e) {
-        log.info("Action compile");
-        compile();
-    }
+  @Override
+  public boolean hasSeparator() {
+    return false;
+  }
 
-    private void compile() {
-        final Source selectedSource = controller.getMainWindow().getSourceTabbedPane().getSourceSelected();
-        if (selectedSource == null) {
-            return;
+  @Override
+  public void onAction(ActionEvent e) {
+    log.info("Action compile");
+    controller.getExecutor().execute(() -> {
+      final SimpleWorker<Void> worker = new SimpleWorker<>(controller.getMainWindow()) {
+
+        @Override
+        protected Void perform() throws Exception {
+          compile();
+          return null;
         }
-        compile(selectedSource);
+      };
+      try {
+        worker.execute();
+      } catch (Exception ex) {
+        log.error(ex.getMessage(), ex);
+      }
+    });
+  }
+
+  private void compile() {
+    final Source selectedSource = controller.getMainWindow().getSourceTabbedPane()
+        .getSourceSelected();
+    if (selectedSource == null) {
+      return;
     }
+    compile(selectedSource);
+  }
 }
