@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -88,8 +87,8 @@ public class TestIO {
     public void test6() throws IOException {
         final DisassemblerLoader loader = new DisassemblerLoader();
         final Set<CommandRecord> commands = new HashSet<>();
-        for (String path : Arrays.asList("/template/z80/basic.op", "/template/z80/extended.op"
-                , "/template/z80/bitwise.op", "/template/z80/ix.op", "/template/z80/iy.op", "/template/z80/undocumented.op")) {
+        for (String path : Arrays.asList("/disasm/template/z80/basic.op", "/disasm/template/z80/extended.op"
+                , "/disasm/template/z80/bitwise.op", "/disasm/template/z80/ix.op", "/disasm/template/z80/iy.op", "/disasm/template/z80/undocumented.op")) {
             final InputStream is = Disassembler.class.getResourceAsStream(path);
             if (is != null) {
                 commands.addAll(loader.load(is, Charset.defaultCharset()));

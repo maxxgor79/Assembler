@@ -243,7 +243,7 @@ public class Disassembler implements Environment {
         final DisassemblerSettings settings = new DisassemblerSettings();
         settings.merge(new DefaultSettings());
         try {
-            settings.load(new ByteArrayInputStream(IOUtils.resourceToByteArray("/settings.properties")));
+            settings.load(new ByteArrayInputStream(IOUtils.resourceToByteArray("/disasm/settings.properties")));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
