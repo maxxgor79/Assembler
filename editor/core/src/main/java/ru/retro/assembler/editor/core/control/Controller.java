@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
@@ -50,7 +51,8 @@ public final class Controller implements Runnable {
 
     protected static final int TIMER_DELAY = 250;
 
-    protected static final String NEW_SOURCE_NAME = "noname.asm";
+    protected static final String EXTENSION = "asm";
+    protected static final String NEW_SOURCE_NAME = "noname" + "." + EXTENSION;
 
     @Getter
     protected AppSettings settings;
@@ -544,10 +546,10 @@ public final class Controller implements Runnable {
             }
             if (importer.isAcceptable(importFileChooser.getSelectedFile())) {
                 try {
-                    final String text = importer.importFile(importFileChooser.getSelectedFile()
-                            , settings.getEncoding());
-                    openSource(importFileChooser.getSelectedFile(),
-                            new ByteArrayInputStream(text.getBytes(settings.getEncoding())));
+                    final String text = importer.importFile(importFileChooser.getSelectedFile(), settings.getEncoding());
+                    final String fileName = FilenameUtils.removeExtension(importFileChooser.getSelectedFile()
+                            .getAbsolutePath()) + "." + EXTENSION;
+                    openSource(new File(fileName), new ByteArrayInputStream(text.getBytes(settings.getEncoding())));
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     SwingUtilities.invokeLater(
