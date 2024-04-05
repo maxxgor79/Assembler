@@ -10,6 +10,8 @@ import java.io.IOException;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.retro.assembler.editor.core.audio.DTLRecorder;
@@ -28,7 +30,7 @@ import ru.retro.assembler.editor.core.util.ResourceUtils;
  */
 @Slf4j
 public class AudioRecorder extends JDialog implements ModalDialog, RecorderEvent {
-
+  @Getter
   private InteractivePanel interactivePanel;
 
   private ButtonsPanel buttonsPanel;

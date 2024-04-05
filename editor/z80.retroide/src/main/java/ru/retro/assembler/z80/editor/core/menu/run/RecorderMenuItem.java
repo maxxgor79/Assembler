@@ -13,6 +13,7 @@ import ru.retro.assembler.z80.editor.core.i18n.Z80Messages;
 import ru.retro.assembler.z80.editor.core.settings.Z80AppSettings;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -65,6 +66,9 @@ public class RecorderMenuItem extends AbstractMenuItem {
     private AudioRecorder getRecorder() {
         if (recorder == null) {
             recorder = new AudioRecorder(mainWindow);
+            recorder.getInteractivePanel().setBkColor(Color.WHITE);
+            recorder.getInteractivePanel().setWaveColor(Color.DARK_GRAY);
+            recorder.getInteractivePanel().setLineColor(Color.BLACK);
         }
         return recorder;
     }
