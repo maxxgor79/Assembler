@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
@@ -49,25 +49,25 @@ public class OrgCommandCompiler implements CommandCompiler {
       return null;
     }
     if (!iterator.hasNext()) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.ADDRESS_EXCEPTED));
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.ADDRESS_EXCEPTED));
     }
     nextLexem = iterator.next();
     Expression expression = new Expression(compilerApi.getFd(), iterator, namespaceApi);
     Expression.Result result = expression.evaluate(nextLexem);
     if (result.isUndefined()) {
       throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
-          , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+          , Messages.getMessage(Messages.CONSTANT_VALUE_REQUIRED));
     }
     if (!TypeUtil.isInRange(settingsApi.getMinAddress(), settingsApi.getMaxAddress(),
         result.getValue())) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
     }
     nextLexem = expression.getLastLexem();
     if (nextLexem != null) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
     namespaceApi.setAddress(result.getValue());
     return new byte[0];

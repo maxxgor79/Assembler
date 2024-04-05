@@ -9,14 +9,13 @@ import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.DividingByZeroException;
 import ru.assembler.core.error.ExpressionException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemIterator;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.util.Converter;
 import ru.assembler.core.util.RepeatableIteratorImpl;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.util.Iterator;
 
@@ -201,15 +200,17 @@ public class Expression {
             lexem = lastLexem = lexemIterator.next();
             if (lexem.getType() == LexemType.CLOSED_BRACE || lexem.getType() == LexemType.EOF
                 || lexem.getType() == LexemType.EOL) {
-                throw new ExpressionException(fd, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
-                        MessageList.getMessage(MessageList.EXPRESSION));
+                throw new ExpressionException(fd, lexem.getLineNumber(), Messages.getMessage(
+                    Messages.IS_EXPECTED),
+                        Messages.getMessage(Messages.EXPRESSION));
             }
             Result result = evaluate(lexem);
             lexem = lexemIterator.current();
             if (lexem.getType() == LexemType.CLOSED_BRACE) {
                 lexem = lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
             } else {
-                throw new ExpressionException(fd, lexem.getLineNumber(), MessageList.getMessage(MessageList.IS_EXPECTED),
+                throw new ExpressionException(fd, lexem.getLineNumber(), Messages.getMessage(
+                    Messages.IS_EXPECTED),
                         ")");
             }
             return result;
@@ -248,7 +249,8 @@ public class Expression {
                 if (!onlyConst) {
                     result = evaluateLabel(lexem);
                 } else {
-                    throw new CompilerException(fd, lexem.getLineNumber(), MessageList.getMessage(MessageList
+                    throw new CompilerException(fd, lexem.getLineNumber(), Messages.getMessage(
+                        Messages
                             .UNEXPECTED_LABEL), lexem.getValue());
                 }
 
@@ -256,7 +258,7 @@ public class Expression {
 
             default -> {
                 throw new CompilerException(fd, lexem.getLineNumber(),
-                        MessageList.getMessage(MessageList.UNEXPECTED_SYMBOL), lexem.getValue());
+                        Messages.getMessage(Messages.UNEXPECTED_SYMBOL), lexem.getValue());
             }
         }
         return result;
@@ -309,8 +311,8 @@ public class Expression {
         BigInteger value = namespaceApi.getVariableValue(lexem.getValue());
         lastLexem = lexemIterator.hasNext() ? lexemIterator.next() : null;
         if (value == null) {
-            throw new CompilerException(fd, lexem.getLineNumber(), MessageList
-                    .getMessage(MessageList.VARIABLE_NOT_FOUND), lexem.getValue());
+            throw new CompilerException(fd, lexem.getLineNumber(), Messages
+                    .getMessage(Messages.VARIABLE_NOT_FOUND), lexem.getValue());
         }
         return new Result(value);
     }

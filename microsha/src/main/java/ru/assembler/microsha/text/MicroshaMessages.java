@@ -7,7 +7,8 @@ import java.util.ResourceBundle;
  */
 
 public final class MicroshaMessages {
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.MicroshaMessages");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("asm"
+        + ".i8080.i18n.MicroshaMessages");
 
     public static final String FILE_ENUM = "file_enum";
 

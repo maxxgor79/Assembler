@@ -21,7 +21,7 @@ import java.math.BigInteger;
 public class ResourceSettings extends BaseSettings {
     @Override
     public void load(@NonNull String name) throws IOException {
-        Variables.load(Loader.openRoot("settings.properties"));
+        Variables.load(Loader.openRoot(name));
         setPlatformEncoding(Encoding.valueByName(
                 Variables.getString(Variables.PLATFORM_ENCODING, Encoding
                         .ASCII.getName())));
@@ -35,7 +35,7 @@ public class ResourceSettings extends BaseSettings {
         setMaxAddress(Variables.getBigInteger(Variables.MAX_ADDRESS, BigInteger.valueOf(0xffff)));
         setOutputDirectory(new File(Variables.getString(Variables.OUTPUT_DIRECTORY, "output")));
         setMajorVersion(Variables.getString(Variables.MAJOR_VERSION, "1"));
-        setMinorVersion(Variables.getString(Variables.MINOR_VERSION, "0"));
+        setMinorVersion(Variables.getString(Variables.MINOR_VERSION, "4"));
         setCmdFilename(Variables.getString(Variables.CMD_FILENAME, "asm"));
         setCpuModels(Variables.getString(Variables.CPU_MODELS));
     }

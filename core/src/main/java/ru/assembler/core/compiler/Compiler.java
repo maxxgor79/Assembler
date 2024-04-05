@@ -29,7 +29,7 @@ import ru.assembler.core.compiler.command.tree.CommandTree;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.Output;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.lexem.Lexem;
@@ -121,7 +121,7 @@ public class Compiler implements CompilerApi {
     private void processLabel(Lexem lexem) {
         if (namespaceApi.containsLabel(lexem.getValue())) {
             throw new CompilerException(lexem.getFd(), lexem.getLineNumber(),
-                    MessageList.getMessage(MessageList
+                    Messages.getMessage(Messages
                             .LABEL_IS_ALREADY_DEFINED), lexem.getValue());
         }
         namespaceApi.putLabel(lexem.getValue());
@@ -194,7 +194,7 @@ public class Compiler implements CompilerApi {
         loadEmbeddedCommands(commandCompilerMap);
         loadCustomCommands(commandCompilerTree);
         if (commandCompilerTree.isEmpty()) {
-            throw new CompilerException(MessageList.getMessage(MessageList.COMMAND_DATA_IS_NOT_LOADED));
+            throw new CompilerException(Messages.getMessage(Messages.COMMAND_DATA_IS_NOT_LOADED));
         }
     }
 
@@ -202,7 +202,7 @@ public class Compiler implements CompilerApi {
     public void compile() throws IOException {
         loadCommandTables();
         Output.println(
-                MessageList.getMessage(MessageList.COMPILING) + " " + getFd().getDisplay());
+                Messages.getMessage(Messages.COMPILING) + " " + getFd().getDisplay());
         for (LexemSequence lexemSequence : syntaxAnalyzer) {
             Lexem lexem = lexemSequence.first();
             setLineNumber(lexem.getLineNumber());
@@ -211,8 +211,8 @@ public class Compiler implements CompilerApi {
             } else {
                 if (!processCommand(lexemSequence)) {
                     throw new CompilerException(lexemSequence.getFd(), lexemSequence.getLineNumber(),
-                            MessageList
-                                    .getMessage(MessageList.UNKNOWN_COMMAND), lexemSequence.getCaption());
+                            Messages
+                                    .getMessage(Messages.UNKNOWN_COMMAND), lexemSequence.getCaption());
                 }
             }
             if (isStopped()) {

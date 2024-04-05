@@ -19,11 +19,4 @@ public final class Loader {
     }
     return Loader.class.getResourceAsStream("/" + resourceName);
   }
-
-  public static InputStream openBasic(@NonNull String resourceName) {
-    if (resourceName.trim().isEmpty()) {
-      throw new IllegalArgumentException("name is empty");
-    }
-    return Loader.class.getResourceAsStream("/basic/" + resourceName);
-  }
 }

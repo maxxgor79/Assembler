@@ -6,7 +6,7 @@ import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.ConversationException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.Output;
 import ru.assembler.core.lang.Type;
 import ru.assembler.core.lang.TypeConverter;
@@ -64,8 +64,8 @@ public class DbCommandCompiler implements CommandCompiler {
       while (true) {
         if (nextLexem == null) {
           throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(),
-              MessageList
-                  .getMessage(MessageList.VALUE_EXCEPTED));
+              Messages
+                  .getMessage(Messages.VALUE_EXCEPTED));
         }
         if (nextLexem.getType() == LexemType.STRING) {
           IOUtils.writeString(baos, nextLexem.getValue());
@@ -79,7 +79,7 @@ public class DbCommandCompiler implements CommandCompiler {
             final Expression.Result result = expression.evaluate(nextLexem);
             if (result.isUndefined()) {
               throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
-                  , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+                  , Messages.getMessage(Messages.CONSTANT_VALUE_REQUIRED));
             }
             if (expression.getLastLexem() != null) {
               nextLexem = expression.getLastLexem();
@@ -92,19 +92,19 @@ public class DbCommandCompiler implements CommandCompiler {
             } catch (ConversationException e) {
               log.error(e.getMessage(), e);
               throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(),
-                  MessageList
-                      .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
+                  Messages
+                      .getMessage(Messages.VALUE_OUT_OF_RANGE), result.getValue().toString());
             }
             if (!result.getValue().equals(value)) {
-              Output.throwWarning(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-                      .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
+              Output.throwWarning(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+                      .getMessage(Messages.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
                   , value.toString());
             }
             IOUtils.writeByte(baos, value.byteValue());
             nextLexem = expression.getLastLexem();
           } else {
-            throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-                .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+            throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+                .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
           }
         }
         if (nextLexem == null) {
@@ -113,8 +113,8 @@ public class DbCommandCompiler implements CommandCompiler {
         if (nextLexem.getType() == LexemType.COMMA) {
           nextLexem = iterator.hasNext() ? iterator.next() : null;
         } else {
-          throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-              .getMessage(MessageList.EXPECTED_SYMBOL), ",");
+          throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+              .getMessage(Messages.EXPECTED_SYMBOL), ",");
         }
       }
       return baos.toByteArray();

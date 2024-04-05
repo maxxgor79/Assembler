@@ -24,6 +24,8 @@ import java.util.Arrays;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCommandED {
+    private static String SETTINGS_PATH = "asm/settings.properties";
+
     private static final String INST1 = "IN B,(BC)\nOUT (BC),B\nSBC HL,BC\nLD ($0F000),BC\nNEG\nRETN\nIM 0\nLD I,A\nIN C,(BC)\nOUT (BC),C\nADC HL,BC\nLD BC,($00FE)\nRETI\nLD R,A\n" +
             "IN D,(BC)\nOUT (BC),D\nSBC HL,DE\nLD (8080h),DE\nIM 1\nLD A,I\nIN E,(BC)\nOUT (BC),E\nADC HL,DE\nLD DE,($4040)\nIM 2\nLD A,R\n" +
             "IN H,(BC)\nOUT (BC),H\nSBC HL,HL\nLD' (0xEEFF),HL\nRRD\nIN L,(BC)\nOUT (BC),L\nADC HL,HL\nLD' HL,(0xFFEE)\nRLD\n" +
@@ -34,7 +36,7 @@ public class TestCommandED {
     @Test
     void testEdCommands1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST1.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

@@ -3,15 +3,13 @@ package ru.assembler.core.error.text;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
  * @author Maxim Gorin
  */
 @Slf4j
-public final class MessageList {
+public final class Messages {
     public static final String INVALID_NUMBER_FORMAT = "invalidNumberFormat";
 
     public static final String INVALID_HEXADECIMAL_NUMBER_FORMAT = "invalidHexadecimalNumberFormat";
@@ -124,9 +122,9 @@ public final class MessageList {
 
     public static final String IMAGE_NOT_SUPPORTED = "image_not_supported";
 
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Messages");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("asm.i18n.Messages");
 
-    private MessageList() {
+    private Messages() {
     }
 
     public static String getMessage(@NonNull String s) {

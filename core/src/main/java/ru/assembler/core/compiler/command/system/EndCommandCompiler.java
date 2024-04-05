@@ -4,7 +4,7 @@ import lombok.NonNull;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.syntax.LexemSequence;
@@ -39,8 +39,8 @@ public class EndCommandCompiler implements CommandCompiler {
     }
     if (iterator.hasNext()) {
       nextLexem = iterator.next();
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
     compilerApi.stop();
     return new byte[0];

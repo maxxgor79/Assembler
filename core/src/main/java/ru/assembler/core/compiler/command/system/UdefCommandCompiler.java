@@ -4,7 +4,7 @@ import lombok.NonNull;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.ns.NamespaceApi;
@@ -43,20 +43,20 @@ public class UdefCommandCompiler implements CommandCompiler {
       return null;
     }
     if (!iterator.hasNext()) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.IDENTIFIER_EXPECTED));
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.IDENTIFIER_EXPECTED));
     }
     nextLexem = iterator.next();
     if (nextLexem.getType() != LexemType.IDENTIFIER) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.IDENTIFIER_EXPECTED_FOUND), nextLexem.getValue());
     }
     final String name = nextLexem.getValue();
     namespaceApi.removeVariable(name);
     nextLexem = iterator.next();
     if (nextLexem != null) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
     return new byte[0];
   }

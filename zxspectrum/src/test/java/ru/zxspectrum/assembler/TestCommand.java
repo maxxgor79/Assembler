@@ -24,6 +24,8 @@ import java.util.Arrays;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCommand {
+    private static String SETTINGS_PATH = "asm/settings.properties";
+
     private static final String BASIC_INST1 = "nop\nld bc,8000h\nld (bc),a\ninc bc\ninc b\ndec b\nld b,120\nrlca\n" +
             "ex af,af'\nadd hl, bc\nld a,(bc)\ndec bc\ninc c\ndec c\nld c,0xff\nrrca\ndjnz 32768\nld de,$1313\n" +
             "ld (de),a\ninc de\ninc d\ndec d\nld d,60h\nrla\njr 32768\nadd hl,de\nld a,(de)\ndec de\ninc e\ndec e\n" +
@@ -35,7 +37,7 @@ public class TestCommand {
     @Test
     void testBasicCommands1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST1.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -153,7 +155,7 @@ public class TestCommand {
     @Test
     void testBasicCommands2() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST2.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -243,7 +245,7 @@ public class TestCommand {
     @Test
     void testBasicCommands3() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST3.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -335,7 +337,7 @@ public class TestCommand {
     @Test
     void testBasicCommands4() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(BASIC_INST4.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

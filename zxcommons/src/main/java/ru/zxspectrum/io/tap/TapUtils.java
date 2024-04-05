@@ -1,7 +1,9 @@
 package ru.zxspectrum.io.tap;
 
+import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import ru.assembler.core.io.LEDataOutputStream;
 import ru.assembler.core.resource.Loader;
 import ru.zxspectrum.basic.Lexem;
@@ -23,7 +25,7 @@ public final class TapUtils {
 
     public static final String EXTENSION = "tap";
 
-    private static final String LOADER_NAME = "loader.bas";
+    private static final String LOADER_PATH = "asm/basic/loader.bas";
 
     private static final String PROGRAM_NAME = "program";
 
@@ -37,11 +39,18 @@ public final class TapUtils {
 
     }
 
-    static void createProgram(@NonNull TapData tapData, @NonNull String resourseName,
+    static InputStream openBasic(@NonNull String resourceName) {
+        if (resourceName.trim().isEmpty()) {
+            throw new IllegalArgumentException("name is empty");
+        }
+        return TapUtils.class.getResourceAsStream("/" + resourceName);
+    }
+
+    static void createProgram(@NonNull TapData tapData, @NonNull String resourcePath,
                               int address)
             throws ParserException, IOException {
         final Compiler compiler = new Compiler();
-        compiler.setInputStream(Loader.openBasic(resourseName));
+        compiler.setInputStream(openBasic(resourcePath));
         Lexem lexem = new Lexem(Integer.valueOf(address));
         compiler.setReplacer(new Replacer().add(VAR_LOAD_ADDR, lexem).add(VAR_RUN_ADDR, lexem));
         byte[] compiled = compiler.compile();
@@ -75,7 +84,7 @@ public final class TapUtils {
     public static TapData createBinaryTap(@NonNull byte[] data, int address) throws IOException {
         final TapData tapData = new TapData();
         try {
-            createProgram(tapData, LOADER_NAME, address);
+            createProgram(tapData, LOADER_PATH, address);
             createData(tapData, data, address);
         } catch (ParserException e) {
             log.error(e.getMessage(), e);

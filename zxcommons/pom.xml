@@ -15,7 +15,7 @@
             <resource>
                 <directory>src/resources</directory>
                 <includes>
-                    <include>basic/*.bas</include>
+                    <include>asm/basic/*.bas</include>
                 </includes>
                 <filtering>true</filtering>
             </resource>

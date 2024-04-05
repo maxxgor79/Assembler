@@ -26,12 +26,14 @@ import java.util.Arrays;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestUndocumentedIX {
+    private static String SETTINGS_PATH = "asm/settings.properties";
+
     private static final String INST1 = "SLL B\nSLL C\nSLL D\nSLL E\nSLL H\nSLL L\nSLL (HL)\nSLL A\n";
 
     @Test
     void testCBCommands1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST1.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -65,7 +67,7 @@ public class TestUndocumentedIX {
     @Test
     void testCommands2() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST2.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -90,7 +92,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands3() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST3.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -170,7 +172,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands4() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST4.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -260,7 +262,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands5() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST5.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -417,7 +419,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands6() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST6.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -570,7 +572,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands7() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST7.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -711,7 +713,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands8() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST8.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -851,7 +853,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands9() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST9.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -988,7 +990,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands10() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST10.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -1081,7 +1083,7 @@ public class TestUndocumentedIX {
     @Test
     void testDDCBCommands11() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST11.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

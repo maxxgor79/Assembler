@@ -18,7 +18,7 @@ import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.ErrorOutput;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.io.LimitedOutputStream;
@@ -141,7 +141,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
             runSettings(outputFile);
             outputCompileResult(compilerApi);
         } catch (FileNotFoundException e) {
-            ErrorOutput.formatPrintln(MessageList.getMessage(MessageList.FILE_NOT_FOUND), fd.getDisplay());
+            ErrorOutput.formatPrintln(Messages.getMessage(Messages.FILE_NOT_FOUND), fd.getDisplay());
             log.error(e.getMessage(), e);
         } catch (Exception e) {
             ErrorOutput.println(e.getMessage());
@@ -239,7 +239,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         try (FileInputStream fis = new FileInputStream(fd.getFile())) {
             return compile(fd, fis, os);
         } catch (FileNotFoundException e) {
-            throw new IOException(String.format(MessageList.getMessage(MessageList.FILE_NOT_FOUND), fd.getDisplay()));
+            throw new IOException(String.format(Messages.getMessage(Messages.FILE_NOT_FOUND), fd.getDisplay()));
         }
     }
 
@@ -334,7 +334,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
         settings.merge(new DefaultSettings());
         try {
             final ResourceSettings resourceSettings = new ResourceSettings();
-            resourceSettings.load(SETTINGS_NAME);
+            resourceSettings.load("asm/" + SETTINGS_NAME);
             settings.merge(resourceSettings);
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -363,11 +363,11 @@ public class Z80Assembler extends AbstractNamespaceApi {
 
     protected static void outputCompileResult(@NonNull final CompilerApi compilerApi) {
         Output.formatPrintln("%d %s", Output.getWarningCount(),
-                MessageList.getMessage(MessageList.N_WARNINGS));
-        Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1)
-                , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
-                , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
-                , MessageList.getMessage(MessageList.SOURCES));
+                Messages.getMessage(Messages.N_WARNINGS));
+        Output.formatPrintln("%s %s %d %s, %d %s", Messages.getMessage(Messages.COMPILED1)
+                , Messages.getMessage(Messages.SUCCESSFULLY), compilerApi.getCompiledLineCount()
+                , Messages.getMessage(Messages.LINES), compilerApi.getCompiledSourceCount()
+                , Messages.getMessage(Messages.SOURCES));
     }
 
     public static void main(final String[] args) {

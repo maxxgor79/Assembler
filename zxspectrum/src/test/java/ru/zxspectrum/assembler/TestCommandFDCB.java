@@ -24,6 +24,7 @@ import java.util.Arrays;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCommandFDCB {
+    private static String SETTINGS_PATH = "asm/settings.properties";
 
     private static final String INST1 = "RLC (IY+0)\nRRC (iy+1)\nRL (IY+2)\nRr (IY+3)\nSLA (IY+4)\nSRA (IY+5)\n" +
             "SRL (IY+6)\n";
@@ -31,7 +32,7 @@ public class TestCommandFDCB {
     @Test
     void testCommands1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST1.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -80,7 +81,7 @@ public class TestCommandFDCB {
     @Test
     void testCommands2() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST2.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

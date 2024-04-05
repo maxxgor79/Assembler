@@ -8,7 +8,8 @@ import java.util.ResourceBundle;
  */
 
 public final class Z80Messages {
-    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("i18n.Z80Messages");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("asm.z80"
+        + ".i18n.Z80Messages");
 
     public static final String FILE_ENUM = "file_enum";
 

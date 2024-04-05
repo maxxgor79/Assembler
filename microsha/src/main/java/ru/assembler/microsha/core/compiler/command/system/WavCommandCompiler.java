@@ -1,20 +1,18 @@
 package ru.assembler.microsha.core.compiler.command.system;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import lombok.NonNull;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.compiler.option.Option;
-import ru.assembler.core.compiler.option.OptionType;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.syntax.LexemSequence;
 import ru.assembler.microsha.core.compiler.option.OptionTypes;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Maxim Gorin
@@ -43,8 +41,8 @@ public class WavCommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem == null) {
-            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
-                    .getMessage(MessageList.FILE_PATH_EXCEPTED));
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), Messages
+                    .getMessage(Messages.FILE_PATH_EXCEPTED));
         }
         final List<String> paths = new LinkedList<>();
         while (true) {
@@ -53,8 +51,8 @@ public class WavCommandCompiler implements CommandCompiler {
                 paths.add(path);
                 nextLexem = iterator.hasNext() ? iterator.next() : null;
             } else {
-                throw new CompilerException(compilerApi.getFd(), nextLexem.getLineNumber(), MessageList
-                        .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+                throw new CompilerException(compilerApi.getFd(), nextLexem.getLineNumber(), Messages
+                        .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
             }
             if (nextLexem == null) {
                 break;

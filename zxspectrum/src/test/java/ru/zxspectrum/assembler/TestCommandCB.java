@@ -24,6 +24,7 @@ import java.util.Arrays;
 @Slf4j
 @ExtendWith(MockitoExtension.class)
 public class TestCommandCB {
+    private static String SETTINGS_PATH = "asm/settings.properties";
     private static final String INST1 = "RLC B\nRLC C\nRLC D\nRLC E\nRLC H\nRLC L\nRLC (HL)\nRLC A\nRRC B\nRRC C\nRRC D\n" +
             "RRC E\nRRC H\nRRC L\nRRC (HL)\nRRC A\nRL B\nRL C\nRL D\nRL E\nRL H\nRL L\nRL (HL)\nRL A\nRR B\nRR C\nRR D\nRR E\n" +
             "RR H\nRR L\nRR (HL)\nRR A\n";
@@ -31,7 +32,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands1() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST1.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -54,7 +55,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands2() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST2.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -79,7 +80,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands3() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST3.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -107,7 +108,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands4() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST4.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -135,7 +136,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands5() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST5.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -163,7 +164,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands6() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST6.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
@@ -189,7 +190,7 @@ public class TestCommandCB {
     @Test
     void testCbCommands7() throws IOException {
         ResourceSettings resourceSettings = new ResourceSettings();
-        resourceSettings.load("settings.properties");
+        resourceSettings.load(SETTINGS_PATH);
         ByteArrayInputStream bis = new ByteArrayInputStream(INST7.getBytes());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

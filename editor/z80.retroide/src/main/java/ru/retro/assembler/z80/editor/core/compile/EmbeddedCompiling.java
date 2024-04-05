@@ -47,9 +47,7 @@ public class EmbeddedCompiling implements Compiling {
     final PrintStream stderr = System.err;
     try {
       final List<String> argList = CLIUtils.toList(CLIUtils.ARG_OUTPUT, outputDir,
-          toArgument(src
-              , settings.getEncoding())
-          , args);
+          toArgument(src, settings.getEncoding()), args);
       final PipedInputStream outPis = new PipedInputStream();
       outPos = new PipedOutputStream(outPis);
       final PipedInputStream errPis = new PipedInputStream();

@@ -10,7 +10,7 @@ import ru.assembler.core.compiler.dummy.CompilerApiFreezed;
 import ru.assembler.core.compiler.dummy.NamespaceApiFreezed;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.ConversationException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.Output;
 import ru.assembler.core.lang.Type;
 import ru.assembler.core.lang.TypeConverter;
@@ -104,12 +104,12 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
             settingsApi.isStrictConversion());
       } catch (ConversationException e) {
         log.error(e.getMessage(), e);
-        throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
-            .getMessage(MessageList.VALUE_OUT_OF_RANGE), result.getValue().toString());
+        throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), Messages
+            .getMessage(Messages.VALUE_OUT_OF_RANGE), result.getValue().toString());
       }
       if (!result.getValue().equals(value)) {
-        Output.throwWarning(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
-                .getMessage(MessageList.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
+        Output.throwWarning(commandLexem.getFd(), commandLexem.getLineNumber(), Messages
+                .getMessage(Messages.LOSS_PRECISION_TYPE_FOR), result.getValue().toString()
             , value.toString());
       }
       argumentCommandList.add(value);
@@ -135,8 +135,8 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
           .subtract(currentCodeOffset.add(BigInteger.valueOf(byteCodeCompiler
               .getArgOffset(argumentCommandList.size()))));
       if (!TypeUtil.isInRange(expectedType, offset)) {
-        throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
-            .getMessage(MessageList.VALUE_OUT_OF_RANGE), offset.toString());
+        throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), Messages
+            .getMessage(Messages.VALUE_OUT_OF_RANGE), offset.toString());
       }
       argumentCommandList.add(offset);
     }
@@ -152,8 +152,8 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
         compileExpressionNumber(command, patternLexem, commandLexem, commandIterator,
             argumentCommandList);
       } else {
-        throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), MessageList
-            .getMessage(MessageList.INTERNAL_ERROR), patternLexem.getValue());
+        throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(), Messages
+            .getMessage(Messages.INTERNAL_ERROR), patternLexem.getValue());
       }
     }
   }
@@ -170,8 +170,8 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
       } else {
         if (!patternLexem.equals(commandLexem)) {
           throw new CompilerException(commandLexem.getFd(), commandLexem.getLineNumber(),
-              MessageList
-                  .getMessage(MessageList.INTERNAL_ERROR), commandLexem.getValue());
+              Messages
+                  .getMessage(Messages.INTERNAL_ERROR), commandLexem.getValue());
         }
       }
     }

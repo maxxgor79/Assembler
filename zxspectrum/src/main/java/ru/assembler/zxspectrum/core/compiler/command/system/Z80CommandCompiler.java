@@ -4,7 +4,7 @@ import lombok.NonNull;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.syntax.LexemSequence;
 
@@ -33,8 +33,8 @@ public class Z80CommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem != null) {
-            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
-                    .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), Messages
+                    .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
         }
         return new byte[0];
     }

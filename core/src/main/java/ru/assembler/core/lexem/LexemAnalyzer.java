@@ -10,14 +10,13 @@ import ru.assembler.core.error.BadCharsetEncodingException;
 import ru.assembler.core.error.CompilerException;
 import ru.assembler.core.error.InvalidFormatNumberException;
 import ru.assembler.core.error.LexemException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.lang.Encoding;
 import ru.assembler.core.util.AnalyzerIterator;
 import ru.assembler.core.util.LexemUtil;
 import ru.assembler.core.util.SymbolUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -125,7 +124,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     ch = pbReader.read();
     if (!SymbolUtil.isLetter(ch) && !SymbolUtil.isUnderline(ch)) {
       throw new CompilerException(fd, lineNumber,
-          MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED));
+          Messages.getMessage(Messages.IDENTIFIER_EXPECTED));
     }
     sb.append((char) ch);
     while (!SymbolUtil.isEOF(ch)) {
@@ -183,7 +182,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
     final String number = sb.toString();
     if (!Checker.isBinaryNumber(number)) {
-      throw new InvalidFormatNumberException(fd, lineNumber, MessageList.getMessage(MessageList
+      throw new InvalidFormatNumberException(fd, lineNumber, Messages.getMessage(Messages
           .INVALID_BINARY_NUMBER_FORMAT), number);
     }
     if (!SymbolUtil.isEOF(ch)) {
@@ -208,7 +207,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     ch = pbReader.read();
     if (!SymbolUtil.isHexDigit(ch)) {
       throw new CompilerException(fd, lineNumber,
-          MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED)
+          Messages.getMessage(Messages.IDENTIFIER_EXPECTED)
           , String.valueOf((char) ch));
     }
     return getHexadecimalNumber(ch);
@@ -224,7 +223,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
         ch = pbReader.read();
         if (!SymbolUtil.isHexDigit(ch)) {
           throw new InvalidFormatNumberException(fd, lineNumber,
-              MessageList.getMessage(MessageList
+              Messages.getMessage(Messages
                   .INVALID_NUMBER_FORMAT), sb.toString());
         }
         return getHexadecimalNumber(ch);
@@ -233,7 +232,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
           ch = pbReader.read();
           if (!SymbolUtil.isBinaryDigit(ch)) {
             throw new InvalidFormatNumberException(fd, lineNumber,
-                MessageList.getMessage(MessageList
+                Messages.getMessage(Messages
                     .INVALID_NUMBER_FORMAT), sb.toString());
           }
           return getBinaryNumber(ch);
@@ -284,7 +283,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     number = sb.toString();
     if (SymbolUtil.isOctalOldStylePostfix(ch)) {
       if (!Checker.isOctalNumber(number)) {
-        throw new InvalidFormatNumberException(fd, lineNumber, MessageList.getMessage(MessageList
+        throw new InvalidFormatNumberException(fd, lineNumber, Messages.getMessage(Messages
             .INVALID_OCTAL_NUMBER_FORMAT), number);
       } else {
         return new Lexem(fd, lineNumber, LexemType.OCTAL, number);
@@ -292,7 +291,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
     if (SymbolUtil.isHexOldStylePostfix(ch)) {
       if (!Checker.isHexadecimalNumber(number)) {
-        throw new InvalidFormatNumberException(fd, lineNumber, MessageList.getMessage(MessageList
+        throw new InvalidFormatNumberException(fd, lineNumber, Messages.getMessage(Messages
             .INVALID_HEXADECIMAL_NUMBER_FORMAT), number);
       } else {
         return new Lexem(fd, lineNumber, LexemType.HEXADECIMAL, number);
@@ -305,14 +304,14 @@ public class LexemAnalyzer implements Iterable<Lexem> {
       case DECIMAL:
         if (!Checker.isDecimalNumber(number)) {
           throw new InvalidFormatNumberException(fd, lineNumber,
-              MessageList.getMessage(MessageList
+              Messages.getMessage(Messages
                   .INVALID_NUMBER_FORMAT), number);
         }
         break;
       case OCTAL:
         if (!Checker.isOctalNumber(number)) {
           throw new InvalidFormatNumberException(fd, lineNumber,
-              MessageList.getMessage(MessageList
+              Messages.getMessage(Messages
                   .INVALID_OCTAL_NUMBER_FORMAT), number);
         }
         break;
@@ -329,7 +328,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
       return getVariable(ch);
     } else {
       throw new LexemException(fd, lineNumber,
-          MessageList.getMessage(MessageList.IDENTIFIER_EXPECTED));
+          Messages.getMessage(Messages.IDENTIFIER_EXPECTED));
     }
   }
 
@@ -432,14 +431,14 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     while (!SymbolUtil.isApostrophe(ch = pbReader.read())) {
       if (SymbolUtil.isEOF(ch) || SymbolUtil.isEOL(ch)) {
         throw new LexemException(fd, lineNumber,
-            MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "'");
+            Messages.getMessage(Messages.EXPECTED_SYMBOL), "'");
       }
       if (ch == '\\') {
         sb.append((char) ch);
         ch = pbReader.read();
         if (SymbolUtil.isEOF(ch) || SymbolUtil.isEOL(ch)) {
           throw new LexemException(fd, lineNumber,
-              MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "'");
+              Messages.getMessage(Messages.EXPECTED_SYMBOL), "'");
         }
       }
       sb.append((char) ch);
@@ -450,11 +449,11 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
     if (!Checker.isValidEncoding(charValue, platformEncoding)) {
       throw new BadCharsetEncodingException(fd, lineNumber,
-          MessageList.getMessage(MessageList.BAD_CHARSET_ENCODING)
+          Messages.getMessage(Messages.BAD_CHARSET_ENCODING)
           , platformEncoding.getName());
     }
     if (charValue.length() > 1) {
-      throw new LexemException(fd, lineNumber, MessageList.getMessage(MessageList.CHAR_TOO_LONG),
+      throw new LexemException(fd, lineNumber, Messages.getMessage(Messages.CHAR_TOO_LONG),
           charValue);
     }
     return new Lexem(fd, lineNumber, LexemType.CHAR, charValue);
@@ -466,14 +465,14 @@ public class LexemAnalyzer implements Iterable<Lexem> {
       while (!SymbolUtil.isQuote(ch = pbReader.read())) {
         if (SymbolUtil.isEOF(ch) || SymbolUtil.isEOL(ch)) {
           throw new LexemException(fd, lineNumber,
-              MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "\"");
+              Messages.getMessage(Messages.EXPECTED_SYMBOL), "\"");
         }
         if (ch == '\\') {
           sb.append((char) ch);
           ch = pbReader.read();
           if (SymbolUtil.isEOF(ch) || SymbolUtil.isEOL(ch)) {
             throw new LexemException(fd, lineNumber,
-                MessageList.getMessage(MessageList.EXPECTED_SYMBOL), "\"");
+                Messages.getMessage(Messages.EXPECTED_SYMBOL), "\"");
           }
         }
         sb.append((char) ch);
@@ -492,7 +491,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     }
     if (!Checker.isValidEncoding(value, platformEncoding)) {
       throw new BadCharsetEncodingException(fd, lineNumber,
-          MessageList.getMessage(MessageList.BAD_CHARSET_ENCODING)
+          Messages.getMessage(Messages.BAD_CHARSET_ENCODING)
           , platformEncoding.getName());
     }
     return new Lexem(fd, lineNumber, LexemType.STRING, value);
@@ -536,7 +535,7 @@ public class LexemAnalyzer implements Iterable<Lexem> {
     if (SymbolUtil.isHash(ch)) {
       return getCheckedHexadecimalNumber(ch);
     }
-    throw new LexemException(fd, lineNumber, MessageList.getMessage(MessageList.UNEXPECTED_SYMBOL)
+    throw new LexemException(fd, lineNumber, Messages.getMessage(Messages.UNEXPECTED_SYMBOL)
         , String.valueOf((char) ch));
   }
 

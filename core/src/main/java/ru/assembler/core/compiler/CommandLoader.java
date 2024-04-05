@@ -4,7 +4,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.error.AssemblerException;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.util.SymbolUtil;
 
 import java.io.BufferedReader;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static ru.assembler.core.error.text.MessageList.INVALID_TABLE_FORMAT;
+import static ru.assembler.core.error.text.Messages.INVALID_TABLE_FORMAT;
 
 /**
  * @author Maxim Gorin
@@ -41,7 +41,7 @@ public abstract class CommandLoader<E> {
                     cpuSet = Collections.emptySet();
                 }
                 if (!isPatternParametersAreEqual(codePattern, commandPattern)) {
-                    throw new CompilerException(null, lineNumber, MessageList.getMessage(MessageList
+                    throw new CompilerException(null, lineNumber, Messages.getMessage(Messages
                             .VARIABLE_PATTERNS_ARE_NOT_EQUAL), codePattern + "\t" + commandPattern);
                 }
                 prepare(value, lineNumber, codePattern, commandPattern, cpuSet);
@@ -49,7 +49,7 @@ public abstract class CommandLoader<E> {
             }
         } catch (NoSuchElementException e) {
             log.error(e.getMessage(), e);
-            throw new AssemblerException(null, lineNumber, MessageList.getMessage(INVALID_TABLE_FORMAT)
+            throw new AssemblerException(null, lineNumber, Messages.getMessage(INVALID_TABLE_FORMAT)
                     , codePattern + "\t" + commandPattern);
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);

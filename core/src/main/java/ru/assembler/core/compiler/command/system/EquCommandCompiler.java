@@ -5,9 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.lexem.Lexem;
-import ru.assembler.core.lexem.LexemType;
 import ru.assembler.core.ns.NamespaceApi;
 import ru.assembler.core.settings.SettingsApi;
 import ru.assembler.core.syntax.Expression;
@@ -52,31 +51,31 @@ public class EquCommandCompiler implements CommandCompiler {
     if (iterator.hasNext()) {
       nextLexem = iterator.next();
     } else {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.ADDRESS_EXCEPTED));
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.ADDRESS_EXCEPTED));
     }
     final Expression expression = new Expression(compilerApi.getFd(), iterator, namespaceApi);
     final Expression.Result result = expression.evaluate(nextLexem);
     if (result.isUndefined()) {
       throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
-          , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+          , Messages.getMessage(Messages.CONSTANT_VALUE_REQUIRED));
     }
     final BigInteger equAddress = result.getValue();
     if (!TypeUtil.isInRange(BigInteger.ZERO, settingsApi.getMaxAddress(), equAddress)) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.ADDRESS_OUT_OF_RANGE), String.valueOf(result.getValue()));
     }
     final String labelName = namespaceApi.getLabel(namespaceApi.getCurrentCodeOffset());
     if (labelName == null) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.LABEL_DECLARATION_REQUIRED));
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.LABEL_DECLARATION_REQUIRED));
     }
     //transform absolute address to relative
     namespaceApi.putLabel(labelName, equAddress.subtract(namespaceApi.getAddress()));
     nextLexem = expression.getLastLexem();
     if (nextLexem != null) {
-      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), MessageList
-          .getMessage(MessageList.UNEXPECTED_SYMBOL), nextLexem.getValue());
+      throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber(), Messages
+          .getMessage(Messages.UNEXPECTED_SYMBOL), nextLexem.getValue());
     }
     return new byte[0];
   }

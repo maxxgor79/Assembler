@@ -18,7 +18,7 @@ import ru.assembler.core.compiler.CompilerFactory;
 import ru.assembler.core.compiler.PostCommandCompiler;
 import ru.assembler.core.compiler.option.Option;
 import ru.assembler.core.error.SettingsException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.ErrorOutput;
 import ru.assembler.core.io.FileDescriptor;
 import ru.assembler.core.io.LimitedOutputStream;
@@ -52,7 +52,7 @@ import java.util.Map;
 
 @Slf4j
 public class MicroshaAssembler extends AbstractNamespaceApi {
-    private static final String SETTINGS_NAME = "settings.properties";
+    private static final String SETTINGS_NAME = "asm/settings.properties";
 
     protected MicroshaAssemblerSettings settings;
 
@@ -320,11 +320,11 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     protected static void outputCompileResult(@NonNull CompilerApi compilerApi) {
-        Output.formatPrintln("%d %s", Output.getWarningCount(), MessageList.getMessage(MessageList.N_WARNINGS));
-        Output.formatPrintln("%s %s %d %s, %d %s", MessageList.getMessage(MessageList.COMPILED1)
-                , MessageList.getMessage(MessageList.SUCCESSFULLY), compilerApi.getCompiledLineCount()
-                , MessageList.getMessage(MessageList.LINES), compilerApi.getCompiledSourceCount()
-                , MessageList.getMessage(MessageList.SOURCES));
+        Output.formatPrintln("%d %s", Output.getWarningCount(), Messages.getMessage(Messages.N_WARNINGS));
+        Output.formatPrintln("%s %s %d %s, %d %s", Messages.getMessage(Messages.COMPILED1)
+                , Messages.getMessage(Messages.SUCCESSFULLY), compilerApi.getCompiledLineCount()
+                , Messages.getMessage(Messages.LINES), compilerApi.getCompiledSourceCount()
+                , Messages.getMessage(Messages.SOURCES));
     }
 
     public static void main(final String[] args) {

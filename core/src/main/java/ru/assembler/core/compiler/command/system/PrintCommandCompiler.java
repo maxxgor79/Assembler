@@ -4,7 +4,7 @@ import lombok.NonNull;
 import ru.assembler.core.compiler.CommandCompiler;
 import ru.assembler.core.compiler.CompilerApi;
 import ru.assembler.core.error.CompilerException;
-import ru.assembler.core.error.text.MessageList;
+import ru.assembler.core.error.text.Messages;
 import ru.assembler.core.io.Output;
 import ru.assembler.core.lexem.Lexem;
 import ru.assembler.core.lexem.LexemType;
@@ -41,8 +41,8 @@ public class PrintCommandCompiler implements CommandCompiler {
         }
         nextLexem = iterator.hasNext() ? iterator.next() : null;
         if (nextLexem == null) {
-            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), MessageList
-                    .getMessage(MessageList.FILE_PATH_EXCEPTED));
+            throw new CompilerException(compilerApi.getFd(), compilerApi.getLineNumber(), Messages
+                    .getMessage(Messages.FILE_PATH_EXCEPTED));
         }
         while (true) {
             if (nextLexem.getType() == LexemType.STRING) {
@@ -52,7 +52,7 @@ public class PrintCommandCompiler implements CommandCompiler {
                 final Expression.Result result = expression.evaluate(nextLexem);
                 if (result.isUndefined()) {
                     throw new CompilerException(nextLexem.getFd(), nextLexem.getLineNumber()
-                            , MessageList.getMessage(MessageList.CONSTANT_VALUE_REQUIRED));
+                            , Messages.getMessage(Messages.CONSTANT_VALUE_REQUIRED));
                 }
                 print(result.getValue());
             }
