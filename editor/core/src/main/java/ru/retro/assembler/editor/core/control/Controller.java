@@ -41,6 +41,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
 
 /**
@@ -49,7 +52,7 @@ import java.util.prefs.BackingStoreException;
 @Slf4j
 public final class Controller implements Runnable {
 
-    protected static final int TIMER_DELAY = 250;
+    protected static final int TIMER_DELAY = 500;
 
     protected static final String EXTENSION = "asm";
     protected static final String NEW_SOURCE_NAME = "noname" + "." + EXTENSION;
@@ -70,7 +73,7 @@ public final class Controller implements Runnable {
 
     private URI helpUri;
 
-    private Timer timer;
+    private ScheduledExecutorService scheduler;
 
     private int index = -1;
 
@@ -341,8 +344,8 @@ public final class Controller implements Runnable {
         //--------------------------------------------------------------------------------------------------------------
         mainWindow.getConsole().getConsolePopupMenu().getMiClean()
                 .addActionListener(cleanConsoleListener);
-        timer = new Timer(TIMER_DELAY, new Activator(mainWindow));
-        timer.start();
+        scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(new Activator(mainWindow), 0, TIMER_DELAY, TimeUnit.MILLISECONDS);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -625,7 +628,7 @@ public final class Controller implements Runnable {
         if (option == JOptionPane.YES_OPTION) {
             closeAll();
             mainWindow.dispose();
-            timer.stop();
+            scheduler.shutdown();
             saveSettings();
         }
     }
