@@ -212,25 +212,16 @@ FF	RST 38H
 31$nn	LD SP,$nn
 22$nn	LD ($nn),HL
 32$nn	LD ($nn),A
-C2$nn	JP NZ,($nn)	cj	$nn
 C2$nn	JP NZ,$nn	cj	$nn
-D2$nn	JP NC,($nn)	cj	$nn
 D2$nn	JP NC,$nn	cj	$nn
-E2$nn	JP PO,($nn)	cj	$nn
 E2$nn	JP PO,$nn	cj	$nn
-F2$nn 	JP P,($nn)	cj	$nn
 F2$nn	JP P,$nn	cj	$nn
-C3$nn	JP ($nn)	j	$nn
 C3$nn	JP $nn	j	$nn
 D3$n	OUT($n),A
-C4$nn	CALL NZ,($nn)	cj	$nn
 C4$nn	CALL NZ,$nn	cj	$nn
 D4$nn	CALL NC,$nn	cj	$nn
-D4$nn	CALL NC,($nn)	cj	$nn
-E4$nn	CALL PO,($nn)	cj	$nn
 E4$nn	CALL PO,$nn	cj	$nn
 F4$nn	CALL P,$nn	cj	$nn
-F4$nn	CALL P,($nn)	cj	$nn
 06$n	LD B,$n
 16$n	LD D,$n
 26$n	LD H,$n
@@ -241,24 +232,15 @@ E6$n	AND A,$n
 F6$n	OR A,$n
 2A$nn	LD HL,($nn)
 3A$nn	LD A,($nn)
-CA$nn	JP Z,($nn)	cj	$nn
 CA$nn	JP Z,$nn	cj	$nn
-DA$nn	JP C,($nn)	cj	$nn
 DA$nn	JP C,$nn	cj	$nn
-EA$nn	JP PE,($nn)	cj	$nn
 EA$nn	JP PE,$nn	cj	$nn
-FA$nn	JP M,($nn)	cj	$nn
 FA$nn	JP M,$nn	cj	$nn
 DB$n	IN A,($n)
-CC$nn	CALL Z,($nn)	cj	$nn
 CC$nn	CALL Z,$nn	cj	$nn
-DC$nn	CALL C,($nn)	cj	$nn
 DC$nn	CALL C,$nn	cj	$nn
-EC$nn	CALL PE,($nn)	cj	$nn
 EC$nn	CALL PE,$nn	cj	$nn
-FC$nn	CALL M,($nn)	cj	$nn
 FC$nn	CALL M,$nn	cj	$nn
-CD$nn	CALL ($nn)	cj	$nn
 CD$nn	CALL $nn	cj	$nn
 0E$n	LD C,$n
 1E$n	LD E,$n
