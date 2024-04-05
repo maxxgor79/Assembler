@@ -67,7 +67,7 @@ public class RecorderMenuItem extends AbstractMenuItem {
         if (recorder == null) {
             recorder = new AudioRecorder(mainWindow);
             recorder.getInteractivePanel().setBkColor(Color.WHITE);
-            recorder.getInteractivePanel().setWaveColor(Color.DARK_GRAY);
+            recorder.getInteractivePanel().setWaveColor(Color.RED);
             recorder.getInteractivePanel().setLineColor(Color.BLACK);
         }
         return recorder;

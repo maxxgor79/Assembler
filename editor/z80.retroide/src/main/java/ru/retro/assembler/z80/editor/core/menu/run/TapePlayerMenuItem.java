@@ -41,7 +41,7 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
             @NonNull Controller controller) {
         super(controller, Z80Messages.getInstance().get(Z80Messages.TAPE_PLAYER), (char) 0, KeyStroke
                 .getKeyStroke(KeyEvent.VK_F10, InputEvent.ALT_DOWN_MASK | InputEvent
-                        .SHIFT_DOWN_MASK), null);
+                        .SHIFT_DOWN_MASK), "/icon16x16/play.png");
         this.mainWindow = controller.getMainWindow();
         this.settings = controller.getSettings();
         this.compileWavMenuItem = new CompileWavMenuItem(controller);
@@ -87,7 +87,7 @@ public class TapePlayerMenuItem extends AbstractMenuItem {
         if (player == null) {
             player = new Player(controller.getMainWindow());
             player.getInteractivePanel().setBkColor(Color.WHITE);
-            player.getInteractivePanel().setWaveColor(Color.DARK_GRAY);
+            player.getInteractivePanel().setWaveColor(Color.RED);
             player.getInteractivePanel().setLineColor(Color.BLACK);
         }
         return player;
