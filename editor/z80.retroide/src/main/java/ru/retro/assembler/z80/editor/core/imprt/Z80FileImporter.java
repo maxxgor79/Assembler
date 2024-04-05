@@ -3,9 +3,11 @@ package ru.retro.assembler.z80.editor.core.imprt;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import ru.retro.assembler.editor.core.control.Controller;
 import ru.retro.assembler.editor.core.imprt.FileImporter;
 import ru.retro.assembler.editor.core.sys.CallException;
 import ru.retro.assembler.editor.core.sys.Caller;
+import ru.retro.assembler.editor.core.ui.address.AddressDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,6 +24,14 @@ import java.util.Collection;
  */
 @Slf4j
 public class Z80FileImporter implements FileImporter {
+  private AddressDialog dialog;
+
+  protected AddressDialog getAddressDialog() {
+    if (dialog == null) {
+      dialog = new AddressDialog();
+    }
+    return dialog;
+  }
 
   @Override
   public boolean isAcceptable(File file) {
@@ -45,7 +55,12 @@ public class Z80FileImporter implements FileImporter {
   @Override
   public String importFile(@NonNull final File file, @NonNull final String encoding)
       throws IOException, CharacterCodingException {
-    final BigInteger address = BigInteger.valueOf(32768);//needs to enter manually
+    BigInteger address = BigInteger.valueOf(32768);//needs to enter manually
+    final AddressDialog dialog = getAddressDialog();
+    dialog.setLocationRelativeTo(null);
+    if (dialog.showModal() == AddressDialog.OK)  {
+      address = dialog.getAddress();
+    }
     final PrintStream stdout = System.out;
     final PrintStream stderr = System.err;
     try {

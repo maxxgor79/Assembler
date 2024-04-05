@@ -214,6 +214,10 @@ public final class Messages {
 
     public static final String IMPORT_ERROR = "import_error";
 
+    public static final String ADDRESS = "address";
+
+    public static final String ENTER_ADDRESS = "enter_address";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }

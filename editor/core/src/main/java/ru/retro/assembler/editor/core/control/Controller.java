@@ -547,8 +547,8 @@ public final class Controller implements Runnable {
             if (importer.isAcceptable(importFileChooser.getSelectedFile())) {
                 try {
                     final String text = importer.importFile(importFileChooser.getSelectedFile(), settings.getEncoding());
-                    final String fileName = FilenameUtils.removeExtension(importFileChooser.getSelectedFile()
-                            .getAbsolutePath()) + "." + EXTENSION;
+                    final String fileName = FileUtils.addExt(FilenameUtils.removeExtension(importFileChooser.getSelectedFile()
+                            .getAbsolutePath()), EXTENSION);
                     openSource(new File(fileName), new ByteArrayInputStream(text.getBytes(settings.getEncoding())));
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
@@ -804,7 +804,7 @@ public final class Controller implements Runnable {
     private final ActionListener preferencesListener = e -> {
         log.info("Preferences");
         preferencesDialog.setLocationRelativeTo(mainWindow);
-        if (preferencesDialog.showModal() == PreferencesDialog.OPTION_OK) {
+        if (preferencesDialog.showModal() == PreferencesDialog.OK) {
             final String encoding = (String) preferencesDialog.getPreferencesTabbedPane()
                     .getMiscellaneousPanel()
                     .getCharsetPanel().getCbEncoding().getSelectedItem();

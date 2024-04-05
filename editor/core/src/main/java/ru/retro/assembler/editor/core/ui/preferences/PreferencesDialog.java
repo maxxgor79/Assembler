@@ -21,7 +21,6 @@ import ru.retro.assembler.editor.core.util.ResourceUtils;
  */
 @Slf4j
 public class PreferencesDialog extends JDialog implements ModalDialog {
-
   private static final int C_PATH = 0;
 
   private static final int C_OUTPUT = 1;
@@ -45,10 +44,6 @@ public class PreferencesDialog extends JDialog implements ModalDialog {
   private static final int LANGUAGE = 10;
 
   private static final int EMBEDDED = 11;
-
-  public static int OPTION_OK = 1;
-
-  public static int OPTION_CANCEL = 0;
 
   private int result;
 
@@ -84,7 +79,7 @@ public class PreferencesDialog extends JDialog implements ModalDialog {
 
   private void initListeners() {
     buttonPanel.getBtnOk().addActionListener(l -> {
-      result = OPTION_OK;
+      result = OK;
       dispose();
     });
     buttonPanel.getBtnCancel().addActionListener(l -> {
@@ -242,12 +237,12 @@ public class PreferencesDialog extends JDialog implements ModalDialog {
 
   @Override
   public int showModal() {
-    result = OPTION_CANCEL;
+    result = CANCEL;
     store();
     getRootPane().setDefaultButton(buttonPanel.getBtnCancel());
     buttonPanel.getBtnCancel().requestFocus();
     setVisible(true);
-    if (result == OPTION_CANCEL) {
+    if (result == CANCEL) {
       restore();
     }
     return result;
