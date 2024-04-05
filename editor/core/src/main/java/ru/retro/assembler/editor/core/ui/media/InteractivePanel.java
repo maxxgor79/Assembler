@@ -77,8 +77,6 @@ public class InteractivePanel extends JPanel {
         final int height = screenPanel.getHeight();
         g.setColor(bkColor);
         g.fillRect(0, 0, width, height);
-        g.setColor(lineColor);
-        g.drawLine(0, height / 2, width, height / 2);
         if (buf != null && buf.length >= len) {
             double dx = (double) len / width;
             double dy = (double) height / 256.0;
@@ -92,6 +90,8 @@ public class InteractivePanel extends JPanel {
             }
             g.drawPolyline(x, y, width);
         }
+        g.setColor(lineColor);
+        g.drawLine(0, height / 2, width, height / 2);
     }
 
     public void updateData(byte[] buf, int off, int len) {
