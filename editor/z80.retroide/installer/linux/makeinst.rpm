@@ -1,5 +1,5 @@
 jpackage -i app --name RetroIDE \
-  --main-jar z80.retroide-1.0-jar-with-dependencies.jar \
+  --main-jar z80.retroide-1.0.jar \
   --main-class ru.retro.assembler.z80.editor.Z80Editor \
   --type rpm \
   --linux-shortcut \
