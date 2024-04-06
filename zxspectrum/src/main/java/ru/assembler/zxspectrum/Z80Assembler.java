@@ -132,6 +132,13 @@ public class Z80Assembler extends AbstractNamespaceApi {
         OutputStream os;
         final File outputFile = createOutputFile(fd.getFile());
         try {
+            outputFile.createNewFile();
+        } catch (IOException e) {
+            log.error("Can not create {}", outputFile);
+            ErrorOutput.formatPrintln(Z80Messages.getMessage(Z80Messages.CANT_CREATE_FILE), outputFile.getAbsolutePath());
+            return;
+        }
+        try {
             reset();
             os = new FileOutputStream(outputFile);
             final CompilerApi compilerApi = compile(fd, os);
@@ -274,7 +281,7 @@ public class Z80Assembler extends AbstractNamespaceApi {
     }
 
     private static FileDescriptor toFileDescription(String filename) {
-        final String [] pair = filename.split("#");
+        final String[] pair = filename.split("#");
         return pair.length == 2 ? new FileDescriptor(new File(pair[0]), pair[1]) :
                 new FileDescriptor(new File(pair[0]));
     }
