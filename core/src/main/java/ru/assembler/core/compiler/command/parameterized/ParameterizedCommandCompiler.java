@@ -190,6 +190,4 @@ public class ParameterizedCommandCompiler implements CommandCompiler {
     public String toString() {
         return commandPattern.getCaption();
     }
-
-
 }
