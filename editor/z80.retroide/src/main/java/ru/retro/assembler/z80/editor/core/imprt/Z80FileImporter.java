@@ -59,7 +59,7 @@ public class Z80FileImporter implements FileImporter {
     final AddressDialog dialog = getAddressDialog();
     dialog.setLocationRelativeTo(null);
     if (dialog.showModal() == AddressDialog.OK)  {
-      address = dialog.getAddress();
+      address = dialog.getAddress() == null ? address : dialog.getAddress();
     }
     final PrintStream stdout = System.out;
     final PrintStream stderr = System.err;

@@ -80,6 +80,10 @@ public class AddressDialog extends JDialog implements ModalDialog {
     }
 
     public BigInteger getAddress() {
-        return new BigInteger(addressPanel.getTfAddress().getValue().toString());
+        final Object o = addressPanel.getTfAddress().getValue();
+        if (o == null) {
+            return null;
+        }
+        return new BigInteger(o.toString());
     }
 }
