@@ -1,1 +1,1 @@
-jpackage -i app --name RetroIDE --main-jar z80.retroide-1.0-jar-with-dependencies.jar --main-class ru.retro.assembler.z80.editor.Z80Editor --type msi --verbose --icon res\microchip.ico --dest dest --java-options -Dz80asm.embedded=true --win-shortcut --win-menu --win-menu-group Development
+jpackage -i app --name RetroIDE --main-jar z80.retroide-1.0.jar --main-class ru.retro.assembler.z80.editor.Z80Editor --type msi --verbose --icon res\microchip.ico --dest dest --java-options -Dz80asm.embedded=true --win-shortcut --win-menu --win-menu-group Development
