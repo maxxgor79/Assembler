@@ -5,12 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.assembler.core.compiler.CompilerApi;
@@ -28,7 +23,6 @@ import ru.assembler.core.settings.ResourceSettings;
 import ru.assembler.core.util.FileUtil;
 import ru.assembler.core.util.SymbolUtil;
 import ru.assembler.core.util.TypeUtil;
-import ru.zxspectrum.io.audio.wav.WavWriter;
 import ru.assembler.microsha.core.compiler.MicroshaCompiler;
 import ru.assembler.microsha.core.compiler.option.OptionTypes;
 import ru.assembler.microsha.core.settings.DefaultSettings;
@@ -36,15 +30,11 @@ import ru.assembler.microsha.core.settings.MicroshaAssemblerSettings;
 import ru.assembler.microsha.io.generator.SoundGenerator;
 import ru.assembler.microsha.io.rkm.RkmData;
 import ru.assembler.microsha.text.MicroshaMessages;
+import ru.zxspectrum.io.audio.wav.WavWriter;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Maxim Gorin
@@ -133,6 +123,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
             final CompilerApi compilerApi = compile(fd, os);
             os.close();
             postCompile(outputFile);
+            Output.formatPrintln("%s %s", MicroshaMessages.getMessage(MicroshaMessages.COMPILED_FILE_IN), outputFile);
             runOptions(outputFile, compilerApi);
             runSettings(outputFile);
             outputCompileResult(compilerApi);
@@ -147,30 +138,37 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
             final Collection<String> paths = (Collection<String>) option.getContent();
             for (String path : paths) {
-                createWav(outputFile, new File(path), getAddress());
+                final File wavFile = new File(path);
+                createWav(outputFile, wavFile, getAddress());
+                Output.formatPrintln("%s %s", MicroshaMessages.getMessage(MicroshaMessages.SAVED_FILE_IN), wavFile);
             }
         }
         if (compilerApi.hasOption(OptionTypes.PRODUCE_RKM)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_RKM);
             final Collection<String> paths = (Collection<String>) option.getContent();
             for (String path : paths) {
-                createRkm(outputFile, new File(path), getAddress());
+                final File rkmFile = new File(path);
+                createRkm(outputFile, rkmFile, getAddress());
+                Output.formatPrintln("%s %s", MicroshaMessages.getMessage(MicroshaMessages.SAVED_FILE_IN), rkmFile);
             }
         }
     }
 
     protected void runSettings(@NonNull final File outputFile) throws IOException {
         if (settings.isProduceWav()) {
-            createWav(outputFile, getAddress());
+            final File wavFile = createWav(outputFile, getAddress());
+            Output.formatPrintln("%s %s", MicroshaMessages.getMessage(MicroshaMessages.SAVED_FILE_IN), wavFile);
         }
         if (settings.isProduceRkm()) {
-            createRkm(outputFile, getAddress());
+            final File rkmFile = createRkmWithNoResult(outputFile, getAddress());
+            Output.formatPrintln("%s %s", MicroshaMessages.getMessage(MicroshaMessages.SAVED_FILE_IN), rkmFile);
         }
     }
 
-    protected void createWav(@NonNull final File file, @NonNull final BigInteger address) throws IOException {
+    protected File createWav(@NonNull final File file, @NonNull final BigInteger address) throws IOException {
         final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, WavWriter.EXTENSION);
         createWav(file, wavFile, address);
+        return wavFile;
     }
 
     protected void createWav(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
@@ -184,6 +182,12 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     private RkmData createRkm(final File file, @NonNull final BigInteger address) throws IOException {
         final File rkmFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, RkmData.EXTENSION);
         return createRkm(file, rkmFile, address);
+    }
+
+    private File createRkmWithNoResult(final File file, @NonNull final BigInteger address) throws IOException {
+        final File rkmFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), file, RkmData.EXTENSION);
+        createRkm(file, rkmFile, address);
+        return rkmFile;
     }
 
     private RkmData createRkm(@NonNull final File src, @NonNull final File dst, @NonNull final BigInteger address)
@@ -238,7 +242,7 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
     }
 
     private static FileDescriptor toFileDescription(String filename) {
-        final String [] pair = filename.split("#");
+        final String[] pair = filename.split("#");
         return pair.length == 2 ? new FileDescriptor(new File(pair[0]), pair[1]) :
                 new FileDescriptor(new File(pair[0]));
     }

@@ -50,6 +50,10 @@ public final class MicroshaMessages {
 
     public static final String CANT_CREATE_FILE = "cant_create_file";
 
+    public static final String SAVED_FILE_IN = "saved_file_in";
+
+    public static final String COMPILED_FILE_IN = "compiled_file_in";
+
     private MicroshaMessages() {
 
     }

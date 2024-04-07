@@ -5,12 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import ru.assembler.core.compiler.CompilerApi;
@@ -39,21 +34,9 @@ import ru.zxspectrum.io.tap.TapData;
 import ru.zxspectrum.io.tap.TapUtils;
 import ru.zxspectrum.io.tzx.TzxUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Maxim Gorin
@@ -144,15 +127,16 @@ public class Z80Assembler extends AbstractNamespaceApi {
             final CompilerApi compilerApi = compile(fd, os);
             os.close();
             postCompile(outputFile);
+            Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.COMPILED_FILE_IN), outputFile);
             runOptions(outputFile, compilerApi);
             runSettings(outputFile);
             outputCompileResult(compilerApi);
         } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
             ErrorOutput.formatPrintln(Messages.getMessage(Messages.FILE_NOT_FOUND), fd.getDisplay());
-            log.error(e.getMessage(), e);
         } catch (Exception e) {
-            ErrorOutput.println(e.getMessage());
             log.error(e.getMessage(), e);
+            ErrorOutput.println(e.getMessage());
         }
     }
 
@@ -162,42 +146,52 @@ public class Z80Assembler extends AbstractNamespaceApi {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_WAV);
             final Collection<String> paths = (Collection<String>) option.getContent();
             for (String path : paths) {
-                createWav(outputFile, new File(path), getAddress());
+                final File wavFile = new File(path);
+                createWav(outputFile, wavFile, getAddress());
+                Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.SAVED_FILE_IN), wavFile);
             }
         }
         if (compilerApi.hasOption(OptionTypes.PRODUCE_TAP)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_TAP);
             final Collection<String> paths = (Collection<String>) option.getContent();
             for (String path : paths) {
-                createTap(outputFile, new File(path), getAddress());
+                final File tapFile = new File(path);
+                createTap(outputFile, tapFile, getAddress());
+                Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.SAVED_FILE_IN), tapFile);
             }
         }
         if (compilerApi.hasOption(OptionTypes.PRODUCE_TZX)) {
             final Option option = compilerApi.getOption(OptionTypes.PRODUCE_TZX);
             final Collection<String> paths = (Collection<String>) option.getContent();
             for (String path : paths) {
-                createTzx(outputFile, new File(path), getAddress());
+                final File tzxFile = new File(path);
+                createTzx(outputFile, tzxFile, getAddress());
+                Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.SAVED_FILE_IN), tzxFile);
             }
         }
     }
 
     protected void runSettings(@NonNull final File outputFile) throws IOException {
         if (settings.isProduceWav()) {
-            createWav(outputFile, getAddress());
+            final File wavFile = createWav(outputFile, getAddress());
+            Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.SAVED_FILE_IN), wavFile);
         }
         if (settings.isProduceTap()) {
-            createTap(outputFile, getAddress());
+            final File tapFile = createTapNoResult(outputFile, getAddress());
+            Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.SAVED_FILE_IN), tapFile);
         }
         if (settings.isProduceTzx()) {
-            createTzx(outputFile, getAddress());
+            final File tzxFile = createTzx(outputFile, getAddress());
+            Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.SAVED_FILE_IN), tzxFile);
         }
     }
 
-    protected void createWav(@NonNull final File srcFile, @NonNull final BigInteger address)
+    protected File createWav(@NonNull final File srcFile, @NonNull final BigInteger address)
             throws IOException {
         final File wavFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile,
                 WavWriter.EXTENSION);
         createWav(srcFile, wavFile, address);
+        return wavFile;
     }
 
     protected void createWav(@NonNull final File srcFile, @NonNull final File dstFile,
@@ -216,16 +210,24 @@ public class Z80Assembler extends AbstractNamespaceApi {
         return createTap(srcFile, tapFile, address);
     }
 
+    private File createTapNoResult(final File srcFile, final BigInteger address) throws IOException {
+        final File tapFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile,
+                TapUtils.EXTENSION);
+        createTap(srcFile, tapFile, address);
+        return tapFile;
+    }
+
     private TapData createTap(final File srcFile, final File dstFile, final BigInteger address)
             throws IOException {
         final byte[] data = FileUtils.readFileToByteArray(srcFile);
         return TapUtils.createBinaryTap(dstFile, data, address.intValue());
     }
 
-    private void createTzx(File srcFile, final BigInteger address) throws IOException {
+    private File createTzx(File srcFile, final BigInteger address) throws IOException {
         final File tzxFile = FileUtil.createNewFileSameName(settings.getOutputDirectory(), srcFile,
                 TzxUtils.EXTENSION);
         createTzx(srcFile, tzxFile, address);
+        return tzxFile;
     }
 
     private void createTzx(File srcFile, final File dstFile, final BigInteger address)
