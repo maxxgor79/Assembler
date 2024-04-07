@@ -48,6 +48,8 @@ public final class MicroshaMessages {
 
     public static final String ADDRESS_IS_OUT_RANGE = "address_is_out_of_range";
 
+    public static final String CANT_CREATE_FILE = "cant_create_file";
+
     private MicroshaMessages() {
 
     }

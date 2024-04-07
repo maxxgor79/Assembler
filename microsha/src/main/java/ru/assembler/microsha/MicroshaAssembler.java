@@ -121,6 +121,13 @@ public class MicroshaAssembler extends AbstractNamespaceApi {
         OutputStream os;
         final File outputFile = createOutputFile(fd.getFile());
         try {
+            outputFile.createNewFile();
+        } catch (IOException e) {
+            log.error("Can not create {}", outputFile);
+            ErrorOutput.formatPrintln(MicroshaMessages.getMessage(MicroshaMessages.CANT_CREATE_FILE), outputFile.getAbsolutePath());
+            return;
+        }
+        try {
             reset();
             os = new FileOutputStream(outputFile);
             final CompilerApi compilerApi = compile(fd, os);
