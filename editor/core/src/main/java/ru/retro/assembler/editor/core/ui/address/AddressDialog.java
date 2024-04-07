@@ -86,4 +86,9 @@ public class AddressDialog extends JDialog implements ModalDialog {
         }
         return new BigInteger(o.toString());
     }
+
+    public void setAddress(@NonNull BigInteger address) {
+        addressPanel.getTfAddress().setValue(address);
+        addressPanel.getTfAddress().setEditable(true);
+    }
 }
