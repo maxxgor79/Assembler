@@ -44,7 +44,7 @@ public final class SymbolUtils {
     }
 
     public static boolean isSymbol(int ch) {
-        return ch >= ' ' && ch <= '~';
+        return ch >= 32 && ch <= 127;
     }
 
     public static boolean isDot(@NonNull String s) {
@@ -69,5 +69,18 @@ public final class SymbolUtils {
 
     public static boolean isBraceOpen(@NonNull String s) {
         return "(".equals(s);
+    }
+
+    public static String translate(int ch) {
+        if (isSymbol(ch)) {
+            return String.format("'%c'", (char) ch);
+        }
+        switch (ch) {
+            case '\n':
+                return "'\\n'";
+            case '\t':
+                return "'\\r'";
+        }
+        return null;
     }
 }

@@ -15,7 +15,7 @@ import java.math.BigInteger;
  * Date: 12/27/2023
  */
 @EqualsAndHashCode
-public class Variable extends Number {
+public class Variable extends Number implements Cloneable {
     @Getter
     private static int radix = 16;
 
@@ -35,6 +35,7 @@ public class Variable extends Number {
 
     public Variable(@NonNull BigInteger value, @NonNull Type type) {
         setValue(value);
+        setType(type);
     }
 
     public Variable(@NonNull String name, @NonNull BigInteger value, @NonNull Type type) {
@@ -53,5 +54,10 @@ public class Variable extends Number {
             return name;
         }
         return generateValue();
+    }
+
+    @Override
+    public Variable clone() {
+        return new Variable(value, type);
     }
 }

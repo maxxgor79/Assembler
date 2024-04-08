@@ -12,14 +12,14 @@ import java.util.List;
  * Date: 12/29/2023
  */
 @EqualsAndHashCode
-public class Lexemes {
-    private final List<Lexem> lexemes = new LinkedList<>();
+public class Lexemes implements Cloneable {
+    private final List<Lexeme> lexemes = new LinkedList<>();
 
     public Lexemes() {
 
     }
 
-    public Lexemes(@NonNull Collection<Lexem> col) {
+    public Lexemes(@NonNull Collection<Lexeme> col) {
         lexemes.addAll(col);
     }
 
@@ -27,7 +27,7 @@ public class Lexemes {
         lexemes.clear();
     }
 
-    public void addAll(@NonNull Collection<Lexem> col) {
+    public void addAll(@NonNull Collection<Lexeme> col) {
         lexemes.addAll(col);
     }
 
@@ -35,13 +35,13 @@ public class Lexemes {
         this.lexemes.addAll(lexemes.lexemes);
     }
 
-    public Collection<Lexem> toCollection() {
+    public Collection<Lexeme> getLexemes() {
         return lexemes;
     }
 
-    public Lexem getVariable(int num) {
+    public Lexeme getVariable(int num) {
         int i = 0;
-        for (Lexem l : lexemes) {
+        for (Lexeme l : lexemes) {
             if ((l.getType() == LexemType.Variable) && (num == i++)) {
                 return l;
             }
@@ -51,7 +51,7 @@ public class Lexemes {
 
     public int getVariableCount() {
         int count = 0;
-        for (Lexem l : lexemes) {
+        for (Lexeme l : lexemes) {
             if (l.getType() == LexemType.Variable) {
                 count++;
             }
@@ -61,5 +61,10 @@ public class Lexemes {
 
     public int size() {
         return lexemes.size();
+    }
+
+    @Override
+    public Lexemes clone() {
+        return new Lexemes(getLexemes());
     }
 }

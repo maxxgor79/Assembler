@@ -150,12 +150,11 @@ public class Disassembler implements Environment {
         }
         enrichSystems(decoder, canvas);
         Enricher.enrichLabels(this, canvas);
-        enrichComment(canvas);
+        enrichComments(canvas);
         if (settings.getStdout()) {
             canvas.flush(System.out);
         } else {
-            final File outputFile = FileUtils.createNewFileSameName(new File("."),
-                    file.getAbsoluteFile(), EXT);
+            final File outputFile = FileUtils.createNewFileSameName(new File("."), file.getAbsoluteFile(), EXT);
             canvas.setFile(outputFile);
             try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                 canvas.flush(fos);
@@ -169,9 +168,9 @@ public class Disassembler implements Environment {
         canvas.setZ80(RowFactory.createRow(new Z80()));
     }
 
-    private void enrichComment(@NonNull final Canvas canvas) {
+    private void enrichComments(@NonNull final Canvas canvas) {
         if (settings.hasComments()) {
-            Enricher.enrichComment(this, canvas);
+            Enricher.enrichComments(this, canvas);
         }
     }
 
@@ -230,7 +229,8 @@ public class Disassembler implements Environment {
             }
             disassembler.run(files.toArray(new File[files.size()]));
         } catch (Exception e) {
-            log.debug(e.getMessage(), e);
+            e.printStackTrace();
+            log.error(e.getMessage(), e);
             ErrorOutput.println(e.getMessage());
         }
     }

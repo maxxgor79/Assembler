@@ -2,7 +2,7 @@ package ru.zxspectrum.disassembler.render.command;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import ru.zxspectrum.disassembler.lexem.Lexem;
+import ru.zxspectrum.disassembler.lexem.Lexeme;
 import ru.zxspectrum.disassembler.lexem.LexemType;
 import ru.zxspectrum.disassembler.utils.SymbolUtils;
 
@@ -18,7 +18,7 @@ public final class Formatter {
 
     }
 
-    public static void format(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    public static void format(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexem) {
         switch (lexem.getType()) {
             case Number -> formatNumber(sb, prevLexem, lexem);
             case String -> formatString(sb, prevLexem, lexem);
@@ -30,7 +30,7 @@ public final class Formatter {
         }
     }
 
-    protected static void formatDelimiter(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    protected static void formatDelimiter(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexem) {
         final String s = lexem.getValue();
         if (SymbolUtils.isComma(s)) {
             sb.append(lexem);
@@ -52,7 +52,7 @@ public final class Formatter {
         }
     }
 
-    protected static void formatIdentifier(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    protected static void formatIdentifier(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexem) {
         if (prevLexem != null) {
             if (prevLexem.getType() == LexemType.Number || prevLexem.getType() == LexemType.Identifier ||
                     prevLexem.getType() == LexemType.Variable) {
@@ -62,11 +62,11 @@ public final class Formatter {
         sb.append(lexem);
     }
 
-    protected static void formatSymbol(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    protected static void formatSymbol(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexem) {
         sb.append(lexem);
     }
 
-    protected static void formatVariable(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    protected static void formatVariable(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexem) {
         if ((prevLexem != null)) {
             if (prevLexem.getType() == LexemType.Identifier || prevLexem.getType() == LexemType.Number ||
                     prevLexem.getType() == LexemType.Variable)
@@ -74,14 +74,14 @@ public final class Formatter {
         }
     }
 
-    protected static void formatString(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    protected static void formatString(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexem) {
         sb.append(lexem);
     }
 
-    protected static void formatNumber(@NonNull StringBuilder sb, Lexem prevLexem, @NonNull Lexem lexem) {
+    protected static void formatNumber(@NonNull StringBuilder sb, Lexeme prevLexem, @NonNull Lexeme lexeme) {
         if ((prevLexem != null) && (prevLexem.getType() == LexemType.Identifier)) {
             sb.append(SPACE);
         }
-        sb.append(lexem);
+        sb.append(lexeme);
     }
 }

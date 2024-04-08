@@ -13,7 +13,7 @@ import java.util.List;
  * Date: 12/29/2023
  */
 @EqualsAndHashCode
-public class ByteCodeUnits {
+public class ByteCodeUnits implements Cloneable {
     private final List<ByteCodeUnit> units = new LinkedList<>();
 
     public ByteCodeUnits() {
@@ -28,7 +28,7 @@ public class ByteCodeUnits {
         units.clear();
     }
 
-    public Collection<ByteCodeUnit> toCollection() {
+    public Collection<ByteCodeUnit> getUnits() {
         return Collections.unmodifiableCollection(units);
     }
 
@@ -51,6 +51,9 @@ public class ByteCodeUnits {
     }
 
     public ByteCodeUnit getPattern(final int i) {
+        if (i < 0 || i >= units.size()) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         int num = 0;
         for (ByteCodeUnit unit : units) {
             if (unit.getType() == ByteCodeType.Pattern) {
@@ -75,20 +78,31 @@ public class ByteCodeUnits {
     }
 
     public int getOffsetInBytes(final int i) {
+        if (i < 0 || i >= units.size()) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         int size = 0;
         int num = 0;
         for (ByteCodeUnit unit : units) {
             if ((unit.getType() == ByteCodeType.Pattern) && (i == num)) {
                 return size;
             }
-            size += unit.getByteCodeSize();
+            size += unit.size();
             num++;
         }
         return size;
     }
 
-    public int size() {
+    public int count() {
         return units.size();
+    }
+
+    public int size() {
+        int size = 0;
+        for (ByteCodeUnit unit : units) {
+            size += unit.size();
+        }
+        return size;
     }
 
     public int indexOfPattern(final String pattern) {
@@ -105,5 +119,11 @@ public class ByteCodeUnits {
             }
         }
         return -1;
+    }
+
+    @Override
+    public ByteCodeUnits clone() {
+        final ByteCodeUnits instance = new ByteCodeUnits(getUnits());
+        return instance;
     }
 }

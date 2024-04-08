@@ -13,22 +13,18 @@ import ru.zxspectrum.disassembler.bytecode.Pattern;
 import ru.zxspectrum.disassembler.command.Behavior;
 import ru.zxspectrum.disassembler.error.RenderException;
 import ru.zxspectrum.disassembler.io.LEDataOutputStream;
-import ru.zxspectrum.disassembler.lexem.Lexem;
+import ru.zxspectrum.disassembler.lexem.Lexeme;
 import ru.zxspectrum.disassembler.lexem.LexemType;
 import ru.zxspectrum.disassembler.lexem.Lexemes;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author maxim Date: 12/27/2023
  */
 @Slf4j
 @EqualsAndHashCode
-public class Instruction extends Command {
-
+public class Instruction extends Command implements Cloneable {
   private final List<Variable> variables = new ArrayList<>();
 
   @Getter
@@ -64,16 +60,16 @@ public class Instruction extends Command {
   @Override
   public String generate() throws RenderException {
     int variableIndex = 0;
-    Lexem prevLexem = null;
+    Lexeme prevLexem = null;
     final StringBuilder sb = new StringBuilder();
-    for (Lexem lexem : lexemes.toCollection()) {
-      Formatter.format(sb, prevLexem, lexem);
-      if (lexem.getType() == LexemType.Variable) {
+    for (Lexeme lexeme : lexemes.getLexemes()) {
+      Formatter.format(sb, prevLexem, lexeme);
+      if (lexeme.getType() == LexemType.Variable) {
         if (variableIndex < variables.size()) {
           sb.append(variables.get(variableIndex++).generate());
         }
       }
-      prevLexem = lexem;
+      prevLexem = lexeme;
     }
     return toUpperOrLowerCase(sb.toString());
   }
@@ -95,7 +91,7 @@ public class Instruction extends Command {
     return variables.size();
   }
 
-  public void setLexemes(@NonNull Collection<Lexem> lexemes) {
+  public void setLexemes(@NonNull Collection<Lexeme> lexemes) {
     this.lexemes.clear();
     this.lexemes.addAll(lexemes);
   }
@@ -117,7 +113,7 @@ public class Instruction extends Command {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final LEDataOutputStream leDos = new LEDataOutputStream(baos);
     try {
-      for (ByteCodeUnit bcu : units.toCollection()) {
+      for (ByteCodeUnit bcu : units.getUnits()) {
         if (bcu.getType() == ByteCodeType.Code) {
           leDos.writeByte(Integer.parseInt(bcu.getValue(), 16));
         } else if (bcu.getType() == ByteCodeType.Pattern) {
@@ -143,5 +139,17 @@ public class Instruction extends Command {
       return null;
     }
     return byteCode = baos.toByteArray();
+  }
+
+  @Override
+  public Instruction clone() {
+    final Instruction inst = new Instruction(units.clone(), lexemes.clone(), behavior, jumpAddressPattern);
+    for (Variable var : variables) {
+      inst.variables.add(var.clone());
+    }
+    if (inst.byteCode != null) {
+      inst.byteCode = Arrays.copyOf(inst.byteCode, inst.byteCode.length);
+    }
+    return inst;
   }
 }

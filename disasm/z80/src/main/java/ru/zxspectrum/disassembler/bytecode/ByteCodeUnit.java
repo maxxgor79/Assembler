@@ -17,11 +17,11 @@ import java.util.Objects;
  */
 @Slf4j
 @EqualsAndHashCode
-public class ByteCodeUnit {
+public class ByteCodeUnit implements Cloneable {
     private static final Map<Integer, ByteCodeUnit> INTEGER_MAP = new HashMap<>();
 
     static {
-        for (int i = 0; i < 255; i++) {
+        for (int i = 0; i < 256; i++) {
             INTEGER_MAP.put(i, new ByteCodeUnit(i));
         }
     }
@@ -34,7 +34,6 @@ public class ByteCodeUnit {
                 try {
                     PATTERN_MAP.put(pattern, new ByteCodeUnit(pattern));
                 } catch (Exception e) {
-                    e.printStackTrace();
                     log.error(e.getMessage(), e);
                 }
             }
@@ -95,19 +94,25 @@ public class ByteCodeUnit {
         return null;
     }
 
-    public Type getByteCodeType() {
+    public Type getDataType() {
         return switch (type) {
             case Code -> Type.getUnsignedBySize(value.length() / 2);
             case Pattern -> Type.getByPattern(value);
         };
     }
 
-    public int getByteCodeSize() {
-        return getByteCodeType().getSize();
+    public int size() {
+        return getDataType().getSize();
     }
 
     @Override
     public String toString() {
         return value;
+    }
+
+    @Override
+    public ByteCodeUnit clone() {
+        final ByteCodeUnit instance = new ByteCodeUnit(type, value);
+        return instance;
     }
 }

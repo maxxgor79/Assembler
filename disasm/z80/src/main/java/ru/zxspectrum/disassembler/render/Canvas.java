@@ -45,6 +45,10 @@ public class Canvas implements Render {
     @NonNull
     private String encoding = Charset.defaultCharset().name();
 
+    @Getter
+    @Setter
+    private static boolean separator = true;
+
     private final ConcurrentHashMap<BigInteger, Row> rowsMap = new ConcurrentHashMap<>();
 
     @Override
@@ -55,13 +59,22 @@ public class Canvas implements Render {
         if (org != null) {
             sb.append(org.generate());
         }
+        if (separator) {
+            sb.append(System.lineSeparator());
+        }
         if (z80 != null) {
             sb.append(z80.generate());
         }
+        if (separator) {
+            sb.append(System.lineSeparator());
+        }
         for (BigInteger address : addressList) {
-            Row row = rowsMap.get(address);
+            final Row row = rowsMap.get(address);
             row.setAddress(new Address(address));
             sb.append(row.generate());
+            if (separator) {
+                sb.append(System.lineSeparator());
+            }
         }
         return sb.toString();
     }

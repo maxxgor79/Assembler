@@ -118,7 +118,8 @@ public class Z80Assembler extends AbstractNamespaceApi {
             outputFile.createNewFile();
         } catch (IOException e) {
             log.error("Can not create {}", outputFile);
-            ErrorOutput.formatPrintln(Z80Messages.getMessage(Z80Messages.CANT_CREATE_FILE), outputFile.getAbsolutePath());
+            ErrorOutput.formatPrintln(Z80Messages.getMessage(Z80Messages.CANT_CREATE_FILE)
+                    , outputFile.getAbsolutePath());
             return;
         }
         try {
@@ -127,13 +128,15 @@ public class Z80Assembler extends AbstractNamespaceApi {
             final CompilerApi compilerApi = compile(fd, os);
             os.close();
             postCompile(outputFile);
-            Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.COMPILED_FILE_IN), outputFile);
+            Output.formatPrintln("%s %s", Z80Messages.getMessage(Z80Messages.COMPILED_FILE_IN)
+                    , outputFile);
             runOptions(outputFile, compilerApi);
             runSettings(outputFile);
             outputCompileResult(compilerApi);
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
-            ErrorOutput.formatPrintln(Messages.getMessage(Messages.FILE_NOT_FOUND), fd.getDisplay());
+            ErrorOutput.formatPrintln(Messages.getMessage(Messages.FILE_NOT_FOUND)
+                    , fd.getDisplay());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             ErrorOutput.println(e.getMessage());

@@ -28,7 +28,7 @@ public class Tree<E> {
         Navigator<E> navigator = getNavigator();
         CODE_PATTERN_PARSER.setCodePattern(codePattern);
         ByteCodeUnits byteCodeUnits = CODE_PATTERN_PARSER.parse();
-        for (ByteCodeUnit unit : byteCodeUnits.toCollection()) {
+        for (ByteCodeUnit unit : byteCodeUnits.getUnits()) {
             if (!navigator.contains(unit)) {
                 navigator.add(unit, new Node<>());
             }

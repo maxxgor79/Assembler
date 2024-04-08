@@ -32,7 +32,7 @@ public class TestCodePatternParser {
         final CodePatternParser parser = new CodePatternParser();
         parser.setCodePattern(pattern1);
         ByteCodeUnits units = parser.parse();
-        Assertions.assertArrayEquals(units.toCollection().toArray(new ByteCodeUnit[units.size()])
+        Assertions.assertArrayEquals(units.getUnits().toArray(new ByteCodeUnit[units.count()])
                 , originList.toArray(new ByteCodeUnit[originList.size()]));
 
         final String pattern2 = "00$nnnn$e01";
@@ -42,7 +42,7 @@ public class TestCodePatternParser {
                 , new ByteCodeUnit(ByteCodeType.Code, "01"));
         parser.setCodePattern(pattern2);
         units = parser.parse();
-        Assertions.assertArrayEquals(units.toCollection().toArray(new ByteCodeUnit[units.size()])
+        Assertions.assertArrayEquals(units.getUnits().toArray(new ByteCodeUnit[units.count()])
                 , originList.toArray(new ByteCodeUnit[originList.size()]));
     }
 
@@ -56,7 +56,7 @@ public class TestCodePatternParser {
         final CodePatternParser parser = new CodePatternParser();
         parser.setCodePattern(pattern1);
         ByteCodeUnits units = parser.parse();
-        Assertions.assertArrayEquals(units.toCollection().toArray(new ByteCodeUnit[units.size()])
+        Assertions.assertArrayEquals(units.getUnits().toArray(new ByteCodeUnit[units.count()])
                 , originList.toArray(new ByteCodeUnit[originList.size()]));
 
         final String pattern2 = "ee$ee$nFf";
@@ -66,7 +66,7 @@ public class TestCodePatternParser {
                 , new ByteCodeUnit(ByteCodeType.Code, "Ff"));
         parser.setCodePattern(pattern2);
         units = parser.parse();
-        Assertions.assertArrayEquals(units.toCollection().toArray(new ByteCodeUnit[units.size()])
+        Assertions.assertArrayEquals(units.getUnits().toArray(new ByteCodeUnit[units.count()])
                 , originList.toArray(new ByteCodeUnit[originList.size()]));
     }
 }

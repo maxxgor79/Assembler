@@ -28,7 +28,7 @@ public class LexemParser {
     }
 
     public Lexemes parse() throws IOException {
-        List<Lexem> lexemList = new LinkedList<>();
+        List<Lexeme> lexemList = new LinkedList<>();
         int ch;
         while ((ch = pis.read()) != -1) {
             if (ch == '\n') {
@@ -55,18 +55,18 @@ public class LexemParser {
         return new Lexemes(lexemList);
     }
 
-    protected Lexem getVariableOrHexadecimal(int ch) throws IOException {
+    protected Lexeme getVariableOrHexadecimal(int ch) throws IOException {
         ch = pis.read();
         if (Character.isDigit(ch)) {
             pis.unread(ch);
-            return new Lexem(LexemType.Number, getNumber(LexemParser::isHexadecimal));
+            return new Lexeme(LexemType.Number, getNumber(LexemParser::isHexadecimal));
         } else {
-            final Lexem identifier = getIdentifier(ch);
-            return new Lexem(LexemType.Variable, identifier.getValue());
+            final Lexeme identifier = getIdentifier(ch);
+            return new Lexeme(LexemType.Variable, identifier.getValue());
         }
     }
 
-    protected Lexem getChar(int ch) throws IOException {
+    protected Lexeme getChar(int ch) throws IOException {
         final StringBuilder sb = new StringBuilder();
         boolean closedCharacter = false;
         while ((ch = pis.read()) != -1) {
@@ -86,10 +86,10 @@ public class LexemParser {
         if (text.length() > 1) {
             throw new ParserException(line, Messages.getMessage(Messages.CHARACTER_TOO_LONG));
         }
-        return new Lexem(LexemType.Symbol, text);
+        return new Lexeme(LexemType.Symbol, text);
     }
 
-    protected Lexem getString(int ch) throws IOException {
+    protected Lexeme getString(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         boolean closedString = false;
         while ((ch = pis.read()) != -1) {
@@ -106,10 +106,10 @@ public class LexemParser {
             throw new ParserException(line, Messages.getMessage(Messages.STRING_NOT_CLOSED));
         }
         String text = StringEscapeUtils.unescapeJava(sb.toString());
-        return new Lexem(LexemType.String, text);
+        return new Lexeme(LexemType.String, text);
     }
 
-    private Lexem getDelimiter(int ch) throws IOException {
+    private Lexeme getDelimiter(int ch) throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
         switch (ch) {
@@ -155,10 +155,10 @@ public class LexemParser {
                 }
                 break;
         }
-        return new Lexem(LexemType.Delimiter, sb.toString());
+        return new Lexeme(LexemType.Delimiter, sb.toString());
     }
 
-    protected Lexem getIdentifier(int ch) throws IOException {
+    protected Lexeme getIdentifier(int ch) throws IOException {
         final StringBuilder sb = new StringBuilder();
         sb.append((char) ch);
         while ((ch = pis.read()) != -1) {
@@ -177,13 +177,13 @@ public class LexemParser {
         if ("hH".indexOf(lastCh) != -1) {
             final String number = StringUtils.chop(text);
             if (isNumberValid(number, LexemParser::isHexadecimal)) {
-                return new Lexem(LexemType.Number, text);
+                return new Lexeme(LexemType.Number, text);
             }
         }
-        return new Lexem(LexemType.Identifier, text);
+        return new Lexeme(LexemType.Identifier, text);
     }
 
-    protected Lexem getNumber(int ch) throws IOException {
+    protected Lexeme getNumber(int ch) throws IOException {
         final StringBuilder sb = new StringBuilder();
         String number;
         if (ch == '0') {
@@ -214,7 +214,7 @@ public class LexemParser {
                     number = sb.toString();
                 }
             }
-            return new Lexem(LexemType.Number, number);
+            return new Lexeme(LexemType.Number, number);
         } else {
             sb.append((char) ch);
             while ((ch = pis.read()) != -1) {
@@ -250,7 +250,7 @@ public class LexemParser {
                 }
                 pis.unread(ch);
             }
-            return new Lexem(LexemType.Number, sb.toString());
+            return new Lexeme(LexemType.Number, sb.toString());
         }
     }
 
