@@ -202,8 +202,7 @@ public final class Controller implements Runnable {
         }
         if (settings.getEncoding() != null) {
             preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getCharsetPanel()
-                    .getCbEncoding()
-                    .setSelectedItem(settings.getEncoding().toUpperCase());
+                    .getCbEncoding().setSelectedItem(settings.getEncoding());
         }
 
         if (settings.getConsoleFontName() != null) {

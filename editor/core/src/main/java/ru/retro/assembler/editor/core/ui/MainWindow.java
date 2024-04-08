@@ -218,6 +218,7 @@ public class MainWindow extends JFrame {
         setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
         setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
         setExtendedState(settings.getState());
+        getStatusPanel().setEncoding(settings.getEncoding());
         splitPane.setDividerLocation(settings.getDividerLocation());
         applyFontAndColor(settings);
     }
