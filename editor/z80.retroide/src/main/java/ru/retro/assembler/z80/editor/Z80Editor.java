@@ -21,6 +21,7 @@ public final class Z80Editor extends Editor {
   }
 
   private static void setDefaultExt() {
+    log.info("Init extensions");
     UIUtils.putExt("asm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
     UIUtils.putExt("z80", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
     UIUtils.putExt("hasm", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_Z80);
@@ -28,6 +29,7 @@ public final class Z80Editor extends Editor {
   }
 
   private static void setDefaultFactories() {
+    log.info("Init factories");
     Controller.setAppSettingsFactory(() -> new Z80AppSettings() {
       @Override
       public String getPrefix() {
