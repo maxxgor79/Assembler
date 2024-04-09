@@ -46,22 +46,22 @@ public final class ErrorOutput {
         return String.format(FORMAT2, error, String.format(message, args));
     }
 
-    public static void println(final File file, final String message, final String... args) {
+    public static void println(final File file, final String message, final Object... args) {
         final String s = formattedError(file, message, args);
         System.err.println(s);
     }
 
-    public static void println(final String message, String... args) {
+    public static void println(final String message, Object... args) {
         final String s = formattedError(message, args);
         System.err.println(s);
     }
 
-    public static void print(File file, final String message, String... args) {
+    public static void print(File file, final String message, Object... args) {
         final String s = formattedError(file, message, args);
         System.err.print(s);
     }
 
-    public static void print(final String message, String... args) {
+    public static void print(final String message, Object... args) {
         final String s = formattedError(message, args);
         System.err.print(s);
     }

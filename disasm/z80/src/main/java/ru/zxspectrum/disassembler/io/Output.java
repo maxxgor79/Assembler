@@ -25,19 +25,19 @@ public class Output {    private static final String FORMAT2 = "%s : [%d] %s";
         return String.format(FORMAT3, warning, String.format(message, args));
     }
 
-    public static void println(String format, String ... args) {
+    public static void println(String format, Object ... args) {
         System.out.println(String.format(format, args));
     }
 
-    public static void print(String format, String ... args) {
+    public static void print(String format, Object ... args) {
         System.out.print(String.format(format, args));
     }
 
-    public static void printlnWarning(String message, String ... args) {
+    public static void printlnWarning(String message, Object ... args) {
         System.out.println(formattedWarning(message, args));
     }
 
-    public static void printWarning(String message, String ... args) {
+    public static void printWarning(String message, Object ... args) {
         System.out.print(formattedWarning(message, args));
     }
 

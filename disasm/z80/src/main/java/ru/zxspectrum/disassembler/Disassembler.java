@@ -133,8 +133,8 @@ public class Disassembler implements Environment {
         final ByteCodeInputStream is = new ByteCodeInputStream(file, settings.getByteOrder());
         if (!ObjectUtils.isInRange(settings.getMinAddress(), settings.getMaxAddress(), settings.getDefaultAddress()
                 , BigInteger.valueOf(is.size()))) {
-            Output.printlnWarning(Messages.getMessage(Messages.ADDRESS_OUT_OF_RANGE), settings.getDefaultAddress()
-                    .toString());
+            Output.printlnWarning(Messages.getMessage(Messages.ADDRESS_OUT_OF_RANGE)
+                , settings.getDefaultAddress());
         }
         final DecoderExecutor executor = new DecoderExecutor();
         final Decoder decoder = new Decoder(executor, TREE, settings.getDefaultAddress(), is);

@@ -13,7 +13,7 @@
         <minor.version>0</minor.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <slf4jVersion>2.0.12</slf4jVersion>
-        <log4j>2.22.1</log4j>
+        <log4j>2.23.1</log4j>
     </properties>
     <build>
         <plugins>
@@ -128,26 +128,22 @@
             <artifactId>log4j-api</artifactId>
             <version>${log4j}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
             <version>${log4j}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4jVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4jVersion}</version>
         </dependency>
 
