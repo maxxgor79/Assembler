@@ -8,6 +8,7 @@ import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
+import ru.retro.assembler.editor.core.types.LineEnding;
 import ru.retro.assembler.editor.core.ui.console.ConsolePanel;
 import ru.retro.assembler.editor.core.util.ResourceUtils;
 import ru.retro.assembler.editor.core.util.UIUtils;
@@ -15,6 +16,7 @@ import ru.retro.assembler.editor.core.util.UIUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Author: Maxim Gorin Date: 19.02.2024
@@ -218,7 +220,10 @@ public class MainWindow extends JFrame {
         setLocation(settings.getMainFramePosX(), settings.getMainFramePosY());
         setSize(settings.getMainFrameWidth(), settings.getMainFrameHeight());
         setExtendedState(settings.getState());
-        getStatusPanel().setEncoding(settings.getEncoding());
+        getStatusPanel().setEncoding(settings.getEncoding() == null ? StandardCharsets.UTF_8.name() :
+                settings.getEncoding());
+        getStatusPanel().setLineEnding(settings.getLineEnding() == null ? LineEnding.getDefault()
+                .name() : settings.getLineEnding());
         splitPane.setDividerLocation(settings.getDividerLocation());
         applyFontAndColor(settings);
     }

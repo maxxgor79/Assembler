@@ -16,14 +16,18 @@ public class MiscellaneousPanel extends JPanel {
     @Getter
     private LanguagePanel languagePanel;
 
+    @Getter
+    private LineEndingPanel lineEndingPanel;
+
 
     public MiscellaneousPanel() {
         initComponents();
     }
 
     private void initComponents() {
-        setLayout(new GridLayout(2, 1));
+        setLayout (new BoxLayout (this, BoxLayout.Y_AXIS));
         add(charsetPanel = new CharsetPanel());
         add(languagePanel = new LanguagePanel());
+        add(lineEndingPanel = new LineEndingPanel());
     }
 }

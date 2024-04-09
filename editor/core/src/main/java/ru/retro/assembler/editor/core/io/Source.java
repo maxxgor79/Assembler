@@ -6,11 +6,17 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.PureJavaCrc32;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.UnixLineEndingInputStream;
+import org.apache.commons.lang.StringUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import ru.retro.assembler.editor.core.types.LineEnding;
+import ru.retro.assembler.editor.core.util.FileUtils;
+import ru.retro.assembler.editor.core.util.TextUtils;
 import ru.retro.assembler.editor.core.util.UIUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Author: Maxim Gorin Date: 21.02.2024
@@ -68,46 +74,48 @@ public class Source {
     }
 
     public void load() throws IOException {
-        load(file, null);
+        load(file, StandardCharsets.UTF_8.name());
     }
 
     public void load(@NonNull final File file, String encoding) throws IOException {
         if (!file.exists()) {
             throw new FileNotFoundException(file.getAbsolutePath());
         }
-        try (FileInputStream fis = new FileInputStream(file)) {
-            load(file, fis, encoding);
+        if (encoding == null) {
+            encoding = StandardCharsets.UTF_8.name();
+        }
+        try (Reader reader = new InputStreamReader(new FileInputStream(file), encoding)) {
+            load(file, reader);
         }
     }
 
-    public void load(@NonNull File file, @NonNull final InputStream is, String encoding) throws IOException {
-        final byte[] data = IOUtils.toByteArray(is);
-        final String text = new String(data, encoding == null ? StandardCharsets.UTF_8.name() : encoding);
+    public void load(@NonNull File file, @NonNull final Reader reader) throws IOException {
+        final List<String> lines = IOUtils.readLines(reader);
+        final StringBuilder sb = new StringBuilder();
+        for (String s : lines) {
+            sb.append(s).append(LineEnding.LF.getValue());
+        }
+        final String text = sb.toString();
         setContent(text);
+        final byte[] data = text.getBytes();
         this.file = file;
         crc32Calculator.reset();
         crc32Calculator.update(data, 0, data.length);
         this.crc32 = crc32Calculator.getValue();
     }
 
-    public void save() throws IOException {
-        save(file);
+    public void save(@NonNull String encoding, @NonNull LineEnding lineEnding) throws IOException {
+        save(file, encoding, lineEnding);
     }
 
-    public void save(@NonNull String encoding) throws IOException {
-        save(file, encoding);
-    }
-
-    public void save(@NonNull final File file) throws IOException {
-        save(file, null);
-    }
-
-    public void save(@NonNull final File file, String encoding) throws IOException {
+    public void save(@NonNull final File file, @NonNull String encoding, @NonNull LineEnding lineEnding)
+            throws IOException {
         if (textArea == null) {
             return;
         }
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            final byte[] data = encoding == null ? getContent().getBytes() : getContent().getBytes(encoding);
+        try (final FileOutputStream fos = new FileOutputStream(file)) {
+            final String text = TextUtils.replaceUnixLineEnding(getContent(), lineEnding);
+            final byte[] data = text.getBytes(encoding);
             fos.write(data);
             this.file = file;
             crc32Calculator.reset();

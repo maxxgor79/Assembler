@@ -25,6 +25,8 @@ public class StatusPanel extends JPanel {
 
   private JLabel encodingLabel;
 
+  private JLabel lineEndingLabel;
+
 
   public StatusPanel() {
     initComponents();
@@ -34,6 +36,8 @@ public class StatusPanel extends JPanel {
     final Border border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
     setBorder(border);
     setLayout(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+    lineEndingLabel = createEndingLabel();
+    add(lineEndingLabel);
     encodingLabel = createEncodingLabel();
     add(encodingLabel);
     posLabel = createPosLabel();
@@ -53,6 +57,11 @@ public class StatusPanel extends JPanel {
     return label;
   }
 
+  private JLabel createEndingLabel() {
+    final JLabel label = new JLabel("");
+    return label;
+  }
+
   public void setEncoding(String s) {
     encodingLabel.setText(s);
     encodingLabel.setToolTipText(String.format(Messages.getInstance().get(Messages.FILE_ENCODING), s));
@@ -61,5 +70,10 @@ public class StatusPanel extends JPanel {
   public void setPosition(int row, int col) {
     posLabel.setText(String.format(POSITION_PATTERN, row, col));
     posLabel.setToolTipText(Messages.getInstance().get(Messages.CURSOR_POSITION));
+  }
+
+  public void setLineEnding(String s) {
+    lineEndingLabel.setText(s);
+    lineEndingLabel.setToolTipText(Messages.getInstance().get(Messages.LINE_SEPARATOR));
   }
 }

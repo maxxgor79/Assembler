@@ -218,6 +218,8 @@ public final class Messages {
 
     public static final String ENTER_ADDRESS = "enter_address";
 
+    public static final String LINE_SEPARATOR = "line_separator";
+
     public static Locale getLocale() {
         return Locale.getDefault();
     }

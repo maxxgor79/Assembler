@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import ru.retro.assembler.editor.core.access.Setting;
+import ru.retro.assembler.editor.core.types.LineEnding;
 
 /**
  * @Author: Maxim Gorin
@@ -132,6 +133,11 @@ public class AppSettings extends Settings {
     @Setter
     @Setting
     protected boolean compiledEmbedded;
+
+    @Getter
+    @Setter
+    @Setting
+    protected String lineEnding = LineEnding.evaluateOf(System.lineSeparator()).name();
 
     @Override
     public String getPrefix() {

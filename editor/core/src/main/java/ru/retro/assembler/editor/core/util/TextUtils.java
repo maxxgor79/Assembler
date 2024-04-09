@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
+import ru.retro.assembler.editor.core.types.LineEnding;
 
 /**
  * @Author: Maxim Gorin
@@ -26,6 +28,10 @@ public final class TextUtils {
             result.numReplaces = text.hashCode() != result.text.hashCode() ? 1 : 0;
         }
         return result;
+    }
+
+    public static String replaceUnixLineEnding(@NonNull String text, @NonNull LineEnding lineEnding) {
+        return StringUtils.replace(text, LineEnding.LF.getValue(), lineEnding.getValue());
     }
 
     @AllArgsConstructor

@@ -14,6 +14,7 @@ import ru.retro.assembler.editor.core.imprt.FileImporters;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.settings.DefaultAppSettings;
+import ru.retro.assembler.editor.core.types.LineEnding;
 import ru.retro.assembler.editor.core.ui.Activator;
 import ru.retro.assembler.editor.core.ui.DefaultUIComponents;
 import ru.retro.assembler.editor.core.ui.MainWindow;
@@ -39,6 +40,7 @@ import java.awt.print.PrinterJob;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -55,6 +57,7 @@ public final class Controller implements Runnable {
     protected static final int TIMER_DELAY = 500;
 
     protected static final String EXTENSION = "asm";
+
     protected static final String NEW_SOURCE_NAME = "noname" + "." + EXTENSION;
 
     @Getter
@@ -200,11 +203,11 @@ public final class Controller implements Runnable {
             preferencesDialog.getPreferencesTabbedPane().getCompilerPanel().getOutputPathField()
                     .setText(settings.getOutputDirectory());
         }
-        if (settings.getEncoding() != null) {
-            preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getCharsetPanel()
-                    .getCbEncoding().setSelectedItem(settings.getEncoding());
-        }
-
+        preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getCharsetPanel()
+                .getCbEncoding().setSelectedItem(settings.getEncoding() == null ? StandardCharsets.UTF_8.name() :
+                        settings.getEncoding());
+        preferencesDialog.getPreferencesTabbedPane().getMiscellaneousPanel().getLineEndingPanel()
+                .getCbLineEnding().setSelectedItem(LineEnding.valueOfOrDefault(settings.getLineEnding()));
         if (settings.getConsoleFontName() != null) {
             preferencesDialog.getPreferencesTabbedPane().getAppearancePanel().getConsoleAppearancePanel()
                     .getFontPanel().setSelectedFontName(settings.getConsoleFontName());
@@ -383,7 +386,7 @@ public final class Controller implements Runnable {
     private void openSource(@NonNull final File file, @NonNull final InputStream is) {
         try {
             final Source src = createSource(file);
-            src.load(file, is, settings.getEncoding());
+            src.load(file, new InputStreamReader(is, settings.getEncoding()));
             int tabIndex = mainWindow.getSourceTabbedPane().indexOf(src);
             if (tabIndex == -1) {
                 mainWindow.getSourceTabbedPane().add(src);
@@ -431,16 +434,13 @@ public final class Controller implements Runnable {
     }
 
     private void saveSource(@NonNull Source src) {
-        if (!src.isNew() && !src.hasChanges()) {
-            return;
-        }
         if (src.isNew()) {
             saveSourceAs(src);
             return;
         }
         final File file = src.getFile();
         try {
-            src.save(file, settings.getEncoding());
+            src.save(file, settings.getEncoding(), LineEnding.valueOfOrDefault(settings.getLineEnding()));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             SwingUtilities.invokeLater(
@@ -461,7 +461,7 @@ public final class Controller implements Runnable {
                 return;
             }
         }
-        src.save(file, settings.getEncoding());
+        src.save(file, settings.getEncoding(), LineEnding.valueOfOrDefault(settings.getLineEnding()));
     }
 
     private void saveSourceAs(@NonNull Source src) {
@@ -515,7 +515,7 @@ public final class Controller implements Runnable {
                             , JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
                             , ResourceUtils.getQuestionIcon());
                     if (option == JOptionPane.YES_OPTION) {
-                        src.save(settings.getEncoding());
+                        src.save(settings.getEncoding(), LineEnding.valueOfOrDefault(settings.getLineEnding()));
                         continue;
                     }
                 }
@@ -596,7 +596,8 @@ public final class Controller implements Runnable {
                     ResourceUtils.getQuestionIcon());
             if (option == JOptionPane.YES_OPTION) {
                 try {
-                    src.save(settings.getEncoding());
+                    src.save(settings.getEncoding(), settings.getLineEnding() == null ? LineEnding.getDefault()
+                            : LineEnding.valueOf(settings.getLineEnding()));
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     SwingUtilities.invokeLater(
@@ -808,10 +809,13 @@ public final class Controller implements Runnable {
         preferencesDialog.setLocationRelativeTo(mainWindow);
         if (preferencesDialog.showModal() == PreferencesDialog.OK) {
             final String encoding = (String) preferencesDialog.getPreferencesTabbedPane()
-                    .getMiscellaneousPanel()
-                    .getCharsetPanel().getCbEncoding().getSelectedItem();
+                    .getMiscellaneousPanel().getCharsetPanel().getCbEncoding().getSelectedItem();
             mainWindow.getStatusPanel().setEncoding(encoding);
             settings.setEncoding(encoding);
+            final String lineEnding = ((LineEnding) preferencesDialog.getPreferencesTabbedPane()
+                    .getMiscellaneousPanel().getLineEndingPanel().getCbLineEnding().getSelectedItem()).name();
+            mainWindow.getStatusPanel().setLineEnding(lineEnding);
+            settings.setLineEnding(lineEnding);
             final String compilerPath = preferencesDialog.getPreferencesTabbedPane().getCompilerPanel()
                     .getCompilerPathField().getText();
             settings.setCompilerPath(compilerPath);
