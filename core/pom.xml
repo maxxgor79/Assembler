@@ -11,7 +11,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <slf4jVersion>2.0.12</slf4jVersion>
-        <log4j>2.22.1</log4j>
+        <log4j>2.23.1</log4j>
     </properties>
     <build>
         <plugins>

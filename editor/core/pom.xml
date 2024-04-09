@@ -5,9 +5,9 @@
   <groupId>ru.retro.assembler</groupId>
   <artifactId>editor</artifactId>
   <properties>
-    <java.version>14</java.version>
-    <maven.compiler.source>14</maven.compiler.source>
-    <maven.compiler.target>14</maven.compiler.target>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <major.version>1</major.version>
     <minor.version>0</minor.version>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
