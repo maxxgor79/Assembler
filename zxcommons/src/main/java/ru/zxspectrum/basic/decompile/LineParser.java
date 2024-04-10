@@ -112,6 +112,6 @@ public class LineParser extends Parser {
     }
 
     protected static boolean isDelimiter(int ch) {
-        return "+-*/():\u00c7\u00c8\u00c9".indexOf(ch) != -1;
+        return "+-*/():,;=<>\u00c7\u00c8\u00c9".indexOf(ch) != -1;
     }
 }

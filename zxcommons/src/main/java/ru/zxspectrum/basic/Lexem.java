@@ -58,6 +58,6 @@ public class Lexem {
 
     @Override
     public String toString() {
-        return value + ((intValue != null) ? "[" + intValue + "]" : "");
+        return value;
     }
 }
