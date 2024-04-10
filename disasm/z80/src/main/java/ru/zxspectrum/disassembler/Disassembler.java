@@ -240,7 +240,6 @@ public class Disassembler implements Environment {
     }
 
     protected static DisassemblerSettings loadSettings() {
-        log.info("Load settings");
         final DisassemblerSettings settings = new DisassemblerSettings();
         settings.merge(new DefaultSettings());
         try {
@@ -284,7 +283,6 @@ public class Disassembler implements Environment {
     }
 
     protected static void loadCommands(@NonNull final DisassemblerSettings settings) throws IOException {
-        log.info("Load commands");
         final DisassemblerLoader loader = new DisassemblerLoader();
         final Set<CommandRecord> commands = new HashSet<>();
         for (String path : settings.getTemplates()) {
