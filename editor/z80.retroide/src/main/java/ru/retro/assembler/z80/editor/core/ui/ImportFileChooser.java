@@ -28,8 +28,11 @@ public class ImportFileChooser extends LocalizedOpenChooser {
     private void initComponent() {
         setDialogTitle(Z80Messages.getInstance().get(Z80Messages.IMPORT_FILE));
         setMultiSelectionEnabled(true);
-        final FileNameExtensionFilter extension = new FileNameExtensionFilter(Z80Messages.getInstance().get(Z80Messages
+        final FileNameExtensionFilter binExt = new FileNameExtensionFilter(Z80Messages.getInstance().get(Z80Messages
                 .BINARY_FILES), "bin");
-        addChoosableFileFilter(extension);
+        addChoosableFileFilter(binExt);
+        final FileNameExtensionFilter tapExt = new FileNameExtensionFilter(Z80Messages.getInstance().get(Z80Messages
+                .TAP_FILES), "tap");
+        addChoosableFileFilter(binExt);
     }
 }

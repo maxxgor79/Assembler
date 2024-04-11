@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Author: Maxim Gorin
@@ -24,14 +26,14 @@ public final class FileImporters {
             }
 
             @Override
-            public String importFile(@NonNull File file) throws IOException {
+            public Collection<SourceDescriptor> importFile(@NonNull File file) throws IOException {
                 return importFile(file, StandardCharsets.UTF_8.name());
             }
 
             @Override
-            public String importFile(@NonNull File file, @NonNull String encoding) throws IOException
+            public Collection<SourceDescriptor> importFile(@NonNull File file, @NonNull String encoding) throws IOException
                     , CharacterCodingException {
-                return null;
+                return Collections.emptyList();
             }
         };
     }

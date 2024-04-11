@@ -84,6 +84,8 @@ public final class Z80Messages {
 
     public static final String ALL_FILES = "all_files";
 
+    public static final String TAP_FILES = "tap_files";
+
     private Z80Messages() {
         bundle = ResourceBundle.getBundle("i18n.Z80EditorMessages");
     }

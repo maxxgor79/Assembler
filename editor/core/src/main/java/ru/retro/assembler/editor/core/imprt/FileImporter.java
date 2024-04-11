@@ -2,8 +2,8 @@ package ru.retro.assembler.editor.core.imprt;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.CharacterCodingException;
+import java.util.Collection;
 
 /**
  * Author: Maxim Gorin
@@ -12,7 +12,7 @@ import java.nio.charset.CharacterCodingException;
 public interface FileImporter {
     boolean isAcceptable(File file);
 
-    String importFile(File file) throws IOException;
+    Collection<SourceDescriptor> importFile(File file) throws IOException;
 
-    String importFile(File file, String encoding) throws IOException, CharacterCodingException;
+    Collection<SourceDescriptor> importFile(File file, String encoding) throws IOException, CharacterCodingException;
 }

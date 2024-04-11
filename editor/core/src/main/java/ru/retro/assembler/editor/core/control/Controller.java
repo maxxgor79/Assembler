@@ -4,13 +4,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import ru.retro.assembler.editor.core.env.Environment;
 import ru.retro.assembler.editor.core.i18n.Messages;
 import ru.retro.assembler.editor.core.imprt.FileImporter;
 import ru.retro.assembler.editor.core.imprt.FileImporterFactory;
 import ru.retro.assembler.editor.core.imprt.FileImporters;
+import ru.retro.assembler.editor.core.imprt.SourceDescriptor;
 import ru.retro.assembler.editor.core.io.Source;
 import ru.retro.assembler.editor.core.settings.AppSettings;
 import ru.retro.assembler.editor.core.settings.DefaultAppSettings;
@@ -548,10 +548,12 @@ public final class Controller implements Runnable {
             }
             if (importer.isAcceptable(importFileChooser.getSelectedFile())) {
                 try {
-                    final String text = importer.importFile(importFileChooser.getSelectedFile(), settings.getEncoding());
-                    final String fileName = FileUtils.addExt(FilenameUtils.removeExtension(importFileChooser.getSelectedFile()
-                            .getAbsolutePath()), EXTENSION);
-                    openSource(new File(fileName), new ByteArrayInputStream(text.getBytes(settings.getEncoding())));
+                    final Collection<SourceDescriptor> decompiled = importer.importFile(importFileChooser
+                            .getSelectedFile(), settings.getEncoding());
+                    for (SourceDescriptor d : decompiled) {
+                        openSource(new File(d.getFileName()), new ByteArrayInputStream(d.getText().getBytes(settings
+                                .getEncoding())));
+                    }
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
                     SwingUtilities.invokeLater(
