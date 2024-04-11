@@ -50,7 +50,7 @@ public class HeaderBlock extends Block {
     @NonNull
     private ProgramParams programParams;
 
-    @Setter
+    @Getter
     @NonNull
     private BytesParams bytesParams;
 

@@ -19,9 +19,10 @@ import java.io.OutputStream;
 @EqualsAndHashCode(callSuper = true)
 @Slf4j
 @Getter
-public class HeaderlessBlock extends Block implements TapElementReader, TapElementWriter {
+public class HeaderlessBlock extends Block implements TapElementReader, TapElementWriter, Container {
   private byte[] content;
 
+  @NonNull
   public void setContent(@NonNull byte[] content) {
     this.content = content;
     checkSum = calcCheckSum();

@@ -19,7 +19,7 @@ import java.io.OutputStream;
 @EqualsAndHashCode
 @Slf4j
 @Getter
-public class DataBlock extends Block {
+public class DataBlock extends Block implements Container {
   public static final int TYPE = 0xFF;
 
   @NonNull
@@ -30,6 +30,7 @@ public class DataBlock extends Block {
     setFlag(Flag.Data);
   }
 
+  @Override
   public void setContent(@NonNull byte[] content) {
     if (this.content == content) {
       return;
