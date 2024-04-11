@@ -29,6 +29,9 @@ public class BytesParams implements TapElementReader, TapElementWriter {
   public void read(@NonNull InputStream is) throws IOException {
     final LEDataInputStream dis = new LEDataInputStream(is);
     startAddress = dis.readUnsignedShort();
+    if (startAddress < 16384 || startAddress > 65535) {
+      throw new ArrayIndexOutOfBoundsException(startAddress);
+    }
     reserved = dis.readUnsignedShort();
   }
 
