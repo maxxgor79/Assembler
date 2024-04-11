@@ -33,6 +33,6 @@ public class ImportFileChooser extends LocalizedOpenChooser {
         addChoosableFileFilter(binExt);
         final FileNameExtensionFilter tapExt = new FileNameExtensionFilter(Z80Messages.getInstance().get(Z80Messages
                 .TAP_FILES), "tap");
-        addChoosableFileFilter(binExt);
+        addChoosableFileFilter(tapExt);
     }
 }

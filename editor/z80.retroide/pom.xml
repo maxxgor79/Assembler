@@ -110,6 +110,11 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>ru.zxspectrum</groupId>
+            <artifactId>zxcommons</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>ru.retro.ui</groupId>
             <artifactId>rsyntaxtextarea</artifactId>
             <version>1.0</version>
