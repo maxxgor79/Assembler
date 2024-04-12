@@ -108,7 +108,7 @@ public class Z80FileImporter implements FileImporter {
             sd.setText(sb.toString());
             sd.setFileName(FileUtils.addExt(FilenameUtils.removeExtension(file.getAbsolutePath()), ASM_EXTENSION));
             return sd;
-        } catch (Throwable e) {
+        } catch (CallException e) {
             log.error(e.getMessage(), e);
             throw new IOException(e);
         } finally {

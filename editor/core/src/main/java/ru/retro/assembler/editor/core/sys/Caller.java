@@ -27,8 +27,7 @@ public class Caller {
       final Class clazz = Class.forName(classPath);
       final Method method = clazz.getMethod(METHOD_NAME, Collection.class);
       method.invoke(null, args);
-    } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
-             | ClassNotFoundException e) {
+    } catch (Throwable e) {
       log.error(e.getMessage(), e);
       throw new CallException(e);
     }
