@@ -106,7 +106,7 @@ public class Z80FileImporter implements FileImporter {
             sb.append(new String(out.toByteArray(), encoding)).append(new String(err.toByteArray(), encoding));
             final SourceDescriptor sd = new SourceDescriptor();
             sd.setText(sb.toString());
-            sd.setFileName(FileUtils.addExt(FilenameUtils.removeExtension(file.getAbsolutePath()), ""));
+            sd.setFileName(FileUtils.addExt(FilenameUtils.removeExtension(file.getAbsolutePath()), ASM_EXTENSION));
             return sd;
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
@@ -146,7 +146,7 @@ public class Z80FileImporter implements FileImporter {
                     address = BigInteger.valueOf(MAX_ADDRESS - data.length);
                 }
                 final File tmpFile = FileUtils.createTempFile(FilenameUtils.removeExtension(file
-                        .getAbsolutePath()) + i++ + "." + ASM_EXTENSION);
+                        .getAbsolutePath()) + i++);
                 try (OutputStream is = new FileOutputStream(tmpFile)) {
                     is.write(data);
                     is.flush();
