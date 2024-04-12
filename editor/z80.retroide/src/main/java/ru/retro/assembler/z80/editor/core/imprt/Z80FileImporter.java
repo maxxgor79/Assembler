@@ -34,6 +34,10 @@ public class Z80FileImporter implements FileImporter {
 
     protected static final String ASM_EXTENSION = "asm";
 
+    protected static final String DISASM_CLASS = "ru.zxspectrum.disassembler.Disassembler";
+
+    protected static final int MAX_ADDRESS = 65535;
+
     private static BigInteger address = BigInteger.valueOf(32768);
 
     private AddressDialog dialog;
@@ -97,14 +101,14 @@ public class Z80FileImporter implements FileImporter {
             System.setOut(new PrintStream(out));
             final ByteArrayOutputStream err = new ByteArrayOutputStream();
             System.setErr(new PrintStream(err));
-            Caller.call("ru.zxspectrum.disassembler.Disassembler", getArguments(file, address, encoding));
+            Caller.call(DISASM_CLASS, getArguments(file, address, encoding));
             final StringBuilder sb = new StringBuilder();
             sb.append(new String(out.toByteArray(), encoding)).append(new String(err.toByteArray(), encoding));
             final SourceDescriptor sd = new SourceDescriptor();
             sd.setText(sb.toString());
             sd.setFileName(FileUtils.addExt(FilenameUtils.removeExtension(file.getAbsolutePath()), ""));
             return sd;
-        } catch (CallException e) {
+        } catch (Throwable e) {
             log.error(e.getMessage(), e);
             throw new IOException(e);
         } finally {
@@ -139,7 +143,7 @@ public class Z80FileImporter implements FileImporter {
                 final byte[] data = c.getBytes();
                 BigInteger address = c.getStartAddress();
                 if (address == null) {
-                    address = BigInteger.valueOf(65535 - data.length);
+                    address = BigInteger.valueOf(MAX_ADDRESS - data.length);
                 }
                 final File tmpFile = FileUtils.createTempFile(FilenameUtils.removeExtension(file
                         .getAbsolutePath()) + i++ + "." + ASM_EXTENSION);
