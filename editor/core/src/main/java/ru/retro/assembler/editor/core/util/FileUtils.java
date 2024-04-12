@@ -2,6 +2,7 @@ package ru.retro.assembler.editor.core.util;
 
 import lombok.NonNull;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,5 +34,11 @@ public final class FileUtils {
             return file;
         }
         return new File(filePath + "." + ext);
+    }
+
+    public static File createTempFile(@NonNull final String fileName) {
+        final File tmpFile = new File(SystemUtils.JAVA_IO_TMPDIR, fileName);
+        tmpFile.deleteOnExit();
+        return tmpFile;
     }
 }

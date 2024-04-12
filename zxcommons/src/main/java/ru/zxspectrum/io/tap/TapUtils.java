@@ -179,7 +179,7 @@ public final class TapUtils {
                                 final byte[] content = ((Container) body).getContent();
                                 final int startAddress = ((HeaderBlock) block).getBytesParams().getStartAddress();
                                 ContentType contentType = ContentType.Data;
-                                if (startAddress == 16384 || content.length == 8192) {
+                                if (startAddress == 16384 && content.length == 6192) {
                                     contentType = ContentType.Screen;
                                 }
                                 contentList.add(new Content(contentType, BigInteger.valueOf(startAddress), content));

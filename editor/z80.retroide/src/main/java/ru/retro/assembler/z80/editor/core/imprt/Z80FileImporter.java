@@ -133,6 +133,7 @@ public class Z80FileImporter implements FileImporter {
         dialog.setLocationRelativeTo(null);
         final Collection<Content> content = TapUtils.getContent(file);
         final List<SourceDescriptor> result = new LinkedList<>();
+        int i = 1;
         for (Content c : content) {
             if (c.getContentType() == ContentType.Data) {
                 final byte[] data = c.getBytes();
@@ -140,7 +141,8 @@ public class Z80FileImporter implements FileImporter {
                 if (address == null) {
                     address = BigInteger.valueOf(65535 - data.length);
                 }
-                final File tmpFile = File.createTempFile(FilenameUtils.removeExtension(file.getAbsolutePath()), ASM_EXTENSION);
+                final File tmpFile = FileUtils.createTempFile(FilenameUtils.removeExtension(file
+                        .getAbsolutePath()) + i++ + "." + ASM_EXTENSION);
                 try (OutputStream is = new FileOutputStream(tmpFile)) {
                     is.write(data);
                     is.flush();

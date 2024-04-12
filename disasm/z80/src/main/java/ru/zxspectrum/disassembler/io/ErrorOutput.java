@@ -4,6 +4,7 @@ import lombok.NonNull;
 import ru.zxspectrum.disassembler.i18n.Messages;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * ErrorOutput.
@@ -19,20 +20,23 @@ public final class ErrorOutput {
 
     private static final String FORMAT4 = "[%s] [%d]: %s";
 
-    public static String formattedError(@NonNull final String sourceName, int line, @NonNull final String message
+    public static String formattedError(@NonNull final String sourceName, final int line, String message
             , final Object... args) {
+        message = Objects.requireNonNullElse(message, "null");
         final String error = Messages.getMessage(Messages.ERROR);
         return String.format(FORMAT3, error, sourceName, line, String.format(message, args));
     }
 
-    public static String formattedError(int line, @NonNull final String message
+    public static String formattedError(final int line, String message
             , final Object... args) {
+        message = Objects.requireNonNullElse(message, "null");
         final String error = Messages.getMessage(Messages.ERROR);
         return String.format(FORMAT4, error, line, String.format(message, args));
     }
 
-    public static String formattedError(@NonNull final String sourceName, @NonNull final String message
+    public static String formattedError(@NonNull final String sourceName, String message
             , final Object... args) {
+        message = Objects.requireNonNullElse(message, "null");
         final String error = Messages.getMessage(Messages.ERROR);
         return String.format(FORMAT1, error, sourceName, String.format(message, args));
     }
@@ -41,7 +45,8 @@ public final class ErrorOutput {
         return formattedError(file.getName(), message, args);
     }
 
-    public static String formattedError(@NonNull final String message, final Object... args) {
+    public static String formattedError(String message, final Object... args) {
+        message = Objects.requireNonNullElse(message, "null");
         final String error = Messages.getMessage(Messages.ERROR);
         return String.format(FORMAT2, error, String.format(message, args));
     }
