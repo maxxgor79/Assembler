@@ -145,8 +145,7 @@ public class Z80FileImporter implements FileImporter {
                 if (address == null) {
                     address = BigInteger.valueOf(MAX_ADDRESS - data.length);
                 }
-                final File tmpFile = FileUtils.createTempFile(FilenameUtils.removeExtension(file
-                        .getAbsolutePath()) + i++);
+                final File tmpFile = FileUtils.createTempFile(FilenameUtils.removeExtension(file.getName()) + i++);
                 try (OutputStream is = new FileOutputStream(tmpFile)) {
                     is.write(data);
                     is.flush();
