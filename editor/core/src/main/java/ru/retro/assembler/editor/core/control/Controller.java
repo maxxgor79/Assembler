@@ -357,7 +357,7 @@ public final class Controller implements Runnable {
     }
 
     protected static Source createSource(@NonNull File file) {
-        Source src = new Source(file);
+        final Source src = new Source(file);
         if (Environment.getInstance().getEditorFont() != null) {
             src.getTextArea().setFont(Environment.getInstance().getEditorFont());
         }
@@ -366,7 +366,7 @@ public final class Controller implements Runnable {
     }
 
     private void newSource() {
-        Source newSrc = createSource(new File(NEW_SOURCE_NAME));
+        final Source newSrc = createSource(new File(NEW_SOURCE_NAME));
         mainWindow.getSourceTabbedPane().add(newSrc);
     }
 
@@ -375,11 +375,9 @@ public final class Controller implements Runnable {
             openSource(file, fis);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance()
-                                    .get(Messages.IO_ERROR), file.getAbsolutePath()),
-                            Messages.getInstance().get(Messages.ERROR)
-                            , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance().get(Messages.IO_ERROR)
+                            , file.getAbsolutePath()), Messages.getInstance().get(Messages.ERROR),
+                    JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
         }
     }
 
@@ -397,28 +395,30 @@ public final class Controller implements Runnable {
             }
         } catch (UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
-            SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(mainWindow, Messages.getInstance()
-                                    .get(Messages.ENCODING_ERROR), Messages.getInstance().get(Messages.ERROR)
-                            , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+            JOptionPane.showMessageDialog(mainWindow, Messages.getInstance().get(Messages.ENCODING_ERROR)
+                    , Messages.getInstance().get(Messages.ERROR) , JOptionPane.ERROR_MESSAGE
+                    , ResourceUtils.getErrorIcon());
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance()
-                                    .get(Messages.IO_ERROR), file.getAbsolutePath()),
-                            Messages.getInstance().get(Messages.ERROR)
-                            , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance().get(Messages.IO_ERROR)
+                            , file.getAbsolutePath()), Messages.getInstance().get(Messages.ERROR), JOptionPane
+                    .ERROR_MESSAGE, ResourceUtils.getErrorIcon());
         }
     }
 
-    private void openSource() {
+    private void openSources() {
         final JFileChooser openFileChooser = getOpenFileChooser();
         if (openFileChooser == null) {
             log.info("openFileChooser is null");
+            return;
         }
         if (openFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setOpenDialogCurrentDirectory(
                     openFileChooser.getCurrentDirectory().getAbsolutePath());
+            if (openFileChooser.getSelectedFiles().length == 0) {
+                log.info("No selected files");
+                return;
+            }
             for (File file : openFileChooser.getSelectedFiles()) {
                 openSource(file);
             }
@@ -428,6 +428,7 @@ public final class Controller implements Runnable {
     private void saveSource() {
         final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
         if (selectedSource == null) {
+            log.info("No selected source");
             return;
         }
         saveSource(selectedSource);
@@ -443,11 +444,9 @@ public final class Controller implements Runnable {
             src.save(file, settings.getEncoding(), LineEnding.valueOfOrDefault(settings.getLineEnding()));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            SwingUtilities.invokeLater(
-                    () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance()
-                                    .get(Messages.IO_ERROR), file.getAbsolutePath()),
-                            Messages.getInstance().get(Messages.ERROR)
-                            , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+            JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance()
+                            .get(Messages.IO_ERROR), file.getAbsolutePath()), Messages.getInstance().get(Messages.ERROR)
+                    , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
         }
     }
 
@@ -482,11 +481,9 @@ public final class Controller implements Runnable {
                 setCaption(src.getFile().getName());
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-                SwingUtilities.invokeLater(
-                        () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages
-                                        .getInstance().get(Messages.IO_ERROR), file.getAbsolutePath()),
-                                Messages.getInstance()
-                                        .get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+                JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance().get(Messages.IO_ERROR)
+                        , file.getAbsolutePath()), Messages.getInstance()
+                        .get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
             }
         }
     }
@@ -522,11 +519,9 @@ public final class Controller implements Runnable {
                 src.load();
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-                SwingUtilities.invokeLater(
-                        () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages
-                                        .getInstance().get(Messages.IO_ERROR), src.getFile().getAbsolutePath())
-                                , Messages.getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE,
-                                ResourceUtils.getErrorIcon()));
+                JOptionPane.showMessageDialog(mainWindow, String.format(Messages.getInstance().get(Messages.IO_ERROR)
+                                , src.getFile().getAbsolutePath()), Messages.getInstance().get(Messages.ERROR)
+                        , JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
             }
         }
     }
@@ -535,15 +530,16 @@ public final class Controller implements Runnable {
         final JFileChooser importFileChooser = getImportFileChooser();
         if (importFileChooser == null) {
             log.info("importFileChooser is null");
+            return;
         }
         if (importFileChooser.showOpenDialog(mainWindow) == JFileChooser.APPROVE_OPTION) {
             settings.setImportDialogCurrentDirectory(importFileChooser.getCurrentDirectory().getAbsolutePath());
             final FileImporter importer = fileImporterFactory.newFileImporter(
                     importFileChooser.getSelectedFile());
             if (importer == null) {
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow,
+                JOptionPane.showMessageDialog(mainWindow,
                         "Bad import initialization: null", Messages.getInstance().get(Messages.ERROR
-                        ), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+                        ), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
                 return;
             }
             if (importer.isAcceptable(importFileChooser.getSelectedFile())) {
@@ -556,15 +552,14 @@ public final class Controller implements Runnable {
                     }
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
-                    SwingUtilities.invokeLater(
-                            () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages
-                                    .getInstance().get(Messages.IMPORT_ERROR), e.getMessage()), Messages.getInstance()
-                                    .get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+                    JOptionPane.showMessageDialog(mainWindow, String.format(Messages
+                            .getInstance().get(Messages.IMPORT_ERROR), e.getMessage()), Messages.getInstance()
+                            .get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
                 }
             } else {
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow, Messages
+                JOptionPane.showMessageDialog(mainWindow, Messages
                         .getInstance().get(Messages.UNSUPPORTED_FORMAT), Messages.getInstance()
-                        .get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon()));
+                        .get(Messages.ERROR), JOptionPane.ERROR_MESSAGE, ResourceUtils.getErrorIcon());
             }
         }
     }
@@ -572,6 +567,7 @@ public final class Controller implements Runnable {
     private void closeSource() {
         final Source selectedSource = mainWindow.getSourceTabbedPane().getSourceSelected();
         if (selectedSource == null) {
+            log.info("No selected source");
             return;
         }
         closeSource(selectedSource);
@@ -602,11 +598,10 @@ public final class Controller implements Runnable {
                             : LineEnding.valueOf(settings.getLineEnding()));
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
-                    SwingUtilities.invokeLater(
-                            () -> JOptionPane.showMessageDialog(mainWindow, String.format(Messages
-                                            .getInstance().get(Messages.IO_ERROR), src.getFile().getAbsolutePath()), Messages
-                                            .getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE,
-                                    ResourceUtils.getErrorIcon()));
+                    JOptionPane.showMessageDialog(mainWindow, String.format(Messages
+                                    .getInstance().get(Messages.IO_ERROR), src.getFile().getAbsolutePath()), Messages
+                                    .getInstance().get(Messages.ERROR), JOptionPane.ERROR_MESSAGE,
+                            ResourceUtils.getErrorIcon());
                 }
             }
         }
@@ -728,11 +723,10 @@ public final class Controller implements Runnable {
             } else {
                 Environment.getInstance().setNextOccurrenceIndex(-1);
                 Environment.getInstance().setOccurrence(null);
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow,
+                JOptionPane.showMessageDialog(mainWindow,
                         String.format(Messages.getInstance().get(Messages.OCCURRENCE_NOT_FOUND), occurrence),
-                        Messages
-                                .getInstance().get(Messages.OCCURRENCE), JOptionPane.INFORMATION_MESSAGE
-                        , ResourceUtils.getInformationIcon()));
+                        Messages.getInstance().get(Messages.OCCURRENCE), JOptionPane.INFORMATION_MESSAGE
+                        , ResourceUtils.getInformationIcon());
             }
         }
     }
@@ -758,10 +752,10 @@ public final class Controller implements Runnable {
         } else {
             Environment.getInstance().setNextOccurrenceIndex(-1);
             Environment.getInstance().setOccurrence(null);
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow,
+            JOptionPane.showMessageDialog(mainWindow,
                     String.format(Messages.getInstance().get(Messages.OCCURRENCE_NOT_FOUND), occurrence)
                     , Messages.getInstance().get(Messages.OCCURRENCE), JOptionPane.INFORMATION_MESSAGE
-                    , ResourceUtils.getInformationIcon()));
+                    , ResourceUtils.getInformationIcon());
         }
     }
 
@@ -781,11 +775,11 @@ public final class Controller implements Runnable {
             if (result.getNumReplaces() > 0) {
                 src.getTextArea().setText(result.getText());
             }
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(mainWindow,
+            JOptionPane.showMessageDialog(mainWindow,
                     String.format(Messages.getInstance().get(Messages.REPLACES_IS_OCCURRED),
                             result.getNumReplaces())
                     , Messages.getInstance().get(Messages.REPLACE), JOptionPane.INFORMATION_MESSAGE
-                    , ResourceUtils.getInformationIcon()));
+                    , ResourceUtils.getInformationIcon());
         }
     }
 
@@ -848,11 +842,9 @@ public final class Controller implements Runnable {
             Environment.getInstance().setEditorBkColor(new Color(settings.getEditorBkColor()));
             mainWindow.applyFontAndColor(settings);
             if (!UIUtils.equals(UIUtils.toLocale(settings.getLanguage()), Messages.getLocale())) {
-                SwingUtilities.invokeLater(() -> {
-                    JOptionPane.showMessageDialog(mainWindow,
-                            Messages.getInstance().get(Messages.RESTART_TO_CHANGE_LANG),
-                            Messages.getInstance().get(Messages.WARNING), JOptionPane.WARNING_MESSAGE);
-                });
+                JOptionPane.showMessageDialog(mainWindow,
+                        Messages.getInstance().get(Messages.RESTART_TO_CHANGE_LANG),
+                        Messages.getInstance().get(Messages.WARNING), JOptionPane.WARNING_MESSAGE);
             }
         }
     };
@@ -885,10 +877,9 @@ public final class Controller implements Runnable {
     private final ActionListener openListener = e -> {
         log.info("Open action");
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
-                openSource();
+                openSources();
                 return null;
             }
         };
@@ -901,9 +892,7 @@ public final class Controller implements Runnable {
 
     private final ActionListener importListener = e -> {
         log.info("Import action");
-
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
                 importResource();
@@ -920,7 +909,6 @@ public final class Controller implements Runnable {
     private final ActionListener saveListener = e -> {
         log.info("Save action");
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
                 saveSource();
@@ -937,7 +925,6 @@ public final class Controller implements Runnable {
     private final ActionListener reloadAllListener = e -> {
         log.info("Reload all action");
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
                 reloadAll();
@@ -954,11 +941,14 @@ public final class Controller implements Runnable {
     private final ActionListener saveAsListener = e -> {
         log.info("Save as action");
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
                 Source src = mainWindow.getSourceTabbedPane().getSourceSelected();
-                saveSourceAs(src);
+                if (src == null) {
+                    log.info("No selected source");
+                } else {
+                    saveSourceAs(src);
+                }
                 return null;
             }
         };
@@ -972,7 +962,6 @@ public final class Controller implements Runnable {
     private final ActionListener saveAllListener = e -> {
         log.info("Save all action");
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
                 saveAllSources();
@@ -989,7 +978,6 @@ public final class Controller implements Runnable {
     private final ActionListener closeListener = e -> {
         log.info("Close action");
         final SimpleWorker<Void> worker = new SimpleWorker<>(mainWindow) {
-
             @Override
             protected Void perform() throws Exception {
                 closeSource();
