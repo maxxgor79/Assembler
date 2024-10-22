@@ -1,12 +1,14 @@
 package ru.zxspectrum.io.tzx;
 
 import lombok.NonNull;
+import lombok.ToString;
 import ru.assembler.core.util.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@ToString
 public class StopTape48kBlock extends Block {
     public static final int DEFAULT_ID = 0x2A;
 

@@ -2,6 +2,7 @@ package ru.zxspectrum.io.tzx;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import ru.assembler.core.compiler.bytecode.ByteOrder;
 import ru.assembler.core.util.IOUtils;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+@ToString
 public class ArchiveInfoBlock extends Block {
     public static final int DEFAULT_ID = 0x32;
 
