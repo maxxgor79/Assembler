@@ -55,6 +55,11 @@ public class TzxData implements TzxElementReader, TzxElementWriter {
                     pis.unread(b);
                     block = new ArchiveInfoBlock();
                     break;
+                case StopTape48kBlock.DEFAULT_ID:
+                    pis.unread(b);
+                    block = new StopTape48kBlock();
+                    ret = true;
+                    break;
                 case 0x27:
                     ret = true;
                     break;
