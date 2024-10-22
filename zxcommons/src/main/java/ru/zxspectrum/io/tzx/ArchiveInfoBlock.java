@@ -36,7 +36,7 @@ public class ArchiveInfoBlock extends Block {
     public void write(@NonNull OutputStream os) throws IOException {
         IOUtils.writeByte(os, (byte) blockId);
         int len = text == null ? 0 : text.length();
-        IOUtils.writeByte(os, (byte) len);
+        IOUtils.writeWord(os, (byte) len, ByteOrder.LittleEndian);
         if (len != 0) {
             os.write(text.getBytes());
         }
