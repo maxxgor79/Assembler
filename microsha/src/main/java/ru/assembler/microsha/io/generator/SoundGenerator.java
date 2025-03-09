@@ -23,6 +23,16 @@ import java.util.Objects;
 //Thanks to Alexander Alexeev
 @Slf4j
 public class SoundGenerator extends Generator {
+    public static final int RATE_LOWEST = 8000;
+
+    public static final int RATE_LOW = 11050;
+
+    public static final int RATE_NORMAL = 22050;
+
+    public static final int RATE_HIGH = 44100;
+
+    public static final int RATE_HIGHEST = 44100;
+
     private static final int DEFAULT_SAMPLE_RATE = 44100;// in Hertz
 
     private static final int BAUD_RATE = 700;
@@ -89,7 +99,7 @@ public class SoundGenerator extends Generator {
         rkmData.save(tapeDataOs);
         // save rkm data
         write(baos, tapeDataOs.toByteArray());
-        Arrays.fill(buf, 0, FIR_WEIGHTS.length - 1, (byte) 0x80);
+        Arrays.fill(buf, 0, buf.length - 1, (byte) 0x80);
         // some intermediate values in the end, for the FIR filter
         write(baos, Arrays.copyOf(buf, FIR_WEIGHTS.length));
         WavWriter wavFile = new WavWriter(baos.toByteArray(), sampleRate, 1);

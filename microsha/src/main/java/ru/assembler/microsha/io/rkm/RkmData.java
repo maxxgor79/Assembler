@@ -30,6 +30,10 @@ public class RkmData {
     @Getter
     private int crc16;
 
+    public RkmData() {
+
+    }
+
     public RkmData(final int startAddress16, final byte[] data) {
         this.startAddress16 = startAddress16;
         setData(data);
