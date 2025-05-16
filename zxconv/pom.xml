@@ -129,7 +129,7 @@
 
         <dependency>
             <groupId>org.projectlombok</groupId>
-            <version>1.18.28</version>
+            <version>1.18.30</version>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>

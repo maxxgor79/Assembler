@@ -34,41 +34,22 @@ public class TzxData implements TzxElementReader, TzxElementWriter {
                 break;
             }
             Block block = null;
+            if (BlockFactory.isBlockSupported(b)) {
+                pis.unread(b);
+                block = BlockFactory.construct(b);
+            }
             switch (b) {
-                case DataBlock.DEFAULT_ID:
-                    pis.unread(b);
-                    block = new DataBlock();
-                    break;
-                case TextDescriptionBlock.DEFAULT_ID:
-                    pis.unread(b);
-                    block = new TextDescriptionBlock();
-                    break;
-                case PauseBlock.DEFAULT_ID:
-                    pis.unread(b);
-                    block = new PauseBlock();
-                    break;
-                case MessageBlock.DEFAULT_ID:
-                    pis.unread(b);
-                    block = new MessageBlock();
-                    break;
-                case ArchiveInfoBlock.DEFAULT_ID:
-                    pis.unread(b);
-                    block = new ArchiveInfoBlock();
-                    break;
-                case StopTape48kBlock.DEFAULT_ID:
-                    pis.unread(b);
-                    block = new StopTape48kBlock();
-                    ret = true;
-                    break;
                 case 0x27:
+                    return;
+                case StopTape48kBlock.DEFAULT_ID:
                     ret = true;
                     break;
-                default:
-                    throw new IOException("Unknown byte: " + b);
             }
             if (block != null) {
                 block.read(pis);
                 blocks.add(block);
+            } else {
+                throw new IOException("Unknown byte: " + b);
             }
         }
 

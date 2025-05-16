@@ -12,7 +12,7 @@ import java.nio.file.StandardOpenOption;
 public interface Compiling {
     void compile(@NonNull final Source src, String... args);
 
-    default String toArgument(Source src, @NonNull String encoding) throws IOException {
+    default String toArgument(@NonNull Source src, @NonNull String encoding) throws IOException {
         if (!src.isNew() && !src.hasChanges()) {
             return src.getFile().getAbsolutePath();
         }
