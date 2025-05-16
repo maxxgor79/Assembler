@@ -30,6 +30,14 @@ public class RkmData {
     @Getter
     private int crc16;
 
+    @Getter
+    @Setter
+    private boolean checkCrc = true;
+
+    public RkmData() {
+
+    }
+
     public RkmData(final int startAddress16, final byte[] data) {
         this.startAddress16 = startAddress16;
         setData(data);
@@ -40,7 +48,7 @@ public class RkmData {
         IOUtils.writeWord(os, (short) startAddress16, ByteOrder.BigEndian);
         IOUtils.writeWord(os, (short) (startAddress16 + data.length), ByteOrder.BigEndian);
         os.write(data);
-        IOUtils.writeWord(os, (short) calcCrc16(data), ByteOrder.BigEndian);
+        IOUtils.writeWord(os, (short) crc16, ByteOrder.BigEndian);
     }
 
     public void read(@NonNull InputStream is) throws IOException {
@@ -53,8 +61,10 @@ public class RkmData {
             throw new EOFException();
         }
         crc16 = IOUtils.readWord(is, ByteOrder.BigEndian);
-        if (calcCrc16(data) != crc16) {
-            throw new IOException("Bad crc16");
+        if (checkCrc) {
+            if (calcCrc16(data) != crc16) {
+                throw new IOException("Bad crc16");
+            }
         }
     }
 
@@ -72,7 +82,7 @@ public class RkmData {
                 csm_hi ^= data[i] & 0x00FF;
             }
         }
-        return csm_hi << 8 | csm_lo;
+        return (csm_hi << 8) & 0xFF00 | csm_lo & 0x00FF;
     }
 
     public RkmData copy() {
