@@ -48,9 +48,9 @@ public class Scl2Trd {
             iStream.read(buff, 0, 14);
             buff[14] = (byte) freeSec;
             buff[15] = (byte) freeTrack;
-            freeSec += buff[0xd];
+            freeSec += buff[0xd] & 0xFF;
             freeTrack += freeSec / 16;
-            totalFreeSect -= (int) buff[0xd];
+            totalFreeSect -= buff[0xd] & 0xFF;
             freeSec = freeSec % 16;
             oStream.write(buff, 0, 16);
         }
